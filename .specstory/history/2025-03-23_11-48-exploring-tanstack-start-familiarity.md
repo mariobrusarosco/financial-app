@@ -1602,6 +1602,211 @@ This domain-based architecture will provide a clear structure for your applicati
 
 ---
 
+_**User**_
+
+Great job! Let me commit this!
+
+Perfect! Let's start the Phase 1.
+
+For each section on @phase-1.md add checklist icons so we can track our progress, please
+
+---
+
+_**Assistant**_
+
+<think>
+The user wants me to update the docs/plan/phase-1.md file to include checklist icons for each item to track progress. I'll need to add checkboxes ([ ]) to each list item in the file.
+</think>
+
+# Adding Progress Tracking to Phase 1 Plan
+
+I'll update the Phase 1 plan to include checkboxes for tracking progress:
+
+````markdown:docs/plan/phase-1.md
+# Phase 1: Project Setup
+
+## Goals
+- [ ] Initialize a basic TanStack Start application
+- [ ] Set up documentation structure
+- [ ] Create a "Hello World" application
+- [ ] Configure Netlify deployment
+
+## Tasks
+
+### 1. Project Initialization
+- [ ] Create project using TanStack Start CLI
+- [ ] Set up directory structure for documentation
+- [ ] Initialize Git repository
+- [ ] Configure basic linting and formatting
+
+### 2. Documentation Setup
+- [ ] Create ADRs for initial technology choices
+- [ ] Set up developer guides for key technologies
+- [ ] Update README with links to documentation
+
+### 3. Hello World Application
+- [ ] Create minimal application with TanStack Router
+- [ ] Add a basic home page
+- [ ] Implement a simple layout
+
+### 4. Deployment Configuration
+- [ ] Set up Netlify configuration
+- [ ] Configure build settings
+- [ ] Set up environment variables
+- [ ] Create deployment pipeline
+
+## Definition of Done
+- [ ] Repository structure is set up
+- [ ] Documentation is in place
+- [ ] Basic application displays "Hello World"
+- [ ] Application successfully deploys to Netlify
+````
+
+This will allow you to track progress by checking off items as they're completed, providing a clear visual indicator of what's been done and what's still pending.
+
+---
+
+_**User**_
+
+Amazing! I really happy right now! Thanks!
+
+Can we start the implemenation following our plan?
+
+---
+
+_**Assistant**_
+
+<think>
+The user is ready to start implementing the project according to our Phase 1 plan. Let's follow the checklist we created in Phase 1.
+
+First, we need to:
+1. Create project using TanStack Start CLI
+2. Set up directory structure for documentation (which we've already done)
+3. Initialize Git repository 
+4. Configure basic linting and formatting
+
+Let me provide step-by-step instructions for implementing Phase 1 of the project.
+</think>
+
+# Starting Phase 1 Implementation
+
+I'm glad you're happy with the planning! Let's start implementing Phase 1 according to our checklist.
+
+## Step 1: Project Initialization
+
+First, let's create the project using TanStack Start CLI:
+
+```bash
+# Create a new project with TanStack Start
+npx create-tanstack-app@latest better-call-buffet-frontend
+
+# Navigate into the project directory
+cd better-call-buffet-frontend
+```
+
+When running this command, you'll likely be prompted to choose:
+- Package manager (npm, yarn, pnpm)
+- UI library (React)
+- Styling solution (Choose Tailwind CSS as per our ADR)
+- TanStack features (Select Query, Router, Form, and Table)
+
+After creating the project, let's set up our documentation structure (which we've mostly done already):
+
+```bash
+# Create documentation directories if they don't exist yet
+mkdir -p docs/plan
+mkdir -p docs/decisions
+mkdir -p docs/guide
+
+# Initialize Git repository if not already initialized
+git init
+git add .
+git commit -m "Initial commit: Project setup with TanStack Start"
+```
+
+## Step 2: Adjust Project Structure for Domain Architecture
+
+Now let's adjust the folder structure to match our domain-based architecture:
+
+```bash
+# Create core directories
+mkdir -p src/core/api
+mkdir -p src/core/components
+mkdir -p src/core/context
+mkdir -p src/core/hooks
+mkdir -p src/core/utils
+mkdir -p src/core/types
+
+# Create domains directories
+mkdir -p src/domains/dashboard/api
+mkdir -p src/domains/dashboard/components
+mkdir -p src/domains/dashboard/context
+mkdir -p src/domains/dashboard/hooks
+mkdir -p src/domains/dashboard/screens
+mkdir -p src/domains/dashboard/schema
+mkdir -p src/domains/dashboard/utils
+```
+
+## Step 3: Create Hello World Application
+
+Let's create a simple Hello World page:
+
+```tsx
+// src/domains/dashboard/screens/DashboardScreen.tsx
+import React from 'react';
+
+export const DashboardScreen: React.FC = () => {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-3xl font-bold text-blue-600">Better Call Buffet</h1>
+        <p className="mt-4 text-gray-600">Your financial future starts here.</p>
+      </div>
+    </div>
+  );
+};
+```
+
+And set up the router:
+
+```tsx
+// src/routes/index.tsx
+import { createRootRoute, createRoute } from '@tanstack/react-router';
+import { DashboardScreen } from '../domains/dashboard/screens/DashboardScreen';
+
+const rootRoute = createRootRoute();
+
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: DashboardScreen,
+});
+
+export const routeTree = rootRoute.addChildren([indexRoute]);
+```
+
+## Step 4: Netlify Configuration
+
+Create a netlify.toml file in the root of your project:
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npm run dev"
+  
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+Would you like me to continue with any specific part of the implementation?
+
+---
+
 
 
 ---
