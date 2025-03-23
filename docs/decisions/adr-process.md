@@ -28,4 +28,27 @@ Each ADR will follow this structure:
 - Transparency in decision-making
 - Clear documentation of architectural choices
 - Historical record for future reference
-- Easier onboarding for new team members 
+- Easier onboarding for new team members
+
+## Examples
+
+### Example ADR Template
+```markdown
+# [Title]
+
+## Status
+[Proposed, Accepted, Deprecated, Superseded]
+
+## Context
+[Describe the problem or situation that the decision addresses]
+
+## Decision
+[Describe the decision that was made]
+
+## Consequences
+[Describe the resulting context after applying the decision]
+```
+
+## References
+- [ADR GitHub organization](https://adr.github.io/)
+- [Documenting Architecture Decisions by Michael Nygard](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) 

@@ -15,7 +15,7 @@ TanStack Start provides an excellent foundation for building modern web applicat
 Leveraging the new partnership between TanStack and Netlify provides optimized deployment capabilities with minimal configuration. Netlify also offers excellent CI/CD pipelines, serverless functions, and edge capabilities.
 
 ### API Integration: Connect to existing Better Call Buffet API
-The backend is already being developed with FastAPI in a separate repository. We'll use TanStack Query to efficiently fetch and manage data from this API.
+The backend is already being developed with a RESTful API in a separate repository. We'll use TanStack Query to efficiently fetch and manage data from this API.
 
 ### State Management: TanStack Query for server state, React Context for local state
 TanStack Query excels at handling server state with caching, background updates, and error handling. For local UI state, React Context provides sufficient capabilities without adding complexity.
