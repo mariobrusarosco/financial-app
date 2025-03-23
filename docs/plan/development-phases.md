@@ -30,19 +30,19 @@ This document outlines the development phases for the Better Call Buffet financi
 **Goal**: Implement the core application structure and routing.
 
 ### Tasks:
-- [ ] Set up TanStack Router with file-based routing
-- [ ] Create layout components (MainLayout, AuthLayout)
-- [ ] Implement initial routes for main features
-- [ ] Set up basic navigation components
-- [ ] Configure base styling with Tailwind CSS
-- [ ] Create theme configuration
-- [ ] Set up API client structure
+- [x] Set up TanStack Router with file-based routing
+- [x] Create layout components (MainLayout, AuthLayout)
+- [x] Implement initial routes for main features
+- [x] Set up basic navigation components
+- [x] Configure base styling with Tailwind CSS
+- [x] Create theme configuration
+- [x] Set up API client structure
 
 ### Deliverables:
-- Working navigation structure
-- Route configuration
-- Basic layouts and style system
-- API client foundation
+- [x] Working navigation structure
+- [x] Route configuration
+- [x] Basic layouts and style system
+- [x] API client foundation
 
 ### Timeline: 1-2 weeks
 
