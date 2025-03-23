@@ -5,7 +5,7 @@ TanStack Start is a full-stack TypeScript application starter provided by the Ta
 
 ## Key Components
 - **TanStack Query**: Data fetching and state management
-- **TanStack Router**: Type-safe routing
+- **TanStack Router**: Type-safe routing with file-based route structure
 - **TanStack Form**: Form validation and state
 - **TanStack Table**: Data table management
 
@@ -26,7 +26,7 @@ TanStack Start is a full-stack TypeScript application starter provided by the Ta
    ```
 
 ## Project Structure
-Better Call Buffet uses a domain-based architecture:
+Better Call Buffet uses a domain-based architecture with TanStack Start's file-based routing:
 
 ```
 src/
@@ -48,8 +48,23 @@ src/
 │   │   └── utils/     # Domain utilities
 │   ├── budget/        # Budget management domain
 │   └── expenses/      # Expense tracking domain
-└── routes/            # Route definitions
+└── routes/            # TanStack Router file-based route definitions
+    ├── __root.tsx     # Root layout route
+    ├── index.tsx      # Home route
+    └── dashboard.tsx  # Dashboard route
 ```
+
+## Routing System
+TanStack Start uses a file-based routing system:
+- `routes/__root.tsx` - Defines the root layout applied to all routes
+- `routes/index.tsx` - Handles the `/` route
+- `routes/about.tsx` - Handles the `/about` route
+- Nested folders create nested routes (e.g., `routes/settings/profile.tsx` → `/settings/profile`)
+
+## File Naming Conventions
+- Use PascalCase for component files (e.g., `DashboardScreen.tsx`)
+- Use camelCase for utility files (e.g., `formatCurrency.ts`)
+- Use kebab-case for CSS files (e.g., `button-styles.css`)
 
 ## Best Practices
 - Use TypeScript for all components and utilities
