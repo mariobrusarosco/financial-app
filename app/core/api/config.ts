@@ -17,6 +17,15 @@ export const DEFAULT_HEADERS = {
 };
 
 /**
+ * OpenAI API Key from environment variables
+ */
+export const OPENAI_API_KEY = 
+  // @ts-ignore - Vite injects the import.meta.env at build time
+  import.meta.env?.VITE_OPENAI_API_KEY || 
+  // Fallback for non-Vite environments
+  process.env.VITE_OPENAI_API_KEY;
+
+/**
  * Default request timeout in milliseconds
  */
 export const DEFAULT_TIMEOUT = 30000; // 30 seconds

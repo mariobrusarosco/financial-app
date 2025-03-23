@@ -1,13 +1,13 @@
 import {
   Outlet,
-  ScrollRestoration,
   createRootRoute,
-  NotFoundRoute,
   Link,
+  HeadContent,
+  Scripts
 } from "@tanstack/react-router";
-import { Meta, Scripts } from "@tanstack/start";
 import type { ReactNode } from "react";
 import '../index.css';
+import { ClientOnly } from "../components/ClientOnly";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -45,7 +45,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <ClientOnly>
+        <Outlet />
+      </ClientOnly>
     </RootDocument>
   );
 }
@@ -54,11 +56,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
       <head>
-        <Meta />
+        <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
-        <ScrollRestoration />
         <Scripts />
       </body>
     </html>
