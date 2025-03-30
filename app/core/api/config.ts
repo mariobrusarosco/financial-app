@@ -11,23 +11,19 @@ export const API_BASE_URL =
   process.env.VITE_API_BASE_URL || 
   'https://api.bettercallbuffet.com';
 
-export const DEFAULT_HEADERS = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-};
-
-/**
- * OpenAI API Key from environment variables
- */
+// API keys
 export const OPENAI_API_KEY = 
   // @ts-ignore - Vite injects the import.meta.env at build time
   import.meta.env?.VITE_OPENAI_API_KEY || 
   // Fallback for non-Vite environments
   process.env.VITE_OPENAI_API_KEY;
 
-/**
- * Default request timeout in milliseconds
- */
+export const DEFAULT_HEADERS = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
+
+
 export const DEFAULT_TIMEOUT = 30000; // 30 seconds
 
 /**

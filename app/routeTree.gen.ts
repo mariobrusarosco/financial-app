@@ -11,9 +11,23 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TransactionsImport } from './routes/transactions'
+import { Route as BankInvoiceImport } from './routes/bank-invoice'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const TransactionsRoute = TransactionsImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BankInvoiceRoute = BankInvoiceImport.update({
+  id: '/bank-invoice',
+  path: '/bank-invoice',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +46,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/bank-invoice': {
+      id: '/bank-invoice'
+      path: '/bank-invoice'
+      fullPath: '/bank-invoice'
+      preLoaderRoute: typeof BankInvoiceImport
+      parentRoute: typeof rootRoute
+    }
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bank-invoice': typeof BankInvoiceRoute
+  '/transactions': typeof TransactionsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bank-invoice': typeof BankInvoiceRoute
+  '/transactions': typeof TransactionsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/bank-invoice': typeof BankInvoiceRoute
+  '/transactions': typeof TransactionsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/bank-invoice' | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/bank-invoice' | '/transactions'
+  id: '__root__' | '/' | '/bank-invoice' | '/transactions'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BankInvoiceRoute: typeof BankInvoiceRoute
+  TransactionsRoute: typeof TransactionsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BankInvoiceRoute: BankInvoiceRoute,
+  TransactionsRoute: TransactionsRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +115,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/bank-invoice",
+        "/transactions"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/bank-invoice": {
+      "filePath": "bank-invoice.tsx"
+    },
+    "/transactions": {
+      "filePath": "transactions.tsx"
     }
   }
 }

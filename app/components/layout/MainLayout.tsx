@@ -19,6 +19,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <div className="space-y-1">
             <SidebarLink to="/" icon="home" label="Dashboard" />
             <SidebarLink to="/transactions" icon="credit-card" label="Transactions" />
+            <SidebarLink to="/bank-invoice" icon="document-text" label="Bank Invoices" />
             <SidebarLink to="/budgets" icon="chart-pie" label="Budgets" />
             <SidebarLink to="/investments" icon="trending-up" label="Investments" />
             <SidebarLink to="/reports" icon="document-report" label="Reports" />
