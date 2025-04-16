@@ -7,8 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import * as React from 'react'
-import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
-import { NotFound } from '~/components/NotFound'
+import { DefaultCatchBoundary, NotFound, Header } from '~/domains/global/components'
 import themeCss from '~/domains/ui-system/styles/theme.css?url'
 import { seo } from '~/utils/seo'
 import { Button } from '~/domains/ui-system'
@@ -78,31 +77,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="min-h-screen bg-background">
         <div className="container mx-auto p-4">
-          <header className="flex items-center justify-between py-4 mb-6 border-b">
-            <div className="text-2xl font-bold text-primary">Financial App</div>
-            <nav className="flex gap-4">
-              <Link
-                to="/"
-                activeOptions={{ exact: true }}
-              >
-                {({ isActive }: { isActive: boolean }) => (
-                  <Button variant={isActive ? "default" : "ghost"}>
-                    Dashboard
-                  </Button>
-                )}
-              </Link>
-
-              <Link
-                to="/investments"
-              >
-                {({ isActive }: { isActive: boolean }) => (
-                  <Button variant={isActive ? "default" : "ghost"}>
-                    Investments
-                  </Button>
-                )}
-              </Link>
-            </nav>
-          </header>
+          <Header appTitle="Financial App" />
           
           <main>
             {children}
