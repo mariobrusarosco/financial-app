@@ -1,72 +1,88 @@
-# Welcome to TanStack.com!
+# Financial App
 
-This site is built with TanStack Router!
+A modern financial web application built with React, TanStack Router, and Tailwind CSS.
 
-- [TanStack Router Docs](https://tanstack.com/router)
+## Features
 
-It's deployed automagically with Netlify!
+- Dashboard for financial overview
+- Investment tracking and management
+- Modern, responsive UI
 
-- [Netlify](https://netlify.com/)
+## Quick Start
 
-## Development
+### Prerequisites
 
-From your terminal:
+- Node.js (v18 or later)
+- npm or yarn
 
-```sh
-pnpm install
-pnpm dev
-```
+### Installation
 
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Editing and previewing the docs of TanStack projects locally
-
-The documentations for all TanStack projects except for `React Charts` are hosted on [https://tanstack.com](https://tanstack.com), powered by this TanStack Router app.
-In production, the markdown doc pages are fetched from the GitHub repos of the projects, but in development they are read from the local file system.
-
-Follow these steps if you want to edit the doc pages of a project (in these steps we'll assume it's [`TanStack/form`](https://github.com/tanstack/form)) and preview them locally :
-
-1. Create a new directory called `tanstack`.
+1. Clone the repository:
 
 ```sh
-mkdir tanstack
+git clone <repository-url>
+cd financial-app
 ```
 
-2. Enter the directory and clone this repo and the repo of the project there.
+2. Install dependencies:
 
 ```sh
-cd tanstack
-git clone git@github.com:TanStack/tanstack.com.git
-git clone git@github.com:TanStack/form.git
+npm install
+# or
+yarn
 ```
 
-> [!NOTE]
-> Your `tanstack` directory should look like this:
->
-> ```
-> tanstack/
->    |
->    +-- form/
->    |
->    +-- tanstack.com/
-> ```
-
-> [!WARNING]
-> Make sure the name of the directory in your local file system matches the name of the project's repo. For example, `tanstack/form` must be cloned into `form` (this is the default) instead of `some-other-name`, because that way, the doc pages won't be found.
-
-3. Enter the `tanstack/tanstack.com` directory, install the dependencies and run the app in dev mode:
+3. Start the development server:
 
 ```sh
-cd tanstack.com
-pnpm i
-# The app will run on https://localhost:3000 by default
-pnpm dev
+npm run dev
+# or
+yarn dev
 ```
 
-4. Now you can visit http://localhost:3000/form/latest/docs/overview in the browser and see the changes you make in `tanstack/form/docs`.
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-> [!NOTE]
-> The updated pages need to be manually reloaded in the browser.
+## Project Structure
 
-> [!WARNING]
-> You will need to update the `docs/config.json` file (in the project's repo) if you add a new doc page!
+```
+financial-app/
+├── decision-log/     # Architectural Decision Records
+├── guides/           # Developer guides and documentation
+├── public/           # Static assets
+├── src/
+│   ├── components/   # Reusable UI components
+│   ├── domains/      # Domain-specific code
+│   │   ├── dashboard/
+│   │   └── investments/
+│   ├── routes/       # Application routes
+│   ├── styles/       # Global styles
+│   └── utils/        # Utility functions
+├── package.json
+└── tailwind.config.mjs
+```
+
+## Development Guidelines
+
+- Follow the guides in the `/guides` directory for detailed development instructions
+- All architectural decisions are documented in the `/decision-log` directory
+- Use TanStack Router for navigation and route management
+- Style components with Tailwind CSS
+
+## Available Scripts
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+
+## Learn More
+
+For more information about the technologies used in this project:
+
+- [TanStack Router](https://tanstack.com/router/latest)
+- [TanStack Start](https://tanstack.com/start/latest/docs/framework/react/quick-start)
+- [React](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+## Contributing
+
+See the [CONTRIBUTING.md](./guides/CONTRIBUTING.md) file for details on our code of conduct and the process for submitting pull requests.

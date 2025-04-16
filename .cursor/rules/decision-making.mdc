@@ -1,6 +1,7 @@
 ---
 description: 
 globs: 
+alwaysApply: false
 ---
 
 # Your rule content
@@ -8,3 +9,5 @@ globs:
 1. ADRs for the key technologies we've decided on
 2. Developer guides for each technology
 3. An updated README.md to point to these resources
+4. Don't run Git Commands
+
