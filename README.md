@@ -1,74 +1,72 @@
-# TanStack Starter Template
+# Welcome to TanStack.com!
 
-This is a simple starter template for a project using [TanStack Start](https://tanstack.com/start/latest). It demonstrates how to quickly scaffold a project, set up routes, and manage application state efficiently.
+This site is built with TanStack Router!
 
-## Features
+- [TanStack Router Docs](https://tanstack.com/router)
 
-- **Loader Data**: Fetch and display data using TanStack's route loader.
-- **Dynamic Updates**: Modify state and refresh loader data using `router.invalidate()`.
-- **Styled UI**: Includes a basic layout with responsive styles.
+It's deployed automagically with Netlify!
 
-## Getting Started
+- [Netlify](https://netlify.com/)
 
-To start using this template, run the following command:
+## Development
 
-```bash
-npx create-tanstack-app@latest --template tanstack-router
+From your terminal:
+
+```sh
+pnpm install
+pnpm dev
 ```
 
-Follow the prompts to set up your project. The generated files include basic starter functionality from TanStack, so you can build on top of them or replace specific components with the code in this repository as needed.
+This starts your app in development mode, rebuilding assets on file changes.
 
-### Prerequisites
+## Editing and previewing the docs of TanStack projects locally
 
-Ensure you have the following installed:
+The documentations for all TanStack projects except for `React Charts` are hosted on [https://tanstack.com](https://tanstack.com), powered by this TanStack Router app.
+In production, the markdown doc pages are fetched from the GitHub repos of the projects, but in development they are read from the local file system.
 
-- [Node.js](https://nodejs.org/) (v16 or later recommended)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+Follow these steps if you want to edit the doc pages of a project (in these steps we'll assume it's [`TanStack/form`](https://github.com/tanstack/form)) and preview them locally :
 
-### Installation
+1. Create a new directory called `tanstack`.
 
-1. Clone the repository or use the starter command above to create a new app.
-2. Navigate to the project directory:
-   ```bash
-   cd your-project-name
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-### Running the App
-
-Start the development server:
-
-```bash
-npm run dev
+```sh
+mkdir tanstack
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to view your application.
+2. Enter the directory and clone this repo and the repo of the project there.
 
-## Project Structure
-
-```plaintext
-src/
-├── components/         # Reusable UI components
-├── routes/             # Application routes
-├── styles/             # Global and component-specific styles
-├── utils/              # Utility functions and helpers
-└── main.jsx            # Entry point for the React application
+```sh
+cd tanstack
+git clone git@github.com:TanStack/tanstack.com.git
+git clone git@github.com:TanStack/form.git
 ```
 
-## Customization
+> [!NOTE]
+> Your `tanstack` directory should look like this:
+>
+> ```
+> tanstack/
+>    |
+>    +-- form/
+>    |
+>    +-- tanstack.com/
+> ```
 
-- Modify the `getCount` and `updateCount` functions in `src/functions/` to connect to your backend or API. Refer to the examples and guidelines provided on the [TanStack Start page](https://tanstack.com/start/latest) for best practices when integrating these functions.
-- Add additional routes in `src/routes/` as your application grows.
+> [!WARNING]
+> Make sure the name of the directory in your local file system matches the name of the project's repo. For example, `tanstack/form` must be cloned into `form` (this is the default) instead of `some-other-name`, because that way, the doc pages won't be found.
 
-## Learn More
+3. Enter the `tanstack/tanstack.com` directory, install the dependencies and run the app in dev mode:
 
-- [TanStack Router Documentation](https://tanstack.com/router/latest)
-- [React Documentation](https://reactjs.org/)
+```sh
+cd tanstack.com
+pnpm i
+# The app will run on https://localhost:3000 by default
+pnpm dev
+```
 
-## License
+4. Now you can visit http://localhost:3000/form/latest/docs/overview in the browser and see the changes you make in `tanstack/form/docs`.
 
-This project is licensed under the MIT License.
+> [!NOTE]
+> The updated pages need to be manually reloaded in the browser.
 
+> [!WARNING]
+> You will need to update the `docs/config.json` file (in the project's repo) if you add a new doc page!
