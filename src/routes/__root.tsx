@@ -9,8 +9,9 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import * as React from 'react'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
 import { NotFound } from '~/components/NotFound'
-import appCss from '~/styles/app.css?url'
+import themeCss from '~/domains/ui-system/styles/theme.css?url'
 import { seo } from '~/utils/seo'
+import { Button } from '~/domains/ui-system'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -23,13 +24,12 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       ...seo({
-        title:
-          'TanStack Start | Type-Safe, Client-First, Full-Stack React Framework',
-        description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
+        title: 'Financial App | Manage Your Finances',
+        description: `A modern financial web application for managing your investments and finances.`,
       }),
     ],
     links: [
-      { rel: 'stylesheet', href: appCss },
+      { rel: 'stylesheet', href: themeCss },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
@@ -72,65 +72,43 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="en" className="light">
       <head>
         <HeadContent />
       </head>
-      <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: 'font-bold',
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{' '}
-          <Link
-            to="/posts"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Posts
-          </Link>{' '}
-          <Link
-            to="/users"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Users
-          </Link>{' '}
-          <Link
-            to="/route-a"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Pathless Layout
-          </Link>{' '}
-          <Link
-            to="/deferred"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Deferred
-          </Link>{' '}
-          <Link
-            // @ts-expect-error
-            to="/this-route-does-not-exist"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            This Route Does Not Exist
-          </Link>
+      <body className="min-h-screen bg-background">
+        <div className="container mx-auto p-4">
+          <header className="flex items-center justify-between py-4 mb-6 border-b">
+            <div className="text-2xl font-bold text-primary">Financial App</div>
+            <nav className="flex gap-4">
+              <Link
+                to="/"
+                activeOptions={{ exact: true }}
+              >
+                {({ isActive }: { isActive: boolean }) => (
+                  <Button variant={isActive ? "default" : "ghost"}>
+                    Dashboard
+                  </Button>
+                )}
+              </Link>
+
+              <Link
+                to="/investments"
+              >
+                {({ isActive }: { isActive: boolean }) => (
+                  <Button variant={isActive ? "default" : "ghost"}>
+                    Investments
+                  </Button>
+                )}
+              </Link>
+            </nav>
+          </header>
+          
+          <main>
+            {children}
+          </main>
         </div>
-        <hr />
-        {children}
+        
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>
