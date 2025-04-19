@@ -14,8 +14,8 @@ Expected duration: 2 weeks
   - [x] Define and document coding standards
 
 - [ ] **Development Environment Configuration**
-  - [ ] Configure ESLint and Prettier
-  - [ ] Set up TypeScript with appropriate tsconfig
+  - [x] Configure ESLint and Prettier
+  - [x] Set up TypeScript with appropriate tsconfig
   - [ ] Configure testing framework (Jest/Vitest)
   - [ ] Set up CI/CD pipeline basics
 
