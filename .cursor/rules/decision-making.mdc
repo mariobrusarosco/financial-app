@@ -10,4 +10,6 @@ alwaysApply: false
 2. Developer guides for each technology
 3. An updated README.md to point to these resources
 4. Don't run Git Commands
+5. Import types using the 'type' keyword e.g import type { ICreateAccountForm } from "../schemas/investment-account"
+
 
