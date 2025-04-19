@@ -23,6 +23,7 @@ All project documentation is organized in the `docs` folder:
 - [TanStack Start Framework](docs/decisions/adr_tanstack_start.md)
 - [shadcn/ui Component Library](docs/decisions/adr_shadcn_ui.md)
 - [Mock Service Worker (MSW)](docs/decisions/adr_msw.md)
+- [Coding Standards and Architecture](docs/decisions/coding-standards.md)
 
 ### Project Planning
 

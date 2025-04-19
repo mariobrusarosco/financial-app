@@ -11,7 +11,7 @@ Expected duration: 2 weeks
   - [x] Initialize project with TanStack Start
   - [x] Set up project documentation structure
   - [x] Create architecture decision records (ADRs)
-  - [ ] Define and document coding standards
+  - [x] Define and document coding standards
 
 - [ ] **Development Environment Configuration**
   - [ ] Configure ESLint and Prettier
