@@ -16,7 +16,7 @@ Expected duration: 2 weeks
 - [ ] **Development Environment Configuration**
   - [x] Configure ESLint and Prettier
   - [x] Set up TypeScript with appropriate tsconfig
-  - [ ] Configure testing framework (Jest/Vitest)
+  - [x] Configure testing framework (Vitest)
   - [ ] Set up CI/CD pipeline basics
 
 - [ ] **UI Foundation**
