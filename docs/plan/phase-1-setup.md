@@ -7,17 +7,17 @@ Expected duration: 2 weeks
 
 ## Tasks
 
-- [ ] **Project Repository Setup**
+- [x] **Project Repository Setup**
   - [x] Initialize project with TanStack Start
   - [x] Set up project documentation structure
   - [x] Create architecture decision records (ADRs)
   - [x] Define and document coding standards
 
-- [ ] **Development Environment Configuration**
+- [x] **Development Environment Configuration**
   - [x] Configure ESLint and Prettier
   - [x] Set up TypeScript with appropriate tsconfig
   - [x] Configure testing framework (Vitest)
-  - [ ] Set up CI/CD pipeline basics
+  - [x] Set up CI/CD pipeline basics
 
 - [ ] **UI Foundation**
   - [ ] Install and configure Tailwind CSS

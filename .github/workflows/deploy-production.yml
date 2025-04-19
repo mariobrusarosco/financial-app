@@ -1,0 +1,44 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Run linting
+        run: yarn lint
+        
+      - name: Run type checks
+        run: yarn typecheck
+        
+      - name: Run tests
+        run: yarn test
+        
+      - name: Build
+        run: yarn build
+        
+      # This is a placeholder for an actual deployment step
+      # Replace with your preferred production deployment method
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production"
+          # Add your production deployment commands here
+          # Example:
+          # - For Firebase: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
+          # - For AWS: aws s3 sync ./dist s3://your-bucket/ 
