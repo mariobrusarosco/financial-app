@@ -20,7 +20,7 @@ Expected duration: 2 weeks
   - [x] Set up CI/CD pipeline basics
 
 - [ ] **UI Foundation**
-  - [ ] Install and configure Tailwind CSS
+  - [x] Install and configure Tailwind CSS
   - [ ] Set up shadcn/ui with Rose theme
   - [ ] Create basic component structure
   - [ ] Implement global layout and navigation shell
