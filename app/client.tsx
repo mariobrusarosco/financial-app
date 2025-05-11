@@ -5,4 +5,15 @@ import { createRouter } from './router'
 
 const router = createRouter()
 
-hydrateRoot(document, <StartClient router={router} />)
+// Ensure the DOM is ready before hydrating
+if (typeof document !== 'undefined') {
+  const rootElement = document.getElementById('root')
+  if (rootElement) {
+    hydrateRoot(
+      rootElement,
+      <StartClient router={router} />
+    )
+  } else {
+    console.error("Target 'root' element not found for hydration.")
+  }
+}
