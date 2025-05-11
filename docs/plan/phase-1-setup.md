@@ -17,7 +17,7 @@ Expected duration: 2 weeks
   - [x] Configure ESLint and Prettier
   - [x] Set up TypeScript with appropriate tsconfig
   - [x] Configure testing framework (Vitest)
-  - [x] Set up CI/CD pipeline basics
+  - [] Set up CI/CD pipeline basics
 
 - [ ] **UI Foundation**
   - [x] Install and configure Tailwind CSS

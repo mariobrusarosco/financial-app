@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Define the base URL for the API. This can be an environment variable.
 // For MSW, this might be different or not strictly needed if MSW intercepts all fetches.
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api'; // Placeholder
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'; // Placeholder
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
