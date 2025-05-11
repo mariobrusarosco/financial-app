@@ -15,6 +15,5 @@ export default defineConfig({
       }),
       tailwindcss(),
     ],
-    // build: { ssr: true },
   },
 })
