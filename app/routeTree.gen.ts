@@ -13,6 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
+import { Route as authAccountsIndexImport } from './routes/(auth)/accounts/index'
+import { Route as authAccountsCreateIndexImport } from './routes/(auth)/accounts/create/index'
 
 // Create/Update Routes
 
@@ -25,6 +27,18 @@ const DashboardRoute = DashboardImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authAccountsIndexRoute = authAccountsIndexImport.update({
+  id: '/(auth)/accounts/',
+  path: '/accounts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authAccountsCreateIndexRoute = authAccountsCreateIndexImport.update({
+  id: '/(auth)/accounts/create/',
+  path: '/accounts/create/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,6 +60,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/accounts/': {
+      id: '/(auth)/accounts/'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof authAccountsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/accounts/create/': {
+      id: '/(auth)/accounts/create/'
+      path: '/accounts/create'
+      fullPath: '/accounts/create'
+      preLoaderRoute: typeof authAccountsCreateIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +82,51 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/accounts': typeof authAccountsIndexRoute
+  '/accounts/create': typeof authAccountsCreateIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/accounts': typeof authAccountsIndexRoute
+  '/accounts/create': typeof authAccountsCreateIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/(auth)/accounts/': typeof authAccountsIndexRoute
+  '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard'
+  fullPaths: '/' | '/dashboard' | '/accounts' | '/accounts/create'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard'
-  id: '__root__' | '/' | '/dashboard'
+  to: '/' | '/dashboard' | '/accounts' | '/accounts/create'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/(auth)/accounts/'
+    | '/(auth)/accounts/create/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  authAccountsIndexRoute: typeof authAccountsIndexRoute
+  authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  authAccountsIndexRoute: authAccountsIndexRoute,
+  authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +140,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/dashboard"
+        "/dashboard",
+        "/(auth)/accounts/",
+        "/(auth)/accounts/create/"
       ]
     },
     "/": {
@@ -105,6 +150,12 @@ export const routeTree = rootRoute
     },
     "/dashboard": {
       "filePath": "dashboard.tsx"
+    },
+    "/(auth)/accounts/": {
+      "filePath": "(auth)/accounts/index.tsx"
+    },
+    "/(auth)/accounts/create/": {
+      "filePath": "(auth)/accounts/create/index.tsx"
     }
   }
 }
