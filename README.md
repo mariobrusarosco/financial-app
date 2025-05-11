@@ -4,7 +4,59 @@ A single-page application designed to help users manage their daily financial as
 
 ## Project Overview
 
-Better Call Buffet is a modern financial management application built with TanStack Start, using shadcn/ui for the interface and MSW for API mocking during development.
+Better Call Buffet is a modern financial management application built with TanStack Start, using shadcn/ui for the interface and MSW for API mocking during development. We utilize **Shadcn/ui** as our primary component library, which is built on top of Radix UI and styled with **Tailwind CSS**. All custom styling, theme configurations, and UI-related utilities are centralized within the `app/domains/ui-system` domain to maintain a clear separation of concerns for our visual layer.
+
+## Flowchart
+
+The following diagram illustrates the conceptual architecture of the Better Call Buffet application, highlighting the client-server interaction within the TanStack Start framework:
+
+```text
++-----------------------------------------------------------------------------------------+
+|                                    User Interface                                     |
+|                           (Browser - Client-Side Rendering)                           |
+|                                                                                         |
+|   +-----------------------+     +-------------------------------------------------+   |
+|   |    TanStack Router    |<--->|      Interactive UI Elements                    |   |
+|   | (Client Navigation,   |     |  (Rendered in Browser)                          |   |
+|   |  Link Interception)   |     |                                                 |   |
+|   +-----------------------+     |   *Built with:* Shadcn/ui (Base Components)     |   |
+|                                 |   *Styled by:* Tailwind CSS (Utility Classes)   |   |
+|                                 |   *Custom UI in:* `app/domains/ui-system`       |   |
+|                                 +-------------------------------------------------+   |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+               | (Initial HTML Stream, Hydration, Client/Server API Calls)
+               ▼
++-----------------------------------------------------------------------------+
+|                             Application Logic                               |
+|                    (Server-Side - TanStack Start / Node.js)                 |
+|                                                                             |
+|   +-----------------------+     +---------------------------------------+   |
+|   |    TanStack Router    |<--->|         app/routes/                   |   |
+|   | (SSR, Data Loaders,   |     | (Page structure, Server Functions)    |   |
+|   |  Server Functions)    |     |                                       |   |
+|   +-----------------------+     +---------------------------------------+   |
+|                                                   |                       |
+|                                                   | (Data requests)       |
+|                                                   ▼                       |
+|                                     +-----------------------+             |
+|                                     |   MSW (API Mocking)   |             |
+|                                     |      (Development)    |             |
+|                                     +-----------------------+             |
+|                                                                             |
++-----------------------------------------------------------------------------+
+```
+
+**Diagram Explanation:**
+
+*   **User Interface (Browser):** This area depicts the client-side running in the browser.
+    *   **Interactive UI Elements (Rendered in Browser):** This represents the actual user interface that the user sees and interacts with.
+        *   It's **Built with: Shadcn/ui (Base Components)**, providing the foundational, unstyled, and accessible UI building blocks.
+        *   And it's **Styled by: Tailwind CSS (Utility Classes)**, applying styles to these components and other elements.
+        *   **Custom UI in: `app/domains/ui-system`**: This directory is where application-specific custom components, themes, and global styles are developed, leveraging Shadcn/ui and Tailwind CSS.
+    *   **TanStack Router (Client Navigation, Link Interception):** Manages client-side page transitions and URL updates, working in concert with these UI elements.
+*   **Application Logic (Server-Side):** This is the backend part, powered by TanStack Start. It processes initial requests, performs server-side rendering (SSR), handles data fetching via loaders in `app/routes/` (which define page structure and can contain server functions), and executes server functions. During development, it interfaces with MSW (Mock Service Worker) for API mocking.
+*   **Interaction Flow:** An initial page load involves the server rendering the page and sending HTML to the client. The client then hydrates this HTML, making it interactive. Subsequent navigation or data operations can be handled client-side, or involve calls to server functions, all orchestrated by TanStack Router and TanStack Start.
 
 ### Key Features (Planned)
 
