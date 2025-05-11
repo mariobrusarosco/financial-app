@@ -12,18 +12,5 @@ export default defineConfig({
     ],
     build: { ssr: true },
   },
-  tsr: {
-    // point to the relocated app folder and route files
-    appDirectory: 'src/app',
-    routesDirectory: 'src/app/routes',
-    generatedRouteTree: 'src/app/routeTree.gen.ts',
-    // ignore generated scaffolding files in routes
-    routeFileIgnorePattern: '\\.gen\\.ts$',
-  },
-  routers: {
-    // override entry points for SSR and client bundles
-    ssr: { entry: 'src/app/ssr.tsx' },
-    client: { entry: 'src/app/client.tsx' },
-  },
 })
 

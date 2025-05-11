@@ -22,13 +22,14 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@domains/*": ["src/domains/*"],
-      "@global/*": ["src/domains/global/*"],
-      "@tools/*": ["src/domains/tools/*"],
-      "@testing/*": ["src/domains/testing/*"]
+      "@/*": ["app/*"],
+      "@domains/*": ["app/domains/*"],
+      "@ui-system/*": ["app/domains/ui-system/*"],
+      "@global/*": ["app/domains/global/*"],
+      "@tools/*": ["app/domains/tools/*"],
+      "@testing/*": ["app/domains/testing/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["app/**/*.ts", "app/**/*.tsx"],
   "exclude": ["node_modules"]
 }
