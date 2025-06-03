@@ -1,16 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-// import { Button } from '@/domains/ui-system' // Uncomment if you have a Button component
+import React, { useRef, useState } from 'react'
 
-export const Route = createFileRoute('/(auth)/accounts/$slug/statements/')({
-  component: StatementsRouteComponent,
+export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
+  component: CreditCardRouteComponent,
 })
 
-import React, { useRef, useState } from 'react';
-
-function StatementsRouteComponent() {
-  // Access the slug param from the route
+function CreditCardRouteComponent() {
   const { slug } = Route.useParams()
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,8 +22,8 @@ function StatementsRouteComponent() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Statements for Account: {slug}</h1>
-      <p>This is where the statements for account <b>{slug}</b> will be displayed.</p>
+      <h1 className="text-2xl font-bold mb-4">Credit Card for Account: {slug}</h1>
+      <p>This is where the credit card information or features for account <b>{slug}</b> will be displayed.</p>
 
       <button
         type="button"

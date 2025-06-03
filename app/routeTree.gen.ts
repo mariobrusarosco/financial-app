@@ -17,6 +17,7 @@ import { Route as authSettingsIndexImport } from './routes/(auth)/settings/index
 import { Route as authAccountsIndexImport } from './routes/(auth)/accounts/index'
 import { Route as authAccountsCreateIndexImport } from './routes/(auth)/accounts/create/index'
 import { Route as authAccountsSlugStatementsIndexImport } from './routes/(auth)/accounts/$slug/statements/index'
+import { Route as authAccountsSlugCreditCardIndexImport } from './routes/(auth)/accounts/$slug/credit-card/index'
 
 // Create/Update Routes
 
@@ -54,6 +55,13 @@ const authAccountsSlugStatementsIndexRoute =
   authAccountsSlugStatementsIndexImport.update({
     id: '/(auth)/accounts/$slug/statements/',
     path: '/accounts/$slug/statements/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const authAccountsSlugCreditCardIndexRoute =
+  authAccountsSlugCreditCardIndexImport.update({
+    id: '/(auth)/accounts/$slug/credit-card/',
+    path: '/accounts/$slug/credit-card/',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -96,6 +104,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsCreateIndexImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/accounts/$slug/credit-card/': {
+      id: '/(auth)/accounts/$slug/credit-card/'
+      path: '/accounts/$slug/credit-card'
+      fullPath: '/accounts/$slug/credit-card'
+      preLoaderRoute: typeof authAccountsSlugCreditCardIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/(auth)/accounts/$slug/statements/': {
       id: '/(auth)/accounts/$slug/statements/'
       path: '/accounts/$slug/statements'
@@ -114,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof authAccountsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
@@ -123,6 +139,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof authAccountsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
@@ -133,6 +150,7 @@ export interface FileRoutesById {
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
+  '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
   '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
 }
 
@@ -144,6 +162,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/settings'
     | '/accounts/create'
+    | '/accounts/$slug/credit-card'
     | '/accounts/$slug/statements'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -152,6 +171,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/settings'
     | '/accounts/create'
+    | '/accounts/$slug/credit-card'
     | '/accounts/$slug/statements'
   id:
     | '__root__'
@@ -160,6 +180,7 @@ export interface FileRouteTypes {
     | '/(auth)/accounts/'
     | '/(auth)/settings/'
     | '/(auth)/accounts/create/'
+    | '/(auth)/accounts/$slug/credit-card/'
     | '/(auth)/accounts/$slug/statements/'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +191,7 @@ export interface RootRouteChildren {
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
+  authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
   authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
 }
 
@@ -179,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   authAccountsIndexRoute: authAccountsIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
+  authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
   authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
 }
 
@@ -197,6 +220,7 @@ export const routeTree = rootRoute
         "/(auth)/accounts/",
         "/(auth)/settings/",
         "/(auth)/accounts/create/",
+        "/(auth)/accounts/$slug/credit-card/",
         "/(auth)/accounts/$slug/statements/"
       ]
     },
@@ -214,6 +238,9 @@ export const routeTree = rootRoute
     },
     "/(auth)/accounts/create/": {
       "filePath": "(auth)/accounts/create/index.tsx"
+    },
+    "/(auth)/accounts/$slug/credit-card/": {
+      "filePath": "(auth)/accounts/$slug/credit-card/index.tsx"
     },
     "/(auth)/accounts/$slug/statements/": {
       "filePath": "(auth)/accounts/$slug/statements/index.tsx"
