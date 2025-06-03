@@ -16,6 +16,7 @@ import { Route as authDashboardImport } from './routes/(auth)/dashboard'
 import { Route as authSettingsIndexImport } from './routes/(auth)/settings/index'
 import { Route as authAccountsIndexImport } from './routes/(auth)/accounts/index'
 import { Route as authAccountsCreateIndexImport } from './routes/(auth)/accounts/create/index'
+import { Route as authAccountsSlugStatementsIndexImport } from './routes/(auth)/accounts/$slug/statements/index'
 
 // Create/Update Routes
 
@@ -48,6 +49,13 @@ const authAccountsCreateIndexRoute = authAccountsCreateIndexImport.update({
   path: '/accounts/create/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const authAccountsSlugStatementsIndexRoute =
+  authAccountsSlugStatementsIndexImport.update({
+    id: '/(auth)/accounts/$slug/statements/',
+    path: '/accounts/$slug/statements/',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -88,6 +96,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsCreateIndexImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/accounts/$slug/statements/': {
+      id: '/(auth)/accounts/$slug/statements/'
+      path: '/accounts/$slug/statements'
+      fullPath: '/accounts/$slug/statements'
+      preLoaderRoute: typeof authAccountsSlugStatementsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -99,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof authAccountsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -107,6 +123,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof authAccountsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -116,13 +133,26 @@ export interface FileRoutesById {
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
+  '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/accounts' | '/settings' | '/accounts/create'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/accounts'
+    | '/settings'
+    | '/accounts/create'
+    | '/accounts/$slug/statements'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/accounts' | '/settings' | '/accounts/create'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/accounts'
+    | '/settings'
+    | '/accounts/create'
+    | '/accounts/$slug/statements'
   id:
     | '__root__'
     | '/'
@@ -130,6 +160,7 @@ export interface FileRouteTypes {
     | '/(auth)/accounts/'
     | '/(auth)/settings/'
     | '/(auth)/accounts/create/'
+    | '/(auth)/accounts/$slug/statements/'
   fileRoutesById: FileRoutesById
 }
 
@@ -139,6 +170,7 @@ export interface RootRouteChildren {
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
+  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -147,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   authAccountsIndexRoute: authAccountsIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
+  authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -163,7 +196,8 @@ export const routeTree = rootRoute
         "/(auth)/dashboard",
         "/(auth)/accounts/",
         "/(auth)/settings/",
-        "/(auth)/accounts/create/"
+        "/(auth)/accounts/create/",
+        "/(auth)/accounts/$slug/statements/"
       ]
     },
     "/": {
@@ -180,6 +214,9 @@ export const routeTree = rootRoute
     },
     "/(auth)/accounts/create/": {
       "filePath": "(auth)/accounts/create/index.tsx"
+    },
+    "/(auth)/accounts/$slug/statements/": {
+      "filePath": "(auth)/accounts/$slug/statements/index.tsx"
     }
   }
 }
