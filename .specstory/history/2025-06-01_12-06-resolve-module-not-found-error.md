@@ -282,19 +282,360 @@ I see the error - let me fix the server function first to properly accept query 
 
 ---
 
-
-
----
-
-
+I apologize for the confusion. It seems the server function API is different than what I initially thought. Let me check the correct way to pass parameters.
 
 ---
 
+<details>
+            <summary>Searched web "@tanstack/react-router createServerFn pass parameters example" • **5** results</summary>
+        
+| Title | URL |
+|-------|-----|
+| Server Functions \| TanStack Start React Docs | https://tanstack.com/start/latest/docs/framework/react/server-functions |
+| TanStack Start \| TanStack Router React Docs | https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start |
+| React TanStack Router Start Supabase Basic Example \| TanStack Router Docs | https://tanstack.com/router/v1/docs/framework/react/examples/start-supabase-basic |
+| SSR \| TanStack Router React Docs | https://tanstack.com/router/v1/docs/framework/react/guide/ssr/ |
+| React TanStack Start Start Basic Auth Example \| TanStack Start Docs | https://tanstack.com/start/latest/docs/framework/react/examples/start-basic-auth |
 
+</details>
 
 ---
 
+Based on the documentation, I can now show you the correct way to pass arguments to a server function. Here's how to update both the server function and the client-side call:
 
+---
+
+```diff
+  
+  
+- export const parsePdf = createServerFn({ 
+-   method: 'GET',
+-   query: z.object({ fileName: z.string() })
+- }).handler(
+-   async ({ query }) => {
+-     console.log('Received fileName:', query.fileName);
+- 
++ export const parsePdf = createServerFn({ method: 'POST' })
++   .validator((data: { fileName: string }) => data)
++   .handler(async ({ data }) => {
++     console.log('Processing file:', data.fileName);
+      return {
+-       message: `Processing file: ${query.fileName}`,
++       message: `Processing ${data.fileName}`,
+      }
+-   },
+- )
++   });
+```
+
+---
+
+Now I'll update the component to call the server function with the correct data structure:
+
+---
+
+```diff
+      if (!selectedFile) return;
+  
+-     const data = await parsePdf.query({ fileName: selectedFile.name });
++     const data = await parsePdf({ data: { fileName: selectedFile.name } });
+      console.log({data});
+    }
+```
+
+---
+
+Now the server function will receive the data in the expected format. The key points are:
+
+1. The server function uses `.validator()` to define and validate the input type
+2. The handler receives the validated data in the `data` property of its context
+3. The client calls the function by passing an object with a `data` property containing the arguments
+
+This pattern ensures type safety and proper validation of the data being passed between client and server.
+
+---
+
+_**User**_
+
+For the code present, we get this error:
+```
+Argument of type '(file: File) => { file: File; }' is not assignable to parameter of type 'ConstrainValidator<(file: File) => { file: File; }>'.
+  Type '(file: File) => { file: File; }' is not assignable to type 'ValidatorFn<{ readonly lastModified: number; readonly name: string; readonly webkitRelativePath: string; readonly size: number; readonly type: string; arrayBuffer: "Function is not serializable"; bytes: "Function is not serializable"; slice: "Function is not serializable"; stream: "Function is not serializable"; tex...'.
+    Types of parameters 'file' and 'input' are incompatible.
+      Type '{ readonly lastModified: number; readonly name: string; readonly webkitRelativePath: string; readonly size: number; readonly type: string; arrayBuffer: "Function is not serializable"; bytes: "Function is not serializable"; slice: "Function is not serializable"; stream: "Function is not serializable"; text: "Function...' is not assignable to type 'File'.
+        Types of property 'arrayBuffer' are incompatible.
+          Type 'string' is not assignable to type '() => Promise<ArrayBuffer>'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+---
+
+_**Assistant**_
+
+The error occurs because `File` objects can't be directly serialized over the network. Instead, we should use `FormData` to send files to the server. Here's how to fix it:
+
+---
+
+```diff
+  
+  export const parsePdf = createServerFn({ method: 'POST' })
+-   .validator((file: File) => {
+-     console.log({file});
+-     return z.object({
+-       file: z.instanceof(File).refine((file) => file.type === 'application/pdf', {
+-         message: 'File must be a PDF',
+-       }),
+-     }).parse({ file });
++   .validator((formData: FormData) => {
++     const file = formData.get('file') as File;
++     if (!file || !(file instanceof File)) {
++       throw new Error('No file provided');
++     }
++     if (file.type !== 'application/pdf') {
++       throw new Error('File must be a PDF');
++     }
++     return { file };
+    })
+    .handler(async ({ data }) => {
+```
+
+---
+
+And now update the component to send the file using FormData:
+
+---
+
+```diff
+      if (!selectedFile) return;
+  
+-     const data = await parsePdf(selectedFile);
++     const formData = new FormData();
++     formData.append('file', selectedFile);
++     const data = await parsePdf({ data: formData });
+      console.log({data});
+    }
+```
+
+---
+
+This should resolve the error. The key changes are:
+1. Server function now expects `FormData` instead of `File`
+2. Client wraps the file in `FormData` before sending
+3. Server extracts the file from `FormData` and validates it
+
+---
+
+_**User**_
+
+NIce! Any reason for not using zod? just curious
+
+---
+
+_**Assistant**_
+
+Using `zod` for validation is a great choice, especially for its type safety and schema validation capabilities. In the previous examples, I opted for a more straightforward approach to demonstrate how to handle `FormData` and validate the file type directly. However, integrating `zod` can enhance the validation process by providing a more structured and reusable way to define schemas.
+
+If you want to use `zod`, you can define a schema for the `FormData` and validate it accordingly. This would allow you to leverage `zod`'s features, such as error messages and type inference, making your code cleaner and more maintainable. 
+
+If you're interested, I can show you how to integrate `zod` into the server function for validating the `FormData`.
+
+---
+
+_**User**_
+
+
+export const parsePdf = createServerFn({ method: 'POST' })
+  .validator((formData: FormData) => {
+    const file = formData.get('file') as File;
+    
+    if (!file || !(file instanceof File)) {
+      throw new Error('No file provided');
+    }
+    if (file.type !== 'application/pdf') {
+      throw new Error('File must be a PDF');
+    }
+    return { file };
+  })
+  .handler(async ({ data }) => {
+    console.log('Processing file:', data.file.name);
+    return {
+      message: `Processing ${data.file.name}`,
+    }
+  });
+Validate with zod please?
+
+---
+
+_**Assistant**_
+
+Here's the same validation using `zod`:
+
+---
+
+```diff
+  import { z } from 'zod';
+  
++ const formDataSchema = z.instanceof(FormData).transform((formData) => {
++   const file = formData.get('file');
++   return { file };
++ }).pipe(
++   z.object({
++     file: z.instanceof(File).refine(
++       (file) => file.type === 'application/pdf',
++       { message: 'File must be a PDF' }
++     )
++   })
++ );
+  
+  export const parsePdf = createServerFn({ method: 'POST' })
+-   .validator((formData: FormData) => {
+-     const file = formData.get('file') as File;
+-     
+-     if (!file || !(file instanceof File)) {
+-       throw new Error('No file provided');
+-     }
+-     if (file.type !== 'application/pdf') {
+-       throw new Error('File must be a PDF');
+-     }
+-     return { file };
+-   })
++   .validator((formData: FormData) => formDataSchema.parse(formData))
+    .handler(async ({ data }) => {
+      console.log('Processing file:', data.file.name);
+```
+
+---
+
+This version:
+1. Creates a reusable schema for FormData validation
+2. Uses `transform` to extract the file from FormData
+3. Uses `pipe` to validate the extracted file
+4. Uses `refine` to check the file type
+5. Provides better error messages through zod's error handling
+
+The validation is now more declarative and type-safe, while maintaining the same functionality.
+
+---
+
+_**User**_
+
+Now that we have our file uploaded via form data, how can we parse?
+
+We don't have to use this npm ''pdf-parse' if you thing there are better alternatives?
+
+What do you recommend?
+
+---
+
+_**Assistant**_
+
+For PDF parsing in Node.js, there are several good options:
+
+1. `pdf-parse` (what you're trying to use) - Simple and lightweight, good for basic text extraction
+2. `pdf2json` - More feature-rich, good for extracting text and metadata
+3. `pdfjs-dist` - Mozilla's PDF.js, very comprehensive but might be overkill
+4. `pdf-lib` - Great for both reading and modifying PDFs
+
+Let's stick with `pdf-parse` since it's lightweight and good for text extraction. To use it, we need to convert the File object to a Buffer first. Here's how:
+
+---
+
+```diff
+    })
+    .handler(async ({ data }) => {
+-     const pdfData = await pdf(data.file);
+-     console.log(pdfData.text);
++     // Convert File to Buffer
++     const arrayBuffer = await data.file.arrayBuffer();
++     const buffer = Buffer.from(arrayBuffer);
++     
++     // Parse PDF
++     const pdfData = await pdf(buffer);
++     
+      return {
+-       message: `Processing ${data.file.name}`,
++       text: pdfData.text,
++       info: pdfData.info, // metadata like author, title, etc.
++       pages: pdfData.numpages
+      }
+    });
+```
+
+---
+
+This will:
+1. Convert the File to an ArrayBuffer
+2. Convert the ArrayBuffer to a Node.js Buffer
+3. Parse the PDF and return:
+   - The extracted text
+   - PDF metadata (author, title, etc.)
+   - Number of pages
+
+If you want to try alternatives:
+- `pdf2json` is good if you need more structured data (like form fields)
+- `pdfjs-dist` if you need rendering capabilities
+- `pdf-lib` if you need to modify PDFs
+
+Would you like to try any of these alternatives instead?
+
+---
+
+_**User**_
+
+Error:
+
+
+
+ServerFn Request: app_server-functions_pdf-parser_ts--parsePdf_createServerFn_handler
+23:41:26 [vite] (ssr) Error when evaluating SSR module C:/coding/financial-app/app/server-functions/pdf-parser.ts?tsr-directive-use-server=: ENOENT: no such file or directory, open 'C:\coding\financial-app\test\data\05-versions-space.pdf'
+      at Object.openSync (node:fs:562:18)
+      at Object.readFileSync (node:fs:446:35)
+      at Object.<anonymous> (C:\coding\financial-app\node_modules\pdf-parse\index.js:15:25)
+      at Module._compile (node:internal/modules/cjs/loader:1730:14)
+      at node:internal/modules/cjs/loader:1895:10
+      at Object.transformer [as .js] (file:///C:/coding/financial-app/node_modules/tsx/dist/register-CuoYSLaL.mjs:2:748)
+      at Module.load (node:internal/modules/cjs/loader:1465:32)
+      at Function._load (node:internal/modules/cjs/loader:1282:12)
+      at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+      at cjsLoader (node:internal/modules/esm/translators:266:5)
+      at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:200:7)
+      at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+      at async SSRCompatModuleRunner.directRequest (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1233:24)
+      at async SSRCompatModuleRunner.cachedRequest (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1180:76)
+      at async eval (C:\coding\financial-app\app\server-functions\pdf-parser.ts:4:1)
+      at async ESModulesEvaluator.runInlinedModule (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1062:5)
+      at async SSRCompatModuleRunner.directRequest (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1284:61)
+      at async SSRCompatModuleRunner.directRequest (file:///C:/coding/financial-app/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:25274:23)
+      at async SSRCompatModuleRunner.cachedRequest (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1180:76)
+      at async SSRCompatModuleRunner.import (file:///C:/coding/financial-app/node_modules/vite/dist/node/module-runner.js:1117:12)
+      at async instantiateModule (file:///C:/coding/financial-app/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:25231:12)
+      at async handleServerRequest (C:\coding\financial-app\node_modules\@tanstack\start-server-functions-handler\src\index.ts:97:16)
+      at async handleServerAction (C:\coding\financial-app\node_modules\@tanstack\start-server-functions-handler\src\index.ts:32:20)
+      at async _callHandler (file:///C:/coding/financial-app/node_modules/@tanstack/react-start-config/node_modules/h3/dist/index.mjs:1837:16)
+      at async file:///C:/coding/financial-app/node_modules/vinxi/node_modules/h3/dist/index.mjs:2006:19
+      at async Object.callAsync (file:///C:/coding/financial-app/node_modules/unctx/dist/index.mjs:72:16)
+      at async Server.toNodeHandle (file:///C:/coding/financial-app/node_modules/vinxi/node_modules/h3/dist/index.mjs:2298:7)
+
+ServerFn Request: app_server-functions_pdf-parser_ts--parsePdf_createServerFn_handler
+
+---
+
+_**Assistant**_
+
+The error occurs because `pdf-parse` is trying to read a file from disk, but we're passing a Buffer from a File object. Let's try using `pdf2json` instead, which handles Buffers better:
+
+---
+
+```bash
+npm install pdf2json
+```
+
+```
+PS C:\coding\financial-app> npm install pdf2json
+⠧
+```
 
 ---
 

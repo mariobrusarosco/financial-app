@@ -24,7 +24,9 @@ function CreditCardRouteComponent() {
   const handleUpload = async () => {
     if (!selectedFile) return;
 
-    const data = await parsePdf({ data: { fileName: selectedFile.name } });
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    const data = await parsePdf({ data: formData });
     console.log({data});
   }
 
