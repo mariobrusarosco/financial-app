@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import React, { useRef, useState } from 'react'
+import { parsePdf } from '@/server-functions/pdf-parser';
 
 export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
   component: CreditCardRouteComponent,
@@ -20,6 +21,13 @@ function CreditCardRouteComponent() {
     }
   };
 
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    const data = await parsePdf({ data: { fileName: selectedFile.name } });
+    console.log({data});
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Credit Card for Account: {slug}</h1>
@@ -30,7 +38,7 @@ function CreditCardRouteComponent() {
         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
         onClick={handleButtonClick}
       >
-        Upload PDF
+        Select PDF
       </button>
       <input
         ref={inputRef}
@@ -44,6 +52,8 @@ function CreditCardRouteComponent() {
           Selected file: <b>{selectedFile.name}</b>
         </div>
       )}
+
+      <button onClick={handleUpload}>Upload</button>
     </div>
   )
 }
