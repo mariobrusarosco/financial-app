@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import PDFParser from 'pdf2json';
-import OpenAI from 'openai';  
+import OpenAI from 'openai';
+import { ICreditCardStatement } from '@/domains/credit-cards/types/interfaces';
 
 
 const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
@@ -63,6 +64,18 @@ export const parsePdf = createServerFn({ method: 'POST' })
       temperature: 0.3
     });
   
-    const result = response.choices[0].message.content;
-    console.log('✅ GPT-4 Summary:\n', result);
+    const content = response.choices[0].message.content;
+    if (!content) {
+      throw new Error('Failed to parse PDF: No response from GPT');
+    }
+
+    console.log('✅ GPT-4 Summary:\n', content);
+    
+    try {
+      // Parse the JSON string from GPT response
+      return JSON.parse(content) as ICreditCardStatement;
+    } catch (error) {
+      console.error('Failed to parse GPT response:', error);
+      throw new Error('Failed to parse PDF: Invalid response format');
+    }
   });

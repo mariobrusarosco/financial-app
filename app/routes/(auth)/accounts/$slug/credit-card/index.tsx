@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import React, { useRef, useState } from 'react'
-import { parsePdf } from '@/server-functions/pdf-parser';
+import { useParseStatement } from '@/domains/credit-cards/hooks/use-parse-credit-card';
 
 export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
   component: CreditCardRouteComponent,
@@ -21,13 +21,19 @@ function CreditCardRouteComponent() {
     }
   };
 
-  const handleUpload = async () => {
+  const parseStatement = useParseStatement();
+
+  const handleUpload = () => {
     if (!selectedFile) return;
 
     const formData = new FormData();
     formData.append('file', selectedFile);
-    const data = await parsePdf({ data: formData });
-    console.log({data});
+    
+    parseStatement.mutate(formData, {
+      onSuccess: (data) => {
+        console.log('Parsed statement:', data);
+      }
+    });
   }
 
   return (
@@ -55,7 +61,28 @@ function CreditCardRouteComponent() {
         </div>
       )}
 
-      <button onClick={handleUpload}>Upload</button>
+      <button 
+        onClick={handleUpload}
+        disabled={parseStatement.isPending}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:bg-blue-300"
+      >
+        {parseStatement.isPending ? 'Processing...' : 'Upload'}
+      </button>
+
+      {parseStatement.isError && (
+        <div className="mt-2 text-sm text-red-600">
+          {parseStatement.error.message}
+        </div>
+      )}
+
+      {parseStatement.isSuccess && (
+        <div className="mt-4 p-4 bg-white shadow rounded">
+          <h2 className="text-lg font-semibold mb-2">Statement Details</h2>
+          <pre className="text-sm overflow-auto">
+            {JSON.stringify(parseStatement.data, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   )
 }

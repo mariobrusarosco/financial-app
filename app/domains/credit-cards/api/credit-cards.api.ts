@@ -1,16 +1,9 @@
 import { ICreditCardStatement } from '@/domains/credit-cards/types/interfaces';
+import { parsePdf } from '@/server-functions/pdf-parser';
 
 export const creditCardApi = {
   parseStatement: async (formData: FormData): Promise<ICreditCardStatement> => {
-    const response = await fetch('/api/parse-credit-card', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to parse credit card statement');
-    }
-
-    return response.json();
+    const result = await parsePdf({ data: formData });
+    return result as ICreditCardStatement;
   },
 };
