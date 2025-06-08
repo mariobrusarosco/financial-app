@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Typing
+
+## Structure
+
+domain_name
+| typing
+    | types-and-interfaces.ts
+    | enums.ts
+    | constants.ts  
+
+
+## Naming Convention
+
+`interface` start with `I_`
+
+`type` starts with `T_`

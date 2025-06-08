@@ -1,14 +1,9 @@
-import type { ReactNode } from 'react'
-import {
-  Outlet,
-  createRootRoute,
-  HeadContent,
-  Scripts,
-} from '@tanstack/react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import appCss from "@/domains/ui-system/styles/app.css?url"
+import type { ReactNode } from 'react';
+import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import appCss from '@/domains/ui-system/styles/app.css?url';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
   head: () => ({
@@ -37,18 +32,16 @@ export const Route = createRootRoute({
   }),
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
-})
+});
 
 function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <RootDocument>
-        <div id="root">
-          <Outlet />
-        </div>
+        <Outlet />
       </RootDocument>
     </QueryClientProvider>
-  )
+  );
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
@@ -62,7 +55,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
 
 function NotFoundComponent() {
@@ -73,5 +66,5 @@ function NotFoundComponent() {
         <p>Sorry, the page you&apos;re looking for doesn&apos;t exist.</p>
       </div>
     </RootDocument>
-  )
+  );
 }

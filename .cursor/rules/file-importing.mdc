@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# TanStack Start Project Rules
+
+## Path Imports
+
+- Always use the `@/` path alias for imports from the `app/` directory
+- Never use relative imports like `../` or `./` when importing from other domains or the app root
+- Use `@/domains/` for importing from domain-specific modules
+- Use `@/config/` for configuration imports
+- Use `@/routes/` for route imports
+
+Examples:
+✅ Good: `import CreateAccount from '@/domains/accounts/components/create-account'`
+✅ Good: `import { Button } from '@/domains/ui-system/components/button'`
+✅ Good: `import config from '@/config/api'`
+
+❌ Bad: `import CreateAccount from '~/domains/accounts/components/create-account'` (~ alias not configured)
+❌ Bad: `import CreateAccount from '../../../domains/accounts/components/create-account'` (relative paths)
+❌ Bad: `import { Button } from './../../ui-system/components/button'` (relative paths)
+
+## Additional Path Aliases Available
+
+- `@domains/*` maps to `app/domains/*`
+- `@ui-system/*` maps to `app/domains/ui-system/*`
+- `@global/*` maps to `app/domains/global/*`
+- `@testing/*` maps to `app/domains/testing/*`
+
