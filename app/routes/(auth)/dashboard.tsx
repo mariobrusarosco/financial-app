@@ -22,7 +22,7 @@ import {
   Plus,
 } from 'lucide-react';
 
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute('/(auth)/dashboard')({
   component: DashboardPage,
 });
 

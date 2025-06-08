@@ -13,6 +13,10 @@ function RouteComponent() {
   <Button asChild>
     <Link to="/accounts">Accounts</Link>
   </Button>
+
+  <Button asChild>
+    <Link to="/dashboard">Dashboard</Link>
+  </Button>
   
   </div>
 }

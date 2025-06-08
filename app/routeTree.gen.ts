@@ -11,22 +11,31 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
+import { Route as authDashboardImport } from './routes/(auth)/dashboard'
+import { Route as authSettingsIndexImport } from './routes/(auth)/settings/index'
 import { Route as authAccountsIndexImport } from './routes/(auth)/accounts/index'
 import { Route as authAccountsCreateIndexImport } from './routes/(auth)/accounts/create/index'
+import { Route as authAccountsSlugStatementsIndexImport } from './routes/(auth)/accounts/$slug/statements/index'
+import { Route as authAccountsSlugCreditCardIndexImport } from './routes/(auth)/accounts/$slug/credit-card/index'
 
 // Create/Update Routes
-
-const DashboardRoute = DashboardImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authDashboardRoute = authDashboardImport.update({
+  id: '/(auth)/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authSettingsIndexRoute = authSettingsIndexImport.update({
+  id: '/(auth)/settings/',
+  path: '/settings/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -42,6 +51,20 @@ const authAccountsCreateIndexRoute = authAccountsCreateIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const authAccountsSlugStatementsIndexRoute =
+  authAccountsSlugStatementsIndexImport.update({
+    id: '/(auth)/accounts/$slug/statements/',
+    path: '/accounts/$slug/statements/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const authAccountsSlugCreditCardIndexRoute =
+  authAccountsSlugCreditCardIndexImport.update({
+    id: '/(auth)/accounts/$slug/credit-card/',
+    path: '/accounts/$slug/credit-card/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -53,11 +76,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard': {
-      id: '/dashboard'
+    '/(auth)/dashboard': {
+      id: '/(auth)/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardImport
+      preLoaderRoute: typeof authDashboardImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/accounts/': {
@@ -67,11 +90,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/settings/': {
+      id: '/(auth)/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof authSettingsIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/(auth)/accounts/create/': {
       id: '/(auth)/accounts/create/'
       path: '/accounts/create'
       fullPath: '/accounts/create'
       preLoaderRoute: typeof authAccountsCreateIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/accounts/$slug/credit-card/': {
+      id: '/(auth)/accounts/$slug/credit-card/'
+      path: '/accounts/$slug/credit-card'
+      fullPath: '/accounts/$slug/credit-card'
+      preLoaderRoute: typeof authAccountsSlugCreditCardIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/accounts/$slug/statements/': {
+      id: '/(auth)/accounts/$slug/statements/'
+      path: '/accounts/$slug/statements'
+      fullPath: '/accounts/$slug/statements'
+      preLoaderRoute: typeof authAccountsSlugStatementsIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -81,52 +125,84 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof authDashboardRoute
   '/accounts': typeof authAccountsIndexRoute
+  '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
+  '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof authDashboardRoute
   '/accounts': typeof authAccountsIndexRoute
+  '/settings': typeof authSettingsIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
+  '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
+  '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/(auth)/dashboard': typeof authDashboardRoute
   '/(auth)/accounts/': typeof authAccountsIndexRoute
+  '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
+  '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
+  '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/accounts' | '/accounts/create'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/accounts'
+    | '/settings'
+    | '/accounts/create'
+    | '/accounts/$slug/credit-card'
+    | '/accounts/$slug/statements'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/accounts' | '/accounts/create'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/accounts'
+    | '/settings'
+    | '/accounts/create'
+    | '/accounts/$slug/credit-card'
+    | '/accounts/$slug/statements'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
+    | '/(auth)/dashboard'
     | '/(auth)/accounts/'
+    | '/(auth)/settings/'
     | '/(auth)/accounts/create/'
+    | '/(auth)/accounts/$slug/credit-card/'
+    | '/(auth)/accounts/$slug/statements/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
+  authDashboardRoute: typeof authDashboardRoute
   authAccountsIndexRoute: typeof authAccountsIndexRoute
+  authSettingsIndexRoute: typeof authSettingsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
+  authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
+  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
+  authDashboardRoute: authDashboardRoute,
   authAccountsIndexRoute: authAccountsIndexRoute,
+  authSettingsIndexRoute: authSettingsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
+  authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
+  authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -140,22 +216,34 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/dashboard",
+        "/(auth)/dashboard",
         "/(auth)/accounts/",
-        "/(auth)/accounts/create/"
+        "/(auth)/settings/",
+        "/(auth)/accounts/create/",
+        "/(auth)/accounts/$slug/credit-card/",
+        "/(auth)/accounts/$slug/statements/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/dashboard": {
-      "filePath": "dashboard.tsx"
+    "/(auth)/dashboard": {
+      "filePath": "(auth)/dashboard.tsx"
     },
     "/(auth)/accounts/": {
       "filePath": "(auth)/accounts/index.tsx"
     },
+    "/(auth)/settings/": {
+      "filePath": "(auth)/settings/index.tsx"
+    },
     "/(auth)/accounts/create/": {
       "filePath": "(auth)/accounts/create/index.tsx"
+    },
+    "/(auth)/accounts/$slug/credit-card/": {
+      "filePath": "(auth)/accounts/$slug/credit-card/index.tsx"
+    },
+    "/(auth)/accounts/$slug/statements/": {
+      "filePath": "(auth)/accounts/$slug/statements/index.tsx"
     }
   }
 }
