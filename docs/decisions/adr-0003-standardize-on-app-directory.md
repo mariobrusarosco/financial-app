@@ -6,9 +6,9 @@
 
 ## Context
 
-Previous architectural guidelines (notably outlined in an earlier ADR `b68c57bc-a2c5-4a5d-bbd2-1cfb9f66748d` regarding Domain-Based Architecture) suggested a project structure where domains and other source code would reside under a `src/` directory (e.g., `src/domains`). 
+Previous architectural guidelines (notably outlined in an earlier ADR `b68c57bc-a2c5-4a5d-bbd2-1cfb9f66748d` regarding Domain-Based Architecture) suggested a project structure where domains and other source code would reside under a `src/` directory (e.g., `src/domains`).
 
-However, the project's setup with TanStack Start inherently favors an `app/` directory at the project root for core application files such as `routes/`, `ssr.tsx`, `client.tsx`, `router.ts(x)`, and the auto-generated `routeTree.gen.ts`. Furthermore, existing scaffolded examples within the project, such as `app/domains/example`, also follow this `app/`-centric structure.
+However, the project's setup with TanStack Start inherently favors an `app/` directory at the project root for core application files such as `routes/`, `ssr.tsx`, `client.tsx`, `router.ts(x)`, and the auto-generated `routeTree.gen.ts`. Furthermore, existing scaffolded examples within the project, such as `app/domains/broker`, also follow this `app/`-centric structure.
 
 This has created ambiguity regarding the correct location for new application modules, particularly domains.
 
@@ -26,7 +26,7 @@ The `src/` directory, if used at all, should be reserved for code or assets that
 
 - **Alignment with TanStack Start:** Adopting `app/` as the standard aligns directly with the conventions and expectations of the TanStack Start framework, simplifying configuration and ensuring smoother integration with its features (like file-based routing and manifest generation).
 - **Structural Simplicity:** Consolidating all application source code under a single, well-defined root (`app/`) simplifies the project's directory structure and makes it easier for developers to navigate and understand.
-- **Consistency with Existing Scaffolds:** This decision aligns with how example domains (e.g., `app/domains/example`) are already structured within the project, promoting consistency.
+- **Consistency with Existing Scaffolds:** This decision aligns with how example domains (e.g., `app/domains/broker`) are already structured within the project, promoting consistency.
 - **Reduced Ambiguity:** Formalizing this standard eliminates confusion arising from conflicting guidelines or conventions (e.g., `src/domains` vs. `app/domains`).
 
 ## Consequences
