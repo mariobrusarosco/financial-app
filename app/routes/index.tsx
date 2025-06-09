@@ -1,4 +1,4 @@
-import { Button } from '@/domains/ui-system';
+import { Button } from '@/domains/ui-system/components/button';
 import { createFileRoute } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 
