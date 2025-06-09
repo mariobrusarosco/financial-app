@@ -1,9 +1,21 @@
-import { ICreditCardStatement } from '@/domains/credit-cards/types/interfaces';
+import {
+  I_CreditCardInvoiceRequest,
+  I_CreditCardInvoiceResponse,
+  I_CreditCardRawInvoice,
+} from '@/domains/credit-cards/types/types-and-interfaces';
 import { parsePdf } from '@/server-functions/pdf-parser';
+import { apiClient } from '@/config/api';
 
 export const creditCardApi = {
-  parseStatement: async (formData: FormData): Promise<ICreditCardStatement> => {
+  parseInvoice: async (formData: FormData): Promise<I_CreditCardRawInvoice> => {
     const result = await parsePdf({ data: formData });
-    return result as ICreditCardStatement;
+    return result;
+  },
+  createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
+    const response = await apiClient.post<I_CreditCardInvoiceResponse>(
+      '/credit-card-invoices',
+      data
+    );
+    return response.data;
   },
 };

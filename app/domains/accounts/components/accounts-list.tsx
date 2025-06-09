@@ -1,4 +1,5 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
+import { Link } from '@tanstack/react-router';
 
 function AccountsList() {
   const { data: accounts, isLoading, error } = useGetAllActiveAccounts();
@@ -13,7 +14,9 @@ function AccountsList() {
       <ul>
         {accounts.map(account => (
           <li key={account.id}>
-            {account.name} - Balance: {account.currency} {account.balance}
+            <Link to={`/accounts/$slug`} params={{ slug: account.id }}>
+              {account.name} - Balance: {account.currency} {account.balance}
+            </Link>
           </li>
         ))}
       </ul>
