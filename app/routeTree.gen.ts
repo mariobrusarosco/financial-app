@@ -8,33 +8,21 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
-import { Route as authAuthImport } from './routes/(auth)/_auth'
 import { Route as authSettingsIndexImport } from './routes/(auth)/settings/index'
+import { Route as authDashboardIndexImport } from './routes/(auth)/dashboard/index'
 import { Route as authBrokersIndexImport } from './routes/(auth)/brokers/index'
 import { Route as authAccountsIndexImport } from './routes/(auth)/accounts/index'
-import { Route as authAuthDashboardImport } from './routes/(auth)/_auth.dashboard'
 import { Route as authBrokersCreateIndexImport } from './routes/(auth)/brokers/create/index'
 import { Route as authAccountsCreateIndexImport } from './routes/(auth)/accounts/create/index'
 import { Route as authAccountsSlugIndexImport } from './routes/(auth)/accounts/$slug/index'
 import { Route as authAccountsSlugStatementsIndexImport } from './routes/(auth)/accounts/$slug/statements/index'
 import { Route as authAccountsSlugCreditCardIndexImport } from './routes/(auth)/accounts/$slug/credit-card/index'
 
-// Create Virtual Routes
-
-const authImport = createFileRoute('/(auth)')()
-
 // Create/Update Routes
-
-const authRoute = authImport.update({
-  id: '/(auth)',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -42,65 +30,60 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const authAuthRoute = authAuthImport.update({
-  id: '/_auth',
-  getParentRoute: () => authRoute,
+const authSettingsIndexRoute = authSettingsIndexImport.update({
+  id: '/(auth)/settings/',
+  path: '/settings/',
+  getParentRoute: () => rootRoute,
 } as any)
 
-const authSettingsIndexRoute = authSettingsIndexImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => authRoute,
+const authDashboardIndexRoute = authDashboardIndexImport.update({
+  id: '/(auth)/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authBrokersIndexRoute = authBrokersIndexImport.update({
-  id: '/brokers/',
+  id: '/(auth)/brokers/',
   path: '/brokers/',
-  getParentRoute: () => authRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authAccountsIndexRoute = authAccountsIndexImport.update({
-  id: '/accounts/',
+  id: '/(auth)/accounts/',
   path: '/accounts/',
-  getParentRoute: () => authRoute,
-} as any)
-
-const authAuthDashboardRoute = authAuthDashboardImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => authAuthRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authBrokersCreateIndexRoute = authBrokersCreateIndexImport.update({
-  id: '/brokers/create/',
+  id: '/(auth)/brokers/create/',
   path: '/brokers/create/',
-  getParentRoute: () => authRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authAccountsCreateIndexRoute = authAccountsCreateIndexImport.update({
-  id: '/accounts/create/',
+  id: '/(auth)/accounts/create/',
   path: '/accounts/create/',
-  getParentRoute: () => authRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authAccountsSlugIndexRoute = authAccountsSlugIndexImport.update({
-  id: '/accounts/$slug/',
+  id: '/(auth)/accounts/$slug/',
   path: '/accounts/$slug/',
-  getParentRoute: () => authRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const authAccountsSlugStatementsIndexRoute =
   authAccountsSlugStatementsIndexImport.update({
-    id: '/accounts/$slug/statements/',
+    id: '/(auth)/accounts/$slug/statements/',
     path: '/accounts/$slug/statements/',
-    getParentRoute: () => authRoute,
+    getParentRoute: () => rootRoute,
   } as any)
 
 const authAccountsSlugCreditCardIndexRoute =
   authAccountsSlugCreditCardIndexImport.update({
-    id: '/accounts/$slug/credit-card/',
+    id: '/(auth)/accounts/$slug/credit-card/',
     path: '/accounts/$slug/credit-card/',
-    getParentRoute: () => authRoute,
+    getParentRoute: () => rootRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -114,131 +97,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/(auth)': {
-      id: '/(auth)'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof authImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/_auth': {
-      id: '/(auth)/_auth'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof authAuthImport
-      parentRoute: typeof authRoute
-    }
-    '/(auth)/_auth/dashboard': {
-      id: '/(auth)/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof authAuthDashboardImport
-      parentRoute: typeof authAuthImport
-    }
     '/(auth)/accounts/': {
       id: '/(auth)/accounts/'
       path: '/accounts'
       fullPath: '/accounts'
       preLoaderRoute: typeof authAccountsIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/brokers/': {
       id: '/(auth)/brokers/'
       path: '/brokers'
       fullPath: '/brokers'
       preLoaderRoute: typeof authBrokersIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/dashboard/': {
+      id: '/(auth)/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof authDashboardIndexImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/settings/': {
       id: '/(auth)/settings/'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof authSettingsIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/accounts/$slug/': {
       id: '/(auth)/accounts/$slug/'
       path: '/accounts/$slug'
       fullPath: '/accounts/$slug'
       preLoaderRoute: typeof authAccountsSlugIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/accounts/create/': {
       id: '/(auth)/accounts/create/'
       path: '/accounts/create'
       fullPath: '/accounts/create'
       preLoaderRoute: typeof authAccountsCreateIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/brokers/create/': {
       id: '/(auth)/brokers/create/'
       path: '/brokers/create'
       fullPath: '/brokers/create'
       preLoaderRoute: typeof authBrokersCreateIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/accounts/$slug/credit-card/': {
       id: '/(auth)/accounts/$slug/credit-card/'
       path: '/accounts/$slug/credit-card'
       fullPath: '/accounts/$slug/credit-card'
       preLoaderRoute: typeof authAccountsSlugCreditCardIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
     '/(auth)/accounts/$slug/statements/': {
       id: '/(auth)/accounts/$slug/statements/'
       path: '/accounts/$slug/statements'
       fullPath: '/accounts/$slug/statements'
       preLoaderRoute: typeof authAccountsSlugStatementsIndexImport
-      parentRoute: typeof authImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface authAuthRouteChildren {
-  authAuthDashboardRoute: typeof authAuthDashboardRoute
-}
-
-const authAuthRouteChildren: authAuthRouteChildren = {
-  authAuthDashboardRoute: authAuthDashboardRoute,
-}
-
-const authAuthRouteWithChildren = authAuthRoute._addFileChildren(
-  authAuthRouteChildren,
-)
-
-interface authRouteChildren {
-  authAuthRoute: typeof authAuthRouteWithChildren
-  authAccountsIndexRoute: typeof authAccountsIndexRoute
-  authBrokersIndexRoute: typeof authBrokersIndexRoute
-  authSettingsIndexRoute: typeof authSettingsIndexRoute
-  authAccountsSlugIndexRoute: typeof authAccountsSlugIndexRoute
-  authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
-  authBrokersCreateIndexRoute: typeof authBrokersCreateIndexRoute
-  authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
-  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
-}
-
-const authRouteChildren: authRouteChildren = {
-  authAuthRoute: authAuthRouteWithChildren,
-  authAccountsIndexRoute: authAccountsIndexRoute,
-  authBrokersIndexRoute: authBrokersIndexRoute,
-  authSettingsIndexRoute: authSettingsIndexRoute,
-  authAccountsSlugIndexRoute: authAccountsSlugIndexRoute,
-  authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
-  authBrokersCreateIndexRoute: authBrokersCreateIndexRoute,
-  authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
-  authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
-}
-
-const authRouteWithChildren = authRoute._addFileChildren(authRouteChildren)
-
 export interface FileRoutesByFullPath {
-  '/': typeof authAuthRouteWithChildren
-  '/dashboard': typeof authAuthDashboardRoute
+  '/': typeof IndexRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
+  '/dashboard': typeof authDashboardIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
@@ -248,10 +179,10 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/': typeof authAuthRouteWithChildren
-  '/dashboard': typeof authAuthDashboardRoute
+  '/': typeof IndexRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
+  '/dashboard': typeof authDashboardIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
@@ -263,11 +194,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/(auth)': typeof authRouteWithChildren
-  '/(auth)/_auth': typeof authAuthRouteWithChildren
-  '/(auth)/_auth/dashboard': typeof authAuthDashboardRoute
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
+  '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
@@ -280,9 +209,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/accounts'
     | '/brokers'
+    | '/dashboard'
     | '/settings'
     | '/accounts/$slug'
     | '/accounts/create'
@@ -292,9 +221,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/accounts'
     | '/brokers'
+    | '/dashboard'
     | '/settings'
     | '/accounts/$slug'
     | '/accounts/create'
@@ -304,11 +233,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/(auth)'
-    | '/(auth)/_auth'
-    | '/(auth)/_auth/dashboard'
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
+    | '/(auth)/dashboard/'
     | '/(auth)/settings/'
     | '/(auth)/accounts/$slug/'
     | '/(auth)/accounts/create/'
@@ -320,12 +247,28 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  authRoute: typeof authRouteWithChildren
+  authAccountsIndexRoute: typeof authAccountsIndexRoute
+  authBrokersIndexRoute: typeof authBrokersIndexRoute
+  authDashboardIndexRoute: typeof authDashboardIndexRoute
+  authSettingsIndexRoute: typeof authSettingsIndexRoute
+  authAccountsSlugIndexRoute: typeof authAccountsSlugIndexRoute
+  authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
+  authBrokersCreateIndexRoute: typeof authBrokersCreateIndexRoute
+  authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
+  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  authRoute: authRouteWithChildren,
+  authAccountsIndexRoute: authAccountsIndexRoute,
+  authBrokersIndexRoute: authBrokersIndexRoute,
+  authDashboardIndexRoute: authDashboardIndexRoute,
+  authSettingsIndexRoute: authSettingsIndexRoute,
+  authAccountsSlugIndexRoute: authAccountsSlugIndexRoute,
+  authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
+  authBrokersCreateIndexRoute: authBrokersCreateIndexRoute,
+  authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
+  authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -339,18 +282,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/(auth)"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/(auth)": {
-      "filePath": "(auth)",
-      "children": [
-        "/(auth)/_auth",
         "/(auth)/accounts/",
         "/(auth)/brokers/",
+        "/(auth)/dashboard/",
         "/(auth)/settings/",
         "/(auth)/accounts/$slug/",
         "/(auth)/accounts/create/",
@@ -359,48 +293,35 @@ export const routeTree = rootRoute
         "/(auth)/accounts/$slug/statements/"
       ]
     },
-    "/(auth)/_auth": {
-      "filePath": "(auth)/_auth.tsx",
-      "parent": "/(auth)",
-      "children": [
-        "/(auth)/_auth/dashboard"
-      ]
-    },
-    "/(auth)/_auth/dashboard": {
-      "filePath": "(auth)/_auth.dashboard.tsx",
-      "parent": "/(auth)/_auth"
+    "/": {
+      "filePath": "index.tsx"
     },
     "/(auth)/accounts/": {
-      "filePath": "(auth)/accounts/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/accounts/index.tsx"
     },
     "/(auth)/brokers/": {
-      "filePath": "(auth)/brokers/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/brokers/index.tsx"
+    },
+    "/(auth)/dashboard/": {
+      "filePath": "(auth)/dashboard/index.tsx"
     },
     "/(auth)/settings/": {
-      "filePath": "(auth)/settings/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/settings/index.tsx"
     },
     "/(auth)/accounts/$slug/": {
-      "filePath": "(auth)/accounts/$slug/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/accounts/$slug/index.tsx"
     },
     "/(auth)/accounts/create/": {
-      "filePath": "(auth)/accounts/create/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/accounts/create/index.tsx"
     },
     "/(auth)/brokers/create/": {
-      "filePath": "(auth)/brokers/create/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/brokers/create/index.tsx"
     },
     "/(auth)/accounts/$slug/credit-card/": {
-      "filePath": "(auth)/accounts/$slug/credit-card/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/accounts/$slug/credit-card/index.tsx"
     },
     "/(auth)/accounts/$slug/statements/": {
-      "filePath": "(auth)/accounts/$slug/statements/index.tsx",
-      "parent": "/(auth)"
+      "filePath": "(auth)/accounts/$slug/statements/index.tsx"
     }
   }
 }

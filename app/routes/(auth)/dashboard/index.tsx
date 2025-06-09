@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Card,
@@ -20,13 +21,13 @@ import {
 } from '@/domains/ui-system/components/select';
 import { Users, TrendingUp, Target, PlusCircle, MessageSquare, Minus, Plus } from 'lucide-react';
 
-export const Route = createFileRoute('/(auth)/_auth/dashboard')({
+export const Route = createFileRoute('/(auth)/dashboard/')({
   component: DashboardPage,
 });
 
 function DashboardPage() {
   return (
-    <div>
+    <AppLayout>
       <div className="mb-6">
         <h1 className="text-3xl font-semibold">Dashboard</h1>
       </div>
@@ -78,6 +79,6 @@ function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AppLayout>
   );
 }
