@@ -4,8 +4,6 @@ export interface I_Broker {
   description: string;
   colors: string[];
   logo: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface I_Create_BrokerForm {

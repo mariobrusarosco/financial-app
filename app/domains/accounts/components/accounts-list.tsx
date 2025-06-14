@@ -10,11 +10,10 @@ function AccountsList() {
 
   return (
     <div>
-      <h2>Active Accounts</h2>
-      <ul>
+      <ul className="flex flex-col gap-2">
         {accounts.map(account => (
           <li key={account.id}>
-            <Link to={`/accounts/$slug`} params={{ slug: account.id }}>
+            <Link to="/accounts/$slug" params={{ slug: account.id }}>
               {account.name} - Balance: {account.currency} {account.balance}
             </Link>
           </li>

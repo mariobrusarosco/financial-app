@@ -18,7 +18,7 @@ const CreateAccount = () => {
       currency: 'USD',
     } as I_CreateAccountForm,
     onSubmit: ({ value }) => {
-      createAccount(value as I_Account);
+      createAccount(value);
     },
   });
 

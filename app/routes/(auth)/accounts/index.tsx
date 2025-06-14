@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppLayout } from '@/domains/ui-system/components/app-layout';
-import AccountsList from '@/domains/accounts/components/accounts-list';
+import { AccountIndexScreen } from '@/domains/accounts/screens/index';
 
 export const Route = createFileRoute('/(auth)/accounts/')({
   component: RouteComponent,
@@ -9,11 +9,7 @@ export const Route = createFileRoute('/(auth)/accounts/')({
 function RouteComponent() {
   return (
     <AppLayout>
-      <div>
-        Hello "/(auth)/accounts/"!
-        <AccountsList />
-        <Link to="/accounts/create">Create Account</Link>
-      </div>
+      <AccountIndexScreen />
     </AppLayout>
   );
 }

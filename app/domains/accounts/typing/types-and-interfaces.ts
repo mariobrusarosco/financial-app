@@ -1,9 +1,11 @@
+import { I_Broker } from '@/domains/broker/typing/types-and-interfaces';
+
 export interface I_Account {
   id: string;
   name: string;
   description?: string;
   type: T_AccountType;
-  broker_id: string;
+  broker: I_Broker;
   balance: number;
   currency: string;
   is_active: boolean;
