@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { I_CreateAccountForm } from '@/domains/accounts/typing/types-and-interfaces';
+import { I_CreateAccountForm } from '@/domains/accounts/types/types-and-interfaces';
 import { accountsApi } from '@/domains/accounts/api';
 
 export const useCreateAccount = () => {

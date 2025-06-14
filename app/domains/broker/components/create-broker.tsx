@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import type { I_Create_BrokerForm } from '@/domains/broker/typing/types-and-interfaces';
+import type { I_Create_BrokerForm } from '@/domains/broker/type/types-and-interfaces';
 import useCreateBroker from '@/domains/broker/hooks/use-create-broker';
 
 const CreateBroker = () => {

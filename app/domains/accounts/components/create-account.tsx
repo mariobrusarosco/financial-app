@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import type { I_Account, I_CreateAccountForm, T_AccountType } from '../typing/types-and-interfaces';
+import type { I_Account, I_CreateAccountForm, T_AccountType } from '../types/types-and-interfaces';
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
 import { Link } from '@tanstack/react-router';

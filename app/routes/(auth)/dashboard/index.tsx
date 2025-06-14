@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Card,
@@ -27,7 +26,7 @@ export const Route = createFileRoute('/(auth)/dashboard/')({
 
 function DashboardPage() {
   return (
-    <AppLayout>
+    <div>
       <div className="mb-6">
         <h1 className="text-3xl font-semibold">Dashboard</h1>
       </div>
@@ -79,6 +78,6 @@ function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-    </AppLayout>
+    </div>
   );
 }

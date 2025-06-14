@@ -12,10 +12,7 @@ export const creditCardApi = {
     return result;
   },
   createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
-    const response = await apiClient.post<I_CreditCardInvoiceResponse>(
-      '/credit-card-invoices',
-      data
-    );
+    const response = await apiClient.post<I_CreditCardInvoiceResponse>('/invoices', data);
     return response.data;
   },
 };

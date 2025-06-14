@@ -1,5 +1,5 @@
 import { apiClient } from '@/config/api';
-import { I_Account, I_CreateAccountForm } from '@/domains/accounts/typing/types-and-interfaces';
+import { I_Account, I_CreateAccountForm } from '@/domains/accounts/types/types-and-interfaces';
 
 const getAllAccounts = async (): Promise<I_Account[]> => {
   try {

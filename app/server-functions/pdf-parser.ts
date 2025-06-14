@@ -7,17 +7,37 @@ const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
 
 const systemPrompt = `
 You are a financial assistant. A user has provided a Nubank credit card statement (in Portuguese).
-Your job is to extract a structured and concise summary in JSON format, including:
+Your task is to extract the required information from the statement and return it in a structured JSON format.
+Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
 
-- "total_due": string
-- "due_date": string
-- "period": string
-- "min_payment": string
-- "installment_options": array of { "months": number, "total": string }
-- "transactions": array of { "date": string, "description": string, "amount": string }
-- "next_due_info": optional, includes next due amount or balance if available
+The response should be a valid JSON object with the following structure:
+{
+  "total_due": string,       // The total amount due on the credit card statement
+  "due_date": string,       // The payment due date for the statement
+  "period": string,         // The billing period of the statement
+  "min_payment": string,    // The minimum payment amount required
+  "installment_options": [  // Available installment payment options
+    {
+      "months": number,     // Number of months for the installment option
+      "total": string      // Total amount for this installment option
+    }
+  ],
+  "transactions": [        // List of transactions in the statement
+    {
+      "date": string,     // Date of the transaction
+      "description": string, // Description of the transaction
+      "amount": string,    // Amount of the transaction
+      "category": string  // Empty string if no category is found
+    }
+  ],
+  "next_due_info": {      // Optional: Information about the next payment due
+    "amount": string,     // Next payment amount due
+    "balance": string     // Current balance
+  }
+}
 
-Ignore boilerplate text and disclaimers. Return JSON only — no explanation.
+All amounts and monetary values should be returned as strings.
+Dates should be in a consistent format.
 `;
 
 export const parsePdf = createServerFn({ method: 'POST' })
@@ -56,24 +76,29 @@ export const parsePdf = createServerFn({ method: 'POST' })
     });
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-1106',
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: parseResult.text.slice(0, 12000) }, // GPT-4 input limit handling
+        {
+          role: 'user',
+          content: `Please analyze the following credit card statement text and return the information in JSON format:\n\n${parseResult.text.slice(0, 12000)}`,
+        }, // GPT-4 input limit handling
       ],
       temperature: 0.3,
+      response_format: { type: 'json_object' },
     });
 
-    const content = response.choices[0].message.content;
+    const content = response.choices[0]?.message?.content;
+
     if (!content) {
       throw new Error('Failed to parse PDF: No response from GPT');
     }
 
-    console.log('✅ GPT-4 Summary:\n', content);
-
     try {
       // Parse the JSON string from GPT response
-      return JSON.parse(content) as I_CreditCardRawInvoice;
+      const parsedData = JSON.parse(content) as I_CreditCardRawInvoice;
+      console.log('✅ Structured GPT Response:\n', parsedData);
+      return parsedData;
     } catch (error) {
       console.error('Failed to parse GPT response:', error);
       throw new Error('Failed to parse PDF: Invalid response format');

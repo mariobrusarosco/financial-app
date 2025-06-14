@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { accountsApi } from '@/domains/accounts/api';
-import { I_Account } from '@/domains/accounts/typing/types-and-interfaces';
+import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 
 const GET_ALL_ACTIVE_ACCOUNTS_QUERY_KEY = () => ['accounts', 'active'];
 const GET_ALL_ACCOUNTS_QUERY_KEY = () => ['accounts', 'all'];

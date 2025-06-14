@@ -1,5 +1,5 @@
 import { apiClient } from '@/config/api';
-import { I_Broker, I_Create_BrokerForm } from '@/domains/broker/typing/types-and-interfaces';
+import { I_Broker, I_Create_BrokerForm } from '@/domains/broker/type/types-and-interfaces';
 
 const createBroker = async (brokerFormValues: I_Create_BrokerForm): Promise<I_Broker> => {
   const response = await apiClient.post<I_Broker>('/brokers', brokerFormValues);

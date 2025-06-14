@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { AccountIndexScreen } from '@/domains/accounts/screens/index';
 
 export const Route = createFileRoute('/(auth)/accounts/')({
@@ -7,9 +6,5 @@ export const Route = createFileRoute('/(auth)/accounts/')({
 });
 
 function RouteComponent() {
-  return (
-    <AppLayout>
-      <AccountIndexScreen />
-    </AppLayout>
-  );
+  return <AccountIndexScreen />;
 }
