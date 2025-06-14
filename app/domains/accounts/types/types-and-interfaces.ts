@@ -1,4 +1,4 @@
-import { I_Broker } from '@/domains/broker/typing/types-and-interfaces';
+import { I_Broker } from '@/domains/broker/type/types-and-interfaces';
 
 export interface I_Account {
   id: string;

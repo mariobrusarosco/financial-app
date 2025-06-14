@@ -17,9 +17,9 @@ export interface I_CreditCardInvoiceResponse {
 }
 
 export interface I_CreditCardInvoiceRequest {
-  creditCardId: string;
-  brokerId: string;
-  rawInvoice?: I_CreditCardRawInvoice;
+  credit_card_id: string;
+  broker_id: string;
+  raw_invoice: I_CreditCardRawInvoice;
 }
 
 export interface I_CreditCardTransaction {
