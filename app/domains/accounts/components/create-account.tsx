@@ -1,26 +1,37 @@
 import { useForm } from '@tanstack/react-form';
-import type { I_CreateAccountForm, T_AccountType } from '../typing/types-and-interfaces';
+import type { I_Account, I_CreateAccountForm, T_AccountType } from '../typing/types-and-interfaces';
+import useBrokers from '@/domains/broker/hooks/use-brokers';
+import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
+import { Link } from '@tanstack/react-router';
 
 const CreateAccount = () => {
+  const { data: brokers, isFetching } = useBrokers();
+  const { mutate: createAccount } = useCreateAccount();
+
   const form = useForm({
     defaultValues: {
       name: '',
       description: '',
+      broker_id: '',
       type: 'checking',
       balance: 0,
       currency: 'USD',
     } as I_CreateAccountForm,
     onSubmit: ({ value }) => {
-      // Handle form submission
-      console.log('Form submitted:', value);
-      alert(JSON.stringify(value, null, 2));
+      createAccount(value as I_Account);
     },
   });
 
+  if (isFetching) return <div>Loading...</div>;
+
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Create Account</h1>
-
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">Create Account</h1>
+        <Link to="/accounts" className="text-gray-500 hover:text-gray-700">
+          <p className="text-sm">Back</p>
+        </Link>
+      </div>
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -72,6 +83,31 @@ const CreateAccount = () => {
                 placeholder="Enter description (optional)"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="broker_id"
+          children={field => (
+            <div className="space-y-2">
+              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
+                Broker:
+              </label>
+              <select
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={e => field.handleChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                {brokers?.map(broker => (
+                  <option key={broker.id} value={broker.id}>
+                    {broker.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
         />
@@ -146,10 +182,8 @@ const CreateAccount = () => {
                 onChange={e => field.handleChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
+                <option value="BRL">BRL</option>
                 <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="JPY">JPY</option>
               </select>
               {field.state.meta.errors.length > 0 && (
                 <em className="text-red-500 text-sm">{field.state.meta.errors.join(', ')}</em>

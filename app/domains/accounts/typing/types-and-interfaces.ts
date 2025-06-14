@@ -3,6 +3,7 @@ export interface I_Account {
   name: string;
   description?: string;
   type: T_AccountType;
+  broker_id: string;
   balance: number;
   currency: string;
   is_active: boolean;
@@ -11,6 +12,7 @@ export interface I_Account {
 export interface I_CreateAccountForm {
   name: string;
   description?: string;
+  broker_id: string;
   type: T_AccountType;
   balance: number;
   currency: string;
