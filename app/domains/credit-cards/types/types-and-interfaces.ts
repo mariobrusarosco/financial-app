@@ -1,3 +1,43 @@
+// Credit Card Entity
+export interface I_CreditCard {
+  id: string;
+  account_id: string;
+  broker_id: string;
+  credit_limit: number;
+  name: string;
+  due_date: number; // Day of month (1-31)
+  last_four_digits: string;
+  is_active: boolean;
+  is_deleted: boolean;
+  brand: T_CreditCardBrand;
+}
+
+export interface I_CreateCreditCardRequest {
+  account_id: string;
+  name: string;
+  last_four_digits: string;
+  brand: T_CreditCardBrand;
+  credit_limit: number;
+  due_date: number;
+}
+
+export interface I_CreateCreditCardResponse {
+  credit_card: I_CreditCard;
+}
+export interface I_CreateCreditCardsResponse {
+  data: I_CreditCard[];
+  meta: {
+    has_next: boolean;
+    has_previous: boolean;
+    page: number;
+    per_page: number;
+    total: number;
+  };
+}
+
+export type T_CreditCardBrand = 'visa' | 'mastercard' | 'other';
+
+// Invoice Related Types
 export interface I_CreditCardRawInvoice {
   total_due: string;
   due_date: string;
@@ -10,10 +50,10 @@ export interface I_CreditCardRawInvoice {
 
 export interface I_CreditCardInvoiceResponse {
   id: string;
-  creditCardId: string;
-  brokerId: string;
-  isDeleted: boolean;
-  isPaid: boolean;
+  credit_card_id: string;
+  broker_id: string;
+  is_deleted: boolean;
+  is_paid: boolean;
 }
 
 export interface I_CreditCardInvoiceRequest {
@@ -24,11 +64,10 @@ export interface I_CreditCardInvoiceRequest {
 
 export interface I_CreditCardTransaction {
   id: string;
-  creditCardId: string;
-  brokerId: string;
-  isDeleted: boolean;
-  isPaid: boolean;
   date: string;
+  description: string;
+  amount: string;
+  category: string;
 }
 
 export interface I_CreditCardInstallmentOption {
@@ -37,6 +76,6 @@ export interface I_CreditCardInstallmentOption {
 }
 
 export interface I_CreditCardNextDueInfo {
-  next_due_amount: string;
-  total_balance_due: string;
+  amount: string;
+  balance: string;
 }

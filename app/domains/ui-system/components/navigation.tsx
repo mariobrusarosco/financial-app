@@ -61,8 +61,8 @@ export const Navigation = () => {
         <div className="flex items-center flex-shrink-0 px-4">
           <Link to="/" className="flex items-center">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center">
+                <img src="/wb.png" alt="Better Call Buffet" className="w-10 h-10" />
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">Better Call Buffet</span>
             </div>

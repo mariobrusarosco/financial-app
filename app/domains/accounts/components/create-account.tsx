@@ -127,9 +127,9 @@ const CreateAccount = () => {
                 onChange={e => field.handleChange(e.target.value as T_AccountType)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="checking">Checking</option>
+                <option value="cash">Cash</option>
                 <option value="savings">Savings</option>
-                <option value="credit_card">Credit Card</option>
+                <option value="credit">Credit Card</option>
                 <option value="investment">Investment</option>
               </select>
             </div>

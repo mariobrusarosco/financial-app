@@ -1,9 +1,15 @@
 import { useAccount } from '@/domains/accounts/hooks/use-account';
 import { Link, useParams } from '@tanstack/react-router';
+import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 
 export const AccountScreen = () => {
   const { slug } = useParams({ from: '/(auth)/accounts/$slug/' });
   const { data: account, isLoading, error } = useAccount(slug);
+  const {
+    data: creditCards,
+    isLoading: isLoadingCreditCards,
+    error: errorCreditCards,
+  } = useCreditCards(account?.id);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -33,11 +39,27 @@ export const AccountScreen = () => {
           Credit Card
         </Link>
       </div>
+
       <div className="flex flex-col gap-2">
         <p className="text-sm text-gray-500">Balance: {account?.balance}</p>
         <p className="text-sm text-gray-500">Currency: {account?.currency}</p>
         <p className="text-sm text-gray-500">Type: {account?.type}</p>
         <p className="text-sm text-gray-500">Broker: {account?.broker?.name}</p>
+      </div>
+
+      <h2 className="text-lg font-bold mb-2 mt-4">Credit Cards</h2>
+      <div className="flex flex-col gap-2">
+        {creditCards?.data.map(creditCard => (
+          <Link
+            to="/accounts/$slug/credit-card/$creditCardId"
+            params={{ slug, creditCardId: creditCard.id }}
+            key={creditCard.id}
+            className="text-blue-500 hover:text-blue-700"
+          >
+            <p>{creditCard.name}</p>
+            <p>{creditCard.brand}</p>
+          </Link>
+        ))}
       </div>
     </div>
   );
