@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/domains/ui-system/co
 import { Button } from '@/domains/ui-system/components/button';
 import { ShoppingCart, Package, Coffee, DollarSign, ArrowRight } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
+import { Link } from '@tanstack/react-router';
 
 interface Transaction {
   id: string;
@@ -103,10 +104,10 @@ export function RecentTransactions() {
             </div>
           ))}
           <Button variant="outline" className="w-full" asChild>
-            <a href="/transactions">
+            <Link to="/transactions">
               View All Transactions
               <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
           </Button>
         </div>
       </CardContent>

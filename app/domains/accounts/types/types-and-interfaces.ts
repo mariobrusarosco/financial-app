@@ -1,6 +1,6 @@
 import { I_Broker } from '@/domains/broker/type/types-and-interfaces';
 
-export type T_AccountType = 'checking' | 'savings' | 'credit' | 'investment';
+export type T_AccountType = 'savings' | 'credit' | 'investment';
 
 export interface I_Account {
   id: string;
@@ -20,5 +20,7 @@ export interface I_CreateAccountForm {
   broker_id: string;
   type: T_AccountType;
   balance: number;
-  currency: string;
+  currency: T_AccountCurrency;
 }
+
+export type T_AccountCurrency = 'BRL' | 'USD';

@@ -1,5 +1,10 @@
 import { useForm } from '@tanstack/react-form';
-import type { I_Account, I_CreateAccountForm, T_AccountType } from '../types/types-and-interfaces';
+import type {
+  I_Account,
+  I_CreateAccountForm,
+  T_AccountCurrency,
+  T_AccountType,
+} from '../types/types-and-interfaces';
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
 import { Link } from '@tanstack/react-router';
@@ -30,9 +35,9 @@ const CreateAccount = () => {
       name: '',
       description: '',
       broker_id: '',
-      type: 'checking',
+      type: 'savings',
       balance: 0,
-      currency: 'USD',
+      currency: 'BRL',
     } as I_CreateAccountForm,
     onSubmit: ({ value }) => {
       createAccount(value);
@@ -206,7 +211,7 @@ const CreateAccount = () => {
                   </label>
                   <Select
                     value={field.state.value}
-                    onValueChange={value => field.handleChange(value)}
+                    onValueChange={value => field.handleChange(value as T_AccountCurrency)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select currency" />
