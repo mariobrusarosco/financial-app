@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import appCss from '@/domains/ui-system/styles/app.css?url';
+import { ThemeProvider } from '@/domains/ui-system/components/theme-provider';
 
 const queryClient = new QueryClient();
 
@@ -37,9 +38,11 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

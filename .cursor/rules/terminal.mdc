@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always run your commands using Git Bash. 
+
+This Computer uses windows 11 and already has Git Bash installed.

@@ -1,6 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router';
 import { cn } from '@/domains/ui-system/utils/index';
 import { Button } from '@/domains/ui-system/components/button';
+import { ModeToggle } from '@/domains/ui-system/components/mode-toggle';
 import {
   LayoutDashboard,
   CreditCard,
@@ -97,6 +98,9 @@ export const Navigation = () => {
               );
             })}
           </nav>
+          <div className="px-4 mt-4">
+            <ModeToggle />
+          </div>
         </div>
       </nav>
 
@@ -111,14 +115,17 @@ export const Navigation = () => {
             <span className="ml-2 text-lg font-bold text-gray-900">Better Call Buffet</span>
           </Link>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="h-10 w-10"
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="h-10 w-10"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile menu overlay */}
