@@ -3,6 +3,7 @@ import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-r
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import appCss from '@/domains/ui-system/styles/app.css?url';
 import { ThemeProvider } from '@/domains/ui-system/components/theme-provider';
+import { Toaster } from '@/domains/ui-system/components/sonner';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function RootComponent() {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <RootDocument>
           <Outlet />
+          <Toaster />
         </RootDocument>
       </ThemeProvider>
     </QueryClientProvider>
