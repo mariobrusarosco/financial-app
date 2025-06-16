@@ -1,5 +1,7 @@
 import { I_Broker } from '@/domains/broker/type/types-and-interfaces';
 
+export type T_AccountType = 'checking' | 'savings' | 'credit' | 'investment';
+
 export interface I_Account {
   id: string;
   name: string;
@@ -9,6 +11,7 @@ export interface I_Account {
   balance: number;
   currency: string;
   is_active: boolean;
+  availableCredit?: number; // Optional field for credit accounts
 }
 
 export interface I_CreateAccountForm {
@@ -19,5 +22,3 @@ export interface I_CreateAccountForm {
   balance: number;
   currency: string;
 }
-
-export type T_AccountType = 'checking' | 'savings' | 'credit_card' | 'investment';
