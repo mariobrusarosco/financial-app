@@ -3,6 +3,23 @@ import type { I_Account, I_CreateAccountForm, T_AccountType } from '../types/typ
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
 import { Link } from '@tanstack/react-router';
+import { Button } from '@/domains/ui-system/components/button';
+import { Input } from '@/domains/ui-system/components/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/domains/ui-system/components/select';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/domains/ui-system/components/card';
+import { ArrowLeft } from 'lucide-react';
 
 const CreateAccount = () => {
   const { data: brokers, isFetching } = useBrokers();
@@ -22,189 +39,201 @@ const CreateAccount = () => {
     },
   });
 
-  if (isFetching) return <div>Loading...</div>;
+  if (isFetching)
+    return (
+      <div className="flex items-center justify-center p-8">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">Create Account</h1>
-        <Link to="/accounts" className="text-gray-500 hover:text-gray-700">
-          <p className="text-sm">Back</p>
-        </Link>
-      </div>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-        className="space-y-4"
-      >
-        <form.Field
-          name="name"
-          validators={{
-            onChange: ({ value }) => (!value ? 'Account name is required' : undefined),
-          }}
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Account Name:
-              </label>
-              <input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.value)}
-                type="text"
-                placeholder="Enter account name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              {field.state.meta.errors.length > 0 && (
-                <em className="text-red-500 text-sm">{field.state.meta.errors.join(', ')}</em>
+    <div className="max-w-lg mx-auto p-6">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Link to="/accounts">
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div>
+              <CardTitle className="text-2xl">Create Account</CardTitle>
+              <CardDescription>
+                Add a new financial account to track your investments
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+            className="space-y-6"
+          >
+            <form.Field
+              name="name"
+              validators={{
+                onChange: ({ value }) => (!value ? 'Account name is required' : undefined),
+              }}
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Account Name:
+                  </label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.value)}
+                    placeholder="Enter account name"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-        />
+            />
 
-        <form.Field
-          name="description"
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Description:
-              </label>
-              <input
-                id={field.name}
-                name={field.name}
-                value={field.state.value || ''}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.value)}
-                type="text"
-                placeholder="Enter description (optional)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          )}
-        />
-
-        <form.Field
-          name="broker_id"
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Broker:
-              </label>
-              <select
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {brokers?.map(broker => (
-                  <option key={broker.id} value={broker.id}>
-                    {broker.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        />
-
-        <form.Field
-          name="type"
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Account Type:
-              </label>
-              <select
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.value as T_AccountType)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="cash">Cash</option>
-                <option value="savings">Savings</option>
-                <option value="credit">Credit Card</option>
-                <option value="investment">Investment</option>
-              </select>
-            </div>
-          )}
-        />
-
-        <form.Field
-          name="balance"
-          validators={{
-            onChange: ({ value }) => (value < 0 ? 'Balance cannot be negative' : undefined),
-          }}
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Initial Balance:
-              </label>
-              <input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              {field.state.meta.errors.length > 0 && (
-                <em className="text-red-500 text-sm">{field.state.meta.errors.join(', ')}</em>
+            <form.Field
+              name="description"
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Description:
+                  </label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.value)}
+                    placeholder="Enter description (optional)"
+                  />
+                </div>
               )}
-            </div>
-          )}
-        />
+            />
 
-        <form.Field
-          name="currency"
-          validators={{
-            onChange: ({ value }) => (!value ? 'Currency is required' : undefined),
-          }}
-          children={field => (
-            <div className="space-y-2">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                Currency:
-              </label>
-              <select
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="BRL">BRL</option>
-                <option value="USD">USD</option>
-              </select>
-              {field.state.meta.errors.length > 0 && (
-                <em className="text-red-500 text-sm">{field.state.meta.errors.join(', ')}</em>
+            <form.Field
+              name="broker_id"
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Broker:
+                  </label>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={value => field.handleChange(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a broker" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {brokers?.map(broker => (
+                        <SelectItem key={broker.id} value={broker.id}>
+                          {broker.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               )}
-            </div>
-          )}
-        />
+            />
 
-        <form.Subscribe
-          selector={state => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isSubmitting ? 'Creating...' : 'Create Account'}
-            </button>
-          )}
-        />
-      </form>
+            <form.Field
+              name="type"
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Account Type:
+                  </label>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={value => field.handleChange(value as T_AccountType)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select account type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cash">Cash</SelectItem>
+                      <SelectItem value="savings">Savings</SelectItem>
+                      <SelectItem value="credit">Credit Card</SelectItem>
+                      <SelectItem value="investment">Investment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            />
+
+            <form.Field
+              name="balance"
+              validators={{
+                onChange: ({ value }) => (value < 0 ? 'Balance cannot be negative' : undefined),
+              }}
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Initial Balance:
+                  </label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                  )}
+                </div>
+              )}
+            />
+
+            <form.Field
+              name="currency"
+              validators={{
+                onChange: ({ value }) => (!value ? 'Currency is required' : undefined),
+              }}
+              children={field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Currency:
+                  </label>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={value => field.handleChange(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="BRL">BRL</SelectItem>
+                      <SelectItem value="USD">USD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                  )}
+                </div>
+              )}
+            />
+
+            <form.Subscribe
+              selector={state => [state.canSubmit, state.isSubmitting]}
+              children={([canSubmit, isSubmitting]) => (
+                <Button type="submit" disabled={!canSubmit} className="w-full" size="lg">
+                  {isSubmitting ? 'Creating...' : 'Create Account'}
+                </Button>
+              )}
+            />
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
