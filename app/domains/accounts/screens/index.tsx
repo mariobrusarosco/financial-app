@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 
 export const AccountIndexScreen = () => {
   return (
-    <div className="p-6 space-y-8">
+    <div data-ui="accounts-index-screen" className="p-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Accounts</h1>
         <Button asChild>

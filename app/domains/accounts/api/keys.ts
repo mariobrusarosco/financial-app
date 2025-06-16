@@ -1,0 +1,3 @@
+export const GET_ACCOUNT_QUERY_KEY = (id: string) => ['accounts', 'account', id];
+export const GET_ALL_ACTIVE_ACCOUNTS_QUERY_KEY = () => ['accounts', 'active'];
+export const GET_ALL_ACCOUNTS_QUERY_KEY = () => ['accounts', 'all'];
