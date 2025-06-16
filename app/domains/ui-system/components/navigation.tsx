@@ -10,6 +10,7 @@ import {
   Settings,
   Menu,
   X,
+  Receipt,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -29,6 +30,11 @@ const navigationItems: NavigationItem[] = [
     label: 'Accounts',
     href: '/accounts',
     icon: CreditCard,
+  },
+  {
+    label: 'Transactions',
+    href: '/transactions',
+    icon: Receipt,
   },
   {
     label: 'Brokers',

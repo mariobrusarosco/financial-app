@@ -1,0 +1,99 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+### Route Import Pattern
+
+**Layout Routes (`route.tsx`):**
+- MUST import layout components from `@/domains/{domain}/layouts/{layout-name}`
+- Layout components handle shared UI structure, navigation, and context
+- Pass route parameters as props to layout components
+
+**Screen Routes (`index.tsx`, `{param}/index.tsx`):**
+- MUST import screen components from `@/domains/{domain}/screens/{screen-name}`
+- Screen components contain specific page content and business logic
+- Keep route files minimal - just extract params and render screen
+
+### File Naming Conventions
+
+**Layouts:**
+- Use descriptive names: `account-layout.tsx`, `dashboard-layout.tsx`
+- Export as named export: `export const AccountLayout = () => {}`
+
+**Screens:**
+- Use descriptive names: `account-overview.tsx`, `account-statements.tsx`
+- Export as named export: `export const AccountOverviewScreen = () => {}`
+
+### Example Implementation
+
+**Route File (`app/routes/(auth)/accounts/$slug/route.tsx`):**
+```typescript
+import { createFileRoute } from '@tanstack/react-router';
+import { AccountLayout } from '@/domains/accounts/layouts/account-layout';
+
+export const Route = createFileRoute('/(auth)/accounts/$slug')({
+  component: AccountLayoutComponent,
+});
+
+function AccountLayoutComponent() {
+  const { slug } = Route.useParams();
+  return <AccountLayout slug={slug} />;
+}
+```
+
+**Screen File (`app/routes/(auth)/accounts/$slug/index.tsx`):**
+```typescript
+import { createFileRoute } from '@tanstack/react-router';
+import { AccountOverviewScreen } from '@/domains/accounts/screens/account-overview';
+
+export const Route = createFileRoute('/(auth)/accounts/$slug/')({
+  component: AccountOverviewComponent,
+});
+
+function AccountOverviewComponent() {
+  return <AccountOverviewScreen />;
+}
+```
+
+### Layout Component Pattern
+
+**Layout components (`app/domains/{domain}/layouts/{layout-name}.tsx`):**
+- Accept route parameters as props
+- Handle shared state and data fetching
+- Provide navigation structure (tabs, breadcrumbs)
+- Use `<Outlet />` for nested route content
+- Manage loading and error states
+
+### Screen Component Pattern
+
+**Screen components (`app/domains/{domain}/screens/{screen-name}.tsx`):**
+- Focus on specific page content
+- Self-contained with their own hooks and state
+- No direct route dependencies
+- Reusable across different route structures
+
+### Benefits of This Pattern
+
+1. **Clear Separation**: Routes handle routing, layouts handle structure, screens handle content
+2. **Reusability**: Components can be reused across different route configurations
+3. **Testability**: Screen components are easily testable in isolation
+4. **Maintainability**: Changes to layouts affect all related routes automatically
+5. **Scalability**: Easy to add new screens and layouts following the same pattern
+
+### When Creating New Features
+
+1. **Create Layout** in `app/domains/{domain}/layouts/` if shared structure needed
+2. **Create Screens** in `app/domains/{domain}/screens/` for each page
+3. **Update Routes** to import from layouts and screens folders
+4. **Follow Naming**: Use descriptive, kebab-case file names
+
+### Path Aliases Usage
+
+- Always use `@/domains/{domain}/layouts/{component}` for layout imports
+- Always use `@/domains/{domain}/screens/{component}` for screen imports
+- Never use relative imports (`../`, `./`) between domains
+
+
+This pattern ensures consistent, maintainable, and scalable code organization across the entire application.

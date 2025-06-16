@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as authRouteImport } from './routes/(auth)/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as authTransactionsIndexImport } from './routes/(auth)/transactions/index'
 import { Route as authSettingsIndexImport } from './routes/(auth)/settings/index'
 import { Route as authDashboardIndexImport } from './routes/(auth)/dashboard/index'
 import { Route as authBrokersIndexImport } from './routes/(auth)/brokers/index'
@@ -37,6 +38,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const authTransactionsIndexRoute = authTransactionsIndexImport.update({
+  id: '/transactions/',
+  path: '/transactions/',
+  getParentRoute: () => authRouteRoute,
 } as any)
 
 const authSettingsIndexRoute = authSettingsIndexImport.update({
@@ -168,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authSettingsIndexImport
       parentRoute: typeof authRouteImport
     }
+    '/(auth)/transactions/': {
+      id: '/(auth)/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof authTransactionsIndexImport
+      parentRoute: typeof authRouteImport
+    }
     '/(auth)/accounts/$slug/': {
       id: '/(auth)/accounts/$slug/'
       path: '/'
@@ -251,6 +265,7 @@ interface authRouteRouteChildren {
   authBrokersIndexRoute: typeof authBrokersIndexRoute
   authDashboardIndexRoute: typeof authDashboardIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
+  authTransactionsIndexRoute: typeof authTransactionsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
   authBrokersCreateIndexRoute: typeof authBrokersCreateIndexRoute
 }
@@ -261,6 +276,7 @@ const authRouteRouteChildren: authRouteRouteChildren = {
   authBrokersIndexRoute: authBrokersIndexRoute,
   authDashboardIndexRoute: authDashboardIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
+  authTransactionsIndexRoute: authTransactionsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
   authBrokersCreateIndexRoute: authBrokersCreateIndexRoute,
 }
@@ -276,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/settings': typeof authSettingsIndexRoute
+  '/transactions': typeof authTransactionsIndexRoute
   '/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
@@ -291,6 +308,7 @@ export interface FileRoutesByTo {
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/settings': typeof authSettingsIndexRoute
+  '/transactions': typeof authTransactionsIndexRoute
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
@@ -309,6 +327,7 @@ export interface FileRoutesById {
   '/(auth)/brokers/': typeof authBrokersIndexRoute
   '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
+  '/(auth)/transactions/': typeof authTransactionsIndexRoute
   '/(auth)/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
   '/(auth)/brokers/create/': typeof authBrokersCreateIndexRoute
@@ -327,6 +346,7 @@ export interface FileRouteTypes {
     | '/brokers'
     | '/dashboard'
     | '/settings'
+    | '/transactions'
     | '/accounts/$slug/'
     | '/accounts/create'
     | '/brokers/create'
@@ -341,6 +361,7 @@ export interface FileRouteTypes {
     | '/brokers'
     | '/dashboard'
     | '/settings'
+    | '/transactions'
     | '/accounts/$slug'
     | '/accounts/create'
     | '/brokers/create'
@@ -357,6 +378,7 @@ export interface FileRouteTypes {
     | '/(auth)/brokers/'
     | '/(auth)/dashboard/'
     | '/(auth)/settings/'
+    | '/(auth)/transactions/'
     | '/(auth)/accounts/$slug/'
     | '/(auth)/accounts/create/'
     | '/(auth)/brokers/create/'
@@ -402,6 +424,7 @@ export const routeTree = rootRoute
         "/(auth)/brokers/",
         "/(auth)/dashboard/",
         "/(auth)/settings/",
+        "/(auth)/transactions/",
         "/(auth)/accounts/create/",
         "/(auth)/brokers/create/"
       ]
@@ -431,6 +454,10 @@ export const routeTree = rootRoute
     },
     "/(auth)/settings/": {
       "filePath": "(auth)/settings/index.tsx",
+      "parent": "/(auth)"
+    },
+    "/(auth)/transactions/": {
+      "filePath": "(auth)/transactions/index.tsx",
       "parent": "/(auth)"
     },
     "/(auth)/accounts/$slug/": {
