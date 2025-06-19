@@ -6,7 +6,7 @@ export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
 });
 
 function CreditCardIndexRouteComponent() {
-  const { slug } = Route.useParams();
+  const params = Route.useParams();
 
-  return <AccountCreditCardsScreen slug={slug} />;
+  return <AccountCreditCardsScreen params={params} />;
 }

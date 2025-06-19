@@ -2,8 +2,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import type { I_CreateCreditCardRequest } from '@/domains/credit-cards/types/types-and-interfaces';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
+import { GET_ALL_CREDIT_CARDS_QUERY_KEY } from '@/domains/accounts/api/keys';
 
-export const useCreateCreditCard = () => {
+export const useCreateCreditCard = ({ accountId }: { accountId: string }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -12,18 +13,18 @@ export const useCreateCreditCard = () => {
       const response = await creditCardApi.createCreditCard(data);
       return response;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: data => {
       console.log('Credit card created successfully:', data);
 
       // Invalidate related queries
       queryClient.invalidateQueries({
-        queryKey: ['accounts', variables.account_id, 'credit-cards'],
+        queryKey: GET_ALL_CREDIT_CARDS_QUERY_KEY(accountId),
       });
 
       // Navigate back to the account's credit card page
       navigate({
         to: '/accounts/$slug/credit-card',
-        params: { slug: variables.account_id },
+        params: { slug: accountId },
       });
     },
     onError: error => {

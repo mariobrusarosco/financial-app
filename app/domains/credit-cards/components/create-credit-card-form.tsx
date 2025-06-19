@@ -24,7 +24,7 @@ interface Props {
 }
 
 export const CreateCreditCardForm = ({ accountId }: Props) => {
-  const { createCreditCard, isLoading, error } = useCreateCreditCard();
+  const { createCreditCard, isLoading, error } = useCreateCreditCard({ accountId });
 
   const form = useForm({
     defaultValues: {

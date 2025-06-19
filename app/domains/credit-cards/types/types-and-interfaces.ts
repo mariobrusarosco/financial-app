@@ -13,7 +13,6 @@ export interface I_CreditCard {
 }
 
 export interface I_CreateCreditCardRequest {
-  account_id: string;
   name: string;
   last_four_digits: string;
   brand: T_CreditCardBrand;
@@ -58,7 +57,6 @@ export interface I_CreditCardInvoiceResponse {
 
 export interface I_CreditCardInvoiceRequest {
   credit_card_id: string;
-  broker_id: string;
   raw_invoice: I_CreditCardRawInvoice;
 }
 

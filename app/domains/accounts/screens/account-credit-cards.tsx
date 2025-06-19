@@ -11,15 +11,17 @@ import { Plus, CreditCard } from 'lucide-react';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 
 interface AccountCreditCardsScreenProps {
-  slug: string;
+  params: {
+    slug: string;
+  };
 }
 
-export const AccountCreditCardsScreen = ({ slug }: AccountCreditCardsScreenProps) => {
+export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenProps) => {
   const {
     data: creditCards,
     isLoading: isLoadingCreditCards,
     error: errorCreditCards,
-  } = useCreditCards(slug);
+  } = useCreditCards(params.slug);
 
   if (isLoadingCreditCards) {
     return (
@@ -47,7 +49,7 @@ export const AccountCreditCardsScreen = ({ slug }: AccountCreditCardsScreenProps
               <CardTitle>Credit Cards</CardTitle>
               <CardDescription>Manage credit cards associated with this account</CardDescription>
             </div>
-            <Link to="/accounts/$slug/credit-card/new" params={{ slug }}>
+            <Link to="/accounts/$slug/credit-card/new" params={{ slug: params.slug }}>
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
                 Add Credit Card
@@ -61,7 +63,7 @@ export const AccountCreditCardsScreen = ({ slug }: AccountCreditCardsScreenProps
               {creditCards.data.map(creditCard => (
                 <Link
                   to="/accounts/$slug/credit-card/$creditCardId"
-                  params={{ slug, creditCardId: creditCard.id }}
+                  params={{ slug: params.slug, creditCardId: creditCard.id }}
                   key={creditCard.id}
                   className="block"
                 >
@@ -84,7 +86,7 @@ export const AccountCreditCardsScreen = ({ slug }: AccountCreditCardsScreenProps
               <p className="text-muted-foreground mb-4">
                 Add your first credit card to start tracking expenses and statements
               </p>
-              <Link to="/accounts/$slug/credit-card/new" params={{ slug }}>
+              <Link to="/accounts/$slug/credit-card/new" params={{ slug: params.slug }}>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Credit Card
@@ -92,6 +94,18 @@ export const AccountCreditCardsScreen = ({ slug }: AccountCreditCardsScreenProps
               </Link>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Credit Card Invoices</CardTitle>
+          <CardDescription>Previously uploaded credit card invoices</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <h3 className="text-lg font-semibold mb-2">No invoices yet</h3>
+          </div>
         </CardContent>
       </Card>
     </div>
