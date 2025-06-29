@@ -16,8 +16,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.17.0'
           cache: 'yarn'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set Yarn version
+        run: corepack prepare yarn@3.8.7 --activate
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -42,4 +48,4 @@ jobs:
         with:
           name: build
           path: dist
-          retention-days: 7 
+          retention-days: 7

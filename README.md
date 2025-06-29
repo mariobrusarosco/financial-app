@@ -49,14 +49,14 @@ The following diagram illustrates the conceptual architecture of the Better Call
 
 **Diagram Explanation:**
 
-*   **User Interface (Browser):** This area depicts the client-side running in the browser.
-    *   **Interactive UI Elements (Rendered in Browser):** This represents the actual user interface that the user sees and interacts with.
-        *   It's **Built with: Shadcn/ui (Base Components)**, providing the foundational, unstyled, and accessible UI building blocks.
-        *   And it's **Styled by: Tailwind CSS (Utility Classes)**, applying styles to these components and other elements.
-        *   **Custom UI in: `app/domains/ui-system`**: This directory is where application-specific custom components, themes, and global styles are developed, leveraging Shadcn/ui and Tailwind CSS.
-    *   **TanStack Router (Client Navigation, Link Interception):** Manages client-side page transitions and URL updates, working in concert with these UI elements.
-*   **Application Logic (Server-Side):** This is the backend part, powered by TanStack Start. It processes initial requests, performs server-side rendering (SSR), handles data fetching via loaders in `app/routes/` (which define page structure and can contain server functions), and executes server functions. During development, it interfaces with MSW (Mock Service Worker) for API mocking.
-*   **Interaction Flow:** An initial page load involves the server rendering the page and sending HTML to the client. The client then hydrates this HTML, making it interactive. Subsequent navigation or data operations can be handled client-side, or involve calls to server functions, all orchestrated by TanStack Router and TanStack Start.
+- **User Interface (Browser):** This area depicts the client-side running in the browser.
+  - **Interactive UI Elements (Rendered in Browser):** This represents the actual user interface that the user sees and interacts with.
+    - It's **Built with: Shadcn/ui (Base Components)**, providing the foundational, unstyled, and accessible UI building blocks.
+    - And it's **Styled by: Tailwind CSS (Utility Classes)**, applying styles to these components and other elements.
+    - **Custom UI in: `app/domains/ui-system`**: This directory is where application-specific custom components, themes, and global styles are developed, leveraging Shadcn/ui and Tailwind CSS.
+  - **TanStack Router (Client Navigation, Link Interception):** Manages client-side page transitions and URL updates, working in concert with these UI elements.
+- **Application Logic (Server-Side):** This is the backend part, powered by TanStack Start. It processes initial requests, performs server-side rendering (SSR), handles data fetching via loaders in `app/routes/` (which define page structure and can contain server functions), and executes server functions. During development, it interfaces with MSW (Mock Service Worker) for API mocking.
+- **Interaction Flow:** An initial page load involves the server rendering the page and sending HTML to the client. The client then hydrates this HTML, making it interactive. Subsequent navigation or data operations can be handled client-side, or involve calls to server functions, all orchestrated by TanStack Router and TanStack Start.
 
 ### Key Features (Planned)
 
@@ -87,10 +87,10 @@ All project documentation is organized in the `docs` folder:
 
 ## Development Setup
 
-### Prerequisites
+### 📋 Recommended Versions
 
-- Node.js (latest LTS version)
-- Yarn
+- **Node.js**: `22.17.0` - For stable native fetch, latest ESM features, and security patches
+- **Yarn**: `3.8.7` - For consistent CI/CD, modern workspaces, and reproducible builds
 
 ### Installation
 
@@ -137,4 +137,4 @@ Before contributing to this project, please read through the relevant ADRs and p
 
 ## License
 
-[License information will be added here] 
+[License information will be added here]
