@@ -19,12 +19,6 @@ jobs:
           node-version: '22.17.0'
           cache: 'yarn'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Set Yarn version
-        run: corepack prepare yarn@3.8.7 --activate
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
