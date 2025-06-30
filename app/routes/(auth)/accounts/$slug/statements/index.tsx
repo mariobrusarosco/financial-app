@@ -6,7 +6,5 @@ export const Route = createFileRoute('/(auth)/accounts/$slug/statements/')({
 });
 
 function StatementsRouteComponent() {
-  const { slug } = Route.useParams();
-
   return <AccountStatementsScreen />;
 }

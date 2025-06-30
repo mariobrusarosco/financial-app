@@ -7,7 +7,7 @@ import type { I_CreditCardTransaction } from '@/domains/credit-cards/types/types
 export const convertCreditCardTransactionsToEditableFormat = (
   creditCardTransactions: I_CreditCardTransaction[],
   accountId: string,
-  brokerId: string = 'broker-001'
+  brokerId = 'broker-001'
 ): I_Transaction[] => {
   return creditCardTransactions.map((transaction, index) => ({
     id: `cc-txn-${Date.now()}-${index}`, // Generate unique ID

@@ -35,7 +35,7 @@ const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> =
 const getAccount = async (id: string): Promise<I_Account> => {
   try {
     const response = await apiClient.get<I_Account>(`/accounts/${id}`);
-    return response.data as I_Account;
+    return response.data;
   } catch (error) {
     console.error('Error fetching account:', error);
     throw error;

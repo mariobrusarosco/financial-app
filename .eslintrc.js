@@ -29,22 +29,25 @@ module.exports = {
   rules: {
     // Import sorting
     'import/order': 'off', // We'll handle this with Prettier if needed
-    
+
     // React
     'react/react-in-jsx-scope': 'off', // Not needed in React 17+
     'react/prop-types': 'off', // We use TypeScript for prop validation
-    
+
     // TypeScript
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': ['warn', {
-      argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_',
-    }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
     '@typescript-eslint/no-explicit-any': 'warn',
-    
+
     // Prettier
     'prettier/prettier': 'warn',
-    
+
     // General
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-debugger': 'warn',
@@ -61,4 +64,4 @@ module.exports = {
       },
     },
   ],
-}; 
+};

@@ -1,24 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Button } from '@/domains/ui-system/components/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/domains/ui-system/components/avatar';
-import { Calendar } from '@/domains/ui-system/components/calendar';
-import { Input } from '@/domains/ui-system/components/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/domains/ui-system/components/select';
-import { Users, TrendingUp, Target, PlusCircle, MessageSquare, Minus, Plus } from 'lucide-react';
 
 export const Route = createFileRoute('/(auth)/dashboard/')({
   component: DashboardPage,

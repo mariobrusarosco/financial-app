@@ -10,8 +10,8 @@ const useCreateBroker = () => {
   return useMutation({
     mutationFn: brokerApi.createBroker,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: GET_ALL_BROKERS_QUERY_KEY });
-      navigate({ to: '/brokers' });
+      void queryClient.invalidateQueries({ queryKey: GET_ALL_BROKERS_QUERY_KEY });
+      void navigate({ to: '/brokers' });
     },
   });
 };

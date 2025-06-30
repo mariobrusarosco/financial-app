@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
   },
   error => {
     // console.error('Request Error', error);
-    return Promise.reject(error);
+    return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   }
 );
 
@@ -33,18 +33,22 @@ apiClient.interceptors.response.use(
   },
   error => {
     // 🚨 Transform axios errors into our custom error types
-    if (error.response) {
-      // Server responded with error status
-      const { status, data } = error.response;
-      const message = data?.message || data?.error || error.message || 'An error occurred';
-
-      throw new ApiError(message, status, data?.code, data);
-    } else if (error.request) {
-      // Network error - request was made but no response received
-      throw new NetworkError('Network connection failed. Please check your internet connection.');
-    } else {
-      // Something else happened
-      throw new ApiError(error.message || 'An unexpected error occurred', 0);
+    if (typeof error === 'object' && error !== null) {
+      if ('response' in error && error.response) {
+        // Server responded with error status
+        const { status, data } = error.response as { status: number; data?: any };
+        const message = data?.message || data?.error || error.message || 'An error occurred';
+        throw new ApiError(message, status, data?.code, data);
+      } else if ('request' in error && error.request) {
+        // Network error - request was made but no response received
+        throw new NetworkError('Network connection failed. Please check your internet connection.');
+      } else if ('message' in error) {
+        throw new ApiError(
+          (error as { message?: string }).message || 'An unexpected error occurred',
+          0
+        );
+      }
     }
+    throw new ApiError('An unexpected error occurred', 0);
   }
 );

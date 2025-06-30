@@ -15,7 +15,7 @@ const CreateBroker = () => {
       logo: '',
     } as I_Create_BrokerForm,
     onSubmit: ({ value }) => {
-      mutation.mutate(value);
+      void mutation.mutate(value);
     },
   });
 
@@ -36,7 +36,8 @@ const CreateBroker = () => {
             validators={{
               onChange: ({ value }) => (!value ? 'Broker name is required' : undefined),
             }}
-            children={field => (
+          >
+            {field => (
               <div className="space-y-2">
                 <label htmlFor={field.name} className="block text-sm font-medium">
                   Broker Name
@@ -55,11 +56,10 @@ const CreateBroker = () => {
                 )}
               </div>
             )}
-          />
+          </form.Field>
 
-          <form.Field
-            name="description"
-            children={field => (
+          <form.Field name="description">
+            {field => (
               <div className="space-y-2">
                 <label htmlFor={field.name} className="block text-sm font-medium">
                   Description
@@ -75,11 +75,10 @@ const CreateBroker = () => {
                 />
               </div>
             )}
-          />
+          </form.Field>
 
-          <form.Field
-            name="logo"
-            children={field => (
+          <form.Field name="logo">
+            {field => (
               <div className="space-y-2">
                 <label htmlFor={field.name} className="block text-sm font-medium">
                   Broker Logo
@@ -95,14 +94,15 @@ const CreateBroker = () => {
                 />
               </div>
             )}
-          />
+          </form.Field>
 
           <form.Field
             name="colors"
             validators={{
               onChange: ({ value }) => (value.length !== 2 ? 'Two colors are required' : undefined),
             }}
-            children={field => (
+          >
+            {field => (
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="color1" className="block text-sm font-medium">
@@ -147,16 +147,17 @@ const CreateBroker = () => {
                 )}
               </div>
             )}
-          />
+          </form.Field>
 
           <form.Subscribe
             selector={state => [state.canSubmit, state.isSubmitting, mutation.isPending]}
-            children={([canSubmit, isSubmitting]) => (
+          >
+            {([canSubmit, isSubmitting]) => (
               <Button type="submit" disabled={!canSubmit} className="w-full">
                 {isSubmitting || mutation.isPending ? 'Creating...' : 'Create Broker'}
               </Button>
             )}
-          />
+          </form.Subscribe>
         </form>
       </Card>
     </div>

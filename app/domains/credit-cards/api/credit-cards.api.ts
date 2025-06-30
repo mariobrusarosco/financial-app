@@ -18,8 +18,7 @@ export const creditCardApi = {
     return response.data;
   },
   parseInvoice: async (formData: FormData): Promise<I_CreditCardRawInvoice> => {
-    const result = await parsePdf({ data: formData });
-    return result;
+    return await parsePdf({ data: formData });
   },
   createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
     const response = await apiClient.post<I_CreditCardInvoiceResponse>(
@@ -38,6 +37,13 @@ export const creditCardApi = {
   },
   getCreditCard: async (creditCardId: string) => {
     const response = await apiClient.get<I_CreditCard>(`/credit_cards/${creditCardId}`);
+    return response.data;
+  },
+
+  getCreditCardInvoices: async (creditCardId: string) => {
+    const response = await apiClient.get<I_CreditCardInvoiceResponse>(
+      `/credit_cards/${creditCardId}/invoices`
+    );
     return response.data;
   },
 };

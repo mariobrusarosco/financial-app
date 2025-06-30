@@ -47,18 +47,12 @@ export interface I_CreditCardRawInvoice {
   next_due_info?: I_CreditCardNextDueInfo;
 }
 
-export interface I_CreditCardInvoiceResponse {
-  id: string;
-  credit_card_id: string;
-  broker_id: string;
-  is_deleted: boolean;
-  is_paid: boolean;
-}
-
 export interface I_CreditCardInvoiceRequest {
   credit_card_id: string;
   raw_invoice: I_CreditCardRawInvoice;
 }
+
+export type I_CreditCardInvoiceResponse = string[];
 
 export interface I_CreditCardTransaction {
   id: string;

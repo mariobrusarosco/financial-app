@@ -42,12 +42,12 @@ export const createMockTransaction = (overrides = {}) => ({
 /**
  * Create an array of mock transactions
  */
-export const createMockTransactions = (count = 3, baseOverrides = {}) => 
-  Array.from({ length: count }, (_, index) => 
-    createMockTransaction({ 
+export const createMockTransactions = (count = 3, baseOverrides = {}) =>
+  Array.from({ length: count }, (_, index) =>
+    createMockTransaction({
       id: `transaction-${index + 1}`,
       amount: 100 * (index + 1),
-      ...baseOverrides 
+      ...baseOverrides,
     })
   );
 
@@ -67,5 +67,5 @@ export const createMockInvestment = (overrides = {}) => ({
 /**
  * Helper to generate random amounts for testing
  */
-export const randomAmount = (min = 10, max = 1000) => 
-  Math.floor(Math.random() * (max - min + 1)) + min; 
+export const randomAmount = (min = 10, max = 1000) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;

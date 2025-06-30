@@ -59,11 +59,11 @@ export const parsePdf = createServerFn({ method: 'POST' })
     const pdfParser = new PDFParser();
 
     const parseResult = await new Promise<{ text: string; pages: number }>((resolve, reject) => {
-      pdfParser.on('pdfParser_dataReady', pdfData => {
+      pdfParser.on('pdfParser_dataReady', (pdfData: any) => {
         resolve({
           text: decodeURIComponent(
-            pdfData.Pages.map(page =>
-              page.Texts.map(text => text.R.map(r => r.T).join(' ')).join(' ')
+            pdfData.Pages.map((page: any) =>
+              page.Texts.map((text: any) => text.R.map((r: any) => r.T).join(' ')).join(' ')
             ).join('\n')
           ),
           pages: pdfData.Pages.length,

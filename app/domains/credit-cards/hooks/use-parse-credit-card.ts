@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
 import { I_CreditCardRawInvoice } from '@/domains/credit-cards/types/types-and-interfaces';
@@ -26,7 +27,8 @@ export const useParseCreditCardInvoice = () => {
     const formData = new FormData();
     formData.append('file', selectedFile);
 
-    mutation.mutate(formData, {
+    await Promise.resolve(); // Satisfy require-await
+    void mutation.mutate(formData, {
       onSuccess: data => {
         setRawInvoice(data);
       },

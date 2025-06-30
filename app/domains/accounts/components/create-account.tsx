@@ -1,6 +1,5 @@
 import { useForm } from '@tanstack/react-form';
 import type {
-  I_Account,
   I_CreateAccountForm,
   T_AccountCurrency,
   T_AccountType,
@@ -40,7 +39,7 @@ const CreateAccount = () => {
       currency: 'BRL',
     } as I_CreateAccountForm,
     onSubmit: ({ value }) => {
-      createAccount(value);
+      void createAccount(value);
     },
   });
 
@@ -82,7 +81,8 @@ const CreateAccount = () => {
               validators={{
                 onChange: ({ value }) => (!value ? 'Account name is required' : undefined),
               }}
-              children={field => (
+            >
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Account Name:
@@ -100,11 +100,10 @@ const CreateAccount = () => {
                   )}
                 </div>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="description"
-              children={field => (
+            <form.Field name="description">
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Description:
@@ -119,11 +118,10 @@ const CreateAccount = () => {
                   />
                 </div>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="broker_id"
-              children={field => (
+            <form.Field name="broker_id">
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Broker:
@@ -145,11 +143,10 @@ const CreateAccount = () => {
                   </Select>
                 </div>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="type"
-              children={field => (
+            <form.Field name="type">
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Account Type:
@@ -170,14 +167,15 @@ const CreateAccount = () => {
                   </Select>
                 </div>
               )}
-            />
+            </form.Field>
 
             <form.Field
               name="balance"
               validators={{
                 onChange: ({ value }) => (value < 0 ? 'Balance cannot be negative' : undefined),
               }}
-              children={field => (
+            >
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Initial Balance:
@@ -197,14 +195,15 @@ const CreateAccount = () => {
                   )}
                 </div>
               )}
-            />
+            </form.Field>
 
             <form.Field
               name="currency"
               validators={{
                 onChange: ({ value }) => (!value ? 'Currency is required' : undefined),
               }}
-              children={field => (
+            >
+              {field => (
                 <div className="space-y-2">
                   <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                     Currency:
@@ -226,16 +225,15 @@ const CreateAccount = () => {
                   )}
                 </div>
               )}
-            />
+            </form.Field>
 
-            <form.Subscribe
-              selector={state => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
+            <form.Subscribe selector={state => [state.canSubmit, state.isSubmitting]}>
+              {([canSubmit, isSubmitting]) => (
                 <Button type="submit" disabled={!canSubmit} className="w-full" size="lg">
                   {isSubmitting ? 'Creating...' : 'Create Account'}
                 </Button>
               )}
-            />
+            </form.Subscribe>
           </form>
         </CardContent>
       </Card>

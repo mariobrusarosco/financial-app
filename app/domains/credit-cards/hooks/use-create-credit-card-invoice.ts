@@ -5,9 +5,7 @@ import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
 export const useCreateCreditCardInvoice = () => {
   const mutation = useMutation({
     mutationFn: async (data: I_CreditCardInvoiceRequest) => {
-      const response = await creditCardApi.createCreditCardInvoice(data);
-
-      return response;
+      return await creditCardApi.createCreditCardInvoice(data);
     },
     onSuccess: data => {
       console.log('Invoice created successfully:', data);

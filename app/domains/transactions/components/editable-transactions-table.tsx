@@ -13,7 +13,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Card } from '@/domains/ui-system/components/card';
 import { Badge } from '@/domains/ui-system/components/badge';
-import { Edit, Trash2, Save, X, AlertCircle } from 'lucide-react';
+import { Edit, Trash2, Save, X } from 'lucide-react';
 
 interface EditableTransactionsTableProps {
   initialTransactions: I_Transaction[];

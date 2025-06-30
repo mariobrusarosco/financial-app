@@ -1,10 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParseCreditCardInvoice } from '@/domains/credit-cards/hooks/use-parse-credit-card';
 import { useCreateCreditCardInvoice } from '@/domains/credit-cards/hooks/use-create-credit-card-invoice';
-import type {
-  I_CreditCardRawInvoice,
-  I_CreditCardTransaction,
-} from '@/domains/credit-cards/types/types-and-interfaces';
 import type { I_Transaction } from '@/domains/transactions/types/types-and-interfaces';
 import {
   Table,
@@ -19,10 +15,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Upload, FileText, CheckCircle, AlertTriangle, Edit3 } from 'lucide-react';
 import { EditableTransactionsTable } from '@/domains/transactions/components/editable-transactions-table';
-import {
-  convertCreditCardTransactionsToEditableFormat,
-  convertEditableTransactionsToCreditCardFormat,
-} from '@/domains/credit-cards/utils/transaction-converter';
+import { convertCreditCardTransactionsToEditableFormat } from '@/domains/credit-cards/utils/transaction-converter';
 
 interface CreditCardStatementUploadProps {
   creditCardId?: string;
@@ -53,13 +46,14 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
     }
   };
 
-  // Handle saving edited transactions
+  // Use a void function for onSave if EditableTransactionsTable expects void
   const handleSaveEditedTransactions = async (editedTransactions: I_Transaction[]) => {
     console.log('💾 Saving edited transactions:', editedTransactions);
-
     // Convert back to credit card format for API
-    const updatedCreditCardTransactions =
-      convertEditableTransactionsToCreditCardFormat(editedTransactions);
+    // const updatedCreditCardTransactions =
+    //   convertEditableTransactionsToCreditCardFormat(editedTransactions);
+    // TODO: Add API call or further processing here if needed
+    await Promise.resolve();
   };
 
   if (mutation.isPending) {

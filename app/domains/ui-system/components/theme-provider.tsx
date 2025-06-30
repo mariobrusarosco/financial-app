@@ -1,17 +1,18 @@
+import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'dark' | 'light' | 'system';
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
-};
+}
 
-type ThemeProviderState = {
+interface ThemeProviderState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-};
+}
 
 const initialState: ThemeProviderState = {
   theme: 'system',
@@ -25,7 +26,7 @@ const getTheme = (key: string, fallback: Theme): Theme => {
   try {
     const theme = localStorage.getItem(key) as Theme;
     return theme || fallback;
-  } catch (e) {
+  } catch {
     // In case localStorage is disabled
     return fallback;
   }
@@ -60,7 +61,7 @@ export function ThemeProvider({
     setTheme: (theme: Theme) => {
       try {
         localStorage.setItem(storageKey, theme);
-      } catch (e) {
+      } catch {
         // Ignore localStorage errors
       }
       setTheme(theme);

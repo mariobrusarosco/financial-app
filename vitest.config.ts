@@ -28,4 +28,4 @@ export default defineConfig({
       '@testing': fileURLToPath(new URL('./src/domains/testing', import.meta.url)),
     },
   },
-}); 
+});

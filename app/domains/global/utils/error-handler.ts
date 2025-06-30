@@ -6,7 +6,7 @@ export class ApiError extends Error {
     message: string,
     public status: number,
     public code?: string,
-    public details?: any
+    public details?: unknown
   ) {
     super(message);
     this.name = 'ApiError';
@@ -14,7 +14,7 @@ export class ApiError extends Error {
 }
 
 export class NetworkError extends Error {
-  constructor(message: string = 'Network connection failed') {
+  constructor(message = 'Network connection failed') {
     super(message);
     this.name = 'NetworkError';
   }
@@ -57,7 +57,13 @@ interface ErrorContext {
 
 export function classifyError(error: unknown): ErrorContext {
   // Network errors
-  if (error instanceof NetworkError || (error as any)?.code === 'NETWORK_ERROR') {
+  if (
+    error instanceof NetworkError ||
+    (typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code?: string }).code === 'NETWORK_ERROR')
+  ) {
     return {
       category: ErrorCategory.NETWORK,
       severity: ErrorSeverity.MEDIUM,
@@ -172,8 +178,8 @@ export function handleErrorWithToast(error: unknown, context?: Partial<ErrorCont
 }
 
 // 🔄 Retry Logic
-export function createRetryHandler(fn: () => Promise<any>, maxRetries: number = 3) {
-  return async () => {
+export function createRetryHandler<T>(fn: () => Promise<T>, maxRetries = 3) {
+  return async (): Promise<T> => {
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {

@@ -5,5 +5,5 @@ export const Route = createFileRoute('/(auth)/settings/')({
 });
 
 function RouteComponent() {
-  return <div>Hello "/(auth)/settings/"!</div>;
+  return <div>Hello &quot;/(auth)/settings/&quot;!</div>;
 }

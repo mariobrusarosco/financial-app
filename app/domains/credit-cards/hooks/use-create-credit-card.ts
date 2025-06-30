@@ -10,19 +10,18 @@ export const useCreateCreditCard = ({ accountId }: { accountId: string }) => {
 
   const mutation = useMutation({
     mutationFn: async (data: I_CreateCreditCardRequest) => {
-      const response = await creditCardApi.createCreditCard(data);
-      return response;
+      return await creditCardApi.createCreditCard(data);
     },
     onSuccess: data => {
       console.log('Credit card created successfully:', data);
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: GET_ALL_CREDIT_CARDS_QUERY_KEY(accountId),
       });
 
       // Navigate back to the account's credit card page
-      navigate({
+      void navigate({
         to: '/accounts/$slug/credit-card',
         params: { slug: accountId },
       });

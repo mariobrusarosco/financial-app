@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useTheme } from '@/domains/ui-system/components/theme-provider';
 import { Toaster as Sonner, ToasterProps } from 'sonner';
 
