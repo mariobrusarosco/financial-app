@@ -24,6 +24,24 @@ yarn lint
 yarn lint:fix
 ```
 
+## TypeScript Compilation
+
+TypeScript compilation checking is separate from ESLint and catches type errors that linting might miss.
+
+### Running TypeScript Check
+
+```bash
+# Check TypeScript compilation without building
+yarn typecheck
+```
+
+This command runs `tsc --noEmit` which:
+
+- Validates all TypeScript types
+- Checks for compilation errors
+- Doesn't generate build files (faster than full build)
+- Catches issues like missing modules, type mismatches, and invalid imports
+
 ### Configuration
 
 Our ESLint configuration (`.eslintrc.js`) includes:
@@ -121,7 +139,7 @@ Then add to your `package.json`:
 ```json
 {
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{js,jsx,ts,tsx}": ["yarn typecheck", "eslint --fix", "prettier --write"],
     "*.{json,md}": "prettier --write"
   }
 }

@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Code Quality
 
+- `yarn typecheck` - Check TypeScript compilation without building
 - `yarn lint` - Run ESLint linter
 - `yarn lint:fix` - Auto-fix linting issues
 - `yarn format` - Format code with Prettier
