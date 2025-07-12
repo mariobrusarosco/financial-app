@@ -9,7 +9,14 @@ import {
   CardTitle,
 } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
-import { ArrowLeft, FileText, CreditCard, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  CreditCard,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react';
 
 interface AccountLayoutProps {
   slug: string;

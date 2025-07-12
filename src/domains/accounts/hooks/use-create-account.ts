@@ -19,11 +19,11 @@ export const useCreateAccount = () => {
         duration: 4000,
       });
 
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: GET_ALL_ACCOUNTS_QUERY_KEY(),
       });
 
-      navigate({
+      void navigate({
         to: '/accounts/$slug',
         params: { slug: newAccount.id },
       });

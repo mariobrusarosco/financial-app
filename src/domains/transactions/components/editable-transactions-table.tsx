@@ -22,7 +22,7 @@ interface EditableTransactionsTableProps {
 
 export const EditableTransactionsTable = ({
   initialTransactions,
-  onSave,
+  onSave: _onSave,
 }: EditableTransactionsTableProps) => {
   const {
     transactions,

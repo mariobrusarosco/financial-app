@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useTheme } from '@/domains/ui-system/components/theme-provider';
+import { useTheme } from '@/domains/ui-system/hooks/use-theme';
 import { Toaster as Sonner, ToasterProps } from 'sonner';
 
 const Toaster = ({ ...props }: ToasterProps) => {

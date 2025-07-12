@@ -42,7 +42,7 @@ export const useParseCreditCardInvoice = () => {
       console.log('Statement parsed successfully:', data);
 
       // Update statements list query
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: CREDIT_CARD_KEYS.statements(),
       });
     },

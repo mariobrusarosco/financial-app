@@ -54,7 +54,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
           onSubmit={e => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="space-y-6"
         >

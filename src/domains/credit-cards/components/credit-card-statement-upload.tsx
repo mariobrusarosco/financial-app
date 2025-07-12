@@ -99,7 +99,7 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
                   </div>
                 </div>
                 <Button
-                  onClick={handleFileUpload}
+                  onClick={() => void handleFileUpload()}
                   disabled={!selectedFile || mutation.isPending}
                   size="sm"
                 >
