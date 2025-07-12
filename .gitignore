@@ -27,5 +27,6 @@ package-lock.json
 # Package Managers
 .yarn
 
-# windsurf rules
-.windsurfrules
+
+# Tanstack
+.tanstack

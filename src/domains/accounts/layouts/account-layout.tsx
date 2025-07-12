@@ -68,7 +68,7 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
         </Link>
       </div>
 
-      {/* Account Overview Card */}
+<div>
       <Card>
         <CardHeader>
           <CardTitle>Account Overview</CardTitle>
@@ -125,9 +125,9 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
             </Button>
           </div>
         </CardContent>
-      </Card>
+          </Card>
+        </div>
 
-      {/* Route-Integrated Tabs */}
       <Tabs value={getActiveTab()} className="space-y-4">
         <TabsList>
           <Link to="/accounts/$slug" params={{ slug }}>

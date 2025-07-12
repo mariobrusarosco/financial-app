@@ -13,8 +13,8 @@ export const parseCreditCardInvoiceRequest = ({
   brokerId: string;
 }) => {
   return {
-    creditCardId,
-    brokerId,
-    rawInvoice: invoice,
+    credit_card_id: creditCardId,
+    broker_id: brokerId,
+    raw_invoice: invoice,
   } as I_CreditCardInvoiceRequest;
 };
