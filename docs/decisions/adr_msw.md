@@ -1,20 +1,25 @@
 # ADR: Adopting Mock Service Worker (MSW) for API Mocking
 
 ## Status
+
 Accepted
 
 ## Date
+
 2023-11-10
 
 ## Context
+
 During the development of our financial application, we need a way to simulate API responses without depending on a real backend. This allows frontend development to proceed independently while ensuring our application is prepared for eventual integration with a real API. For a financial application, it's particularly important to have realistic data mock-ups that represent complex financial scenarios.
 
 ## Decision
+
 We will use Mock Service Worker (MSW) as our API mocking solution.
 
 ## Rationale
 
 ### Pros:
+
 1. **Network-level Mocking**: MSW intercepts actual network requests at the service worker level, creating a more realistic testing environment than other mocking solutions.
 2. **API-agnostic**: Works with any API client (fetch, axios, react-query, etc.) without requiring changes to the application code.
 3. **Same API for Browser and Node**: Provides a consistent API for both browser and Node environments, making it useful for both development and testing.
@@ -28,6 +33,7 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 11. **Financial Data Mocking**: Allows us to create complex financial data structures and scenarios.
 
 ### Cons:
+
 1. **Learning Curve**: Requires understanding of Service Workers and request handling patterns.
 2. **Browser Support**: Requires browsers that support Service Workers, though this is less of an issue with modern browsers.
 3. **Setup Overhead**: Initial setup requires configuring a service worker and defining handlers.
@@ -38,6 +44,7 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 ## Alternatives Considered
 
 ### JSON Server:
+
 - Provides a full REST API with zero coding
 - Operates as an actual HTTP server
 - Good for simple CRUD operations
@@ -47,6 +54,7 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 - Limited ability to handle complex financial data relationships
 
 ### Mirage JS:
+
 - Schema-based API mocking
 - Good integration with frontend frameworks
 - Built-in database layer
@@ -56,6 +64,7 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 - More complex setup for financial-specific data models
 
 ### Manually Mocking Fetch/Axios:
+
 - Simplest approach with no dependencies
 - Direct control over mock implementation
 - Integrated directly into codebase
@@ -65,6 +74,7 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 - Difficult to scale as financial API complexity grows
 
 ## Consequences
+
 - We will be able to develop the frontend independently of backend development.
 - We'll have a realistic environment for testing API interactions.
 - We'll need to maintain our mock API definitions as the real API evolves.
@@ -73,10 +83,11 @@ We will use Mock Service Worker (MSW) as our API mocking solution.
 - We'll be able to simulate various financial scenarios and edge cases for thorough testing.
 
 ## Implementation Notes
+
 - We will set up MSW for the browser environment for development.
 - We will set up MSW for Node environment for testing.
 - We will organize our mock handlers to match our expected API structure.
 - We will create realistic mock data generators for financial data.
 - We will document our mocking patterns for team consistency.
 - We will implement scenarios for different financial situations (high balances, overdrafts, etc.).
-- We will ensure our mock data follows financial calculation rules and business logic. 
+- We will ensure our mock data follows financial calculation rules and business logic.

@@ -1,20 +1,25 @@
 # ADR: Adopting shadcn/ui with Rose Theme
 
 ## Status
+
 Accepted
 
 ## Date
+
 2023-11-10
 
 ## Context
+
 Our financial application needs a consistent, accessible, and visually appealing UI. We need components that are customizable, maintainable, and align with modern design practices while also being developer-friendly. For a financial app, the UI must convey trust, professionalism, and clarity while remaining approachable and easy to use.
 
 ## Decision
+
 We will use shadcn/ui with the Rose theme as our UI component library. Components will be installed using the shadcn/ui CLI tool exclusively, not by copying and pasting code.
 
 ## Rationale
 
 ### Pros:
+
 1. **Not a UI Library, but a Collection of Components**: shadcn/ui is not a traditional UI library but provides re-usable components that can be copied into our project, giving us full control over the code.
 2. **Built on Radix UI**: Uses Radix UI primitives underneath, which provides solid accessibility features out of the box.
 3. **Tailwind CSS Integration**: Uses Tailwind CSS for styling, providing a utility-first approach that's highly customizable.
@@ -28,6 +33,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 11. **Financial-Specific Components**: We can easily customize components for financial data visualization.
 
 ### Cons:
+
 1. **Codebase Size**: Since components are copied into our codebase, it can increase the size of our repository.
 2. **Update Management**: When updates are released for components, we need to manually update them in our codebase.
 3. **Learning Curve**: Requires knowledge of both Radix UI primitives and Tailwind CSS.
@@ -38,6 +44,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 ## Alternatives Considered
 
 ### Material UI:
+
 - More established with a larger community
 - Comprehensive component set
 - Based on Material Design principles
@@ -47,6 +54,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 - Not as easily customizable for financial-specific components
 
 ### Chakra UI:
+
 - Also focuses on accessibility
 - Good theming capabilities
 - More traditional component library approach
@@ -56,6 +64,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 - Would require more effort to achieve the specific visual language we want
 
 ### Ant Design:
+
 - Very comprehensive component set
 - Strong enterprise focus
 - Detailed documentation
@@ -65,6 +74,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 - Visual style less appropriate for a modern financial application
 
 ## Consequences
+
 - We will have complete control over our UI components.
 - We will need to manage component updates manually.
 - We'll need to use the shadcn/ui CLI tool for installing components to ensure consistency.
@@ -73,9 +83,10 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 - We'll be able to create financial-specific UI components that enhance user understanding of their finances.
 
 ## Implementation Notes
+
 - We will use the shadcn/ui CLI exclusively to add components to our project.
 - We will document any customizations we make to components.
 - We will create a standardized process for updating components when new versions are released.
 - We will establish a component development guide to ensure consistency across the team.
 - We will develop specialized components for financial data visualization and input.
-- We will ensure the Rose theme colors are applied consistently throughout the application. 
+- We will ensure the Rose theme colors are applied consistently throughout the application.

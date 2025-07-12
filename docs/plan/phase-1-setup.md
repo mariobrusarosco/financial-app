@@ -3,6 +3,7 @@
 This phase focuses on setting up the core project infrastructure, tools, and initial architecture. The goal is to have a working development environment with all key technologies integrated.
 
 ## Timeline
+
 Expected duration: 2 weeks
 
 ## Tasks
@@ -59,11 +60,11 @@ Expected duration: 2 weeks
 
 ## Risks and Mitigations
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Learning curve for TanStack Start | Medium | Allocate time for team training, document learnings |
-| Issues with shadcn/ui integration | Medium | Test integration early, identify fallback options |
-| MSW configuration challenges | Low | Start with simple handlers, progressively add complexity |
+| Risk                              | Impact | Mitigation                                               |
+| --------------------------------- | ------ | -------------------------------------------------------- |
+| Learning curve for TanStack Start | Medium | Allocate time for team training, document learnings      |
+| Issues with shadcn/ui integration | Medium | Test integration early, identify fallback options        |
+| MSW configuration challenges      | Low    | Start with simple handlers, progressively add complexity |
 
 ## Definition of Done
 
@@ -71,4 +72,4 @@ Expected duration: 2 weeks
 - Development environment working for all team members
 - Ability to run the application locally
 - Documentation updated to reflect current state
-- Basic application shell functioning with navigation 
+- Basic application shell functioning with navigation

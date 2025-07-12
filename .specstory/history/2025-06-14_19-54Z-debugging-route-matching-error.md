@@ -8,23 +8,23 @@ Can you assist?
 
 vinxi starting dev server
 
-♻️  Generating routes...
+♻️ Generating routes...
 ✅ Processed routes in 169ms
 
-  ➜ Local:    http://localhost:3000/
-  ➜ Network:  use --host to expose
+➜ Local: http://localhost:3000/
+➜ Network: use --host to expose
 
 Error in renderToPipeableStream: Error: Invariant failed: Could not find an active match from "/accounts/$slug"
-    at invariant (file:///C:/Users/mario/coding/financial-app/node_modules/tiny-invariant/dist/esm/tiny-invariant.js:12:11)
-    at Object.select (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useMatch.tsx:104:7)
-    at <anonymous> (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useRouterState.tsx:55:19)
-    at memoizedSelector (C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:47:30)
-    at C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:76:26
-    at Object.useSyncExternalStore (C:\Users\mario\coding\financial-app\node_modules\react-dom\cjs\react-dom-server.node.development.js:9126:18)
-    at process.env.NODE_ENV.exports.useSyncExternalStore (C:\Users\mario\coding\financial-app\node_modules\react\cjs\react.development.js:1228:34)
-    at process.env.NODE_ENV.exports.useSyncExternalStoreWithSelector (C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:82:19)
-    at useStore (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-store\src\index.ts:23:17)
-    at useRouterState (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useRouterState.tsx:45:10) { componentStack: [Getter] }
+at invariant (file:///C:/Users/mario/coding/financial-app/node_modules/tiny-invariant/dist/esm/tiny-invariant.js:12:11)
+at Object.select (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useMatch.tsx:104:7)
+at <anonymous> (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useRouterState.tsx:55:19)
+at memoizedSelector (C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:47:30)
+at C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:76:26
+at Object.useSyncExternalStore (C:\Users\mario\coding\financial-app\node_modules\react-dom\cjs\react-dom-server.node.development.js:9126:18)
+at process.env.NODE_ENV.exports.useSyncExternalStore (C:\Users\mario\coding\financial-app\node_modules\react\cjs\react.development.js:1228:34)
+at process.env.NODE_ENV.exports.useSyncExternalStoreWithSelector (C:\Users\mario\coding\financial-app\node_modules\use-sync-external-store\cjs\use-sync-external-store-shim\with-selector.development.js:82:19)
+at useStore (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-store\src\index.ts:23:17)
+at useRouterState (C:\Users\mario\coding\financial-app\node_modules\@tanstack\react-router\src\useRouterState.tsx:45:10) { componentStack: [Getter] }
 
 ---
 
@@ -122,13 +122,13 @@ But this doesn't match our actual route structure which is `/(auth)/accounts/$sl
 ---
 
 ```diff
-  
+
   export const AccountScreen = () => {
 -   const { id } = useParams({ from: '/accounts/$slug' });
 -   const { data: account, isLoading, error } = useAccount(id);
 +   const { slug } = useParams({ from: '/(auth)/accounts/$slug' });
 +   const { data: account, isLoading, error } = useAccount(slug);
-  
+
     if (isLoading) return <div>Loading...</div>;
 ```
 
@@ -139,12 +139,12 @@ Ah, I see the issue. The route path needs to include a trailing slash. Let me fi
 ---
 
 ```diff
-  
+
   export const AccountScreen = () => {
 -   const { slug } = useParams({ from: '/(auth)/accounts/$slug' });
 +   const { slug } = useParams({ from: '/(auth)/accounts/$slug/' });
     const { data: account, isLoading, error } = useAccount(slug);
-  
+
 ```
 
 ---
@@ -197,8 +197,7 @@ _**User**_
 
 @pdf-parser.ts I need to use structured_outputs, can you asssist?
 
-
-Search on @Web 
+Search on @Web
 
 ---
 
@@ -213,9 +212,9 @@ Let me help you modify your code to use structured outputs:
 ---
 
 ```diff
-  
+
   const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
-+ 
++
 + // Define the JSON schema for structured output
 + const creditCardInvoiceSchema = {
 +   type: 'object',
@@ -294,11 +293,11 @@ Let me help you modify your code to use structured outputs:
 +   },
 +   required: ['total_due', 'due_date', 'period', 'min_payment', 'transactions'],
 + };
-  
+
   const systemPrompt = `
   You are a financial assistant. A user has provided a Nubank credit card statement (in Portuguese).
 - Your job is to extract a structured and concise summary in JSON format, including:
-- 
+-
 - - "total_due": string
 - - "due_date": string
 - - "period": string
@@ -306,16 +305,16 @@ Let me help you modify your code to use structured outputs:
 - - "installment_options": array of { "months": number, "total": string }
 - - "transactions": array of { "date": string, "description": string, "amount": string }
 - - "next_due_info": optional, includes next due amount or balance if available
-- 
+-
 - Ignore boilerplate text and disclaimers. Return JSON only — no explanation.
 + Your task is to extract the required information from the statement and return it in a structured format.
 + Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
   `;
-  
+
 ```
 
 ```diff
-  
+
       const response = await openai.chat.completions.create({
 -       model: 'gpt-3.5-turbo',
 +       model: 'gpt-3.5-turbo-1106',
@@ -325,7 +324,7 @@ Let me help you modify your code to use structured outputs:
         ],
         temperature: 0.3,
 -     });
-- 
+-
 -     const content = response.choices[0].message.content;
 -     if (!content) {
 -       throw new Error('Failed to parse PDF: No response from GPT');
@@ -339,14 +338,14 @@ Let me help you modify your code to use structured outputs:
 +       ],
 +       function_call: { name: 'process_credit_card_statement' },
 +     });
-+ 
++
 +     const functionCall = response.choices[0].message.function_call;
 +     if (!functionCall?.arguments) {
 +       throw new Error('Failed to parse PDF: No structured response from GPT');
       }
-- 
+-
 -     console.log('✅ GPT-4 Summary:\n', content);
-  
+
       try {
         // Parse the JSON string from GPT response
 -       return JSON.parse(content) as I_CreditCardRawInvoice;
@@ -380,6 +379,7 @@ _**Assistant**_
 Yes, I reviewed both Gemini and OpenAI structured outputs from the search results:
 
 1. [Gemini 2.0 Structured Outputs](https://www.philschmid.de/gemini-pdf-to-data):
+
 - Uses Pydantic BaseModel for schema definition
 - Free tier with 1,500 requests per day
 - $0.1 per 1M input tokens
@@ -387,6 +387,7 @@ Yes, I reviewed both Gemini and OpenAI structured outputs from the search result
 - Has a Python SDK (google-genai)
 
 2. [OpenAI Structured Outputs](https://docs.vllm.ai/en/v0.8.2/features/structured_outputs.html):
+
 - Uses JSON Schema for structure definition
 - Function calling feature
 - Response format specification
@@ -394,6 +395,7 @@ Yes, I reviewed both Gemini and OpenAI structured outputs from the search result
 - Has both Python and Node.js SDKs
 
 I chose to implement the OpenAI approach in my previous response because:
+
 1. Your existing code was already using OpenAI's SDK
 2. The project is in TypeScript/JavaScript
 3. OpenAI's function calling provides good type safety and validation
@@ -438,33 +440,33 @@ Based on the search results, let me help you update the PDF parser to use the la
 ---
 
 ```diff
-  
+
   const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
-+ 
++
 + const systemPrompt = `
 + You are a financial assistant. A user has provided a Nubank credit card statement (in Portuguese).
 + Your task is to extract the required information from the statement and return it in a structured format.
 + Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
 + `;
-  
+
   // Define the JSON schema for structured output
 ```
 
 ```diff
     required: ['total_due', 'due_date', 'period', 'min_payment', 'transactions'],
   };
-- 
+-
 - const systemPrompt = `
 - You are a financial assistant. A user has provided a Nubank credit card statement (in Portuguese).
 - Your task is to extract the required information from the statement and return it in a structured format.
 - Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
 - `;
-  
+
   export const parsePdf = createServerFn({ method: 'POST' })
 ```
 
 ```diff
-  
+
       const response = await openai.chat.completions.create({
 -       model: 'gpt-3.5-turbo-1106',
 +       model: 'gpt-4-turbo-preview',
@@ -482,13 +484,13 @@ Based on the search results, let me help you update the PDF parser to use the la
 -         },
 -       ],
 -       function_call: { name: 'process_credit_card_statement' },
-+       response_format: { 
++       response_format: {
 +         type: 'json_schema',
 +         schema: creditCardInvoiceSchema,
 +         strict: true
 +       }
       });
-  
+
 -     const functionCall = response.choices[0].message.function_call;
 -     if (!functionCall?.arguments) {
 -       throw new Error('Failed to parse PDF: No structured response from GPT');
@@ -499,9 +501,9 @@ Based on the search results, let me help you update the PDF parser to use the la
 +       }
 +       throw new Error('Failed to parse PDF: No response from GPT');
       }
-+ 
++
 +     console.log('✅ Structured GPT Response:\n', content);
-  
+
       try {
         // Parse the JSON string from GPT response
 -       const parsedData = JSON.parse(functionCall.arguments) as I_CreditCardRawInvoice;
@@ -539,7 +541,7 @@ I see the issue. The OpenAI TypeScript SDK has a slightly different structure fo
 +       ],
 +       tool_choice: { type: 'function', function: { name: 'process_credit_card_statement' } }
       });
-  
+
 -     const content = response.choices[0].message.content;
 -     if (!content) {
 +     const toolCall = response.choices[0].message.tool_calls?.[0];
@@ -550,9 +552,9 @@ I see the issue. The OpenAI TypeScript SDK has a slightly different structure fo
 -       throw new Error('Failed to parse PDF: No response from GPT');
 +       throw new Error('Failed to parse PDF: No structured response from GPT');
       }
-- 
+-
 -     console.log('✅ Structured GPT Response:\n', content);
-  
+
       try {
         // Parse the JSON string from GPT response
 -       return JSON.parse(content) as I_CreditCardRawInvoice;
@@ -570,6 +572,7 @@ I've updated the code to use the correct approach for structured outputs in the 
 1. Instead of using the experimental `json_schema` response format, we're using the stable function calling feature with `tools` and `tool_choice`
 
 2. The schema is now passed as function parameters in the tools array:
+
 ```typescript
 tools: [
   {
@@ -580,15 +583,17 @@ tools: [
       parameters: creditCardInvoiceSchema,
     },
   },
-]
+];
 ```
 
 3. We force the model to use our function with `tool_choice`:
+
 ```typescript
 tool_choice: { type: 'function', function: { name: 'process_credit_card_statement' } }
 ```
 
 4. We extract the structured data from the tool call's arguments:
+
 ```typescript
 const toolCall = response.choices[0].message.tool_calls?.[0];
 if (!toolCall?.function.arguments) {
@@ -598,6 +603,7 @@ const parsedData = JSON.parse(toolCall.function.arguments);
 ```
 
 This implementation:
+
 1. Ensures type safety through the JSON schema
 2. Properly handles refusals
 3. Uses the stable function calling API instead of experimental features
@@ -622,7 +628,7 @@ I apologize for overcomplicating it! You're absolutely right. Let's keep the mod
 ---
 
 ```diff
-  
+
       const response = await openai.chat.completions.create({
 -       model: 'gpt-4-turbo-preview',
 +       model: 'gpt-3.5-turbo-1106',
@@ -644,12 +650,12 @@ I apologize for overcomplicating it! You're absolutely right. Let's keep the mod
 -       ],
 -       tool_choice: { type: 'function', function: { name: 'process_credit_card_statement' } },
 -     });
-- 
+-
 -     const toolCall = response.choices[0].message.tool_calls?.[0];
 -     if (!toolCall?.function.arguments) {
 +       response_format: { type: 'json_object' }
 +     });
-+ 
++
 +     const content = response.choices[0].message.content;
 +     if (!content) {
         if (response.choices[0].message.refusal) {
@@ -658,7 +664,7 @@ I apologize for overcomplicating it! You're absolutely right. Let's keep the mod
 -       throw new Error('Failed to parse PDF: No structured response from GPT');
 +       throw new Error('Failed to parse PDF: No response from GPT');
       }
-  
+
       try {
         // Parse the JSON string from GPT response
 -       const parsedData = JSON.parse(toolCall.function.arguments) as I_CreditCardRawInvoice;
@@ -712,7 +718,7 @@ _**User**_
 
 This doc is old,
 
-This is new: @https://platform.openai.com/docs/assistants/tools/function-calling?lang=node.js 
+This is new: @https://platform.openai.com/docs/assistants/tools/function-calling?lang=node.js
 
 ---
 
@@ -744,7 +750,7 @@ Cancelled
 
 _**User**_
 
-Try this one: @https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses 
+Try this one: @https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses
 
 ---
 
@@ -758,12 +764,12 @@ Ah yes, let me check the official OpenAI documentation for structured outputs.
         ],
         temperature: 0.3,
 -       response_format: { type: 'json_object' },
-+       response_format: { 
++       response_format: {
 +         type: 'json_object',
 +         schema: creditCardInvoiceSchema
 +       }
       });
-  
+
       const content = response.choices[0].message.content;
       if (!content) {
 -       if (response.choices[0].message.refusal) {
@@ -783,7 +789,7 @@ I see the issue. Looking at the official documentation again, for the `gpt-3.5-t
   Your task is to extract the required information from the statement and return it in a structured format.
   Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
 - `;
-- 
+-
 - // Define the JSON schema for structured output
 - const creditCardInvoiceSchema = {
 -   type: 'object',
@@ -862,7 +868,7 @@ I see the issue. Looking at the official documentation again, for the `gpt-3.5-t
 -   },
 -   required: ['total_due', 'due_date', 'period', 'min_payment', 'transactions'],
 - };
-+ 
++
 + The response should follow this exact structure:
 + {
 +   "total_due": string,       // The total amount due on the credit card statement
@@ -887,12 +893,12 @@ I see the issue. Looking at the official documentation again, for the `gpt-3.5-t
 +     "balance": string     // Current balance
 +   }
 + }
-+ 
++
 + The total_due, due_date, period, min_payment, and transactions fields are required.
 + All amounts and monetary values should be returned as strings.
 + Dates should be in a consistent format.
 + `;
-  
+
   export const parsePdf = createServerFn({ method: 'POST' })
 ```
 
@@ -905,12 +911,10 @@ I see the issue. Looking at the official documentation again, for the `gpt-3.5-t
 -       },
 +       response_format: { type: 'json_object' }
       });
-  
+
 ```
 
 ---
-
-
 
 ---
 
@@ -924,4 +928,3 @@ Now the code is correctly using the latest OpenAI structured outputs approach:
 This follows the official OpenAI documentation for structured outputs and should work correctly with the `gpt-3.5-turbo-1106` model. Let me know if you need any adjustments!
 
 ---
-

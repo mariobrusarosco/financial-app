@@ -18,13 +18,13 @@ import { Button } from '@global/components/button';
 
 Our project has the following path aliases configured in `tsconfig.json`:
 
-| Alias | Points to | Purpose |
-|-------|----------|---------|
-| `@/*` | `src/*` | Access anything in the src directory |
-| `@domains/*` | `src/domains/*` | Access any domain |
-| `@global/*` | `src/domains/global/*` | Access shared components and utilities |
-| `@tools/*` | `src/domains/tools/*` | Access feature flags, analytics, etc. |
-| `@testing/*` | `src/domains/testing/*` | Access test utilities |
+| Alias        | Points to               | Purpose                                |
+| ------------ | ----------------------- | -------------------------------------- |
+| `@/*`        | `src/*`                 | Access anything in the src directory   |
+| `@domains/*` | `src/domains/*`         | Access any domain                      |
+| `@global/*`  | `src/domains/global/*`  | Access shared components and utilities |
+| `@tools/*`   | `src/domains/tools/*`   | Access feature flags, analytics, etc.  |
+| `@testing/*` | `src/domains/testing/*` | Access test utilities                  |
 
 ## Using Path Aliases
 
@@ -162,4 +162,4 @@ import type { AccountData } from '@domains/investments/schemas/account.schema';
 2. **Use domain index exports** - Export through the domain's index.ts for better API control
 3. **Always use the `type` keyword for type imports** - As per our coding standards
 4. **Keep path structure consistent** - Maintain the same structure across domains
-5. **Don't skip domains** - Import directly from a domain, not from other domains 
+5. **Don't skip domains** - Import directly from a domain, not from other domains

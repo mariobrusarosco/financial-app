@@ -5,7 +5,7 @@
 _**User**_
 
 Error {
-    "$error": {
+"$error": {
         "status": 400,
         "headers": {},
         "requestID": "req_553662ed41eba5e71b9b62f1177e8fcf",
@@ -22,8 +22,8 @@ Error {
         "stack": "Error: 400 'messages' must contain the word 'json' in some form, to use 'response_format' of type 'json_object'.\n    at Function.generate (C:\\Users\\mario\\coding\\financial-app\\node_modules\\openai\\src\\core\\error.ts:72:14)\n    at OpenAI.makeStatusError (C:\\Users\\mario\\coding\\financial-app\\node_modules\\openai\\src\\client.ts:400:28)\n    at OpenAI.makeRequest (C:\\Users\\mario\\coding\\financial-app\\node_modules\\openai\\src\\client.ts:616:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Object.eval (C:\\Users\\mario\\coding\\financial-app\\app\\server-functions\\pdf-parser.ts:81:22)\n    at async server (C:\\Users\\mario\\coding\\financial-app\\node_modules\\@tanstack\\start-client-core\\src\\createServerFn.ts:980:24)\n    at async eval (C:\\Users\\mario\\coding\\financial-app\\node_modules\\@tanstack\\start-server-functions-handler\\src\\index.ts:141:18)\n    at async eval (C:\\Users\\mario\\coding\\financial-app\\node_modules\\@tanstack\\start-server-functions-handler\\src\\index.ts:127:20)\n    at async handleServerRequest (C:\\Users\\mario\\coding\\financial-app\\node_modules\\@tanstack\\start-server-functions-handler\\src\\index.ts:125:20)\n    at async handleServerAction (C:\\Users\\mario\\coding\\financial-app\\node_modules\\@tanstack\\start-server-functions-handler\\src\\index.ts:32:20)\n    at async _callHandler (file:///C:/Users/mario/coding/financial-app/node_modules/@tanstack/react-start-config/node_modules/h3/dist/index.mjs:1837:16)\n    at async file:///C:/Users/mario/coding/financial-app/node_modules/vinxi/node_modules/h3/dist/index.mjs:2006:19\n    at async Object.callAsync (file:///C:/Users/mario/coding/financial-app/node_modules/unctx/dist/index.mjs:72:16)\n    at async Server.toNodeHandle (file:///C:/Users/mario/coding/financial-app/node_modules/vinxi/node_modules/h3/dist/index.mjs:2298:7)",
         "cause": {
             "$undefined": 0
-        }
-    }
+}
+}
 }
 
 ---
@@ -81,7 +81,7 @@ Let me modify the system prompt to include this requirement:
 - Your task is to extract the required information from the statement and return it in a structured format.
 + Your task is to extract the required information from the statement and return it in a structured JSON format.
   Focus on extracting only the relevant financial data and ignore any boilerplate text or disclaimers.
-  
+
 - The response should follow this exact structure:
 + The response should be a valid JSON object with the following structure:
   {
@@ -111,10 +111,10 @@ Let me modify the system prompt to include this requirement:
         temperature: 0.3,
         response_format: { type: 'json_object' },
       });
-  
+
 -     const content = response.choices[0].message.content;
 +     const content = response.choices[0]?.message?.content;
-+ 
++
       if (!content) {
         throw new Error('Failed to parse PDF: No response from GPT');
 ```
@@ -130,6 +130,7 @@ I've made several important changes to fix the issue:
 5. Improved the structure description to be more explicit about JSON formatting
 
 These changes should resolve the error because:
+
 1. The messages now contain the word "json" which is required when using `response_format: { type: 'json_object' }`
 2. The schema is now properly formatted as valid JSON
 3. The request is more explicit about requiring JSON output
@@ -144,46 +145,45 @@ Perfect:
 
 Now, we need to receive the parsed data from PDF invoice and the two things:
 
-* Save the invoice on the DB
-* Save each transaction on the DB
-
+- Save the invoice on the DB
+- Save each transaction on the DB
 
 1. We need a new domain for Transaction
 2. We need to make the credit-card router to work
 
 Request from Front:
 
-* POST' to '/api/v1/credit-card/' 
-* Example of payload from the front end:
+- POST' to '/api/v1/credit-card/'
+- Example of payload from the front end:
 
 {
-    "credit_card_id": "08cf8602-5fc6-44d2-a36a-0b4ca2195c23",
-    "broker_id": "1",
-    "raw_invoice": {
-        "total_due": "198.95",
-        "due_date": "05/03/2025",
-        "period": "01/02/2025 - 01/03/2025",
-        "min_payment": "29.84",
-        "installment_options": [],
-        "transactions": [
-            {
-                "date": "21/01/2025",
-                "description": "Hiper Farmac (2/2)",
-                "amount": "50.00",
-                "category": ""
-            },
-            {
-                "date": "02/02/2025",
-                "description": "Maria Cereja Padaria",
-                "amount": "204.70",
-                "category": ""
-            }
-        ],
-        "next_due_info": {
-            "amount": "",
-            "balance": "15086.75"
-        }
-    }
+"credit_card_id": "08cf8602-5fc6-44d2-a36a-0b4ca2195c23",
+"broker_id": "1",
+"raw_invoice": {
+"total_due": "198.95",
+"due_date": "05/03/2025",
+"period": "01/02/2025 - 01/03/2025",
+"min_payment": "29.84",
+"installment_options": [],
+"transactions": [
+{
+"date": "21/01/2025",
+"description": "Hiper Farmac (2/2)",
+"amount": "50.00",
+"category": ""
+},
+{
+"date": "02/02/2025",
+"description": "Maria Cereja Padaria",
+"amount": "204.70",
+"category": ""
+}
+],
+"next_due_info": {
+"amount": "",
+"balance": "15086.75"
+}
+}
 }
 
 ---
@@ -230,11 +230,11 @@ routes/
 The `_pathlessLayout.tsx` file would contain:
 
 ```tsx
-import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_pathlessLayout')({
   component: PathlessLayoutComponent,
-})
+});
 
 function PathlessLayoutComponent() {
   return (
@@ -242,7 +242,7 @@ function PathlessLayoutComponent() {
       <h1>Pathless layout</h1>
       <Outlet />
     </div>
-  )
+  );
 }
 ```
 
@@ -250,9 +250,9 @@ function PathlessLayoutComponent() {
 
 With this structure, the URLs would map as follows:
 
-| URL Path | Component           |
-|----------|-------------------|
-| /        | `<Index>`         |
+| URL Path | Component             |
+| -------- | --------------------- |
+| /        | `<Index>`             |
 | /a       | `<PathlessLayout><A>` |
 | /b       | `<PathlessLayout><B>` |
 
@@ -289,6 +289,7 @@ _**Assistant**_
 The purpose of pathless layouts in TanStack Router is to **share common UI components and layout structure across multiple routes without affecting the URL structure**. Here are the key purposes:
 
 ## 1. **Shared Layout Without URL Impact**
+
 Pathless layouts allow you to wrap multiple routes with common UI elements (headers, sidebars, navigation) without adding any path segments to the URL.
 
 ```
@@ -302,6 +303,7 @@ routes/
 All three child routes share the dashboard layout but maintain clean URLs.
 
 ## 2. **Code Reuse and DRY Principle**
+
 Instead of duplicating layout code across multiple route components, you centralize it in one pathless layout:
 
 ```tsx
@@ -315,19 +317,23 @@ function DashboardLayout() {
         <Outlet /> {/* Child routes render here */}
       </main>
     </div>
-  )
+  );
 }
 ```
 
 ## 3. **Organizational Benefits**
+
 Pathless layouts help organize related routes that share common functionality or UI patterns without forcing a hierarchical URL structure.
 
 ## 4. **Different from Regular Layouts**
+
 - **Regular layout route** (`dashboard.tsx`): Creates `/dashboard` path and nests children under it
 - **Pathless layout route** (`_dashboard.tsx`): No path added, just wraps children with shared UI
 
 ## 5. **Flexibility in URL Design**
+
 You can have clean, flat URLs while still maintaining organized, nested component structures. This is especially useful when:
+
 - You want `/analytics`, `/reports`, `/settings` URLs (not `/dashboard/analytics`)
 - But you still want them to share the same dashboard UI layout
 - You need to group related functionality without URL hierarchy
@@ -338,7 +344,7 @@ This gives you the best of both worlds: organized code structure with flexible U
 
 _**User**_
 
-Nice! and can we create follder with the _prefix and that folder would inherit those Common UIs?
+Nice! and can we create follder with the \_prefix and that folder would inherit those Common UIs?
 
 ---
 
@@ -353,7 +359,7 @@ routes/
 ├── _dashboard/
 │   ├── route.tsx          // The pathless layout component
 │   ├── analytics.tsx      // /analytics
-│   ├── reports.tsx        // /reports  
+│   ├── reports.tsx        // /reports
 │   ├── settings.tsx       // /settings
 │   └── users.tsx          // /users
 ```
@@ -363,11 +369,11 @@ routes/
 The `_dashboard/route.tsx` file contains your shared layout:
 
 ```tsx
-import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_dashboard')({
   component: DashboardLayoutComponent,
-})
+});
 
 function DashboardLayoutComponent() {
   return (
@@ -379,7 +385,7 @@ function DashboardLayoutComponent() {
       </main>
       <DashboardFooter />
     </div>
-  )
+  );
 }
 ```
 
@@ -389,25 +395,25 @@ Each child route automatically gets wrapped by the pathless layout:
 
 ```tsx
 // _dashboard/analytics.tsx
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_dashboard/analytics')({
   component: AnalyticsComponent,
-})
+});
 
 function AnalyticsComponent() {
-  return <div>Analytics content here</div>
+  return <div>Analytics content here</div>;
 }
 ```
 
 ## URL Mapping Result
 
-| URL Path     | Rendered Components |
-|-------------|-------------------|
-| /analytics  | `<DashboardLayout><Analytics>` |
-| /reports    | `<DashboardLayout><Reports>` |
-| /settings   | `<DashboardLayout><Settings>` |
-| /users      | `<DashboardLayout><Users>` |
+| URL Path   | Rendered Components            |
+| ---------- | ------------------------------ |
+| /analytics | `<DashboardLayout><Analytics>` |
+| /reports   | `<DashboardLayout><Reports>`   |
+| /settings  | `<DashboardLayout><Settings>`  |
+| /users     | `<DashboardLayout><Users>`     |
 
 ## Benefits of This Approach
 
@@ -427,7 +433,7 @@ Amazing! We do have a @/(auth) !
 
 Do you think you could create a layout for all authenticated folders and iits children?
 
-This layout would display a common UI for every routes 
+This layout would display a common UI for every routes
 
 ---
 
@@ -440,21 +446,21 @@ Let me create the pathless layout structure:
 ---
 
 ```diff
-- 
+-
 + import { createFileRoute, Outlet } from '@tanstack/react-router'
 + import { AppLayout } from '@/domains/ui-system/components/app-layout'
-+ 
++
 + export const Route = createFileRoute('/(auth)')({
 +   component: AuthLayoutComponent,
 + })
-+ 
++
 + function AuthLayoutComponent() {
 +   return (
 +     <AppLayout>
 +       <Outlet />
 +     </AppLayout>
 +   )
-+ } 
++ }
 ```
 
 ---
@@ -467,7 +473,7 @@ Now let's clean up the individual route files since they no longer need to wrap 
   import { createFileRoute } from '@tanstack/react-router';
 - import { AppLayout } from '@/domains/ui-system/components/app-layout';
   import { AccountIndexScreen } from '@/domains/accounts/screens/index';
-  
+
 ```
 
 ---
@@ -476,11 +482,11 @@ Now let's clean up the individual route files since they no longer need to wrap 
   import { createFileRoute } from '@tanstack/react-router';
 - import { AppLayout } from '@/domains/ui-system/components/app-layout';
   import BrokerRootScreen from '@/domains/broker/screens/main';
-  
+
 ```
 
 ```diff
-  
+
   function RouteComponent() {
 -   return (
 -     <AppLayout>
@@ -489,7 +495,7 @@ Now let's clean up the individual route files since they no longer need to wrap 
 -   );
 +   return <BrokerRootScreen />;
   }
-  
+
 ```
 
 ---
@@ -524,12 +530,12 @@ Now let's clean up the individual route files since they no longer need to wrap 
 ```diff
   import { createFileRoute } from '@tanstack/react-router';
 - import { AppLayout } from '@/domains/ui-system/components/app-layout';
-  
+
   export const Route = createFileRoute('/(auth)/settings/')({
 ```
 
 ```diff
-  
+
   function RouteComponent() {
 -   return (
 -     <AppLayout>
@@ -538,7 +544,7 @@ Now let's clean up the individual route files since they no longer need to wrap 
 -   );
 +   return <div>Hello "/(auth)/settings/"!</div>;
   }
-  
+
 ```
 
 ---
@@ -551,7 +557,7 @@ Perfect! Now I've created a pathless layout for all your authenticated routes. H
    - This creates a pathless layout that wraps ALL routes inside the `(auth)` directory
    - It uses the `AppLayout` component to provide consistent UI structure
 
-2. **Cleaned Up Individual Routes**: 
+2. **Cleaned Up Individual Routes**:
    - Removed duplicate `AppLayout` wrappers from individual route components
    - Now each route focuses only on its specific content
 
@@ -562,7 +568,7 @@ routes/
 ├── (auth)/
 │   ├── route.tsx              // 🎯 Pathless layout - wraps ALL child routes
 │   ├── dashboard/index.tsx    // Gets AppLayout automatically
-│   ├── accounts/index.tsx     // Gets AppLayout automatically  
+│   ├── accounts/index.tsx     // Gets AppLayout automatically
 │   ├── brokers/index.tsx      // Gets AppLayout automatically
 │   ├── settings/index.tsx     // Gets AppLayout automatically
 │   └── accounts/$slug/        // All nested routes get AppLayout too
@@ -593,7 +599,7 @@ The pathless layout doesn't affect your URLs at all - it just provides the commo
 
 _**User**_
 
-Wooooowwww!    So good! On the last month you were struggling with that, but now this is the best solution i've seen...and by far!!!! 
+Wooooowwww! So good! On the last month you were struggling with that, but now this is the best solution i've seen...and by far!!!!
 
 What happened? :)
 
@@ -601,7 +607,7 @@ What happened? :)
 
 _**Assistant**_
 
-Thank you so much! 😊 That's incredibly kind of you to say! 
+Thank you so much! 😊 That's incredibly kind of you to say!
 
 I think what happened is a combination of a few things:
 
@@ -631,57 +637,57 @@ a .md file named "tanstack-router-layouts" ?
 
 _**Assistant**_
 
-```diff
-- 
+````diff
+-
 + # TanStack Router Layouts Guide
-+ 
++
 + ## Overview
-+ 
++
 + This guide covers how to implement layouts in TanStack Router, with a focus on pathless layouts which provide shared UI components across multiple routes without affecting URL structure.
-+ 
++
 + ## Table of Contents
-+ 
++
 + - [Layout Types](#layout-types)
 + - [Pathless Layouts](#pathless-layouts)
 + - [Implementation in Our Project](#implementation-in-our-project)
 + - [Benefits](#benefits)
 + - [Best Practices](#best-practices)
 + - [Examples](#examples)
-+ 
++
 + ## Layout Types
-+ 
++
 + TanStack Router supports several types of layouts:
-+ 
++
 + ### 1. Regular Layout Routes
 + - Create URL path segments
 + - Nest child routes under the layout path
 + - Example: `dashboard.tsx` creates `/dashboard` path
-+ 
++
 + ### 2. Pathless Layout Routes
 + - **No URL path segments added**
 + - Wrap child routes with shared UI
 + - Use `_` prefix for files/folders
 + - Example: `_dashboard.tsx` provides layout without `/dashboard` path
-+ 
++
 + ### 3. Layout Route Groups
 + - Use `()` for organizational grouping
 + - Don't affect URL structure
 + - Example: `(auth)/` groups authenticated routes
-+ 
++
 + ## Pathless Layouts
-+ 
++
 + ### Purpose
-+ 
++
 + Pathless layouts solve the common problem of wanting to share UI components across routes without forcing a hierarchical URL structure.
-+ 
++
 + **Use Cases:**
 + - Shared navigation, headers, sidebars
 + - Common authentication wrappers
 + - Consistent styling across route groups
 + - Organizational benefits without URL impact
-+ 
++
 + ### File Structure Options
-+ 
++
 + #### Option 1: Single File
 + ```
 + routes/
@@ -689,7 +695,7 @@ _**Assistant**_
 + ├── _layout.dashboard.tsx // /dashboard
 + ├── _layout.settings.tsx  // /settings
 + ```
-+ 
++
 + #### Option 2: Directory Structure (Recommended)
 + ```
 + routes/
@@ -699,13 +705,13 @@ _**Assistant**_
 + │   ├── settings.tsx     // /settings
 + │   └── users.tsx        // /users
 + ```
-+ 
++
 + ## Implementation in Our Project
-+ 
++
 + ### Our Structure
-+ 
++
 + We implemented a pathless layout for all authenticated routes using the `(auth)` group directory:
-+ 
++
 + ```
 + routes/
 + ├── (auth)/
@@ -719,18 +725,18 @@ _**Assistant**_
 + │       ├── credit-card/index.tsx // /accounts/123/credit-card
 + │       └── statements/index.tsx  // /accounts/123/statements
 + ```
-+ 
++
 + ### Layout Component
-+ 
++
 + ```tsx
 + // app/routes/(auth)/route.tsx
 + import { createFileRoute, Outlet } from '@tanstack/react-router'
 + import { AppLayout } from '@/domains/ui-system/components/app-layout'
-+ 
++
 + export const Route = createFileRoute('/(auth)')({
 +   component: AuthLayoutComponent,
 + })
-+ 
++
 + function AuthLayoutComponent() {
 +   return (
 +     <AppLayout>
@@ -739,17 +745,17 @@ _**Assistant**_
 +   )
 + }
 + ```
-+ 
++
 + ### Child Route Example
-+ 
++
 + ```tsx
 + // app/routes/(auth)/dashboard/index.tsx
 + import { createFileRoute } from '@tanstack/react-router'
-+ 
++
 + export const Route = createFileRoute('/(auth)/dashboard/')({
 +   component: DashboardComponent,
 + })
-+ 
++
 + function DashboardComponent() {
 +   // No need to wrap with AppLayout - it's automatic!
 +   return (
@@ -760,31 +766,31 @@ _**Assistant**_
 +   )
 + }
 + ```
-+ 
++
 + ## Benefits
-+ 
++
 + ### 1. **DRY Principle**
 + - No duplicate layout code across routes
 + - Single source of truth for shared UI
-+ 
++
 + ### 2. **Clean URLs**
 + - `/dashboard` instead of `/auth/dashboard`
 + - Flexible URL design without sacrificing organization
-+ 
++
 + ### 3. **Automatic Inheritance**
 + - New routes automatically get the layout
 + - No need to remember to wrap components
-+ 
++
 + ### 4. **Easy Maintenance**
 + - Change layout once, affects all child routes
 + - Centralized styling and structure updates
-+ 
++
 + ### 5. **Type Safety**
 + - Full TypeScript support maintained
 + - Route params and search params work normally
-+ 
++
 + ## Best Practices
-+ 
++
 + ### 1. **Use Directory Structure**
 + ```tsx
 + // ✅ Recommended
@@ -793,14 +799,14 @@ _**Assistant**_
 + │   ├── route.tsx
 + │   ├── dashboard.tsx
 + │   └── settings.tsx
-+ 
++
 + // ❌ Avoid for complex layouts
 + routes/
 + ├── _authenticated.tsx
 + ├── _authenticated.dashboard.tsx
 + ├── _authenticated.settings.tsx
 + ```
-+ 
++
 + ### 2. **Keep Layout Components Simple**
 + ```tsx
 + // ✅ Good - focused on layout structure
@@ -816,7 +822,7 @@ _**Assistant**_
 +     </div>
 +   )
 + }
-+ 
++
 + // ❌ Avoid - too much business logic
 + function AuthLayout() {
 +   const [user, setUser] = useState()
@@ -825,7 +831,7 @@ _**Assistant**_
 +   return (/* complex JSX */)
 + }
 + ```
-+ 
++
 + ### 3. **Use Meaningful Names**
 + ```tsx
 + // ✅ Clear purpose
@@ -833,14 +839,14 @@ _**Assistant**_
 + ├── _authenticated/
 + ├── _dashboard/
 + ├── _admin/
-+ 
++
 + // ❌ Generic names
 + routes/
 + ├── _layout1/
 + ├── _wrapper/
 + ├── _container/
 + ```
-+ 
++
 + ### 4. **Leverage Route Groups**
 + ```tsx
 + // ✅ Combine pathless layouts with route groups
@@ -853,9 +859,9 @@ _**Assistant**_
 + │   ├── login.tsx
 + │   └── register.tsx
 + ```
-+ 
++
 + ## Examples
-+ 
++
 + ### Authentication Layout
 + ```tsx
 + // routes/(auth)/route.tsx
@@ -867,7 +873,7 @@ _**Assistant**_
 +     }
 +   }
 + })
-+ 
++
 + function AuthLayout() {
 +   return (
 +     <div className="min-h-screen bg-gray-50">
@@ -882,7 +888,7 @@ _**Assistant**_
 +   )
 + }
 + ```
-+ 
++
 + ### Admin Dashboard Layout
 + ```tsx
 + // routes/(admin)/route.tsx
@@ -894,7 +900,7 @@ _**Assistant**_
 +     }
 +   }
 + })
-+ 
++
 + function AdminLayout() {
 +   return (
 +     <div className="admin-layout">
@@ -909,23 +915,23 @@ _**Assistant**_
 +   )
 + }
 + ```
-+ 
++
 + ### Mobile-Responsive Layout
 + ```tsx
 + // routes/_mobile/route.tsx
 + export const Route = createFileRoute('/_mobile')({
 +   component: MobileLayout,
 + })
-+ 
++
 + function MobileLayout() {
 +   const [sidebarOpen, setSidebarOpen] = useState(false)
-+   
++
 +   return (
 +     <div className="mobile-layout">
 +       <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
-+       <MobileSidebar 
-+         isOpen={sidebarOpen} 
-+         onClose={() => setSidebarOpen(false)} 
++       <MobileSidebar
++         isOpen={sidebarOpen}
++         onClose={() => setSidebarOpen(false)}
 +       />
 +       <main className="mobile-main">
 +         <Outlet />
@@ -934,11 +940,11 @@ _**Assistant**_
 +   )
 + }
 + ```
-+ 
++
 + ## URL Mapping Examples
-+ 
++
 + With our `(auth)` pathless layout:
-+ 
++
 + | URL Path | Rendered Components |
 + |----------|-------------------|
 + | `/dashboard` | `<AppLayout><Dashboard>` |
@@ -947,73 +953,79 @@ _**Assistant**_
 + | `/accounts/123/credit-card` | `<AppLayout><CreditCard>` |
 + | `/brokers` | `<AppLayout><BrokerIndex>` |
 + | `/settings` | `<AppLayout><Settings>` |
-+ 
++
 + ## Troubleshooting
-+ 
++
 + ### Common Issues
-+ 
++
 + 1. **Layout not applying to new routes**
 +    - Ensure the route file is inside the pathless layout directory
 +    - Check that the route path matches the expected pattern
-+ 
++
 + 2. **Duplicate layouts**
 +    - Remove manual layout wrappers from child components
 +    - Let the pathless layout handle all wrapping
-+ 
++
 + 3. **TypeScript errors**
 +    - Ensure `createFileRoute` path matches the actual file path
 +    - Use the Router CLI to auto-generate route paths
-+ 
++
 + ### Migration Tips
-+ 
++
 + When converting existing routes to use pathless layouts:
-+ 
++
 + 1. Create the pathless layout route first
 + 2. Remove layout wrappers from individual route components
 + 3. Test each route to ensure layout is applied correctly
 + 4. Update any route-specific styling that depended on the old structure
-+ 
++
 + ## Conclusion
-+ 
++
 + Pathless layouts in TanStack Router provide an elegant solution for sharing UI across routes without URL complexity. They promote clean code organization, reduce duplication, and maintain flexibility in URL design.
-+ 
-+ The combination of pathless layouts with route groups (like our `(auth)` implementation) creates a powerful pattern for organizing complex applications while maintaining clean, intuitive URLs. 
-```
++
++ The combination of pathless layouts with route groups (like our `(auth)` implementation) creates a powerful pattern for organizing complex applications while maintaining clean, intuitive URLs.
+````
 
 ---
 
-Perfect! I've created comprehensive documentation for TanStack Router layouts in `docs/guides/tanstack-router-layouts.md`. 
+Perfect! I've created comprehensive documentation for TanStack Router layouts in `docs/guides/tanstack-router-layouts.md`.
 
 ## What's Included
 
 The documentation covers:
 
 ### 📚 **Core Concepts**
+
 - Different types of layouts (regular, pathless, route groups)
 - When and why to use pathless layouts
 - File structure options
 
 ### 🏗️ **Our Implementation**
+
 - Detailed explanation of our `(auth)` pathless layout
 - Code examples showing the actual implementation
 - URL mapping examples
 
 ### ✅ **Best Practices**
+
 - Directory structure recommendations
 - How to keep layout components focused
 - Naming conventions
 - Combining pathless layouts with route groups
 
 ### 🛠️ **Practical Examples**
+
 - Authentication layouts with route guards
 - Admin dashboard layouts
 - Mobile-responsive layouts
 
 ### 🔧 **Troubleshooting**
+
 - Common issues and solutions
 - Migration tips for existing projects
 
 ### 📊 **Benefits Summary**
+
 - DRY principle implementation
 - Clean URL structure
 - Automatic inheritance
@@ -1026,7 +1038,7 @@ This documentation will serve as a great reference for the team and can help onb
 
 _**User**_
 
-Perfect 
+Perfect
 
 Now we need a new page and components to create a credit card. A credit card must belong to an account, so our url needs to be like this
 
@@ -1095,7 +1107,7 @@ Now I need to create the credit card types and interfaces first. Let me add the 
 +   created_at: string;
 +   updated_at: string;
 + }
-+ 
++
 + export interface I_CreateCreditCardRequest {
 +   account_id: string;
 +   name: string;
@@ -1104,13 +1116,13 @@ Now I need to create the credit card types and interfaces first. Let me add the 
 +   credit_limit: number;
 +   due_date: number;
 + }
-+ 
++
 + export interface I_CreateCreditCardResponse {
 +   credit_card: I_CreditCard;
 + }
-+ 
++
 + export type T_CreditCardBrand = 'visa' | 'mastercard' | 'american_express' | 'elo' | 'hipercard' | 'other';
-+ 
++
 + // Invoice Related Types
   export interface I_CreditCardRawInvoice {
     total_due: string;
@@ -1128,18 +1140,18 @@ Now I need to create the credit card types and interfaces first. Let me add the 
 +   amount: string;
 +   category: string;
   }
-  
+
 ```
 
 ```diff
-  
+
   export interface I_CreditCardNextDueInfo {
 -   next_due_amount: string;
 -   total_balance_due: string;
 +   amount: string;
 +   balance: string;
   }
-  
+
 ```
 
 ---
@@ -1149,9 +1161,9 @@ Now let's add the credit card constants:
 ---
 
 ```diff
-- 
+-
 + import type { T_CreditCardBrand } from './types-and-interfaces';
-+ 
++
 + export const CREDIT_CARD_BRANDS: { value: T_CreditCardBrand; label: string }[] = [
 +   { value: 'visa', label: 'Visa' },
 +   { value: 'mastercard', label: 'Mastercard' },
@@ -1160,12 +1172,12 @@ Now let's add the credit card constants:
 +   { value: 'hipercard', label: 'Hipercard' },
 +   { value: 'other', label: 'Other' },
 + ];
-+ 
++
 + export const DUE_DATE_OPTIONS = Array.from({ length: 31 }, (_, i) => ({
 +   value: i + 1,
 +   label: `Day ${i + 1}`,
 + }));
-+ 
++
 ```
 
 ---
@@ -1182,7 +1194,7 @@ Now let's update the credit card API to include the create credit card functiona
   } from '@/domains/credit-cards/types/types-and-interfaces';
   import { parsePdf } from '@/server-functions/pdf-parser';
   import { apiClient } from '@/config/api';
-  
+
   export const creditCardApi = {
 +   createCreditCard: async (data: I_CreateCreditCardRequest): Promise<I_CreateCreditCardResponse> => {
 +     const response = await apiClient.post<I_CreateCreditCardResponse>('/credit-cards', data);
@@ -1206,16 +1218,16 @@ Now let's create the hook for creating credit cards:
 ---
 
 ```diff
-- 
+-
 + import { useMutation, useQueryClient } from '@tanstack/react-query';
 + import { useNavigate } from '@tanstack/react-router';
 + import type { I_CreateCreditCardRequest } from '@/domains/credit-cards/types/types-and-interfaces';
 + import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
-+ 
++
 + export const useCreateCreditCard = () => {
 +   const queryClient = useQueryClient();
 +   const navigate = useNavigate();
-+ 
++
 +   const mutation = useMutation({
 +     mutationFn: async (data: I_CreateCreditCardRequest) => {
 +       const response = await creditCardApi.createCreditCard(data);
@@ -1223,12 +1235,12 @@ Now let's create the hook for creating credit cards:
 +     },
 +     onSuccess: (data, variables) => {
 +       console.log('Credit card created successfully:', data);
-+       
++
 +       // Invalidate related queries
 +       queryClient.invalidateQueries({
 +         queryKey: ['accounts', variables.account_id, 'credit-cards'],
 +       });
-+       
++
 +       // Navigate back to the account's credit card page
 +       navigate({
 +         to: '/accounts/$slug/credit-card',
@@ -1239,7 +1251,7 @@ Now let's create the hook for creating credit cards:
 +       console.error('Failed to create credit card:', error.message);
 +     },
 +   });
-+ 
++
 +   return {
 +     mutation,
 +     createCreditCard: mutation.mutate,
@@ -1247,7 +1259,7 @@ Now let's create the hook for creating credit cards:
 +     error: mutation.error,
 +     isSuccess: mutation.isSuccess,
 +   };
-+ }; 
++ };
 ```
 
 ---
@@ -1257,7 +1269,7 @@ Now let's create the credit card form component:
 ---
 
 ```diff
-- 
+-
 + import { useForm } from '@tanstack/react-form';
 + import { Button } from '@/domains/ui-system/components/button';
 + import { Input } from '@/domains/ui-system/components/input';
@@ -1279,14 +1291,14 @@ Now let's create the credit card form component:
 + import { useCreateCreditCard } from '@/domains/credit-cards/hooks/use-create-credit-card';
 + import { CREDIT_CARD_BRANDS, DUE_DATE_OPTIONS } from '@/domains/credit-cards/types/constants';
 + import type { I_CreateCreditCardRequest } from '@/domains/credit-cards/types/types-and-interfaces';
-+ 
++
 + interface Props {
 +   accountId: string;
 + }
-+ 
++
 + export const CreateCreditCardForm = ({ accountId }: Props) => {
 +   const { createCreditCard, isLoading, error } = useCreateCreditCard();
-+ 
++
 +   const form = useForm<I_CreateCreditCardRequest>({
 +     defaultValues: {
 +       account_id: accountId,
@@ -1300,7 +1312,7 @@ Now let's create the credit card form component:
 +       createCreditCard(value);
 +     },
 +   });
-+ 
++
 +   return (
 +     <Card className="w-full max-w-2xl mx-auto">
 +       <CardHeader>
@@ -1343,7 +1355,7 @@ Now let's create the credit card form component:
 +               </div>
 +             )}
 +           </form.Field>
-+ 
++
 +           {/* Card Brand */}
 +           <form.Field name="card_brand">
 +             {(field) => (
@@ -1367,7 +1379,7 @@ Now let's create the credit card form component:
 +               </div>
 +             )}
 +           </form.Field>
-+ 
++
 +           {/* Last Four Digits */}
 +           <form.Field
 +             name="card_number_last_four"
@@ -1397,7 +1409,7 @@ Now let's create the credit card form component:
 +               </div>
 +             )}
 +           </form.Field>
-+ 
++
 +           {/* Credit Limit */}
 +           <form.Field
 +             name="credit_limit"
@@ -1426,7 +1438,7 @@ Now let's create the credit card form component:
 +               </div>
 +             )}
 +           </form.Field>
-+ 
++
 +           {/* Due Date */}
 +           <form.Field name="due_date">
 +             {(field) => (
@@ -1450,14 +1462,14 @@ Now let's create the credit card form component:
 +               </div>
 +             )}
 +           </form.Field>
-+ 
++
 +           {/* Error Display */}
 +           {error && (
 +             <div className="p-4 bg-red-50 border border-red-200 rounded-md">
 +               <p className="text-sm text-red-600">{error.message}</p>
 +             </div>
 +           )}
-+ 
++
 +           {/* Submit Button */}
 +           <div className="flex gap-4">
 +             <Button type="submit" disabled={isLoading} className="flex-1">
@@ -1471,7 +1483,7 @@ Now let's create the credit card form component:
 +       </CardContent>
 +     </Card>
 +   );
-+ }; 
++ };
 ```
 
 ---
@@ -1561,13 +1573,13 @@ Now I understand the issues. Let me fix them:
 ---
 
 ```diff
-- 
+-
 + import * as React from "react"
 + import { cn } from "@/domains/ui-system/utils/index"
-+ 
-+ function Label({ 
-+   className, 
-+   ...props 
++
++ function Label({
++   className,
++   ...props
 + }: React.ComponentProps<"label">) {
 +   return (
 +     <label
@@ -1580,8 +1592,8 @@ Now I understand the issues. Let me fix them:
 +     />
 +   )
 + }
-+ 
-+ export { Label } 
++
++ export { Label }
 ```
 
 ---
@@ -1592,7 +1604,7 @@ Now let me fix the useForm type issue in the credit card form:
 
 ```diff
     const { createCreditCard, isLoading, error } = useCreateCreditCard();
-  
+
 -   const form = useForm<I_CreateCreditCardRequest>({
 +   const form = useForm({
       defaultValues: {
@@ -1759,7 +1771,7 @@ There's no index.ts file, so I need to create one or import the Label component 
 ---
 
 ```diff
-- 
+-
 + export { AppLayout } from './app-layout';
 + export { Avatar, AvatarFallback, AvatarImage } from './avatar';
 + export { Button } from './button';
@@ -1793,7 +1805,7 @@ There's no index.ts file, so I need to create one or import the Label component 
 +   TabsContent,
 +   TabsList,
 +   TabsTrigger,
-+ } from './tabs'; 
++ } from './tabs';
 ```
 
 ---
@@ -1803,23 +1815,23 @@ Now let's create the route for the credit card creation page:
 ---
 
 ```diff
-- 
+-
 + import { createFileRoute } from '@tanstack/react-router';
 + import { CreateCreditCardForm } from '@/domains/credit-cards/components/create-credit-card-form';
-+ 
++
 + export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/new/')({
 +   component: CreateCreditCardRouteComponent,
 + });
-+ 
++
 + function CreateCreditCardRouteComponent() {
 +   const { slug } = Route.useParams();
-+ 
++
 +   return (
 +     <div className="container mx-auto py-8">
 +       <CreateCreditCardForm accountId={slug} />
 +     </div>
 +   );
-+ } 
++ }
 ```
 
 ---
@@ -1836,12 +1848,12 @@ Perfect! Now I've created a complete credit card creation system. Let me also ad
   import { useCreateCreditCardInvoice } from '@/domains/credit-cards/hooks/use-create-credit-card-invoice';
 + import { Button } from '@/domains/ui-system/components/button';
 + import { Plus } from 'lucide-react';
-  
+
   export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
 ```
 
 ```diff
-  
+
     return (
 -     <div>
 -       <h1 className="text-2xl font-bold mb-4">Credit Card for Account: {slug}</h1>
@@ -1858,12 +1870,12 @@ Perfect! Now I've created a complete credit card creation system. Let me also ad
 +           </Button>
 +         </Link>
 +       </div>
-+ 
++
         <p>
           This is where the credit card information or features for account <b>{slug}</b> will be
           displayed.
         </p>
-  
+
 -       <button
 -         type="button"
 -         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
@@ -1903,7 +1915,7 @@ Perfect! Now I've created a complete credit card creation system. Let me also ad
 +             Selected file: <b>{selectedFile.name}</b>
 +           </div>
 +         )}
-  
+
 -       <button
 -         onClick={handleFileUpload}
 -         disabled={mutation.isPending}
@@ -1918,14 +1930,14 @@ Perfect! Now I've created a complete credit card creation system. Let me also ad
 +         >
 +           {mutation.isPending ? 'Processing...' : 'Upload'}
 +         </button>
-  
+
 -       {mutation.isError && (
 -         <div className="mt-2 text-sm text-red-600">{mutation.error.message}</div>
 -       )}
 +         {mutation.isError && (
 +           <div className="text-sm text-red-600">{mutation.error.message}</div>
 +         )}
-  
+
 -       <button
 -         onClick={() => {
 -           if (invoice) {
@@ -1956,7 +1968,7 @@ Perfect! Now I've created a complete credit card creation system. Let me also ad
 +         >
 +           Create Invoice
 +         </button>
-  
+
 -       {mutation.isSuccess && (
 -         <div className="mt-4 p-4 bg-white shadow rounded">
 -           <h2 className="text-lg font-semibold mb-2">Statement Details</h2>
@@ -1980,8 +1992,6 @@ Let me fix the property name to match the interface:
 
 ---
 
-
-
 ---
 
 Perfect! Now I've successfully created a complete credit card creation system. Here's what I've implemented:
@@ -1991,36 +2001,43 @@ Perfect! Now I've successfully created a complete credit card creation system. H
 ### What I've Created:
 
 #### 1. **Types & Interfaces** (`app/domains/credit-cards/types/`)
+
 - ✅ `I_CreditCard` - Main credit card entity
 - ✅ `I_CreateCreditCardRequest` - Request payload for creating credit cards
 - ✅ `I_CreateCreditCardResponse` - API response structure
 - ✅ `T_CreditCardBrand` - Credit card brand types (Visa, Mastercard, etc.)
 
 #### 2. **Constants** (`app/domains/credit-cards/types/constants.ts`)
+
 - ✅ `CREDIT_CARD_BRANDS` - Available credit card brands with labels
 - ✅ `DUE_DATE_OPTIONS` - Days 1-31 for due date selection
 
 #### 3. **API Integration** (`app/domains/credit-cards/api/credit-cards.api.ts`)
+
 - ✅ `createCreditCard()` - API function to create credit cards
 - ✅ Updated existing API with proper endpoint structure
 
 #### 4. **React Hook** (`app/domains/credit-cards/hooks/use-create-credit-card.ts`)
+
 - ✅ `useCreateCreditCard()` - TanStack Query mutation hook
 - ✅ Automatic navigation after successful creation
 - ✅ Query invalidation for cache updates
 - ✅ Error handling
 
 #### 5. **Form Component** (`app/domains/credit-cards/components/create-credit-card-form.tsx`)
+
 - ✅ Beautiful form using TanStack Form + shadcn/ui components
 - ✅ Form validation for all fields
 - ✅ Real-time validation feedback
 - ✅ Proper TypeScript integration
 
 #### 6. **UI Components**
+
 - ✅ Created `Label` component for the ui-system
 - ✅ Updated ui-system components index for proper exports
 
 #### 7. **Route Structure**
+
 - ✅ `/accounts/{accountId}/credit-card/new` - New credit card creation page
 - ✅ Updated existing credit card page with "Add Credit Card" button
 - ✅ Proper navigation and linking
@@ -2050,6 +2067,7 @@ Perfect! Now I've successfully created a complete credit card creation system. H
    - Follows domain-driven architecture
 
 ### 🎯 URL Structure:
+
 - **Create Credit Card:** `/accounts/08cf8602-5fc6-44d2-a36a-0b4ca2195c23/credit-card/new`
 - **Credit Card Index:** `/accounts/08cf8602-5fc6-44d2-a36a-0b4ca2195c23/credit-card`
 
@@ -2070,6 +2088,7 @@ _**Assistant**_
 You're absolutely right! The `$slug.tsx` file inside the `credit-card` directory is incorrect and would create an invalid URL structure.
 
 Looking at your file tree, you have:
+
 ```
 (auth)/
 ├── accounts/
@@ -2097,6 +2116,7 @@ You should rename `$slug.tsx` to `index.tsx` to make it the index route for the 
 ```
 
 This would give you the correct URL structure:
+
 - `/accounts/{accountId}/credit-card/` - Main credit card page
 - `/accounts/{accountId}/credit-card/new/` - Create new credit card page
 
@@ -2118,12 +2138,12 @@ Let me recreate the correct credit card index file:
 
 ```diff
           </button>
-  
+
 -         {mutation.isError && <div className="text-sm text-red-600">{mutation.error.message}</div>}
 +         {mutation.isError && (
 +           <div className="text-sm text-red-600">{mutation.error.message}</div>
 +         )}
-  
+
           <button
 ```
 
@@ -2134,13 +2154,16 @@ Perfect! Now you have the correct file structure. You should **delete the `$slug
 ## Correct URL Structure Now:
 
 ✅ **Correct URLs:**
+
 - `/accounts/bbf445ec-980b-42e2-833d-4dbe16d212f8/credit-card/` - Main credit card page
 - `/accounts/bbf445ec-980b-42e2-833d-4dbe16d212f8/credit-card/new/` - Create new credit card page
 
 ❌ **Previous incorrect URL:**
+
 - `/accounts/bbf445ec-980b-42e2-833d-4dbe16d212f8/credit-card/$slug` - This was wrong!
 
 ## File Structure Should Be:
+
 ```
 routes/
 ├── (auth)/
@@ -2198,28 +2221,28 @@ Let me create the correct structure:
 ---
 
 ```diff
-- 
+-
 + import { createFileRoute } from '@tanstack/react-router';
 + import { useRef } from 'react';
 + import { useParseCreditCardInvoice } from '@/domains/credit-cards/hooks/use-parse-credit-card';
 + import { useCreateCreditCardInvoice } from '@/domains/credit-cards/hooks/use-create-credit-card-invoice';
-+ 
++
 + export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/$creditCardId/')({
 +   component: CreditCardDetailRouteComponent,
 + });
-+ 
++
 + function CreditCardDetailRouteComponent() {
 +   const { slug, creditCardId } = Route.useParams();
 +   const { mutation, invoice, handleFileUpload, handleFileChange, selectedFile } =
 +     useParseCreditCardInvoice();
-+ 
++
 +   const { mutation: createInvoiceMutation } = useCreateCreditCardInvoice();
-+ 
++
 +   const inputRef = useRef<HTMLInputElement>(null);
 +   const handleButtonClick = () => {
 +     inputRef.current?.click();
 +   };
-+ 
++
 +   return (
 +     <div className="space-y-6">
 +       <div className="flex items-center justify-between">
@@ -2230,10 +2253,10 @@ Let me create the correct structure:
 +           </p>
 +         </div>
 +       </div>
-+ 
++
 +       <div className="space-y-4">
 +         <h2 className="text-lg font-semibold">Upload Statement</h2>
-+         
++
 +         <button
 +           type="button"
 +           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
@@ -2241,7 +2264,7 @@ Let me create the correct structure:
 +         >
 +           Select PDF Statement
 +         </button>
-+         
++
 +         <input
 +           ref={inputRef}
 +           type="file"
@@ -2249,13 +2272,13 @@ Let me create the correct structure:
 +           style={{ display: 'none' }}
 +           onChange={handleFileChange}
 +         />
-+         
++
 +         {selectedFile && (
 +           <div className="text-sm text-gray-700">
 +             Selected file: <b>{selectedFile.name}</b>
 +           </div>
 +         )}
-+ 
++
 +         <button
 +           onClick={handleFileUpload}
 +           disabled={mutation.isPending}
@@ -2263,11 +2286,11 @@ Let me create the correct structure:
 +         >
 +           {mutation.isPending ? 'Processing...' : 'Upload & Parse'}
 +         </button>
-+ 
++
 +         {mutation.isError && (
 +           <div className="text-sm text-red-600">{mutation.error.message}</div>
 +         )}
-+ 
++
 +         {invoice && (
 +           <button
 +             onClick={() => {
@@ -2283,7 +2306,7 @@ Let me create the correct structure:
 +             {createInvoiceMutation.isPending ? 'Creating...' : 'Create Invoice'}
 +           </button>
 +         )}
-+ 
++
 +         {mutation.isSuccess && (
 +           <div className="p-4 bg-white shadow rounded">
 +             <h3 className="text-lg font-semibold mb-2">Parsed Statement Details</h3>
@@ -2293,7 +2316,7 @@ Let me create the correct structure:
 +       </div>
 +     </div>
 +   );
-+ } 
++ }
 ```
 
 ---
@@ -2309,25 +2332,25 @@ The TypeScript error is because TanStack Router needs to generate the route type
 - import { useCreateCreditCardInvoice } from '@/domains/credit-cards/hooks/use-create-credit-card-invoice';
   import { Button } from '@/domains/ui-system/components/button';
   import { Plus } from 'lucide-react';
-  
+
   export const Route = createFileRoute('/(auth)/accounts/$slug/credit-card/')({
 -   component: CreditCardRouteComponent,
 +   component: CreditCardIndexRouteComponent,
   });
-  
+
 - function CreditCardRouteComponent() {
 + function CreditCardIndexRouteComponent() {
     const { slug } = Route.useParams();
 -   const { mutation, invoice, handleFileUpload, handleFileChange, selectedFile } =
 -     useParseCreditCardInvoice();
-- 
+-
 -   const { mutation: createInvoiceMutation } = useCreateCreditCardInvoice();
-- 
+-
 -   const inputRef = useRef<HTMLInputElement>(null);
 -   const handleButtonClick = () => {
 -     inputRef.current?.click();
 -   };
-  
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -2345,12 +2368,12 @@ The TypeScript error is because TanStack Router needs to generate the route type
 ```diff
           </Link>
         </div>
-- 
+-
 -       <p>
 -         This is where the credit card information or features for account <b>{slug}</b> will be
 -         displayed.
 -       </p>
-  
+
         <div className="space-y-4">
 -         <button
 -           type="button"
@@ -2371,7 +2394,7 @@ The TypeScript error is because TanStack Router needs to generate the route type
 -             Selected file: <b>{selectedFile.name}</b>
 -           </div>
 -         )}
-- 
+-
 -         <button
 -           onClick={handleFileUpload}
 -           disabled={mutation.isPending}
@@ -2379,9 +2402,9 @@ The TypeScript error is because TanStack Router needs to generate the route type
 -         >
 -           {mutation.isPending ? 'Processing...' : 'Upload'}
 -         </button>
-- 
+-
 -         {mutation.isError && <div className="text-sm text-red-600">{mutation.error.message}</div>}
-- 
+-
 -         <button
 -           onClick={() => {
 -             if (invoice) {
@@ -2397,7 +2420,7 @@ The TypeScript error is because TanStack Router needs to generate the route type
 -         >
 -           Create Invoice
 -         </button>
-- 
+-
 -         {mutation.isSuccess && (
 -           <div className="p-4 bg-white shadow rounded">
 -             <h2 className="text-lg font-semibold mb-2">Statement Details</h2>
@@ -2405,7 +2428,7 @@ The TypeScript error is because TanStack Router needs to generate the route type
 +         <p className="text-gray-600">
 +           Here you can manage all credit cards associated with this account.
 +         </p>
-+         
++
 +         {/* TODO: Add credit card list component here */}
 +         <div className="p-4 border border-gray-200 rounded-lg">
 +           <p className="text-sm text-gray-500">
@@ -2423,8 +2446,6 @@ Now let me fix the individual credit card route by using a simpler approach with
 
 ---
 
-
-
 ---
 
 Let me delete the problematic file and recreate it with a different approach:
@@ -2435,7 +2456,4 @@ Cancelled
 
 ---
 
-
-
 ---
-

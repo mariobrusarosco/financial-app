@@ -20,18 +20,18 @@ TanStack Start stitches together three major layers:
    • Core router engine: file-based or code-based routing, nested layouts, loaders, and mutations.  
    • Fully inferred TypeScript types for paths, parameters, loader data, and search params.
 
-2. **@tanstack/react-start**  
+2. **@tanstack/react-start**
    - **Server Side**  
      • `createStartHandler({ createRouter, getRouterManifest })(defaultStreamHandler)`  
-       – Integrates into your runtime to match routes, execute loaders, and stream HTML.  
+      – Integrates into your runtime to match routes, execute loaders, and stream HTML.  
      • `createServerFn({ method }).handler()`  
-       – Define server-only RPC endpoints alongside your routes.  
+      – Define server-only RPC endpoints alongside your routes.  
      • `getRouterManifest()`  
-       – Serializes your route tree (paths, input/output schemas) into a manifest.
+      – Serializes your route tree (paths, input/output schemas) into a manifest.
 
    - **Client Side**  
      • `<StartClient router={router} />`  
-       – Hydrates server-rendered HTML, restores loader data, and enables client navigation.
+      – Hydrates server-rendered HTML, restores loader data, and enables client navigation.
 
 3. **Vinxi (temporary)**  
    • A Vite plugin that auto-generates the router manifest by scanning `app/routes`.  
@@ -67,15 +67,15 @@ my-app/
 
 ## 4. SSR & Streaming Pipeline
 
-1. **Incoming request** to your serverless function or Node server.  
-2. Invoke the default export from `app/ssr.tsx`:  
+1. **Incoming request** to your serverless function or Node server.
+2. Invoke the default export from `app/ssr.tsx`:
    ```ts
-   export default createStartHandler({ createRouter, getRouterManifest })(defaultStreamHandler)
-   ```  
-3. Internally, Start:  
-   - Reads the route manifest to determine matching routes.  
-   - Executes their `loader()` functions and collects data.  
-   - Uses React 18's `renderToPipeableStream` to stream HTML chunks to the client.  
+   export default createStartHandler({ createRouter, getRouterManifest })(defaultStreamHandler);
+   ```
+3. Internally, Start:
+   - Reads the route manifest to determine matching routes.
+   - Executes their `loader()` functions and collects data.
+   - Uses React 18's `renderToPipeableStream` to stream HTML chunks to the client.
 4. The client receives initial HTML plus an inline JSON payload of loader data for hydration.
 
 ---
@@ -97,20 +97,20 @@ my-app/
 Define server-only functions directly in route files:
 
 ```ts
-const getCount = createServerFn({ method: 'GET' }).handler(async () => readCount())
+const getCount = createServerFn({ method: 'GET' }).handler(async () => readCount());
 
 const updateCount = createServerFn({ method: 'POST' })
   .validator((d: number) => d)
-  .handler(async ({ data }) => writeNewCount(data))
+  .handler(async ({ data }) => writeNewCount(data));
 
 export const Route = createFileRoute('/')({
   component: Home,
   loader: async () => getCount(),
-})
+});
 ```
 
-- `.handler()` code runs **only on the server**.  
-- The client stub issues `fetch('/_start/count?...')` under the hood.  
+- `.handler()` code runs **only on the server**.
+- The client stub issues `fetch('/_start/count?...')` under the hood.
 - HTTP method, validation, and TypeScript typings are fully inferred.
 
 ---
@@ -130,12 +130,12 @@ export const Route = createFileRoute('/')({
 
 ## 8. Build & Deployment
 
-1. `vite build` generates:  
-   - Client bundle (static assets)  
+1. `vite build` generates:
+   - Client bundle (static assets)
    - Server bundle (`ssr.tsx` + manifest)
 
-2. Deploy anywhere JS runs:  
-   - Node server, serverless (Netlify, Vercel), or edge (Cloudflare Workers).  
+2. Deploy anywhere JS runs:
+   - Node server, serverless (Netlify, Vercel), or edge (Cloudflare Workers).
    - The exported SSR handler plugs into your chosen runtime.
 
 > "TanStack Start can be deployed anywhere JS can run." — [Start homepage][3]
@@ -145,6 +145,7 @@ export const Route = createFileRoute('/')({
 ## 9. Tooling & Configuration
 
 **`tsconfig.json`**
+
 ```jsonc
 {
   "compilerOptions": {
@@ -152,31 +153,29 @@ export const Route = createFileRoute('/')({
     "moduleResolution": "Bundler",
     "module": "Preserve",
     "target": "ES2022",
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+  },
 }
 ```
 
 **`vite.config.ts`**
+
 ```ts
-import react from '@vitejs/plugin-react'
-import vinxi from 'vinxi'
+import react from '@vitejs/plugin-react';
+import vinxi from 'vinxi';
 
 export default {
-  plugins: [
-    vinxi({ routesDir: 'app/routes', ssrEntry: 'app/ssr.tsx' }),
-    react(),
-  ],
+  plugins: [vinxi({ routesDir: 'app/routes', ssrEntry: 'app/ssr.tsx' }), react()],
   build: { ssr: true },
-}
+};
 ```
 
 ---
 
 ## 10. Roadmap & Beta Notes
 
-- **Status: BETA** — APIs may evolve, though breaking changes near v1.0 are expected to be rare.  
-- **Vinxi → Start CLI** — upcoming dedicated CLI/Vite plugin for simpler setup.  
+- **Status: BETA** — APIs may evolve, though breaking changes near v1.0 are expected to be rare.
+- **Vinxi → Start CLI** — upcoming dedicated CLI/Vite plugin for simpler setup.
 - **Multi-framework support** — beyond React, Solid is also supported.
 
 ---
@@ -189,4 +188,4 @@ export default {
 
 [1]: https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start
 [2]: https://tanstack.com/start/latest/docs/framework/react/getting-started
-[3]: https://tanstack.com/start/ 
+[3]: https://tanstack.com/start/

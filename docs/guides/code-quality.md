@@ -9,6 +9,7 @@ ESLint checks your code for potential errors and enforces our coding standards.
 ### Setup
 
 ESLint is already configured in the project with the following plugins:
+
 - TypeScript ESLint for TypeScript support
 - React and React Hooks plugins for React best practices
 - Prettier integration to avoid conflicts
@@ -33,6 +34,7 @@ Our ESLint configuration (`.eslintrc.js`) includes:
 - Custom rules aligned with our project needs
 
 Key rules include:
+
 - No unused variables (with ignore patterns for variables starting with `_`)
 - Warning on `any` type usage
 - No console statements (except warnings and errors)
@@ -48,12 +50,7 @@ If you're using VS Code, install the ESLint extension and add to your `settings.
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript", 
-    "typescriptreact"
-  ]
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }
 ```
 
@@ -124,10 +121,7 @@ Then add to your `package.json`:
 ```json
 {
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
     "*.{json,md}": "prettier --write"
   }
 }
@@ -152,4 +146,4 @@ Then add to your `package.json`:
 - [ESLint Documentation](https://eslint.org/docs/user-guide/getting-started)
 - [Prettier Documentation](https://prettier.io/docs/en/index.html)
 - [ESLint TypeScript Plugin](https://github.com/typescript-eslint/typescript-eslint)
-- [ESLint React Plugin](https://github.com/jsx-eslint/eslint-plugin-react) 
+- [ESLint React Plugin](https://github.com/jsx-eslint/eslint-plugin-react)

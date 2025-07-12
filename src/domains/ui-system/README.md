@@ -24,4 +24,4 @@ function MyComponent() {
 
 ## Theme
 
-The UI system supports light and dark modes with the Rose theme from shadcn/ui. 
+The UI system supports light and dark modes with the Rose theme from shadcn/ui.

@@ -4,7 +4,7 @@
 
 _**User**_
 
-Using this url @https://tanstack.com/start/latest/docs/framework/react/quick-start 
+Using this url @https://tanstack.com/start/latest/docs/framework/react/quick-start
 
 Create a project for me
 
@@ -28,6 +28,7 @@ npm run dev
 ```
 
 This will:
+
 1. Clone the basic example repository
 2. Navigate into the project directory
 3. Install all dependencies
@@ -92,7 +93,4 @@ Is there something specific you're looking to find in your project directory? I'
 
 ---
 
-
-
 ---
-

@@ -46,6 +46,7 @@ The `global` domain contains code that is shared across all other domains:
 - Theme definitions
 
 **Rules for Global Domain:**
+
 - Code in the global domain should be truly application-wide
 - Avoid domain-specific logic in global components
 - Keep dependencies minimal and well-documented
@@ -61,6 +62,7 @@ The `tools` domain contains infrastructure and cross-cutting tools:
 - Performance utilities
 
 **Rules for Tools Domain:**
+
 - Tools should be easily configurable
 - Provide clear documentation for each tool
 - Keep implementation details encapsulated
@@ -75,7 +77,8 @@ The `testing` domain contains test utilities and configuration, but not actual t
 - Test fixtures
 
 **Rules for Testing Domain:**
-- Actual test files (*.test.ts) should be co-located with the code they test
+
+- Actual test files (\*.test.ts) should be co-located with the code they test
 - Testing domain should only contain shared test infrastructure
 
 ## Coding Conventions
@@ -145,4 +148,4 @@ export type { FeatureData } from './schemas/feature.schema';
 2. Minimize dependencies between domains
 3. Write domain-specific tests for each domain
 4. Document public APIs of each domain
-5. Follow the Single Responsibility Principle for files and components 
+5. Follow the Single Responsibility Principle for files and components

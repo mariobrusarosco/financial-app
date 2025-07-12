@@ -603,7 +603,6 @@ The remaining TypeScript error about not finding the AI module will be resolved 
 
 1. Installed the AI SDK with `npm install openai`
 2. Created an AI service in `app/core/api/services/openai.ts` that:
-
    - Defines an `ExpenseAnalysisResult` interface with the required fields
    - Implements an `analyzeExpense` method that uses the AI Chat API
    - Extracts structured information from expense descriptions
@@ -986,12 +985,10 @@ Let me explain the changes we made to the AI service:
 We've significantly improved the AI integration by:
 
 1. **Using Zod for Schema Validation**:
-
    - Created a proper Zod schema for the expense analysis response
    - Defined the type using `z.infer<typeof ExpenseAnalysisSchema>` for better type safety
 
 2. **Structured Output with AI's Beta API**:
-
    - Replaced the manual JSON parsing with AI's structured output capabilities
    - Used `openai.beta.chat.completions.parse` method which returns properly typed objects
    - Implemented `zodResponseFormat` from 'openai/helpers/zod' to specify the expected response format
@@ -1578,7 +1575,6 @@ What we've done to fix the hydration mismatch:
 1. **Server-Side Detection**: Added checks in both components to detect if we're running on the server-side or client-side.
 
 2. **Client-Side Only Rendering**: Implemented a progressive enhancement approach where:
-
    - We don't try to access client-only features (like the AI API) on the server
    - We defer rendering dynamic content until after component mount on the client
    - We show loading skeletons during initial rendering
@@ -2764,7 +2760,6 @@ I need to address multiple issues from the user's input:
 Let's address these issues one by one:
 
 1. First, let's check if we need to install the new package:
-
    - We need to update imports from @tanstack/start to @tanstack/react-start
    - We need to update Meta to HeadContent from @tanstack/react-router
    - We need to update ScrollRestoration and Scripts to be imported from @tanstack/react-router
@@ -4266,13 +4261,11 @@ _\*\*\*\*_
 The issues you're experiencing are directly related to the dependency conflicts. We've taken several important steps to resolve them:
 
 1. **Updated package.json with compatible versions**:
-
    - Changed TanStack libraries to use version 1.14.6 instead of 1.85.x
    - Changed React and React DOM to use 18.2.0 instead of 18.3.1
    - Fixed the @tanstack/react-form version to 0.14.0 (a version that exists)
 
 2. **Created a ClientOnly component**:
-
    - This component only renders its children on the client side, not during server-side rendering
    - This prevents hydration mismatches by ensuring that components with browser-specific behavior don't try to render on the server
 
@@ -5246,12 +5239,10 @@ I've fixed the API endpoint issue! The problem was that we needed to create the 
 ### Here's what I did:
 
 1. **Created a proper API route structure**:
-
    - Made a new folder at `routes/api` (at the root level, not inside `app/`)
    - Added the `analyze-expense.ts` file with a POST handler export
 
 2. **Updated the AI service**:
-
    - Kept the client-side code to fetch from `/api/analyze-expense`
    - Added better error handling for JSON parsing
 
@@ -5292,7 +5283,6 @@ I apologize for the confusion. It seems the API endpoint is still not working co
 1. The user is seeing a 404 for http://localhost:3001/api/analyze-expense - which means our API endpoint isn't being registered properly.
 
 2. We have different approaches:
-
    - We created `routes/api/analyze-expense.ts` with the POST export
    - We tried `app/routes/api.analyze-expense.ts` with TanStack Router's createFileRoute
 
@@ -6296,13 +6286,11 @@ Perfect! I've now properly implemented the AI expense analysis using TanStack Se
    ```
 
 2. **Created a proper server function**
-
    - Created `app/server/openai.ts` with a server function using `createServerFn()`
    - Added proper validation with Zod schema
    - Moved the AI API logic to the server function where it belongs
 
 3. **Updated the AI service**
-
    - Simplified to just call the server function
    - Maintained compatibility with the rest of your code
    - Properly handled server-side rendering cases
@@ -6354,7 +6342,6 @@ _**Assistant**_
 The user has shared the output of what appears to be a response from the AI expense analysis, which is a JSON object with expense details. Let me analyze the current state of the code and identify any issues:
 
 1. Looking at the returned JSON, I see that some field names don't match our schema:
-
    - We have `currency_symbol` but our schema expects `currencySymbol`
    - We have `payment_method` but our schema expects `paymentMethod`
    - We have `bank_information` but our schema expects `bank`
@@ -6459,20 +6446,17 @@ Perfect! I've made several important improvements to the server function:
 ### Key Changes Made:
 
 1. **Updated the API Method**:
-
    - Changed from the beta `parse()` method to standard `create()` method
    - Added `response_format: { type: 'json_object' }` for structured output
    - Switched to `gpt-3.5-turbo` which is more cost-effective and still works well for this case
 
 2. **Improved Response Handling**:
-
    - Added field mapping to handle both camelCase and snake_case keys in the response
    - Added number conversion for the amount field
    - Implemented explicit validation against the schema
    - Added better error handling for parsing issues
 
 3. **Enhanced Prompt**:
-
    - Explicitly requested camelCase in the system prompt
    - Provided a clear JSON schema example in the prompt
    - Set a lower temperature (0.2) for more consistent formatting
@@ -6584,7 +6568,6 @@ Perfect! I've updated the implementation to properly use AI's structured outputs
 2. **Enhanced the System Prompt** - Added a clear JSON schema in the prompt that shows the exact format we want, with camelCase property names
 
 3. **Kept Field Transformation** - Even though we're using structured outputs, I've maintained the transformation logic as a safety net:
-
    - Handles both camelCase and snake_case keys
    - Properly converts amount to a number
    - Falls back to provided values when needed
@@ -7591,21 +7574,18 @@ Great! I've implemented a complete PDF Bank Invoice Processor feature for your f
 ### Here's what I've built:
 
 1. **PDF Upload Component**
-
    - Created a modern, user-friendly PDF uploader
    - Added drag-and-drop support
    - Implemented file validation for PDF type and size
    - Included visual indicators for processing state
 
 2. **API Endpoint for Processing PDFs**
-
    - Set up a `/api/process-bank-invoice` route
    - Added PDF text extraction with pdf-parse
    - Integrated AI for intelligent document analysis
    - Implemented proper error handling
 
 3. **Bank Invoice Page**
-
    - Created a dedicated page at `/bank-invoice`
    - Added a clear UI for uploading statements
    - Built an elegant results view showing:

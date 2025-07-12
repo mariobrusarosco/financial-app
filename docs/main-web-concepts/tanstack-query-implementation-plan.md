@@ -3,12 +3,15 @@
 ## 5. Implementation Phases
 
 ### Phase 1: Basic Setup
+
 1. Install dependencies
+
    ```bash
    npm install @tanstack/react-query @tanstack/react-query-devtools
    ```
 
 2. Configure QueryClient
+
    ```typescript
    // app/lib/react-query.ts
    import { QueryClient } from '@tanstack/react-query';
@@ -25,6 +28,7 @@
    ```
 
 3. Set up QueryClientProvider
+
    ```typescript
    // app/root.tsx
    import { QueryClientProvider } from '@tanstack/react-query';
@@ -47,7 +51,9 @@
    - Shows query states and cache
 
 ### Phase 2: API Layer
+
 1. Create API module for credit card operations
+
    ```typescript
    // app/domains/credit-cards/api.ts
    import { ICreditCardStatement } from './types/interfaces';
@@ -71,6 +77,7 @@
    ```
 
 2. Implement error handling
+
    ```typescript
    // app/lib/api-error.ts
    export class ApiError extends Error {
@@ -86,15 +93,12 @@
 
    export function handleApiError(error: unknown): ApiError {
      if (error instanceof ApiError) return error;
-     return new ApiError(
-       'An unexpected error occurred',
-       500,
-       'UNKNOWN_ERROR'
-     );
+     return new ApiError('An unexpected error occurred', 500, 'UNKNOWN_ERROR');
    }
    ```
 
 3. Add type safety with interfaces
+
    ```typescript
    // app/domains/credit-cards/types/api.ts
    import { ICreditCardStatement } from './interfaces';

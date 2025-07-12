@@ -19,6 +19,7 @@ The CI/CD pipeline is defined in the following GitHub Actions workflow files:
 ## CI Workflow
 
 The CI workflow runs automatically on:
+
 - All pull requests to the `main` branch
 - All pushes to the `main` branch
 
@@ -37,6 +38,7 @@ The CI workflow runs automatically on:
 ### Viewing CI Results
 
 You can view the results of CI runs:
+
 1. Go to the GitHub repository
 2. Click on "Actions" tab
 3. Find the relevant workflow run
@@ -92,4 +94,4 @@ To add new steps to the CI/CD pipeline:
 1. Fork the repository
 2. Edit the workflow files in `.github/workflows/`
 3. Create a pull request with your changes
-4. Include detailed explanation of the changes in the PR description 
+4. Include detailed explanation of the changes in the PR description

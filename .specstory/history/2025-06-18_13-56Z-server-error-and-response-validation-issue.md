@@ -4,63 +4,62 @@
 
 _**User**_
 
-
 [2025-06-18 10:56:06,312] ERROR in app.core.error_handlers: ❌ Server Error: GET http://localhost:8000/api/v1/credit_cards/631fe42e-88f7-4f93-9eec-107a25a36a64
 [2025-06-18 10:56:06,312] ERROR in app.core.error_handlers: 💥 Exception: 1 validation errors:
-  {'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+{'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
 
-ERROR:    Exception in ASGI application
+ERROR: Exception in ASGI application
 Traceback (most recent call last):
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 412, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 84, in __call__
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\applications.py", line 1054, in __call__
-    await super().__call__(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\applications.py", line 113, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\errors.py", line 187, in __call__
-    raise exc
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
-    await self.app(scope, receive, _send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
-    await self.simple_response(scope, receive, send, request_headers=headers)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
-    await self.app(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
-    raise exc
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 715, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 735, in app
-    await route.handle(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 288, in handle
-    await self.app(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 76, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrapped_app
-    raise exc
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 73, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\routing.py", line 327, in app
-    content = await serialize_response(
-              ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\routing.py", line 176, in serialize_response
-    raise ResponseValidationError(
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 412, in run_asgi
+result = await app( # type: ignore[func-returns-value]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 84, in **call**
+return await self.app(scope, receive, send)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\applications.py", line 1054, in **call**
+await super().**call**(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\applications.py", line 113, in **call**
+await self.middleware_stack(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\errors.py", line 187, in **call**
+raise exc
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\errors.py", line 165, in **call**
+await self.app(scope, receive, \_send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\cors.py", line 93, in **call**
+await self.simple_response(scope, receive, send, request_headers=headers)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+await self.app(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in **call**
+await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette_exception_handler.py", line 62, in wrapped_app
+raise exc
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette_exception_handler.py", line 51, in wrapped_app
+await app(scope, receive, sender)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 715, in **call**
+await self.middleware_stack(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 735, in app
+await route.handle(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 288, in handle
+await self.app(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 76, in app
+await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette_exception_handler.py", line 62, in wrapped_app
+raise exc
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette_exception_handler.py", line 51, in wrapped_app
+await app(scope, receive, sender)
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\starlette\routing.py", line 73, in app
+response = await f(request)
+^^^^^^^^^^^^^^^^
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\routing.py", line 327, in app
+content = await serialize_response(
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\mario\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\pypoetry\Cache\virtualenvs\better-call-buffet-wwl6FCvW-py3.12\Lib\site-packages\fastapi\routing.py", line 176, in serialize_response
+raise ResponseValidationError(
 fastapi.exceptions.ResponseValidationError: 1 validation errors:
-  {'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+{'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
 
 [2025-06-18 10:56:10,632] ERROR in app.core.error_handlers: ❌ Server Error: GET http://localhost:8000/api/v1/credit_cards/631fe42e-88f7-4f93-9eec-107a25a36a64
 [2025-06-18 10:56:10,632] ERROR in app.core.error_handlers: 💥 Exception: 1 validation errors:
-  {'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+{'type': 'model_attributes_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
 
 ---
 
@@ -106,4 +105,3 @@ Let's first look at how this endpoint is being called in the frontend code.
 </details>
 
 ---
-

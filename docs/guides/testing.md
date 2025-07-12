@@ -81,7 +81,7 @@ import { UserProfile } from './user-profile';
 describe('UserProfile', () => {
   it('displays user information', () => {
     render(<UserProfile name="John Doe" email="john@example.com" />);
-    
+
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('john@example.com')).toBeInTheDocument();
   });
@@ -99,11 +99,11 @@ import { useCounter } from './use-counter';
 describe('useCounter', () => {
   it('increments counter', () => {
     const { result } = renderHook(() => useCounter());
-    
+
     act(() => {
       result.current.increment();
     });
-    
+
     expect(result.current.count).toBe(1);
   });
 });
@@ -141,7 +141,7 @@ describe('UserProfile', () => {
   it('loads user data', async () => {
     // Setup mock implementation
     fetchUserData.mockResolvedValue({ name: 'John', email: 'john@example.com' });
-    
+
     // Test component
     // ...
   });
@@ -161,6 +161,7 @@ describe('UserProfile', () => {
 ## Coverage Requirements
 
 We aim for:
+
 - 80% statement coverage overall
 - 100% coverage for critical utility functions
 - Test all public API surfaces of components and hooks
@@ -178,4 +179,4 @@ When tests fail:
 
 - [Vitest Documentation](https://vitest.dev/)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
-- [Testing Library Cheatsheet](https://testing-library.com/docs/react-testing-library/cheatsheet/) 
+- [Testing Library Cheatsheet](https://testing-library.com/docs/react-testing-library/cheatsheet/)

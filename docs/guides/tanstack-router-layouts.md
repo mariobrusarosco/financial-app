@@ -333,12 +333,10 @@ With our `(auth)` pathless layout:
 ### Common Issues
 
 1. **Layout not applying to new routes**
-
    - Ensure the route file is inside the pathless layout directory
    - Check that the route path matches the expected pattern
 
 2. **Duplicate layouts**
-
    - Remove manual layout wrappers from child components
    - Let the pathless layout handle all wrapping
 

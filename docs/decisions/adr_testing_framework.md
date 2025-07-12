@@ -1,20 +1,25 @@
 # ADR: Testing Framework - Vitest
 
 ## Status
+
 Accepted
 
 ## Date
+
 2023-11-15
 
 ## Context
+
 For the Better Call Buffet project, we need a comprehensive testing framework that aligns with our technology stack, provides good developer experience, and allows us to test React components, hooks, and utility functions efficiently. The application is built with TanStack Start, which uses Vite as its bundler.
 
 ## Decision
+
 We will use Vitest as our primary testing framework, along with React Testing Library for component testing.
 
 ## Rationale
 
 ### Pros:
+
 1. **Vite Integration**: Vitest is built on top of Vite, the same bundler used by our project, ensuring seamless integration
 2. **Performance**: Significantly faster than Jest, especially for large test suites
 3. **ESM Support**: Native support for ES modules, which aligns with our project structure
@@ -25,6 +30,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 8. **React Testing Library Integration**: Works well with React Testing Library for component testing
 
 ### Cons:
+
 1. **Maturity**: Newer than Jest, potentially with fewer resources and less community support
 2. **Ecosystem**: Smaller ecosystem of plugins and extensions
 3. **Documentation**: Less extensive documentation compared to Jest
@@ -33,6 +39,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 ## Configuration Details
 
 ### Vitest Configuration
+
 - Test files matching: `**/*.test.ts`, `**/*.test.tsx`
 - Environment: jsdom for simulating browser environment
 - Coverage reporting enabled
@@ -40,6 +47,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Mocking capabilities for API calls
 
 ### React Testing Library
+
 - Used for component testing
 - User-centric testing approach
 - Accessibility testing capabilities
@@ -47,6 +55,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 ## Alternatives Considered
 
 ### Jest:
+
 - Industry standard with wide adoption
 - Extensive ecosystem of plugins and extensions
 - More mature with better handling of edge cases
@@ -54,6 +63,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Requires additional configuration for Vite/ESM projects
 
 ### Testing Library + Jest:
+
 - Comprehensive solution
 - Well-documented
 - Larger overhead
@@ -61,6 +71,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Configuration challenges with Vite
 
 ### Cypress for Component Testing:
+
 - Visual testing capabilities
 - Good for end-to-end testing
 - Heavier setup
@@ -68,6 +79,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Better suited for E2E tests which we'll address separately
 
 ## Consequences
+
 - Faster test execution in development
 - Seamless integration with our Vite-based build system
 - Learning curve for developers more familiar with Jest (though mitigated by API compatibility)
@@ -75,9 +87,10 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Better developer experience with faster feedback loops
 
 ## Implementation Notes
+
 - Vitest configuration in `vitest.config.ts`
 - React Testing Library setup for component testing
 - Test utilities in the testing domain
 - Integration with ESLint for test linting
 - CI/CD integration for continuous testing
-- Consider adding UI mode for interactive test debugging 
+- Consider adding UI mode for interactive test debugging
