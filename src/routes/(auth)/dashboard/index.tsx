@@ -1,4 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@ui-system/components/card';
+import { Button } from '@ui-system/components/button';
+import { TrendingUp, Minus, Plus, Target } from 'lucide-react';
 
 export const Route = createFileRoute('/(auth)/dashboard/')({
   component: DashboardPage,

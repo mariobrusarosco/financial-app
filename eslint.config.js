@@ -43,7 +43,7 @@ export default [
   // Layer 3: Strict Rules for the Core Application (TypeScript & React)
   // This is the most important layer, enforcing high-quality code in the app.
   {
-    files: ['app/**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     plugins: {
       '@typescript-eslint': ts,
       react,
