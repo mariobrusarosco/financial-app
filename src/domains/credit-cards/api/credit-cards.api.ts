@@ -1,11 +1,14 @@
 import {
   I_CreditCardInvoiceRequest,
   I_CreditCardInvoiceResponse,
+  I_CreditCardInvoicesResponse,
   I_CreditCardRawInvoice,
   I_CreateCreditCardRequest,
   I_CreateCreditCardResponse,
   I_CreateCreditCardsResponse,
   I_CreditCard,
+  I_CreditCardTransaction,
+  I_CreditCardTransactionsResponse,
 } from '@/domains/credit-cards/types/types-and-interfaces';
 import { parsePdf } from '@/server-functions/pdf-parser';
 import { apiClient } from '@/config/api';
@@ -22,7 +25,7 @@ export const creditCardApi = {
   },
   createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
     const response = await apiClient.post<I_CreditCardInvoiceResponse>(
-      `/credit_cards/invoices`,
+      `/credit_cards/${data.credit_card_id}/invoices`,
       data
     );
     return response.data;
@@ -41,9 +44,16 @@ export const creditCardApi = {
   },
 
   getCreditCardInvoices: async (creditCardId: string) => {
-    const response = await apiClient.get<I_CreditCardInvoiceResponse>(
+    const response = await apiClient.get<I_CreditCardInvoicesResponse>(
       `/credit_cards/${creditCardId}/invoices`
     );
-    return response.data;
+    return response.data.data; // Return just the invoices array
+  },
+
+  getCreditCardTransactions: async (creditCardId: string) => {
+    const response = await apiClient.get<I_CreditCardTransactionsResponse>(
+      `/credit_cards/${creditCardId}/transactions`
+    );
+    return response.data.data; // Return just the transactions array
   },
 };

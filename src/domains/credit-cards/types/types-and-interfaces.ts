@@ -53,14 +53,56 @@ export interface I_CreditCardInvoiceRequest {
   raw_invoice: I_CreditCardRawInvoice;
 }
 
+export interface I_CreditCardInvoice {
+  id: string;
+  credit_card_id: string;
+  broker_id: string;
+  raw_invoice: I_CreditCardRawInvoice;
+  is_deleted: boolean;
+  is_paid: boolean;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface I_CreditCardInvoicesResponse {
+  data: I_CreditCardInvoice[];
+  meta: {
+    has_next: boolean;
+    has_previous: boolean;
+    page: number;
+    per_page: number;
+    total: number;
+  };
+}
+
 export type I_CreditCardInvoiceResponse = string[];
 
 export interface I_CreditCardTransaction {
   id: string;
+  account_id: string | null;
+  credit_card_id: string;
+  broker_id: string;
+  is_paid: boolean;
   date: string;
+  amount: number;
   description: string;
-  amount: string;
+  movement_type: string;
   category: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface I_CreditCardTransactionsResponse {
+  data: I_CreditCardTransaction[];
+  meta: {
+    total: number;
+    page: number;
+    per_page: number;
+    has_next: boolean;
+    has_previous: boolean;
+  };
 }
 
 export interface I_CreditCardInstallmentOption {

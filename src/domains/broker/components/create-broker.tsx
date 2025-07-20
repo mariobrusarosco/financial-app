@@ -28,7 +28,6 @@ const CreateBroker = () => {
           }}
           className="space-y-6"
         >
-          {/* Two Column Grid for broker form */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Column 1: Basic Info */}
             <form.Field
@@ -39,8 +38,8 @@ const CreateBroker = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="block text-sm font-medium">
-                    Broker Name
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Broker Name:
                   </label>
                   <Input
                     id={field.name}
@@ -52,7 +51,7 @@ const CreateBroker = () => {
                     placeholder="Enter broker name"
                   />
                   {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</p>
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
                   )}
                 </div>
               )}
@@ -62,8 +61,8 @@ const CreateBroker = () => {
             <form.Field name="logo">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="block text-sm font-medium">
-                    Broker Logo URL
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Broker Logo URL:
                   </label>
                   <Input
                     id={field.name}
@@ -79,12 +78,11 @@ const CreateBroker = () => {
             </form.Field>
           </div>
 
-          {/* Full Width Description */}
           <form.Field name="description">
             {field => (
               <div className="space-y-2">
-                <label htmlFor={field.name} className="block text-sm font-medium">
-                  Description
+                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  Description:
                 </label>
                 <Input
                   id={field.name}
@@ -99,7 +97,6 @@ const CreateBroker = () => {
             )}
           </form.Field>
 
-          {/* Color Fields Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <form.Field
               name="colors"
@@ -111,8 +108,8 @@ const CreateBroker = () => {
               {field => (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="color1" className="block text-sm font-medium">
-                      Primary Color
+                    <label htmlFor="color1" className="text-sm font-medium text-foreground">
+                      Primary Color:
                     </label>
                     <Input
                       id="color1"
@@ -130,8 +127,8 @@ const CreateBroker = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="color2" className="block text-sm font-medium">
-                      Secondary Color
+                    <label htmlFor="color2" className="text-sm font-medium text-foreground">
+                      Secondary Color:
                     </label>
                     <Input
                       id="color2"
@@ -149,7 +146,7 @@ const CreateBroker = () => {
                   </div>
 
                   {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</p>
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
                   )}
                 </div>
               )}

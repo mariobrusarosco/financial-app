@@ -121,28 +121,74 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
 
       {invoice && (
         <div className="space-y-6">
-          {/* Statement Summary */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Statement Summary</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Total Due</p>
-                <p className="text-2xl font-bold text-foreground">{invoice.total_due}</p>
+          <div className="flex grid-cols-3 gap-4">
+            {/* Statement Summary */}
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-6">Statement Summary</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Total Due</p>
+                  <p className="text-2xl font-bold text-foreground">{invoice.total_due}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Due Date</p>
+                  <p className="text-2xl font-bold text-foreground">{invoice.due_date}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Period</p>
+                  <p className="text-2xl font-bold text-foreground">{invoice.period}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Minimum Payment</p>
+                  <p className="text-2xl font-bold text-foreground">{invoice.min_payment}</p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Due Date</p>
-                <p className="text-2xl font-bold text-foreground">{invoice.due_date}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Period</p>
-                <p className="text-2xl font-bold text-foreground">{invoice.period}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Minimum Payment</p>
-                <p className="text-2xl font-bold text-foreground">{invoice.min_payment}</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
+
+            {/* Installment Options */}
+            {invoice.installment_options.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-6">Installment Options</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="font-semibold">Installments</TableHead>
+                      <TableHead className="text-right font-semibold">Total Amount</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {invoice.installment_options.map((option, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{option.months}x installments</TableCell>
+                        <TableCell className="text-right font-medium">{option.total}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            )}
+
+            {/* Next Due Information */}
+            {invoice.next_due_info && (
+              <Card className="p-6 bg-primary/5 border-primary/20">
+                <h3 className="text-lg font-semibold mb-6">Next Due Information</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Next Due Amount</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {invoice.next_due_info.amount}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Total Balance Due</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {invoice.next_due_info.balance}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
 
           {/* Transactions Section */}
           <Card className="p-6">
@@ -212,50 +258,6 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
               </Table>
             )}
           </Card>
-
-          {/* Installment Options */}
-          {invoice.installment_options.length > 0 && (
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-6">Installment Options</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="font-semibold">Installments</TableHead>
-                    <TableHead className="text-right font-semibold">Total Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoice.installment_options.map((option, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{option.months}x installments</TableCell>
-                      <TableCell className="text-right font-medium">{option.total}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          )}
-
-          {/* Next Due Information */}
-          {invoice.next_due_info && (
-            <Card className="p-6 bg-primary/5 border-primary/20">
-              <h3 className="text-lg font-semibold mb-6">Next Due Information</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Next Due Amount</p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {invoice.next_due_info.amount}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Total Balance Due</p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {invoice.next_due_info.balance}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
 
           {/* Success Message */}
           {createInvoiceMutation.isSuccess && (

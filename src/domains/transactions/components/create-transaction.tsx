@@ -103,9 +103,11 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
           e.preventDefault();
           void form.handleSubmit();
         }}
-        className="space-y-6 grid grid-cols-2 gap-10"
+        className="space-y-6"
       >
-        <div className="flex flex-col gap-4">
+        {/* First Row - 3 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Column 1: Description */}
           <form.Field
             name="description"
             validators={{
@@ -125,7 +127,6 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                   onChange={e => field.handleChange(e.target.value)}
                   placeholder="Enter transaction description"
                 />
-
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
                 )}
@@ -133,59 +134,59 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
             )}
           </form.Field>
 
-          <div className="flex gap-4">
-            <form.Field
-              name="amount"
-              validators={{
-                onChange: ({ value }) => (value === 0 ? 'Amount is required' : undefined),
-              }}
-            >
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
-                    Amount:
-                  </label>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.valueAsNumber || null)}
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
-                  )}
-                </div>
-              )}
-            </form.Field>
+          {/* Column 2: Amount */}
+          <form.Field
+            name="amount"
+            validators={{
+              onChange: ({ value }) => (value === 0 ? 'Amount is required' : undefined),
+            }}
+          >
+            {field => (
+              <div className="space-y-2">
+                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  Amount:
+                </label>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={e => field.handleChange(e.target.valueAsNumber || null)}
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                )}
+              </div>
+            )}
+          </form.Field>
 
-            <form.Field
-              name="date"
-              validators={{
-                onChange: ({ value }) => (!value ? 'Date is required' : undefined),
-              }}
-            >
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
-                    Date:
-                  </label>
-
-                  <TransactionDatePicker date={field.state.value} setDate={field.handleChange} />
-
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
-                  )}
-                </div>
-              )}
-            </form.Field>
-          </div>
+          {/* Column 3: Date */}
+          <form.Field
+            name="date"
+            validators={{
+              onChange: ({ value }) => (!value ? 'Date is required' : undefined),
+            }}
+          >
+            {field => (
+              <div className="space-y-2">
+                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  Date:
+                </label>
+                <TransactionDatePicker date={field.state.value} setDate={field.handleChange} />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                )}
+              </div>
+            )}
+          </form.Field>
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* Second Row - 2 columns for complex fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Column 1: Movement Type */}
           <form.Field
             name="type"
             validators={{
@@ -224,7 +225,7 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
             )}
           </form.Field>
 
-          {/* Category Selection */}
+          {/* Column 2: Category Selection */}
           <form.Field name="category">
             {field => (
               <form.Subscribe
@@ -300,7 +301,10 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
               />
             )}
           </form.Field>
+        </div>
 
+        {/* Third Row - Payment Method Section */}
+        <div className="space-y-4">
           {/* Account/Credit Card Toggle */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-foreground">Payment Method:</label>

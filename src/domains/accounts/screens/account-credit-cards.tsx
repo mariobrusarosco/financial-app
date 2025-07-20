@@ -1,15 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/domains/ui-system/components/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
-import { Plus, CreditCard } from 'lucide-react';
+import { Plus, CreditCard, CreditCardIcon } from 'lucide-react';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
+import { Surface } from '@/domains/global/components/surface';
+import { Separator } from '@/domains/ui-system/components/separator';
+import { Currency } from '@/domains/ui-system/components/currency';
 
 interface AccountCreditCardsScreenProps {
   params: {
@@ -24,6 +20,8 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
     isLoading: isLoadingCreditCards,
     error: errorCreditCards,
   } = useCreditCards(params.slug);
+
+  const accountHasCreditCards = creditCards?.data && creditCards.data.length > 0;
 
   if (isLoadingCreditCards) {
     return (
@@ -42,67 +40,60 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
   }
 
   return (
-    <div className="space-y-6">
-      {/* Credit Cards List */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Credit Cards</CardTitle>
-              <CardDescription>Manage credit cards associated with this account</CardDescription>
-            </div>
-            <Button onClick={openCreditCardCreate}>
-              <Plus className="w-4 h-4 mr-2" />
-              Credit Card
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {creditCards?.data && creditCards.data.length > 0 ? (
-            <div className="space-y-4">
-              {creditCards.data.map(creditCard => (
-                <Link
-                  to="/accounts/$slug/credit-card/$creditCardId"
-                  params={{ slug: params.slug, creditCardId: creditCard.id }}
-                  key={creditCard.id}
-                  className="block"
+    <div className="" data-ui="account-credit-cards-screen">
+      <div className="flex items-center justify-between">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold">Credit Cards</h2>
+          <p className="text-sm text-muted-foreground">Credit cards associated with this account</p>
+        </div>
+        <Button onClick={openCreditCardCreate}>
+          <Plus className="w-4 h-4 mr-2" />
+          Credit Card
+        </Button>
+      </div>
+
+      {accountHasCreditCards && (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {creditCards.data.map(creditCard => (
+            <li key={creditCard.id}>
+              <Link
+                to="/accounts/$slug/credit-card/$creditCardId"
+                params={{ slug: params.slug, creditCardId: creditCard.id }}
+                className="block h-full"
+              >
+                <Surface
+                  hoverable
+                  clickable
+                  variant="elevated"
+                  size="lg"
+                  className="h-48 w-full hover:bg-primary/5 p-4 flex flex-col justify-between"
                 >
-                  <div className="p-4 border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <CreditCard className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">{creditCard.name}</p>
-                        <p className="text-sm text-muted-foreground">{creditCard.brand}</p>
-                      </div>
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center gap-1 mb-3">
+                      <span className="font-medium truncate">{creditCard.name}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {creditCard.last_four_digits}
+                      </span>
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No credit cards yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Add your first credit card to start tracking expenses and statements
-              </p>
-              <Button onClick={openCreditCardCreate}>Credit Card</Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Credit Card Invoices</CardTitle>
-          <CardDescription>Previously uploaded credit card invoices</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">No invoices yet</h3>
-          </div>
-        </CardContent>
-      </Card>
+                  <div className="flex flex-col gap-3 flex-grow">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">Available</span>
+                      <Currency value={1000} autoColor />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">Compromised</span>
+                      <Currency value={4046.5} color="negative" />
+                    </div>
+                  </div>
+                </Surface>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

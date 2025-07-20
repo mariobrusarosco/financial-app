@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
+import { Separator } from '@/domains/ui-system/components/separator';
 import { Upload, FileText } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
@@ -24,9 +25,8 @@ export const AccountStatementsScreen = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Upload Statement Card */}
-      <Card>
+    <div className="flex gap-4">
+      <div data-ui="account-statements-upload">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
@@ -73,10 +73,12 @@ export const AccountStatementsScreen = () => {
             )}
           </div>
         </CardContent>
-      </Card>
+      </div>
+
+      <Separator orientation="vertical" />
 
       {/* Statements History */}
-      <Card>
+      <div data-ui="account-statements-history" className="flex-1">
         <CardHeader>
           <CardTitle>Statement History</CardTitle>
           <CardDescription>Previously uploaded statements for this account</CardDescription>
@@ -94,7 +96,7 @@ export const AccountStatementsScreen = () => {
             </Button>
           </div>
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 };

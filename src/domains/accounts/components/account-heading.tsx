@@ -21,9 +21,12 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
 
   return (
     <div className="flex gap-8 items-center flex-1" data-ui="account-heading">
-      <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
+      <div className="flex flex-col">
+        <p className="text-sm text-muted-foreground">Bank Account</p>
+        <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
+      </div>
 
-      <Tabs value={activeTab} className="space-y-4">
+      <Tabs value={activeTab} className="ml-4">
         <TabsList>
           <Link to="/accounts/$slug" params={{ slug }}>
             <TabsTrigger value="overview" className="flex items-center gap-2">
