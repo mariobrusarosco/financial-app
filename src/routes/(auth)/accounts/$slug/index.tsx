@@ -6,5 +6,6 @@ export const Route = createFileRoute('/(auth)/accounts/$slug/')({
 });
 
 function AccountOverviewComponent() {
-  return <AccountOverviewScreen />;
+  const { slug } = Route.useParams();
+  return <AccountOverviewScreen slug={slug} />;
 }

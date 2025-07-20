@@ -38,10 +38,10 @@ interface CreateTransactionProps {
 
 const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
   const { mutate: createTransaction } = useCreateTransaction();
-  const { data: accounts } = useAccounts();
+  const { data: accounts, isFetching: isFetchingAccounts } = useAccounts();
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [transactionSource, setTransactionSource] = useState<'account' | 'creditCard'>('account'); // UI mode state
-  const { data: creditCards } = useCreditCards(undefined); // Get all credit cards
+  const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards(undefined); // Get all credit cards
 
   const form = useForm({
     defaultValues: {
@@ -88,7 +88,7 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
     form.state.values.account_id,
   ]);
 
-  if (isFetching)
+  if (isFetchingAccounts || isFetchingCreditCards)
     return (
       <div className="flex items-center justify-center p-8">
         <p className="text-muted-foreground">Loading...</p>

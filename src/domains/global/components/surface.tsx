@@ -30,7 +30,7 @@ const Surface = React.forwardRef<HTMLDivElement, SurfaceProps>(
       className,
       variant = 'default',
       size = 'md',
-      hoverable = false,
+      hoverable = true,
       clickable = false,
       children,
       ...props
