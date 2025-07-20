@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
+import { Surface } from '@/domains/global/components/surface';
 
 interface AccountOverviewProps {
   slug: string;
@@ -15,34 +9,26 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
   const { data: account } = useAccount(slug);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Account Overview</CardTitle>
-        <CardDescription>Current account balance and details</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Balance</p>
-            <p className="text-2xl font-bold text-primary">
-              {account?.currency} {account?.balance?.toLocaleString()}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Currency</p>
-            <p className="text-lg font-semibold">{account?.currency}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Type</p>
-            <p className="text-lg font-semibold capitalize">{account?.type}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Broker</p>
-            <p className="text-lg font-semibold">{account?.broker?.name}</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div data-ui="account-overview">
+      <div className="grid grid-cols-3 gap-4">
+        <Surface size="lg">
+          <p>Balance</p>
+          <p className="text-2xl font-bold text-green-500">
+            {account?.currency} {account?.balance?.toLocaleString()}
+          </p>
+        </Surface>
+
+        <Surface className="bg-green-500/50 text-primary-foreground hover:bg-green-500/80">
+          <p>Earnings</p>
+          <p className="text-2xl font-bold">0</p>
+        </Surface>
+
+        <Surface className="bg-primary/80 text-primary-foreground hover:bg-primary">
+          <p>Spending</p>
+          <p className="text-2xl font-bold">0</p>
+        </Surface>
+      </div>
+    </div>
   );
 };
 
