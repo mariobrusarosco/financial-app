@@ -186,17 +186,30 @@ export const EditableTransactionsTable = ({
                     </TableCell>
                   </>
                 ) : (
-                  // View mode
+                  // View mode with improved formatting
                   <>
-                    <TableCell>{transaction.date}</TableCell>
+                    <TableCell className="font-medium">
+                      {new Date(transaction.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </TableCell>
                     <TableCell className="font-medium">{transaction.description}</TableCell>
                     <TableCell>
-                      <Badge variant={transaction.is_paid ? 'default' : 'destructive'}>
-                        {transaction.is_paid ? 'Paid' : 'Unpaid'}
+                      <Badge
+                        variant={transaction.is_paid ? 'default' : 'destructive'}
+                        className={
+                          transaction.is_paid
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-orange-100 text-orange-800'
+                        }
+                      >
+                        {transaction.is_paid ? 'Paid' : 'Pending'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono">
-                      <span className="text-gray-900">
+                    <TableCell className="text-right">
+                      <span className="font-semibold tabular-nums text-gray-900">
                         ${parseFloat(transaction.amount).toFixed(2)}
                       </span>
                     </TableCell>

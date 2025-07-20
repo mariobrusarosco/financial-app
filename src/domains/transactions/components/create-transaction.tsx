@@ -1,9 +1,10 @@
 import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { I_CreateTransactionForm, T_TransactionType } from '../types/types-and-interfaces';
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateTransaction } from '@/domains/transactions/hooks/use-create-transaction';
 import { Input } from '@/domains/ui-system/components/input';
+import { Button } from '@/domains/ui-system/components/button';
 import {
   Select,
   SelectContent,
@@ -14,16 +15,32 @@ import {
 import { Switch } from '@/domains/ui-system/components/switch';
 import { RadioGroup, RadioGroupItem } from '@/domains/ui-system/components/radio-group';
 import { Label } from '@/domains/ui-system/components/label';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/domains/ui-system/components/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/components/popover';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/domains/ui-system/utils';
 import { TransactionDatePicker } from './transaction-date-picker';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { Textarea } from '@/domains/ui-system/components/textarea';
+import { getCategoriesForType, findCategoryById } from '../utils/categories';
 
-const CreateTransaction = () => {
-  const { data: brokers, isFetching } = useBrokers();
+interface CreateTransactionProps {
+  onAddTransaction?: (transaction: I_CreateTransactionForm) => void;
+}
+
+const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
   const { mutate: createTransaction } = useCreateTransaction();
   const { data: accounts } = useAccounts();
-  const [isUsingCreditCard, setIsUsingCreditCard] = useState<boolean>(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [transactionSource, setTransactionSource] = useState<'account' | 'creditCard'>('account'); // UI mode state
   const { data: creditCards } = useCreditCards(undefined); // Get all credit cards
 
   const form = useForm({
@@ -32,15 +49,44 @@ const CreateTransaction = () => {
       amount: null,
       date: new Date().toISOString().split('T')[0], // Today's date
       account_id: '',
-      broker_id: '',
       credit_card_id: '',
+      broker_id: '',
       is_paid: false,
       type: 'expense',
+      category: '',
     } as I_CreateTransactionForm,
     onSubmit: ({ value }) => {
-      void createTransaction(value);
+      // Include the computed broker_id in the transaction
+      const completeTransaction = {
+        ...value,
+        broker_id: brokerId || '',
+      };
+
+      if (onAddTransaction) {
+        // Batch mode: add to pending transactions and reset form
+        onAddTransaction(completeTransaction);
+        form.reset();
+        setTransactionSource('account'); // Reset UI mode state
+      } else {
+        // Direct mode: create transaction immediately
+        void createTransaction(completeTransaction);
+      }
     },
   });
+
+  const brokerId = useMemo(() => {
+    if (transactionSource === 'creditCard') {
+      return creditCards?.data?.find(card => card.id === form.state.values.credit_card_id)
+        ?.broker_id;
+    }
+    return accounts?.find(account => account.id === form.state.values.account_id)?.broker?.id;
+  }, [
+    transactionSource,
+    creditCards,
+    accounts,
+    form.state.values.credit_card_id,
+    form.state.values.account_id,
+  ]);
 
   if (isFetching)
     return (
@@ -57,7 +103,7 @@ const CreateTransaction = () => {
           e.preventDefault();
           void form.handleSubmit();
         }}
-        className="space-y-6 grid grid-cols-4 gap-10"
+        className="space-y-6 grid grid-cols-2 gap-10"
       >
         <div className="flex flex-col gap-4">
           <form.Field
@@ -178,36 +224,112 @@ const CreateTransaction = () => {
             )}
           </form.Field>
 
+          {/* Category Selection */}
+          <form.Field name="category">
+            {field => (
+              <form.Subscribe
+                selector={state => state.values.type}
+                children={currentType => {
+                  const availableCategories = getCategoriesForType(currentType);
+                  const selectedCategory = findCategoryById(field.state.value || '');
+
+                  return (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Category</label>
+                      <Popover open={categoryOpen} onOpenChange={setCategoryOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={categoryOpen}
+                            className="w-full justify-between"
+                          >
+                            {selectedCategory ? (
+                              <span className="flex items-center gap-2">
+                                <span>{selectedCategory.icon}</span>
+                                {selectedCategory.name}
+                              </span>
+                            ) : (
+                              'Select category...'
+                            )}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput placeholder="Search categories..." />
+                            <CommandList>
+                              <CommandEmpty>No category found.</CommandEmpty>
+                              <CommandGroup>
+                                {availableCategories.map(category => (
+                                  <CommandItem
+                                    key={category.id}
+                                    value={category.id}
+                                    onSelect={value => {
+                                      field.handleChange(value === field.state.value ? '' : value);
+                                      setCategoryOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        field.state.value === category.id
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
+                                      )}
+                                    />
+                                    <span className="flex items-center gap-2">
+                                      <span>{category.icon}</span>
+                                      {category.name}
+                                    </span>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {field.state.meta.errors.length > 0 && (
+                        <p className="text-sm text-destructive">
+                          {field.state.meta.errors.join(', ')}
+                        </p>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            )}
+          </form.Field>
+
           {/* Account/Credit Card Toggle */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-foreground">Payment Method:</label>
             <div className="flex items-center space-x-3">
               <Switch
                 id="credit-card-toggle"
-                checked={isUsingCreditCard}
+                checked={transactionSource === 'creditCard'}
                 onCheckedChange={checked => {
-                  setIsUsingCreditCard(checked);
-                  // Clear the opposite field when switching
-                  if (checked) {
-                    form.setFieldValue('account_id', '');
-                  } else {
-                    form.setFieldValue('credit_card_id', '');
-                  }
+                  // Clear both fields when switching modes
+                  form.setFieldValue('account_id', '');
+                  form.setFieldValue('credit_card_id', '');
+
+                  // Update the UI mode
+                  setTransactionSource(checked ? 'creditCard' : 'account');
                 }}
               />
               <Label htmlFor="credit-card-toggle">
-                {isUsingCreditCard ? 'Credit Card' : 'Account'}
+                {transactionSource === 'creditCard' ? 'Credit Card' : 'Account'}
               </Label>
             </div>
           </div>
 
           {/* Conditional Account or Credit Card Selection */}
-          {!isUsingCreditCard ? (
+          {transactionSource === 'account' ? (
             <form.Field
               name="account_id"
               validators={{
                 onChange: ({ value }) =>
-                  !isUsingCreditCard && !value ? 'Account is required' : undefined,
+                  transactionSource === 'account' && !value ? 'Account is required' : undefined,
               }}
             >
               {field => (
@@ -241,7 +363,9 @@ const CreateTransaction = () => {
               name="credit_card_id"
               validators={{
                 onChange: ({ value }) =>
-                  isUsingCreditCard && !value ? 'Credit card is required' : undefined,
+                  transactionSource === 'creditCard' && !value
+                    ? 'Credit card is required'
+                    : undefined,
               }}
             >
               {field => (
