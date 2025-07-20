@@ -13,6 +13,11 @@ const CreateBrokerDrawer = lazy(() =>
     default: module.CreateBrokerDrawer,
   }))
 );
+const CreateTransactionDrawer = lazy(() =>
+  import('@/domains/transactions/components/create-transaction-drawer').then(module => ({
+    default: module.CreateTransactionDrawer,
+  }))
+);
 
 interface GlobalDrawerProps {
   drawerType: 'account-create' | 'broker-create' | 'transaction-create';
@@ -32,6 +37,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateAccountDrawer;
   } else if (drawerType === 'broker-create') {
     DrawerComponent = CreateBrokerDrawer;
+  } else if (drawerType === 'transaction-create') {
+    DrawerComponent = CreateTransactionDrawer;
   }
 
   if (!DrawerComponent) {

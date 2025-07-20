@@ -64,56 +64,44 @@ export const Navigation = () => {
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 md:bg-card md:border-r md:border-border md:pt-5 md:pb-4 md:overflow-y-auto">
-        <div className="flex items-center flex-shrink-0 px-4">
-          <Link to="/" className="flex items-center">
-            <div className="flex items-center">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center">
-                <img src="/wb.png" alt="Better Call Buffet" className="w-10 h-10" />
-              </div>
-              <span className="ml-2 text-xl font-bold text-foreground">Better Call Buffet</span>
-            </div>
-          </Link>
-        </div>
+      <nav className="hidden md:flex md:justify-between md:w-full md:p-3 md:px-4 md:items-center">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/wb.png" alt="Better Call Buffet" className="w-4 h-4" />
+          <span className="text-sm font-bold text-foreground">Better Call Buffet</span>
+        </Link>
 
-        <div className="mt-8 flex-1 flex flex-col">
-          <nav className="flex-1 px-2 space-y-1">
-            {navigationItems.map(item => {
-              const Icon = item.icon;
-              const isActive = isActiveRoute(item.href);
+        <nav className="flex px-2 h-fit gap-2">
+          {navigationItems.map(item => {
+            const Icon = item.icon;
+            const isActive = isActiveRoute(item.href);
 
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  'group flex items-center text-sm px-4 py-2 rounded-md transition-colors',
+                  isActive
+                    ? 'text-primary border-b-1 border-primary'
+                    : 'text-muted-foreground hover:text-accent-foreground'
+                )}
+              >
+                <Icon
                   className={cn(
-                    'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
+                    'mr-3 flex-shrink-0 h-4 w-4',
                     isActive
-                      ? 'bg-primary/10 text-primary border-r-2 border-primary'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                      ? 'text-primary'
+                      : 'text-muted-foreground group-hover:text-accent-foreground'
                   )}
-                >
-                  <Icon
-                    className={cn(
-                      'mr-3 flex-shrink-0 h-5 w-5',
-                      isActive
-                        ? 'text-primary'
-                        : 'text-muted-foreground group-hover:text-accent-foreground'
-                    )}
-                  />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="px-4 mt-4">
-            <ModeToggle />
-          </div>
-        </div>
+                />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <ModeToggle />
       </nav>
 
-      {/* Mobile Navigation */}
       <div className="md:hidden">
         {/* Mobile menu button */}
         <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-card border-b border-border">

@@ -2,7 +2,8 @@ import { Button } from '@ui-system/components/button';
 import { useGlobalUIState } from '../hooks/use-global-ui-state';
 
 export const UITestButtons = () => {
-  const { openAccountCreate, openBrokerCreate, closeUI } = useGlobalUIState();
+  const { openAccountCreate, openBrokerCreate, closeUI, openTransactionCreate } =
+    useGlobalUIState();
 
   return (
     <div className="fixed bottom-4 right-4 flex flex-col gap-2 p-4 bg-background border rounded-lg shadow-lg z-50">
@@ -13,6 +14,11 @@ export const UITestButtons = () => {
       <Button size="sm" onClick={openBrokerCreate}>
         Open Broker Drawer
       </Button>
+
+      <Button size="sm" onClick={openTransactionCreate}>
+        Open Transaction Drawer
+      </Button>
+
       <Button size="sm" variant="outline" onClick={closeUI}>
         Close Drawer
       </Button>

@@ -6,6 +6,7 @@ import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 
 export const AccountIndexScreen = () => {
   const { openAccountCreate } = useGlobalUIState();
+
   return (
     <div data-ui="accounts-index-screen" className="p-6 space-y-8">
       <div className="flex items-center justify-between">
