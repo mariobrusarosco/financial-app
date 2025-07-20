@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { useGlobalUIState } from '../hooks/use-global-ui-state';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 
-export const UITestButtons = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const { openAccountCreate, openBrokerCreate, openTransactionCreate } = useGlobalUIState();
+export const PlannerCTA = () => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const { openAccountCreate, openBrokerCreate, openTransactionCreate, openCreditCardCreate } =
+    useGlobalUIState();
 
   if (isCollapsed) {
     return (
@@ -40,21 +41,32 @@ export const UITestButtons = () => {
         onClick={openAccountCreate}
         className="bg-rose-500 hover:bg-rose-600 text-white"
       >
-        Open Account
+        <span className="font-semibold">Account</span>
+        <Plus className="h-5 w-5  text-white" />
       </Button>
       <Button
         size="sm"
         onClick={openBrokerCreate}
         className="bg-rose-500 hover:bg-rose-600 text-white"
       >
-        Create Broker
+        <span className="font-semibold">Broker</span>
+        <Plus className="h-5 w-5  text-white" />
       </Button>
       <Button
         size="sm"
         onClick={openTransactionCreate}
         className="bg-rose-500 hover:bg-rose-600 text-white"
       >
-        Create Transaction
+        <span className="font-semibold">Transaction</span>
+        <Plus className="h-5 w-5  text-white" />
+      </Button>
+      <Button
+        size="sm"
+        onClick={openCreditCardCreate}
+        className="bg-rose-500 hover:bg-rose-600 text-white"
+      >
+        <span className="font-semibold">Credit Card</span>
+        <Plus className="h-5 w-5  text-white" />
       </Button>
     </div>
   );

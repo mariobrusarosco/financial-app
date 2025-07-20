@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { GlobalDrawer } from '@/domains/global/components/global-drawer';
-import { UITestButtons } from '@/domains/global/components/ui-test-buttons';
+import { PlannerCTA } from '@/domains/global/components/planner-cta';
 
 type AuthSearchParams = {
   drawer?: 'account-create' | 'broker-create' | 'transaction-create';
@@ -27,12 +27,8 @@ function AuthLayoutComponent() {
   return (
     <AppLayout>
       <Outlet />
-
-      {/* Global UI State Management */}
       {drawer && <GlobalDrawer drawerType={drawer} />}
-
-      {/* Test buttons for development */}
-      <UITestButtons />
+      <PlannerCTA />
     </AppLayout>
   );
 }

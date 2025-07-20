@@ -16,13 +16,14 @@ export interface I_CreateCreditCardRequest {
   name: string;
   last_four_digits: string;
   brand: T_CreditCardBrand;
-  credit_limit: number;
+  credit_limit: number | null;
   due_date: number;
 }
 
 export interface I_CreateCreditCardResponse {
   credit_card: I_CreditCard;
 }
+
 export interface I_CreateCreditCardsResponse {
   data: I_CreditCard[];
   meta: {

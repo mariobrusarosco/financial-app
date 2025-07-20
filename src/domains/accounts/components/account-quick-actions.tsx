@@ -12,7 +12,7 @@ const AccountQuickActions = ({ slug }: AccountQuickActionsProps) => {
   return (
     <div data-ui="account-quick-actions flex gap-4 ml-auto">
       <Button variant="default" className="flex items-center gap-2" onClick={openTransactionCreate}>
-        <span className="font-semibold">New Transaction</span>
+        <span className="font-semibold">Transaction</span>
         <Plus className="h-5 w-5  text-white" />
       </Button>
     </div>

@@ -9,6 +9,7 @@ import {
 } from '@/domains/ui-system/components/card';
 import { Plus, CreditCard } from 'lucide-react';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
+import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 
 interface AccountCreditCardsScreenProps {
   params: {
@@ -17,6 +18,7 @@ interface AccountCreditCardsScreenProps {
 }
 
 export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenProps) => {
+  const { openCreditCardCreate } = useGlobalUIState();
   const {
     data: creditCards,
     isLoading: isLoadingCreditCards,
@@ -49,12 +51,10 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
               <CardTitle>Credit Cards</CardTitle>
               <CardDescription>Manage credit cards associated with this account</CardDescription>
             </div>
-            <Link to="/accounts/$slug/credit-card/new" params={{ slug: params.slug }}>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Credit Card
-              </Button>
-            </Link>
+            <Button onClick={openCreditCardCreate}>
+              <Plus className="w-4 h-4 mr-2" />
+              Credit Card
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -86,12 +86,7 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
               <p className="text-muted-foreground mb-4">
                 Add your first credit card to start tracking expenses and statements
               </p>
-              <Link to="/accounts/$slug/credit-card/new" params={{ slug: params.slug }}>
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Credit Card
-                </Button>
-              </Link>
+              <Button onClick={openCreditCardCreate}>Credit Card</Button>
             </div>
           )}
         </CardContent>

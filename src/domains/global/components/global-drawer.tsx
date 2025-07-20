@@ -18,9 +18,14 @@ const CreateTransactionDrawer = lazy(() =>
     default: module.CreateTransactionDrawer,
   }))
 );
+const CreateCreditCardDrawer = lazy(() =>
+  import('@/domains/credit-cards/components/create-credit-card-drawer').then(module => ({
+    default: module.CreateCreditCardDrawer,
+  }))
+);
 
 interface GlobalDrawerProps {
-  drawerType: 'account-create' | 'broker-create' | 'transaction-create';
+  drawerType: 'account-create' | 'broker-create' | 'transaction-create' | 'credit-card-create';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -39,6 +44,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateBrokerDrawer;
   } else if (drawerType === 'transaction-create') {
     DrawerComponent = CreateTransactionDrawer;
+  } else if (drawerType === 'credit-card-create') {
+    DrawerComponent = CreateCreditCardDrawer;
   }
 
   if (!DrawerComponent) {

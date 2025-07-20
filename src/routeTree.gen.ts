@@ -22,7 +22,6 @@ import { Route as authAccountsCreateIndexRouteImport } from './routes/(auth)/acc
 import { Route as authAccountsSlugIndexRouteImport } from './routes/(auth)/accounts/$slug/index'
 import { Route as authAccountsSlugStatementsIndexRouteImport } from './routes/(auth)/accounts/$slug/statements/index'
 import { Route as authAccountsSlugCreditCardIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/index'
-import { Route as authAccountsSlugCreditCardNewIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/new/index'
 import { Route as authAccountsSlugCreditCardCreditCardIdIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/$creditCardId/index'
 
 const authRouteRoute = authRouteRouteImport.update({
@@ -91,12 +90,6 @@ const authAccountsSlugCreditCardIndexRoute =
     path: '/credit-card/',
     getParentRoute: () => authAccountsSlugRouteRoute,
   } as any)
-const authAccountsSlugCreditCardNewIndexRoute =
-  authAccountsSlugCreditCardNewIndexRouteImport.update({
-    id: '/credit-card/new/',
-    path: '/credit-card/new/',
-    getParentRoute: () => authAccountsSlugRouteRoute,
-  } as any)
 const authAccountsSlugCreditCardCreditCardIdIndexRoute =
   authAccountsSlugCreditCardCreditCardIdIndexRouteImport.update({
     id: '/credit-card/$creditCardId/',
@@ -118,7 +111,6 @@ export interface FileRoutesByFullPath {
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId': typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
-  '/accounts/$slug/credit-card/new': typeof authAccountsSlugCreditCardNewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
@@ -133,7 +125,6 @@ export interface FileRoutesByTo {
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId': typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
-  '/accounts/$slug/credit-card/new': typeof authAccountsSlugCreditCardNewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,7 +142,6 @@ export interface FileRoutesById {
   '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
   '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
   '/(auth)/accounts/$slug/credit-card/$creditCardId/': typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
-  '/(auth)/accounts/$slug/credit-card/new/': typeof authAccountsSlugCreditCardNewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,7 +159,6 @@ export interface FileRouteTypes {
     | '/accounts/$slug/credit-card'
     | '/accounts/$slug/statements'
     | '/accounts/$slug/credit-card/$creditCardId'
-    | '/accounts/$slug/credit-card/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -184,7 +173,6 @@ export interface FileRouteTypes {
     | '/accounts/$slug/credit-card'
     | '/accounts/$slug/statements'
     | '/accounts/$slug/credit-card/$creditCardId'
-    | '/accounts/$slug/credit-card/new'
   id:
     | '__root__'
     | '/'
@@ -201,7 +189,6 @@ export interface FileRouteTypes {
     | '/(auth)/accounts/$slug/credit-card/'
     | '/(auth)/accounts/$slug/statements/'
     | '/(auth)/accounts/$slug/credit-card/$creditCardId/'
-    | '/(auth)/accounts/$slug/credit-card/new/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -302,13 +289,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsSlugCreditCardIndexRouteImport
       parentRoute: typeof authAccountsSlugRouteRoute
     }
-    '/(auth)/accounts/$slug/credit-card/new/': {
-      id: '/(auth)/accounts/$slug/credit-card/new/'
-      path: '/credit-card/new'
-      fullPath: '/accounts/$slug/credit-card/new'
-      preLoaderRoute: typeof authAccountsSlugCreditCardNewIndexRouteImport
-      parentRoute: typeof authAccountsSlugRouteRoute
-    }
     '/(auth)/accounts/$slug/credit-card/$creditCardId/': {
       id: '/(auth)/accounts/$slug/credit-card/$creditCardId/'
       path: '/credit-card/$creditCardId'
@@ -324,7 +304,6 @@ interface authAccountsSlugRouteRouteChildren {
   authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
   authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
   authAccountsSlugCreditCardCreditCardIdIndexRoute: typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
-  authAccountsSlugCreditCardNewIndexRoute: typeof authAccountsSlugCreditCardNewIndexRoute
 }
 
 const authAccountsSlugRouteRouteChildren: authAccountsSlugRouteRouteChildren = {
@@ -333,8 +312,6 @@ const authAccountsSlugRouteRouteChildren: authAccountsSlugRouteRouteChildren = {
   authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
   authAccountsSlugCreditCardCreditCardIdIndexRoute:
     authAccountsSlugCreditCardCreditCardIdIndexRoute,
-  authAccountsSlugCreditCardNewIndexRoute:
-    authAccountsSlugCreditCardNewIndexRoute,
 }
 
 const authAccountsSlugRouteRouteWithChildren =
