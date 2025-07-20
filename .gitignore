@@ -30,3 +30,7 @@ package-lock.json
 
 # Tanstack
 .tanstack
+
+
+# Logs
+/logs/*

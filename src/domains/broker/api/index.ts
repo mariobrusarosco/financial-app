@@ -11,7 +11,12 @@ const getBrokers = async (): Promise<I_Broker[]> => {
   return response.data;
 };
 
+const deleteBroker = async (brokerId: string): Promise<void> => {
+  await apiClient.delete(`/brokers/${brokerId}`);
+};
+
 export const brokerApi = {
   createBroker,
   getBrokers,
+  deleteBroker,
 };
