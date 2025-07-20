@@ -122,3 +122,7 @@ domain-name/
 - Node.js 22.17.0 (for native fetch and ESM features)
 - Yarn 3.8.7 (for workspace management)
 - Uses `.env` files for environment variables
+
+### shadcn UI
+
+Always use shadcn CLI to create shadcn UI components

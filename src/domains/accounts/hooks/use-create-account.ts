@@ -23,9 +23,14 @@ export const useCreateAccount = () => {
         queryKey: GET_ALL_ACCOUNTS_QUERY_KEY(),
       });
 
+      // Close the drawer by clearing search params, then navigate to the account
       void navigate({
-        to: '/accounts/$slug',
-        params: { slug: newAccount.id },
+        search: {},
+      }).then(() => {
+        void navigate({
+          to: '/accounts/$slug',
+          params: { slug: newAccount.id },
+        });
       });
     },
     onError: error => {

@@ -6,8 +6,6 @@ import type {
 } from '../types/types-and-interfaces';
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
-import { Link } from '@tanstack/react-router';
-import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import {
   Select,
@@ -16,14 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/domains/ui-system/components/select';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
-import { ArrowLeft } from 'lucide-react';
 
 const CreateAccount = () => {
   const { data: brokers, isFetching } = useBrokers();
@@ -51,31 +41,19 @@ const CreateAccount = () => {
     );
 
   return (
-    <div className="max-w-lg mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <Link to="/accounts">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-            <div>
-              <CardTitle className="text-2xl">Create Account</CardTitle>
-              <CardDescription>
-                Add a new financial account to track your investments
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              void form.handleSubmit();
-            }}
-            className="space-y-6"
-          >
+    <div className="max-w-6xl mx-auto">
+      <div className="space-y-6">
+        <form
+          id="account-create-form"
+          onSubmit={e => {
+            e.preventDefault();
+            void form.handleSubmit();
+          }}
+          className="space-y-6"
+        >
+          {/* Three Column Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Column 1: Basic Info */}
             <form.Field
               name="name"
               validators={{
@@ -102,49 +80,7 @@ const CreateAccount = () => {
               )}
             </form.Field>
 
-            <form.Field name="description">
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
-                    Description:
-                  </label>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value || ''}
-                    onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.value)}
-                    placeholder="Enter description (optional)"
-                  />
-                </div>
-              )}
-            </form.Field>
-
-            <form.Field name="broker_id">
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
-                    Broker:
-                  </label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={value => field.handleChange(value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a broker" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brokers?.map(broker => (
-                        <SelectItem key={broker.id} value={broker.id}>
-                          {broker.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </form.Field>
-
+            {/* Column 2: Account Details */}
             <form.Field name="type">
               {field => (
                 <div className="space-y-2">
@@ -169,6 +105,7 @@ const CreateAccount = () => {
               )}
             </form.Field>
 
+            {/* Column 3: Financial Details */}
             <form.Field
               name="balance"
               validators={{
@@ -196,7 +133,56 @@ const CreateAccount = () => {
                 </div>
               )}
             </form.Field>
+          </div>
 
+          {/* Second Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Column 1: Description */}
+            <form.Field name="description">
+              {field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Description:
+                  </label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.value)}
+                    placeholder="Enter description (optional)"
+                  />
+                </div>
+              )}
+            </form.Field>
+
+            {/* Column 2: Broker */}
+            <form.Field name="broker_id">
+              {field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                    Broker:
+                  </label>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={value => field.handleChange(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a broker" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {brokers?.map(broker => (
+                        <SelectItem key={broker.id} value={broker.id}>
+                          {broker.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </form.Field>
+
+            {/* Column 3: Currency */}
             <form.Field
               name="currency"
               validators={{
@@ -226,17 +212,9 @@ const CreateAccount = () => {
                 </div>
               )}
             </form.Field>
-
-            <form.Subscribe selector={state => [state.canSubmit, state.isSubmitting]}>
-              {([canSubmit, isSubmitting]) => (
-                <Button type="submit" disabled={!canSubmit} className="w-full" size="lg">
-                  {isSubmitting ? 'Creating...' : 'Create Account'}
-                </Button>
-              )}
-            </form.Subscribe>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
