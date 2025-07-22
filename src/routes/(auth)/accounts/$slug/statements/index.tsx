@@ -1,10 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { AccountStatementsScreen } from '@/domains/accounts/screens/account-statements';
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(auth)/accounts/$slug/statements/')({
-  component: StatementsRouteComponent,
+  component: StatementsIndexComponent,
 });
 
-function StatementsRouteComponent() {
-  return <AccountStatementsScreen />;
+function StatementsIndexComponent() {
+  const params = Route.useParams();
+
+  // Redirect to upload tab by default
+  return <Navigate to="/accounts/$slug/statements/upload" params={{ slug: params.slug }} replace />;
 }
