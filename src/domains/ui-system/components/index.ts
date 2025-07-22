@@ -15,3 +15,6 @@ export * from './sonner';
 export * from './table';
 export * from './tabs';
 export * from './theme-provider';
+export * from './pagination';
+export * from './label';
+export * from './collapsible';

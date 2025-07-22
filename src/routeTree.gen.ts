@@ -20,8 +20,11 @@ import { Route as authAccountsSlugRouteRouteImport } from './routes/(auth)/accou
 import { Route as authBrokersCreateIndexRouteImport } from './routes/(auth)/brokers/create/index'
 import { Route as authAccountsCreateIndexRouteImport } from './routes/(auth)/accounts/create/index'
 import { Route as authAccountsSlugIndexRouteImport } from './routes/(auth)/accounts/$slug/index'
+import { Route as authAccountsSlugStatementsRouteRouteImport } from './routes/(auth)/accounts/$slug/statements/route'
 import { Route as authAccountsSlugStatementsIndexRouteImport } from './routes/(auth)/accounts/$slug/statements/index'
 import { Route as authAccountsSlugCreditCardIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/index'
+import { Route as authAccountsSlugStatementsUploadRouteImport } from './routes/(auth)/accounts/$slug/statements/upload'
+import { Route as authAccountsSlugStatementsHistoryRouteImport } from './routes/(auth)/accounts/$slug/statements/history'
 import { Route as authAccountsSlugCreditCardCreditCardIdIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/$creditCardId/index'
 import { Route as authAccountsSlugCreditCardCreditCardIdTransactionsRouteImport } from './routes/(auth)/accounts/$slug/credit-card/$creditCardId/transactions'
 import { Route as authAccountsSlugCreditCardCreditCardIdInvoicesRouteImport } from './routes/(auth)/accounts/$slug/credit-card/$creditCardId/invoices'
@@ -80,17 +83,35 @@ const authAccountsSlugIndexRoute = authAccountsSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => authAccountsSlugRouteRoute,
 } as any)
+const authAccountsSlugStatementsRouteRoute =
+  authAccountsSlugStatementsRouteRouteImport.update({
+    id: '/statements',
+    path: '/statements',
+    getParentRoute: () => authAccountsSlugRouteRoute,
+  } as any)
 const authAccountsSlugStatementsIndexRoute =
   authAccountsSlugStatementsIndexRouteImport.update({
-    id: '/statements/',
-    path: '/statements/',
-    getParentRoute: () => authAccountsSlugRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => authAccountsSlugStatementsRouteRoute,
   } as any)
 const authAccountsSlugCreditCardIndexRoute =
   authAccountsSlugCreditCardIndexRouteImport.update({
     id: '/credit-card/',
     path: '/credit-card/',
     getParentRoute: () => authAccountsSlugRouteRoute,
+  } as any)
+const authAccountsSlugStatementsUploadRoute =
+  authAccountsSlugStatementsUploadRouteImport.update({
+    id: '/upload',
+    path: '/upload',
+    getParentRoute: () => authAccountsSlugStatementsRouteRoute,
+  } as any)
+const authAccountsSlugStatementsHistoryRoute =
+  authAccountsSlugStatementsHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => authAccountsSlugStatementsRouteRoute,
   } as any)
 const authAccountsSlugCreditCardCreditCardIdIndexRoute =
   authAccountsSlugCreditCardCreditCardIdIndexRouteImport.update({
@@ -119,11 +140,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof authDashboardIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/transactions': typeof authTransactionsIndexRoute
+  '/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
   '/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
+  '/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
+  '/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
-  '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
+  '/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   '/accounts/$slug/credit-card/$creditCardId/transactions': typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
   '/accounts/$slug/credit-card/$creditCardId': typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
@@ -138,6 +162,8 @@ export interface FileRoutesByTo {
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
+  '/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
+  '/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
@@ -154,9 +180,12 @@ export interface FileRoutesById {
   '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/transactions/': typeof authTransactionsIndexRoute
+  '/(auth)/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
   '/(auth)/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
   '/(auth)/brokers/create/': typeof authBrokersCreateIndexRoute
+  '/(auth)/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
+  '/(auth)/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
   '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
   '/(auth)/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
@@ -173,11 +202,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/transactions'
+    | '/accounts/$slug/statements'
     | '/accounts/$slug/'
     | '/accounts/create'
     | '/brokers/create'
+    | '/accounts/$slug/statements/history'
+    | '/accounts/$slug/statements/upload'
     | '/accounts/$slug/credit-card'
-    | '/accounts/$slug/statements'
+    | '/accounts/$slug/statements/'
     | '/accounts/$slug/credit-card/$creditCardId/invoices'
     | '/accounts/$slug/credit-card/$creditCardId/transactions'
     | '/accounts/$slug/credit-card/$creditCardId'
@@ -192,6 +224,8 @@ export interface FileRouteTypes {
     | '/accounts/$slug'
     | '/accounts/create'
     | '/brokers/create'
+    | '/accounts/$slug/statements/history'
+    | '/accounts/$slug/statements/upload'
     | '/accounts/$slug/credit-card'
     | '/accounts/$slug/statements'
     | '/accounts/$slug/credit-card/$creditCardId/invoices'
@@ -207,9 +241,12 @@ export interface FileRouteTypes {
     | '/(auth)/dashboard/'
     | '/(auth)/settings/'
     | '/(auth)/transactions/'
+    | '/(auth)/accounts/$slug/statements'
     | '/(auth)/accounts/$slug/'
     | '/(auth)/accounts/create/'
     | '/(auth)/brokers/create/'
+    | '/(auth)/accounts/$slug/statements/history'
+    | '/(auth)/accounts/$slug/statements/upload'
     | '/(auth)/accounts/$slug/credit-card/'
     | '/(auth)/accounts/$slug/statements/'
     | '/(auth)/accounts/$slug/credit-card/$creditCardId/invoices'
@@ -301,12 +338,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsSlugIndexRouteImport
       parentRoute: typeof authAccountsSlugRouteRoute
     }
-    '/(auth)/accounts/$slug/statements/': {
-      id: '/(auth)/accounts/$slug/statements/'
+    '/(auth)/accounts/$slug/statements': {
+      id: '/(auth)/accounts/$slug/statements'
       path: '/statements'
       fullPath: '/accounts/$slug/statements'
-      preLoaderRoute: typeof authAccountsSlugStatementsIndexRouteImport
+      preLoaderRoute: typeof authAccountsSlugStatementsRouteRouteImport
       parentRoute: typeof authAccountsSlugRouteRoute
+    }
+    '/(auth)/accounts/$slug/statements/': {
+      id: '/(auth)/accounts/$slug/statements/'
+      path: '/'
+      fullPath: '/accounts/$slug/statements/'
+      preLoaderRoute: typeof authAccountsSlugStatementsIndexRouteImport
+      parentRoute: typeof authAccountsSlugStatementsRouteRoute
     }
     '/(auth)/accounts/$slug/credit-card/': {
       id: '/(auth)/accounts/$slug/credit-card/'
@@ -314,6 +358,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/accounts/$slug/credit-card'
       preLoaderRoute: typeof authAccountsSlugCreditCardIndexRouteImport
       parentRoute: typeof authAccountsSlugRouteRoute
+    }
+    '/(auth)/accounts/$slug/statements/upload': {
+      id: '/(auth)/accounts/$slug/statements/upload'
+      path: '/upload'
+      fullPath: '/accounts/$slug/statements/upload'
+      preLoaderRoute: typeof authAccountsSlugStatementsUploadRouteImport
+      parentRoute: typeof authAccountsSlugStatementsRouteRoute
+    }
+    '/(auth)/accounts/$slug/statements/history': {
+      id: '/(auth)/accounts/$slug/statements/history'
+      path: '/history'
+      fullPath: '/accounts/$slug/statements/history'
+      preLoaderRoute: typeof authAccountsSlugStatementsHistoryRouteImport
+      parentRoute: typeof authAccountsSlugStatementsRouteRoute
     }
     '/(auth)/accounts/$slug/credit-card/$creditCardId/': {
       id: '/(auth)/accounts/$slug/credit-card/$creditCardId/'
@@ -339,19 +397,40 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface authAccountsSlugStatementsRouteRouteChildren {
+  authAccountsSlugStatementsHistoryRoute: typeof authAccountsSlugStatementsHistoryRoute
+  authAccountsSlugStatementsUploadRoute: typeof authAccountsSlugStatementsUploadRoute
+  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
+}
+
+const authAccountsSlugStatementsRouteRouteChildren: authAccountsSlugStatementsRouteRouteChildren =
+  {
+    authAccountsSlugStatementsHistoryRoute:
+      authAccountsSlugStatementsHistoryRoute,
+    authAccountsSlugStatementsUploadRoute:
+      authAccountsSlugStatementsUploadRoute,
+    authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
+  }
+
+const authAccountsSlugStatementsRouteRouteWithChildren =
+  authAccountsSlugStatementsRouteRoute._addFileChildren(
+    authAccountsSlugStatementsRouteRouteChildren,
+  )
+
 interface authAccountsSlugRouteRouteChildren {
+  authAccountsSlugStatementsRouteRoute: typeof authAccountsSlugStatementsRouteRouteWithChildren
   authAccountsSlugIndexRoute: typeof authAccountsSlugIndexRoute
   authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
-  authAccountsSlugStatementsIndexRoute: typeof authAccountsSlugStatementsIndexRoute
   authAccountsSlugCreditCardCreditCardIdInvoicesRoute: typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   authAccountsSlugCreditCardCreditCardIdTransactionsRoute: typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
   authAccountsSlugCreditCardCreditCardIdIndexRoute: typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
 }
 
 const authAccountsSlugRouteRouteChildren: authAccountsSlugRouteRouteChildren = {
+  authAccountsSlugStatementsRouteRoute:
+    authAccountsSlugStatementsRouteRouteWithChildren,
   authAccountsSlugIndexRoute: authAccountsSlugIndexRoute,
   authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
-  authAccountsSlugStatementsIndexRoute: authAccountsSlugStatementsIndexRoute,
   authAccountsSlugCreditCardCreditCardIdInvoicesRoute:
     authAccountsSlugCreditCardCreditCardIdInvoicesRoute,
   authAccountsSlugCreditCardCreditCardIdTransactionsRoute:

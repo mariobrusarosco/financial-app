@@ -9,6 +9,7 @@ import {
   I_CreditCard,
   I_CreditCardTransaction,
   I_CreditCardTransactionsResponse,
+  I_CreditCardTransactionsParams,
 } from '@/domains/credit-cards/types/types-and-interfaces';
 import { parsePdf } from '@/server-functions/pdf-parser';
 import { apiClient } from '@/config/api';
@@ -50,10 +51,14 @@ export const creditCardApi = {
     return response.data.data; // Return just the invoices array
   },
 
-  getCreditCardTransactions: async (creditCardId: string) => {
+  getCreditCardTransactions: async (
+    creditCardId: string,
+    params?: I_CreditCardTransactionsParams
+  ): Promise<I_CreditCardTransactionsResponse> => {
     const response = await apiClient.get<I_CreditCardTransactionsResponse>(
-      `/credit_cards/${creditCardId}/transactions`
+      `/credit_cards/${creditCardId}/transactions`,
+      { params }
     );
-    return response.data.data; // Return just the transactions array
+    return response.data; // Return full response with data and meta
   },
 };

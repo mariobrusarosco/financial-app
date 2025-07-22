@@ -105,6 +105,33 @@ export interface I_CreditCardTransactionsResponse {
   };
 }
 
+// Pagination and filtering parameters for credit card transactions
+export interface I_CreditCardTransactionsParams {
+  // Pagination
+  page?: number;
+  per_page?: number;
+
+  // Date filtering
+  date_from?: string;
+  date_to?: string;
+
+  // Amount filtering
+  amount_min?: number;
+  amount_max?: number;
+
+  // Text search
+  description_contains?: string;
+  category?: string;
+
+  // Status filtering
+  is_paid?: boolean;
+  movement_type?: 'income' | 'expense' | 'investment' | 'transfer';
+
+  // Sorting
+  sort_by?: 'date' | 'amount' | 'created_at' | 'category';
+  sort_order?: 'asc' | 'desc';
+}
+
 export interface I_CreditCardInstallmentOption {
   months: number;
   total: string;
