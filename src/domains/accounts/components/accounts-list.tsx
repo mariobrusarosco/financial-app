@@ -1,3 +1,4 @@
+// Component that displays a list of all active accounts with their details
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
 import { Surface } from '@/domains/ui-system/components/surface';
