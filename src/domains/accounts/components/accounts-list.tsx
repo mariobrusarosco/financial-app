@@ -3,14 +3,14 @@ import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
 import { Surface } from '@/domains/ui-system/components/surface';
 import { Building2, PiggyBank, CreditCard, MoreVertical } from 'lucide-react';
-import { Button } from '@/domains/ui-system/components/button';
+import { Button } from '@/domains/ui-system/components/button/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
-import { Skeleton } from '@/domains/ui-system/components/skeleton';
+import { Skeleton } from '@/domains/ui-system/components/skeleton/skeleton';
 import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 
 // Renders an individual account card with icon, name, type, balance and actions menu
