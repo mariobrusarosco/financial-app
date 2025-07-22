@@ -1,6 +1,6 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
-import { Card, CardContent } from '@/domains/ui-system/components/card';
+import { Surface } from '@/domains/ui-system/components/surface';
 import { Building2, PiggyBank, CreditCard, MoreVertical } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import {
@@ -38,9 +38,8 @@ function AccountsList() {
   };
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="space-y-4">
+    <Surface variant="muted" size="lg" className="p-6">
+      <div className="space-y-4">
           {accounts.map(account => (
             <div
               key={account.id}
@@ -81,8 +80,7 @@ function AccountsList() {
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </Surface>
   );
 }
 
