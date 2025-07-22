@@ -1,15 +1,17 @@
-import { MoreVertical, Trash2, Loader2 } from 'lucide-react';
-import type { Broker } from '../type/types-and-interfaces';
+import { MoreVertical, Trash2, Loader2, Building2 } from 'lucide-react';
+import type { I_Broker } from '../type/types-and-interfaces';
 import { useDeleteBroker } from '../hooks/use-delete-broker';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@ui-system/components/dropdown-menu';
+} from '@/domains/ui-system/components/dropdown-menu';
+import { Button } from '@/domains/ui-system/components/button';
+import { Surface } from '@/domains/global/components/surface';
 
 interface BrokerCardProps {
-  broker: Broker;
+  broker: I_Broker;
 }
 
 const BrokerCard = ({ broker }: BrokerCardProps) => {
@@ -20,35 +22,46 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
   };
 
   return (
-    <div className="relative aspect-square bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-700 cursor-pointer group hover:bg-rose-900/20">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="font-semibold text-white text-lg leading-tight line-clamp-2 transition-colors flex-1 pr-2">
-          {broker.name}
-        </h3>
-
+    <Surface
+      className="h-32 w-full flex flex-col justify-between hover:bg-accent/50 transition-colors"
+      size="sm"
+      hoverable
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          <div className="p-2 rounded-full bg-primary/10">
+            <Building2 className="h-6 w-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-medium truncate">{broker.name}</h3>
+            <p className="text-sm text-muted-foreground">Investment Broker</p>
+          </div>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
               onClick={e => e.stopPropagation()}
-              className="flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
             >
-              <MoreVertical size={16} />
-            </button>
+              <MoreVertical className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem
-              variant="destructive"
               onClick={e => {
                 e.stopPropagation();
                 handleDelete();
               }}
               disabled={deleteBrokerMutation.isPending}
-              className="cursor-pointer"
+              className="cursor-pointer text-destructive focus:text-destructive"
             >
               {deleteBrokerMutation.isPending ? (
-                <Loader2 size={14} className="animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Trash2 size={14} />
+                <Trash2 className="h-4 w-4" />
               )}
               {deleteBrokerMutation.isPending ? 'Deleting...' : 'Delete'}
             </DropdownMenuItem>
@@ -56,16 +69,12 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
         </DropdownMenu>
       </div>
 
-      {/* Content */}
-      <div className="h-full flex flex-col justify-between">
-        <div className="flex-1 min-h-0">
-          <p className="text-gray-400 text-sm mb-4">Investment Broker</p>
-          {broker.description && (
-            <p className="text-gray-300 text-sm line-clamp-3">{broker.description}</p>
-          )}
+      {broker.description && (
+        <div className="mt-auto">
+          <p className="text-sm text-muted-foreground line-clamp-2">{broker.description}</p>
         </div>
-      </div>
-    </div>
+      )}
+    </Surface>
   );
 };
 
