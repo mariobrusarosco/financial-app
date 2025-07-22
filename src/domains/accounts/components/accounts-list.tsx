@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
-import { Skeleton } from '@/domains/ui-system/components/skeleton/skeleton';
 import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 
 // Renders an individual account card with icon, name, type, balance and actions menu
