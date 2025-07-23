@@ -56,6 +56,7 @@ export function RecentTransactions({ accountId }: RecentTransactionsProps) {
             date={transaction.date}
             movementType={transaction.movement_type}
             isPaid={transaction.is_paid}
+            creditCardId={transaction.credit_card_id}
           />
         ))
       )}

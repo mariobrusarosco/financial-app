@@ -6,7 +6,7 @@ interface AccountStatementsHeadingProps {
   accountId?: string;
 }
 
-export const AccountStatementsHeading = ({ accountId }: AccountStatementsHeadingProps) => {
+export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHeadingProps) => {
   const params = useParams({ from: '/(auth)/accounts/$slug/statements' });
   const location = useLocation();
 

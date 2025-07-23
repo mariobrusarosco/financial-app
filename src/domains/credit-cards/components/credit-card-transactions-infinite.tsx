@@ -135,6 +135,7 @@ export const CreditCardTransactionsInfinite = ({
                       date={transaction.date}
                       movementType={transaction.movement_type as T_TransactionType}
                       isPaid={transaction.is_paid}
+                      creditCardId={creditCardId}
                     />
                   ))}
                 </Fragment>

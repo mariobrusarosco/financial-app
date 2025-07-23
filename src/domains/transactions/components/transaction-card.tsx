@@ -1,4 +1,5 @@
-import { Calendar, Tag } from 'lucide-react';
+import React from 'react';
+import { Calendar, Tag, CreditCard, Wallet } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import { Card, CardContent } from '@/domains/ui-system/components/card';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
@@ -24,6 +25,7 @@ interface TransactionCardProps {
   date: string;
   movementType: T_TransactionType;
   isPaid?: boolean;
+  creditCardId?: string;
   className?: string;
   onClick?: () => void;
 }
@@ -36,6 +38,7 @@ export function TransactionCard({
   date,
   movementType,
   isPaid,
+  creditCardId,
   className,
   onClick,
 }: TransactionCardProps) {
@@ -44,6 +47,11 @@ export function TransactionCard({
   const movementTypeColor = getMovementTypeColor(movementType);
   const movementTypeLabel = getMovementTypeLabel(movementType);
   const currencyClasses = getCurrencyClasses(movementType, 'large');
+
+  // Determine if this is a credit card transaction or account transaction
+  const isCredit = !!creditCardId;
+  const transactionTypeIcon = isCredit ? CreditCard : Wallet;
+  const transactionTypeLabel = isCredit ? 'Credit' : 'Account';
 
   return (
     <Surface
@@ -63,6 +71,17 @@ export function TransactionCard({
         </div>
 
         <div className="flex gap-1 ml-9 items-center" data-ui="transaction-tags">
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium',
+              isCredit
+                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+            )}
+          >
+            {React.createElement(transactionTypeIcon, { className: 'h-3 w-3' })}
+            {transactionTypeLabel}
+          </span>
           <span
             className={cn(
               'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',

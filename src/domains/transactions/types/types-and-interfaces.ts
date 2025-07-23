@@ -86,6 +86,7 @@ export interface I_AccountTransactionsParams {
   is_paid?: boolean;
   sort_by?: 'date' | 'amount' | 'created_at' | 'category';
   sort_order?: 'asc' | 'desc';
+  include_credit_cards?: boolean; // New parameter to include credit card transactions
 }
 
 export interface I_AccountTransactionsResponse {

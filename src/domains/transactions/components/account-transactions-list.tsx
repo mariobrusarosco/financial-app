@@ -3,18 +3,20 @@ import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { TransactionCard } from '@/domains/transactions/components/transaction-card';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import { useCreditCardTransactions } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
-import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
+import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
+import { AccountTransactionFilters } from './account-transaction-filters';
 import { CreditCard, Loader2 } from 'lucide-react';
-import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
-import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
+import type {
+  T_TransactionType,
+  I_AccountTransactionsParams,
+} from '@/domains/transactions/types/types-and-interfaces';
 
-interface CreditCardTransactionsListProps {
-  creditCardId: string;
+interface AccountTransactionsListProps {
+  accountId: string;
 }
 
-export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransactionsListProps) => {
-  const [params, setParams] = useState<I_CreditCardTransactionsParams>({
+export const AccountTransactionsList = ({ accountId }: AccountTransactionsListProps) => {
+  const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
     per_page: 20,
     sort_by: 'date',
@@ -26,8 +28,7 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     isLoading,
     isError,
     isPlaceholderData,
-    isPreviousData,
-  } = useCreditCardTransactions(creditCardId, params);
+  } = useAccountTransactionsPaginated(accountId, params, true); // Include credit cards by default
 
   const transactions = response?.data || [];
   const meta = response?.meta;
@@ -35,10 +36,10 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
     return (
-      <Surface data-ui="credit-card-transactions-list" className="w-full flex-1">
+      <Surface data-ui="account-transactions-list" className="w-full flex-1">
         <div>
-          <CardTitle>Transactions</CardTitle>
-          <CardDescription>Recent transactions on this credit card</CardDescription>
+          <CardTitle>Account Transactions</CardTitle>
+          <CardDescription>Account and credit card transactions for this account</CardDescription>
         </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -50,10 +51,10 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
 
   if (isError) {
     return (
-      <Surface data-ui="credit-card-transactions-list" className="w-full flex-1">
+      <Surface data-ui="account-transactions-list" className="w-full flex-1">
         <div>
-          <CardTitle>Transactions</CardTitle>
-          <CardDescription>Recent transactions on this credit card</CardDescription>
+          <CardTitle>Account Transactions</CardTitle>
+          <CardDescription>Account and credit card transactions for this account</CardDescription>
         </div>
         <div className="text-center py-8">
           <p className="text-destructive">Failed to load transactions</p>
@@ -67,24 +68,26 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
   };
 
   return (
-    <Surface data-ui="credit-card-transactions-list" className="w-full flex-1">
+    <Surface data-ui="account-transactions-list" className="w-full flex-1">
       <div className="space-y-4">
         <div>
           <CardTitle className="flex items-center gap-2">
-            Transactions
+            Account Transactions
             {isPlaceholderData && (
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             )}
           </CardTitle>
           <CardDescription>
-            {meta ? `${meta.total} transactions found` : 'Recent transactions on this credit card'}
+            {meta
+              ? `${meta.total} transactions found`
+              : 'Account and credit card transactions for this account'}
             {isPlaceholderData && (
               <span className="text-xs text-muted-foreground ml-2">(Loading new data...)</span>
             )}
           </CardDescription>
         </div>
 
-        <CreditCardTransactionFilters params={params} onParamsChange={setParams} />
+        <AccountTransactionFilters params={params} onParamsChange={setParams} />
 
         <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
           {transactions && transactions.length > 0 ? (
@@ -95,11 +98,11 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
                   id={transaction.id}
                   description={transaction.description}
                   category={transaction.category}
-                  amount={transaction.amount.toString()}
+                  amount={transaction.amount}
                   date={transaction.date}
                   movementType={transaction.movement_type as T_TransactionType}
                   isPaid={transaction.is_paid}
-                  creditCardId={creditCardId}
+                  creditCardId={transaction.credit_card_id}
                 />
               ))}
 
@@ -136,7 +139,7 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
                     key !== 'per_page' &&
                     key !== 'sort_by' &&
                     key !== 'sort_order' &&
-                    params[key as keyof I_CreditCardTransactionsParams]
+                    params[key as keyof I_AccountTransactionsParams]
                 )
                   ? 'No transactions match your filters'
                   : 'No transactions yet'}
@@ -148,10 +151,10 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
                     key !== 'per_page' &&
                     key !== 'sort_by' &&
                     key !== 'sort_order' &&
-                    params[key as keyof I_CreditCardTransactionsParams]
+                    params[key as keyof I_AccountTransactionsParams]
                 )
                   ? 'Try adjusting your filters to see more results'
-                  : 'Transactions will appear here once you start using this credit card'}
+                  : 'Transactions will appear here once you start using this account'}
               </p>
             </div>
           )}
