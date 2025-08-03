@@ -18,7 +18,7 @@ export const creditCardApi = {
   createCreditCard: async (
     data: I_CreateCreditCardRequest
   ): Promise<I_CreateCreditCardResponse> => {
-    const response = await apiClient.post<I_CreateCreditCardResponse>('/credit_cards/', data);
+    const response = await apiClient.post<I_CreateCreditCardResponse>('/credit_cards', data);
     return response.data;
   },
   parseInvoice: async (formData: FormData): Promise<I_CreditCardRawInvoice> => {
@@ -26,13 +26,13 @@ export const creditCardApi = {
   },
   createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
     const response = await apiClient.post<I_CreditCardInvoiceResponse>(
-      `/credit_cards/${data.credit_card_id}/invoices/`,
+      `/credit_cards/${data.credit_card_id}/invoices`,
       data
     );
     return response.data;
   },
   getAllCreditCards: async (accountId?: string) => {
-    const response = await apiClient.get<I_CreateCreditCardsResponse>(`/credit_cards/`, {
+    const response = await apiClient.get<I_CreateCreditCardsResponse>(`/credit_cards`, {
       params: {
         account_id: accountId,
       },
@@ -40,13 +40,13 @@ export const creditCardApi = {
     return response.data;
   },
   getCreditCard: async (creditCardId: string) => {
-    const response = await apiClient.get<I_CreditCard>(`/credit_cards/${creditCardId}/`);
+    const response = await apiClient.get<I_CreditCard>(`/credit_cards/${creditCardId}`);
     return response.data;
   },
 
   getCreditCardInvoices: async (creditCardId: string) => {
     const response = await apiClient.get<I_CreditCardInvoicesResponse>(
-      `/credit_cards/${creditCardId}/invoices/`
+      `/credit_cards/${creditCardId}/invoices`
     );
     return response.data.data; // Return just the invoices array
   },
@@ -56,7 +56,7 @@ export const creditCardApi = {
     params?: I_CreditCardTransactionsParams
   ): Promise<I_CreditCardTransactionsResponse> => {
     const response = await apiClient.get<I_CreditCardTransactionsResponse>(
-      `/credit_cards/${creditCardId}/transactions/`,
+      `/credit_cards/${creditCardId}/transactions`,
       { params }
     );
     return response.data; // Return full response with data and meta

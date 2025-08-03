@@ -11,17 +11,14 @@ import type {
 
 export const transactionsApi = {
   createTransaction: async (transaction: I_CreateTransactionForm): Promise<I_Transaction> => {
-    const response = await apiClient.post<I_Transaction>('/transactions/', transaction);
+    const response = await apiClient.post<I_Transaction>('/transactions', transaction);
     return response.data;
   },
 
   createBulkTransactions: async (
     payload: I_BulkTransactionRequestPayload
   ): Promise<I_BulkTransactionResponse> => {
-    const response = await apiClient.post<I_BulkTransactionResponse>(
-      '/transactions/bulk/',
-      payload
-    );
+    const response = await apiClient.post<I_BulkTransactionResponse>('/transactions/bulk', payload);
     return response.data;
   },
 
@@ -30,7 +27,7 @@ export const transactionsApi = {
     params?: I_AccountTransactionsParams
   ): Promise<I_AccountTransactionsResponse> => {
     const response = await apiClient.get<I_AccountTransactionsResponse>(
-      `/accounts/${accountId}/transactions/`,
+      `/accounts/${accountId}/transactions`,
       { params }
     );
     return response.data;

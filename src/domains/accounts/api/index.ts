@@ -46,7 +46,7 @@ export interface I_AccountStatementsResponse {
 
 const getAllAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>('/accounts/');
+    const response = await apiClient.get<I_Account[]>('/accounts');
     return response.data;
   } catch (error) {
     console.error('Error fetching all accounts:', error);
@@ -56,7 +56,7 @@ const getAllAccounts = async (): Promise<I_Account[]> => {
 
 const getAllActiveAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>('/accounts/active/');
+    const response = await apiClient.get<I_Account[]>('/accounts/active');
     return response.data;
   } catch (error) {
     console.error('Error fetching active accounts:', error);
@@ -67,7 +67,7 @@ const getAllActiveAccounts = async (): Promise<I_Account[]> => {
 
 const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> => {
   try {
-    const response = await apiClient.post<I_Account>('/accounts/', account);
+    const response = await apiClient.post<I_Account>('/accounts', account);
     return response.data;
   } catch (error) {
     console.error('Error creating account:', error);
@@ -77,7 +77,7 @@ const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> =
 
 const getAccount = async (id: string): Promise<I_Account> => {
   try {
-    const response = await apiClient.get<I_Account>(`/accounts/${id}/`);
+    const response = await apiClient.get<I_Account>(`/accounts/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching account:', error);
@@ -94,7 +94,7 @@ const createAccountStatement = async (
 ): Promise<I_AccountStatement> => {
   try {
     const response = await apiClient.post<I_AccountStatement>(
-      `/accounts/${data.account_id}/statements/`,
+      `/accounts/${data.account_id}/statements`,
       data
     );
     return response.data;
@@ -107,7 +107,7 @@ const createAccountStatement = async (
 const getAccountStatements = async (accountId: string): Promise<I_AccountStatement[]> => {
   try {
     const response = await apiClient.get<I_AccountStatementsResponse>(
-      `/accounts/${accountId}/statements/`
+      `/accounts/${accountId}/statements`
     );
     return response.data.data;
   } catch (error) {

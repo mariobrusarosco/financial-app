@@ -1,10 +1,12 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@ui-system/components/button';
 import { DrawerContent, DrawerTitle } from '@ui-system/components/drawer';
+import useCreateBroker from '@/domains/broker/hooks/use-create-broker';
 import CreateBroker from './create-broker';
 
 export const CreateBrokerDrawer = () => {
   const navigate = useNavigate();
+  const mutation = useCreateBroker();
 
   const handleClose = () => {
     navigate({ search: {} });
@@ -15,8 +17,8 @@ export const CreateBrokerDrawer = () => {
       {/* Row 1: Title and Action Button */}
       <div className="flex justify-between items-center">
         <DrawerTitle>Create New Broker</DrawerTitle>
-        <Button size="lg" form="broker-create-form">
-          Create Broker
+        <Button size="lg" form="broker-create-form" disabled={mutation.isPending}>
+          {mutation.isPending ? 'Creating...' : 'Create Broker'}
         </Button>
       </div>
 
