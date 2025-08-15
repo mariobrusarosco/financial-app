@@ -22,6 +22,15 @@ export const transactionsApi = {
     return response.data;
   },
 
+  getAllTransactions: async (
+    params?: I_AccountTransactionsParams
+  ): Promise<I_AccountTransactionsResponse> => {
+    const response = await apiClient.get<I_AccountTransactionsResponse>('/transactions', {
+      params,
+    });
+    return response.data;
+  },
+
   getAccountTransactions: async (
     accountId: string,
     params?: I_AccountTransactionsParams

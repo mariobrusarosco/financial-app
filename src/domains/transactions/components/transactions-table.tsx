@@ -15,101 +15,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
-import { MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MoreHorizontal, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
+import { useAllTransactionsWithPagination } from '../hooks/use-all-transactions';
+import { useState } from 'react';
+import type { T_TransactionType } from '../types/types-and-interfaces';
 
-interface Transaction {
-  id: string;
-  date: string;
-  description: string;
-  category: string;
-  amount: number;
-  type: 'debit' | 'credit';
-}
-
-// Enhanced mock data that matches the image
-const transactions: Transaction[] = [
-  {
-    id: '1',
-    date: 'Mar 15, 2024',
-    description: 'Grocery shopping at Local Market',
-    category: 'Groceries',
-    amount: 75.5,
-    type: 'debit',
-  },
-  {
-    id: '2',
-    date: 'Mar 14, 2024',
-    description: 'Rent payment',
-    category: 'Rent',
-    amount: 1500.0,
-    type: 'debit',
-  },
-  {
-    id: '3',
-    date: 'Mar 14, 2024',
-    description: 'Salary deposit',
-    category: 'Salary',
-    amount: 3500.0,
-    type: 'credit',
-  },
-  {
-    id: '4',
-    date: 'Mar 13, 2024',
-    description: 'Dinner at Italian Bistro',
-    category: 'Dining',
-    amount: 60.0,
-    type: 'debit',
-  },
-  {
-    id: '5',
-    date: 'Mar 12, 2024',
-    description: 'Gasoline refill',
-    category: 'Transportation',
-    amount: 45.0,
-    type: 'debit',
-  },
-  {
-    id: '6',
-    date: 'Mar 11, 2024',
-    description: 'Online shopping at Fashion Hub',
-    category: 'Shopping',
-    amount: 120.0,
-    type: 'debit',
-  },
-  {
-    id: '7',
-    date: 'Mar 10, 2024',
-    description: 'Coffee at Coffee Corner',
-    category: 'Coffee',
-    amount: 5.0,
-    type: 'debit',
-  },
-  {
-    id: '8',
-    date: 'Mar 09, 2024',
-    description: 'Movie tickets',
-    category: 'Entertainment',
-    amount: 30.0,
-    type: 'debit',
-  },
-  {
-    id: '9',
-    date: 'Mar 08, 2024',
-    description: 'Gym membership',
-    category: 'Fitness',
-    amount: 50.0,
-    type: 'debit',
-  },
-  {
-    id: '10',
-    date: 'Mar 07, 2024',
-    description: 'Internet bill',
-    category: 'Utilities',
-    amount: 80.0,
-    type: 'debit',
-  },
-];
+const ITEMS_PER_PAGE = 20;
 
 // Category color mapping using our Rose theme
 const getCategoryColor = (category: string): string => {
@@ -140,24 +52,51 @@ const getCategoryColor = (category: string): string => {
 };
 
 export const TransactionsTable = () => {
-  const formatCurrency = (amount: number, type: 'debit' | 'credit') => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data, isLoading, error } = useAllTransactionsWithPagination(currentPage, ITEMS_PER_PAGE);
+
+  const formatCurrency = (amount: string, type: T_TransactionType) => {
+    const numericAmount = parseFloat(amount);
     const formatted = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-    }).format(amount);
+    }).format(numericAmount);
 
+    const isCredit = type === 'income';
     return (
       <span
-        className={cn(
-          'font-medium tabular-nums',
-          type === 'debit' ? 'text-red-600' : 'text-green-600'
-        )}
+        className={cn('font-medium tabular-nums', isCredit ? 'text-green-600' : 'text-red-600')}
       >
-        {type === 'debit' ? '-' : '+'}
+        {isCredit ? '+' : '-'}
         {formatted}
       </span>
     );
   };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Transaction History</CardTitle>
+          <CardDescription>A complete record of all your financial transactions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-red-600">Error loading transactions: {error.message}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -178,49 +117,85 @@ export const TransactionsTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions.map(transaction => (
-                <TableRow key={transaction.id} className="hover:bg-muted/50 transition-colors">
-                  <TableCell className="font-medium text-muted-foreground">
-                    {transaction.date}
-                  </TableCell>
-                  <TableCell className="font-medium">{transaction.description}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={cn('font-medium', getCategoryColor(transaction.category))}
-                    >
-                      {transaction.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(transaction.amount, transaction.type)}
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Open menu</span>
-                    </Button>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-32 text-center">
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                      <span>Loading transactions...</span>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : data?.data.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                    No transactions found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                data?.data.map(transaction => (
+                  <TableRow key={transaction.id} className="hover:bg-muted/50 transition-colors">
+                    <TableCell className="font-medium text-muted-foreground">
+                      {formatDate(transaction.date)}
+                    </TableCell>
+                    <TableCell className="font-medium">{transaction.description}</TableCell>
+                    <TableCell>
+                      {transaction.category ? (
+                        <Badge
+                          variant="outline"
+                          className={cn('font-medium', getCategoryColor(transaction.category))}
+                        >
+                          {transaction.category}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">Uncategorized</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(transaction.amount, transaction.movement_type)}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-sm text-muted-foreground">Showing 1 to 10 of 97 results</p>
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" disabled>
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
+        {data && (
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{' '}
+              {Math.min(currentPage * ITEMS_PER_PAGE, data.meta.total)} of {data.meta.total} results
+            </p>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!data.meta.has_previous}
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!data.meta.has_next}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
