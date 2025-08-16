@@ -23,9 +23,25 @@ const CreateCreditCardDrawer = lazy(() =>
     default: module.CreateCreditCardDrawer,
   }))
 );
+const CreateInvestmentDrawer = lazy(() =>
+  import('@/domains/investments/components/create-investment-drawer').then(module => ({
+    default: module.CreateInvestmentDrawer,
+  }))
+);
+const CreateInvestmentDataDrawer = lazy(() =>
+  import('@/domains/investments/components/create-investment-data-drawer').then(module => ({
+    default: module.CreateInvestmentDataDrawer,
+  }))
+);
 
 interface GlobalDrawerProps {
-  drawerType: 'account-create' | 'broker-create' | 'transaction-create' | 'credit-card-create';
+  drawerType:
+    | 'account-create'
+    | 'broker-create'
+    | 'transaction-create'
+    | 'credit-card-create'
+    | 'investment-create'
+    | 'investment-data-create';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -46,6 +62,10 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateTransactionDrawer;
   } else if (drawerType === 'credit-card-create') {
     DrawerComponent = CreateCreditCardDrawer;
+  } else if (drawerType === 'investment-create') {
+    DrawerComponent = CreateInvestmentDrawer;
+  } else if (drawerType === 'investment-data-create') {
+    DrawerComponent = CreateInvestmentDataDrawer;
   }
 
   if (!DrawerComponent) {

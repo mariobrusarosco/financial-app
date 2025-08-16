@@ -12,6 +12,8 @@ export const useGlobalUIState = () => {
   const openBrokerCreate = () => navigate({ search: { drawer: 'broker-create' } });
   const openTransactionCreate = () => navigate({ search: { drawer: 'transaction-create' } });
   const openCreditCardCreate = () => navigate({ search: { drawer: 'credit-card-create' } });
+  const openInvestmentCreate = () => navigate({ search: { drawer: 'investment-create' } });
+  const openInvestmentDataCreate = () => navigate({ search: { drawer: 'investment-data-create' } });
 
   return {
     closeUI,
@@ -19,5 +21,7 @@ export const useGlobalUIState = () => {
     openBrokerCreate,
     openTransactionCreate,
     openCreditCardCreate,
+    openInvestmentCreate,
+    openInvestmentDataCreate,
   };
 };
