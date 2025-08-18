@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { PlannerCTA } from '@/domains/global/components/planner-cta';
+import { AuthGuard } from '@/domains/auth/components/auth-guard';
 
 type AuthSearchParams = {
   drawer?: 'account-create' | 'broker-create' | 'transaction-create';
@@ -25,10 +26,12 @@ function AuthLayoutComponent() {
   const { drawer } = Route.useSearch();
 
   return (
-    <AppLayout>
-      <Outlet />
-      {drawer && <GlobalDrawer drawerType={drawer} />}
-      <PlannerCTA />
-    </AppLayout>
+    <AuthGuard>
+      <AppLayout>
+        <Outlet />
+        {drawer && <GlobalDrawer drawerType={drawer} />}
+        <PlannerCTA />
+      </AppLayout>
+    </AuthGuard>
   );
 }

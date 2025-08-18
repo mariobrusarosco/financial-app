@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ApiError, NetworkError } from '@/domains/global/utils/error-handler';
+import { AuthStorage } from '@/domains/auth/utils/auth-storage';
 
 // Define the base URL for the API. This can be an environment variable.
 // For MSW, this might be different or not strictly needed if MSW intercepts all fetches.
@@ -13,26 +14,37 @@ export const apiClient = axios.create({
   },
 });
 
-// Example of how you might use interceptors for request/response logging or error handling
+// Add auth token to requests
 apiClient.interceptors.request.use(
   config => {
-    // You can modify the request config here, e.g., add an auth token
-    // console.log('Starting Request', config);
+    const accessToken = AuthStorage.getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   error => {
-    // console.error('Request Error', error);
     return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   }
 );
 
 apiClient.interceptors.response.use(
   response => {
-    // console.log('Response:', response);
     return response;
   },
   error => {
-    // 🚨 Transform axios errors into our custom error types
+    // Handle 401 Unauthorized - user needs to login again
+    if (typeof error === 'object' && error !== null && 'response' in error && error.response) {
+      const { status } = error.response as { status: number };
+      if (status === 401) {
+        AuthStorage.clearAuth();
+        // Redirect to login will be handled by auth guard
+        window.location.href = '/login';
+        return Promise.reject(new ApiError('Authentication expired. Please login again.', 401));
+      }
+    }
+    
+    // Transform axios errors into our custom error types
     if (typeof error === 'object' && error !== null) {
       if ('response' in error && error.response) {
         // Server responded with error status

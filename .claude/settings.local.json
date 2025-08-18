@@ -24,7 +24,8 @@
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(npx shadcn add:*)",
       "Bash(curl:*)",
-      "Bash(yarn typecheck:*)"
+      "Bash(yarn typecheck:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }
