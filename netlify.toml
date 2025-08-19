@@ -1,0 +1,9 @@
+[build]
+  command = "rm -rf node_modules/.cache && yarn install --check-files && yarn build"
+  publish = ".tanstack/start/build/client-dist"
+
+[build.environment]
+  NODE_VERSION = "22.17.0"
+  YARN_VERSION = "3.8.7"
+  # Force fresh dependency resolution
+  NETLIFY_CACHE_ID = "v2"
