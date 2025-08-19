@@ -44,11 +44,11 @@ const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
 
 const signup = async (data: I_SignupRequest): Promise<I_AuthResponse> => {
   try {
-    const response = await apiClient.post('/users', {
-      full_name: data.name,
+    const response = await apiClient.post('/auth/register', {
       email: data.email,
       password: data.password,
-      is_active: true,
+      full_name: data.name,
+      device_name: navigator.userAgent || 'Unknown Device',
     });
     
     // Backend returns: { access_token, refresh_token, expires_in, user }
