@@ -16,4 +16,7 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
   ],
+  server: {
+    port: 2000,
+  },
 });
