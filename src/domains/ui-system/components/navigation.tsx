@@ -74,6 +74,7 @@ const UserMenu = () => {
   if (!user) return null;
   
   const getInitials = (name: string) => {
+    if (!name) return 'U';
     return name
       .split(' ')
       .map(part => part.charAt(0))

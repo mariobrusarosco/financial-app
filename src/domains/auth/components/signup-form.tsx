@@ -19,7 +19,6 @@ export const SignupForm = () => {
       name: '',
       email: '',
       password: '',
-      confirmPassword: '',
       acceptTerms: false,
     },
     onSubmit: async ({ value }) => {
@@ -144,38 +143,6 @@ export const SignupForm = () => {
             )}
           </form.Field>
           
-          <form.Field
-            name="confirmPassword"
-            validators={{
-              onChange: ({ value, fieldApi }) => {
-                if (!value) return 'Please confirm your password';
-                const password = fieldApi.form.getFieldValue('password');
-                if (value !== password) return 'Passwords do not match';
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>Confirm Password</Label>
-                <Input
-                  id={field.name}
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Confirm your password"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  disabled={isPending}
-                  autoComplete="new-password"
-                />
-                {field.state.meta.errors.length > 0 && (
-                  <p className="text-sm text-destructive">
-                    {field.state.meta.errors.join(', ')}
-                  </p>
-                )}
-              </div>
-            )}
-          </form.Field>
           
           <form.Field
             name="acceptTerms"
