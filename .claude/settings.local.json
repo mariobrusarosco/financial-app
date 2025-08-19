@@ -29,7 +29,21 @@
       "Bash(grep:*)",
       "Bash(yarn add:*)",
       "WebSearch",
-      "WebFetch(domain:docs.sentry.io)"
+      "WebFetch(domain:docs.sentry.io)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(yarn why:*)",
+      "Bash(yarn explain:*)",
+      "Bash(yarn info:*)",
+      "Bash(npm install:*)",
+      "Bash(netlify:*)",
+      "Bash(corepack use:*)",
+      "Bash(./yarn install)",
+      "Bash(YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install)",
+      "Bash(corepack enable)",
+      "Bash(corepack prepare:*)",
+      "Bash(corepack yarn --version)",
+      "Bash(corepack yarn install:*)"
     ],
     "deny": []
   }
