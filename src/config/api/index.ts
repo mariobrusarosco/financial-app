@@ -1,10 +1,58 @@
 import axios from 'axios';
 import { ApiError, NetworkError } from '@/domains/global/utils/error-handler';
 import { AuthStorage } from '@/domains/auth/utils/auth-storage';
+import { TokenManager } from '@/domains/auth/utils/token-manager';
 
 // Define the base URL for the API. This can be an environment variable.
-// For MSW, this might be different or not strictly needed if MSW intercepts all fetches.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'; // Placeholder
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
+// Track refresh state to prevent multiple simultaneous refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (error?: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  
+  failedQueue = [];
+};
+
+const refreshAuthToken = async (): Promise<string | null> => {
+  try {
+    const refreshToken = AuthStorage.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+      refresh_token: refreshToken,
+    });
+
+    const { access_token, refresh_token: newRefreshToken, expires_in } = response.data;
+    
+    AuthStorage.setTokens(
+      {
+        accessToken: access_token,
+        refreshToken: newRefreshToken || refreshToken,
+        expiresIn: expires_in,
+      },
+      AuthStorage.isRememberMe()
+    );
+
+    return access_token;
+  } catch (error) {
+    AuthStorage.clearAuth();
+    throw error;
+  }
+};
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -32,15 +80,41 @@ apiClient.interceptors.response.use(
   response => {
     return response;
   },
-  error => {
-    // Handle 401 Unauthorized - user needs to login again
-    if (typeof error === 'object' && error !== null && 'response' in error && error.response) {
-      const { status } = error.response as { status: number };
-      if (status === 401) {
+  async error => {
+    const originalRequest = error.config;
+    
+    // Handle 401 Unauthorized with token refresh
+    if (error?.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // If already refreshing, queue this request
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return apiClient(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const newToken = await refreshAuthToken();
+        processQueue(null, newToken);
+        
+        if (newToken) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return apiClient(originalRequest);
+        }
+      } catch (refreshError) {
+        processQueue(refreshError, null);
         AuthStorage.clearAuth();
-        // Redirect to login will be handled by auth guard
         window.location.href = '/login';
-        return Promise.reject(new ApiError('Authentication expired. Please login again.', 401));
+        return Promise.reject(new ApiError('Session expired. Please login again.', 401));
+      } finally {
+        isRefreshing = false;
       }
     }
     
