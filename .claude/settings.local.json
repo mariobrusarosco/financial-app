@@ -25,7 +25,11 @@
       "Bash(npx shadcn add:*)",
       "Bash(curl:*)",
       "Bash(yarn typecheck:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(grep:*)",
+      "Bash(yarn add:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.sentry.io)"
     ],
     "deny": []
   }
