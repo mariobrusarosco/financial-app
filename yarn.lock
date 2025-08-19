@@ -3153,7 +3153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/directive-functions-plugin@npm:@tanstack/directive-functions-plugin@*":
+"@tanstack/directive-functions-plugin@npm:1.131.2":
   version: 1.131.2
   resolution: "@tanstack/directive-functions-plugin@npm:1.131.2"
   dependencies:
@@ -3222,7 +3222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:1.131.26, @tanstack/react-router@npm:^1.120.20":
+"@tanstack/react-router@npm:1.131.26, @tanstack/react-router@npm:^1.120.20, @tanstack/react-router@npm:^1.131.26":
   version: 1.131.26
   resolution: "@tanstack/react-router@npm:1.131.26"
   dependencies:
@@ -3239,7 +3239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-start-client@npm:@tanstack/react-start-client@*":
+"@tanstack/react-start-client@npm:1.131.26, @tanstack/react-start-client@npm:^1.120.20":
   version: 1.131.26
   resolution: "@tanstack/react-start-client@npm:1.131.26"
   dependencies:
@@ -3281,7 +3281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-start-server@npm:@tanstack/react-start-server@*":
+"@tanstack/react-start-server@npm:1.131.26, @tanstack/react-start-server@npm:^1.120.20":
   version: 1.131.26
   resolution: "@tanstack/react-start-server@npm:1.131.26"
   dependencies:
@@ -3299,7 +3299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-start@npm:^1.120.20":
+"@tanstack/react-start@npm:^1.131.26":
   version: 1.131.26
   resolution: "@tanstack/react-start@npm:1.131.26"
   dependencies:
@@ -3317,7 +3317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-store@npm:@tanstack/react-store@*":
+"@tanstack/react-store@npm:^0.7.0, @tanstack/react-store@npm:^0.7.3":
   version: 0.7.3
   resolution: "@tanstack/react-store@npm:0.7.3"
   dependencies:
@@ -3456,7 +3456,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/start-config@npm:@tanstack/start-config@*":
+"@tanstack/start-config@npm:^1.120.20":
   version: 1.120.20
   resolution: "@tanstack/start-config@npm:1.120.20"
   dependencies:
@@ -4753,8 +4753,8 @@ __metadata:
     "@tailwindcss/vite": "npm:^4.1.4"
     "@tanstack/react-form": "npm:^1.19.2"
     "@tanstack/react-query": "npm:^5.75.7"
-    "@tanstack/react-router": "npm:^1.120.20"
-    "@tanstack/react-start": "npm:^1.120.20"
+    "@tanstack/react-router": "npm:^1.131.26"
+    "@tanstack/react-start": "npm:^1.131.26"
     "@tanstack/start": "npm:^1.120.20"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"

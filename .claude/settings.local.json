@@ -28,7 +28,9 @@
       "Bash(git checkout:*)",
       "Bash(git rm:*)",
       "Bash(git add:*)",
-      "Bash(yarn why:*)"
+      "Bash(yarn why:*)",
+      "Bash(yarn explain:*)",
+      "Bash(yarn info:*)"
     ],
     "deny": []
   }
