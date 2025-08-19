@@ -20,8 +20,3 @@ export type {
   I_AuthTokens,
   I_AuthState,
 } from './types/auth.types';
-
-// Development utilities
-if (import.meta.env.DEV) {
-  import('./utils/integration-test');
-}
