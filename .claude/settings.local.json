@@ -30,7 +30,9 @@
       "Bash(git add:*)",
       "Bash(yarn why:*)",
       "Bash(yarn explain:*)",
-      "Bash(yarn info:*)"
+      "Bash(yarn info:*)",
+      "Bash(npm install:*)",
+      "Bash(netlify:*)"
     ],
     "deny": []
   }
