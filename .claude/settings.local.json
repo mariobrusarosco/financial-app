@@ -24,7 +24,22 @@
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(npx shadcn add:*)",
       "Bash(curl:*)",
-      "Bash(yarn typecheck:*)"
+      "Bash(yarn typecheck:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(yarn why:*)",
+      "Bash(yarn explain:*)",
+      "Bash(yarn info:*)",
+      "Bash(npm install:*)",
+      "Bash(netlify:*)",
+      "Bash(corepack use:*)",
+      "Bash(./yarn install)",
+      "Bash(YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install)",
+      "Bash(corepack enable)",
+      "Bash(corepack prepare:*)",
+      "Bash(corepack yarn --version)",
+      "Bash(corepack yarn install:*)"
     ],
     "deny": []
   }
