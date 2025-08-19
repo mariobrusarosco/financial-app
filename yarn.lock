@@ -3096,7 +3096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-form@npm:^1.12.2":
+"@tanstack/react-form@npm:^1.19.2":
   version: 1.19.2
   resolution: "@tanstack/react-form@npm:1.19.2"
   dependencies:
@@ -3125,7 +3125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:1.131.27, @tanstack/react-router@npm:^1.117.1, @tanstack/react-router@npm:^1.120.20":
+"@tanstack/react-router@npm:1.131.27, @tanstack/react-router@npm:^1.120.20":
   version: 1.131.27
   resolution: "@tanstack/react-router@npm:1.131.27"
   dependencies:
@@ -3202,7 +3202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-start@npm:^1.117.2":
+"@tanstack/react-start@npm:^1.120.20":
   version: 1.131.27
   resolution: "@tanstack/react-start@npm:1.131.27"
   dependencies:
@@ -3495,7 +3495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/start@npm:^1.117.2":
+"@tanstack/start@npm:^1.120.20":
   version: 1.120.20
   resolution: "@tanstack/start@npm:1.120.20"
   dependencies:
@@ -4652,11 +4652,11 @@ __metadata:
     "@radix-ui/react-tabs": "npm:^1.1.12"
     "@tailwindcss/postcss": "npm:^4.1.4"
     "@tailwindcss/vite": "npm:^4.1.4"
-    "@tanstack/react-form": "npm:^1.12.2"
+    "@tanstack/react-form": "npm:^1.19.2"
     "@tanstack/react-query": "npm:^5.75.7"
-    "@tanstack/react-router": "npm:^1.117.1"
-    "@tanstack/react-start": "npm:^1.117.2"
-    "@tanstack/start": "npm:^1.117.2"
+    "@tanstack/react-router": "npm:^1.120.20"
+    "@tanstack/react-start": "npm:^1.120.20"
+    "@tanstack/start": "npm:^1.120.20"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
