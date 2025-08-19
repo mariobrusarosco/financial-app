@@ -25,7 +25,10 @@
       "Bash(npx shadcn add:*)",
       "Bash(curl:*)",
       "Bash(yarn typecheck:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(yarn why:*)"
     ],
     "deny": []
   }
