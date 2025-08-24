@@ -123,6 +123,21 @@ domain-name/
 - Yarn 3.8.7 (for workspace management)
 - Uses `.env` files for environment variables
 
+### Setup Instructions
+
+When setting up this project for the first time:
+
+1. **Enable Corepack** (one-time setup per machine):
+   ```bash
+   corepack enable
+   ```
+   This ensures all developers use the exact Yarn version specified in `package.json` (3.8.7), preventing lockfile conflicts on CI/CD platforms like Netlify.
+
+2. **Install dependencies**:
+   ```bash
+   yarn install
+   ```
+
 ### shadcn UI
 
 Always use shadcn CLI to create shadcn UI components

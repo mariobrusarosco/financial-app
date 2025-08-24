@@ -99,6 +99,9 @@ All project documentation is organized in the `docs` folder:
 git clone [repository-url]
 cd financial-app
 
+# Enable Corepack for automatic Yarn version management
+corepack enable
+
 # Install dependencies
 yarn install
 
