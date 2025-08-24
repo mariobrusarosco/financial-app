@@ -11,13 +11,13 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [
-    tsConfigPaths({
-      projects: [path.resolve(__dirname, 'tsconfig.json')],
-    }),
-    tailwindcss(),
-    react(),
     tanstackStart({
       customViteReactPlugin: true,
+    }),
+    react(),
+    tailwindcss(),
+    tsConfigPaths({
+      projects: [path.resolve(__dirname, 'tsconfig.json')],
     }),
   ],
   server: {

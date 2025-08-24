@@ -12,7 +12,7 @@ export class AuthStorage {
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
     storage.setItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
-    
+
     if (rememberMe) {
       localStorage.setItem(AUTH_STORAGE_KEYS.REMEMBER_ME, 'true');
     }
@@ -42,9 +42,9 @@ export class AuthStorage {
     const userString =
       localStorage.getItem(AUTH_STORAGE_KEYS.USER) ||
       sessionStorage.getItem(AUTH_STORAGE_KEYS.USER);
-    
+
     if (!userString) return null;
-    
+
     try {
       return JSON.parse(userString) as I_User;
     } catch {

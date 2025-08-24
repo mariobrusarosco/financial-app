@@ -10,6 +10,10 @@ import type {
   I_CreateInvestmentRequest,
   I_CreateInvestmentMovementRequest,
   I_CreateInvestmentBalanceRequest,
+  I_MonthlyBalanceSummary,
+  I_MonthlyBalanceSummaryParams,
+  I_CreateBalancePointRequest,
+  I_CreateBalancePointResponse,
 } from '../types/types-and-interfaces';
 
 export const investmentsApi = {
@@ -81,6 +85,39 @@ export const investmentsApi = {
     const response = await apiClient.get<I_InvestmentBalanceHistoryResponse>(
       '/investments/balances',
       { params }
+    );
+    return response.data;
+  },
+
+  // Monthly Balance Summaries
+  getMonthlyBalanceSummaries: async (
+    params: I_MonthlyBalanceSummaryParams
+  ): Promise<I_MonthlyBalanceSummary[]> => {
+    const { account_id, year, months } = params;
+    const queryParams = new URLSearchParams();
+
+    if (year) queryParams.append('year', year.toString());
+    if (months) queryParams.append('months', months.toString());
+
+    const response = await apiClient.get<I_MonthlyBalanceSummary[]>(
+      `/balance_points/account/${account_id}/monthly-summary?${queryParams}`
+    );
+    return response.data;
+  },
+
+  // Balance Points - Using upsert functionality
+  upsertBalancePoint: async (
+    data: I_CreateBalancePointRequest
+  ): Promise<I_CreateBalancePointResponse> => {
+    const { account_id, date, balance, note } = data;
+
+    const response = await apiClient.put<I_CreateBalancePointResponse>(
+      `/balance_points/account/${account_id}/date/${date}`,
+      {
+        balance,
+        snapshot_type: 'manual',
+        note: note || undefined,
+      }
     );
     return response.data;
   },

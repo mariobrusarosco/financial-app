@@ -128,18 +128,18 @@ return (
 // ✅ DO: Structure mock APIs to mirror real backend
 const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
   await delay(500); // Simulate network delay
-  
+
   const user = mockUsers.find(
     u => u.email === credentials.email && u.password === credentials.password
   );
-  
+
   if (!user) {
     throw new Error('Invalid email or password');
   }
-  
+
   const tokens = generateMockTokens(user.id);
   const { password, ...userWithoutPassword } = user;
-  
+
   return {
     user: userWithoutPassword,
     tokens,
@@ -157,7 +157,7 @@ export class AuthStorage {
     storage.setItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
     storage.setItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
   }
-  
+
   static getAccessToken(): string | null {
     return (
       localStorage.getItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN) ||
@@ -174,15 +174,13 @@ localStorage.setItem('token', token); // Avoid this
 
 ```typescript
 // ✅ DO: Add auth headers automatically
-apiClient.interceptors.request.use(
-  config => {
-    const accessToken = AuthStorage.getAccessToken();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
+apiClient.interceptors.request.use(config => {
+  const accessToken = AuthStorage.getAccessToken();
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
-);
+  return config;
+});
 
 // ✅ DO: Handle auth errors globally
 apiClient.interceptors.response.use(
@@ -210,9 +208,9 @@ export const useAuth = () => {
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
-  
+
   const isAuthenticated = !!user && TokenManager.hasValidToken();
-  
+
   return {
     user,
     isAuthenticated,
@@ -230,7 +228,7 @@ export const useAuth = () => {
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  
+
   return useMutation<I_AuthResponse, Error, I_LoginRequest>({
     mutationFn: authApi.login,
     onSuccess: (data, variables) => {
@@ -240,7 +238,7 @@ export const useLogin = () => {
       toast.success(`Welcome back, ${data.user.name}!`);
       void navigate({ to: '/dashboard' });
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error.message || 'Login failed. Please try again.');
     },
   });
@@ -260,12 +258,12 @@ export const useLogin = () => {
       Enter your email and password to access your account
     </CardDescription>
   </CardHeader>
-  
+
   <form onSubmit={handleSubmit}>
     <CardContent className="space-y-4">
       {/* Form fields */}
     </CardContent>
-    
+
     <CardFooter className="flex flex-col space-y-4">
       <Button type="submit" className="w-full">
         Sign in
@@ -359,13 +357,13 @@ export const Route = createFileRoute('/(auth)')({
 
 ```typescript
 // ✅ DO: Handle auth errors gracefully
-onError: (error) => {
+onError: error => {
   if (error.message.includes('expired')) {
     toast.error('Session expired. Please login again.');
   } else {
     toast.error(error.message || 'Authentication failed');
   }
-}
+};
 ```
 
 ## Type Safety
@@ -418,11 +416,11 @@ export interface I_SignupRequest {
 describe('useAuth', () => {
   it('should return authenticated state when token exists', async () => {
     AuthStorage.setTokens(mockTokens);
-    
+
     const { result } = renderHook(() => useAuth(), {
       wrapper: QueryWrapper,
     });
-    
+
     await waitFor(() => {
       expect(result.current.isAuthenticated).toBe(true);
     });
@@ -437,10 +435,10 @@ describe('useAuth', () => {
 describe('LoginForm', () => {
   it('should show validation errors for invalid input', async () => {
     render(<LoginForm />);
-    
+
     const submitButton = screen.getByRole('button', { name: /sign in/i });
     fireEvent.click(submitButton);
-    
+
     expect(await screen.findByText('Email is required')).toBeInTheDocument();
   });
 });

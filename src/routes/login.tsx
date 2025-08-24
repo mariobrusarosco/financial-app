@@ -8,7 +8,7 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -16,11 +16,11 @@ function LoginPage() {
       </div>
     );
   }
-  
+
   if (isAuthenticated) {
     return <Navigate to="/dashboard" />;
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
       <div className="mb-8 text-center">
@@ -28,7 +28,7 @@ function LoginPage() {
         <h1 className="text-3xl font-bold text-foreground">Better Call Buffet</h1>
         <p className="text-muted-foreground mt-2">Manage your finances with confidence</p>
       </div>
-      
+
       <LoginForm />
     </div>
   );

@@ -118,3 +118,40 @@ export interface I_InvestmentsResponse {
     overall_growth_percentage: number;
   };
 }
+
+// Monthly Balance Summary Types
+export interface I_MonthlyBalanceSummary {
+  month: number;
+  year: number;
+  month_name: string;
+  started_with: string;
+  ended_with: string;
+  movement: string;
+  profit: string;
+  profit_percentage: number;
+  has_data: boolean;
+}
+
+export interface I_MonthlyBalanceSummaryParams {
+  account_id: string;
+  year?: number;
+  months?: number;
+}
+
+// Balance Point Creation Types
+export interface I_CreateBalancePointRequest {
+  account_id: string;
+  date: string;
+  balance: number;
+  note?: string;
+}
+
+export interface I_CreateBalancePointResponse {
+  id: string;
+  account_id: string;
+  date: string;
+  balance: string;
+  note?: string;
+  created_at: string;
+  updated_at: string;
+}
