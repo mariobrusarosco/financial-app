@@ -14,9 +14,11 @@ export const InvestmentSectionNavigation = ({
   const { currentSection } = useInvestmentSectionContent({ selectedInvestment });
 
   const handleSectionChange = (value: string) => {
-    navigate({
+    void navigate({
       to: '/investments',
-      search: { section: value },
+      search: {
+        section: value as 'accounts' | 'overview' | 'history' | 'data-input' | 'individual',
+      },
     });
   };
 

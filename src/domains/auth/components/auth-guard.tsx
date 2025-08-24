@@ -8,7 +8,7 @@ interface AuthGuardProps {
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -19,10 +19,10 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-  
+
   return <>{children}</>;
 };

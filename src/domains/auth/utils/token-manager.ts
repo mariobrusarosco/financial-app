@@ -12,7 +12,7 @@ export class TokenManager {
     try {
       const base64Url = token.split('.')[1];
       if (!base64Url) return null;
-      
+
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(
         atob(base64)
@@ -20,7 +20,7 @@ export class TokenManager {
           .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
           .join('')
       );
-      
+
       return JSON.parse(jsonPayload);
     } catch {
       return null;
@@ -29,9 +29,9 @@ export class TokenManager {
 
   static scheduleTokenRefresh(expiresIn: number, onRefresh: () => void): void {
     this.clearTokenRefreshTimer();
-    
+
     const refreshTime = (expiresIn - 60) * 1000;
-    
+
     if (refreshTime > 0) {
       this.tokenExpiryTimeout = setTimeout(() => {
         onRefresh();
@@ -48,25 +48,25 @@ export class TokenManager {
 
   static validateToken(token: string | null): boolean {
     if (!token) return false;
-    
+
     // Handle mock tokens for development
     if (token.startsWith('mock_')) {
       return true;
     }
-    
+
     // Validate JWT structure
     const parts = token.split('.');
     if (parts.length !== 3) return false;
-    
+
     try {
       const payload = this.getTokenPayload(token);
       if (!payload) return false;
-      
+
       // Check if token is expired
       if (payload.exp && payload.exp * 1000 < Date.now()) {
         return false;
       }
-      
+
       return true;
     } catch {
       return false;

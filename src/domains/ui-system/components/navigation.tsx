@@ -70,9 +70,9 @@ const navigationItems: NavigationItem[] = [
 const UserMenu = () => {
   const { user } = useAuth();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
-  
+
   if (!user) return null;
-  
+
   const getInitials = (name: string) => {
     if (!name) return 'U';
     return name
@@ -82,15 +82,13 @@ const UserMenu = () => {
       .toUpperCase()
       .slice(0, 2);
   };
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarFallback className="text-xs">
-              {getInitials(user.name)}
-            </AvatarFallback>
+            <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

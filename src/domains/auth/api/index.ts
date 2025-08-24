@@ -16,22 +16,22 @@ const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
       password: credentials.password,
       device_name: navigator.userAgent || 'Unknown Device',
     });
-    
+
     // Backend returns: { access_token, refresh_token, expires_in }
     const { access_token, refresh_token, expires_in } = response.data;
-    
+
     // Store tokens temporarily to make authenticated request
     const tokens = {
       accessToken: access_token,
       refreshToken: refresh_token,
       expiresIn: expires_in,
     };
-    
+
     // Get user data with the new token
     const userResponse = await apiClient.get('/auth/me', {
-      headers: { Authorization: `Bearer ${access_token}` }
+      headers: { Authorization: `Bearer ${access_token}` },
     });
-    
+
     return {
       user: userResponse.data,
       tokens,
@@ -50,10 +50,10 @@ const signup = async (data: I_SignupRequest): Promise<I_AuthResponse> => {
       password: data.password,
       is_active: true,
     });
-    
+
     // Backend returns: { access_token, refresh_token, expires_in, user }
     const { access_token, refresh_token, expires_in, user } = response.data;
-    
+
     return {
       user,
       tokens: {
@@ -101,7 +101,7 @@ const getCurrentUser = async (): Promise<I_User | null> => {
     if (!accessToken) {
       return null;
     }
-    
+
     const response = await apiClient.get<I_User>('/auth/me');
     return response.data;
   } catch (error) {
@@ -116,7 +116,7 @@ const validateSession = async (): Promise<boolean> => {
     if (!accessToken) {
       return false;
     }
-    
+
     const response = await apiClient.get('/auth/sessions');
     return response.status === 200;
   } catch (error) {

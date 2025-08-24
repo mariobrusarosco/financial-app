@@ -5,7 +5,7 @@ import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { PlusIcon, TrendingUpIcon } from 'lucide-react';
-import { useInvestments } from '../hooks/use-investments';
+
 import { useMonthlyBalanceSummaries } from '../hooks/use-monthly-balance-summaries';
 import { useCreateBalancePoint } from '../hooks/use-create-balance-point';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
@@ -47,7 +47,7 @@ export const InvestmentDataInputScreen = () => {
   // Create balance point mutation
   const createBalancePointMutation = useCreateBalancePoint();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!selectedInvestment || !formData.balance) {

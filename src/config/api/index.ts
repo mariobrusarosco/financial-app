@@ -21,7 +21,7 @@ const processQueue = (error: any, token: string | null = null) => {
       resolve(token);
     }
   });
-  
+
   failedQueue = [];
 };
 
@@ -37,7 +37,7 @@ const refreshAuthToken = async (): Promise<string | null> => {
     });
 
     const { access_token, refresh_token: newRefreshToken, expires_in } = response.data;
-    
+
     AuthStorage.setTokens(
       {
         accessToken: access_token,
@@ -82,19 +82,21 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    
+
     // Handle 401 Unauthorized with token refresh
     if (error?.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(token => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return apiClient(originalRequest);
-        }).catch(err => {
-          return Promise.reject(err);
-        });
+        })
+          .then(token => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
       }
 
       originalRequest._retry = true;
@@ -103,7 +105,7 @@ apiClient.interceptors.response.use(
       try {
         const newToken = await refreshAuthToken();
         processQueue(null, newToken);
-        
+
         if (newToken) {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return apiClient(originalRequest);
@@ -117,7 +119,7 @@ apiClient.interceptors.response.use(
         isRefreshing = false;
       }
     }
-    
+
     // Transform axios errors into our custom error types
     if (typeof error === 'object' && error !== null) {
       if ('response' in error && error.response) {

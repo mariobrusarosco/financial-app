@@ -7,7 +7,7 @@ import type { I_User } from '../types/auth.types';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
-  
+
   const { data: user, isLoading } = useQuery<I_User | null>({
     queryKey: GET_CURRENT_USER_QUERY_KEY(),
     queryFn: authApi.getCurrentUser,
@@ -15,21 +15,21 @@ export const useAuth = () => {
     gcTime: 10 * 60 * 1000,
     retry: false,
   });
-  
+
   const isAuthenticated = !!user && TokenManager.hasValidToken();
-  
+
   const refreshAuth = async () => {
     await queryClient.invalidateQueries({
       queryKey: GET_CURRENT_USER_QUERY_KEY(),
     });
   };
-  
+
   const clearAuth = () => {
     AuthStorage.clearAuth();
     queryClient.setQueryData(GET_CURRENT_USER_QUERY_KEY(), null);
     queryClient.clear();
   };
-  
+
   return {
     user,
     isAuthenticated,

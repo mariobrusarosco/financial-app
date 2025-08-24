@@ -95,10 +95,10 @@ export const investmentsApi = {
   ): Promise<I_MonthlyBalanceSummary[]> => {
     const { account_id, year, months } = params;
     const queryParams = new URLSearchParams();
-    
+
     if (year) queryParams.append('year', year.toString());
     if (months) queryParams.append('months', months.toString());
-    
+
     const response = await apiClient.get<I_MonthlyBalanceSummary[]>(
       `/balance_points/account/${account_id}/monthly-summary?${queryParams}`
     );
@@ -110,7 +110,7 @@ export const investmentsApi = {
     data: I_CreateBalancePointRequest
   ): Promise<I_CreateBalancePointResponse> => {
     const { account_id, date, balance, note } = data;
-    
+
     const response = await apiClient.put<I_CreateBalancePointResponse>(
       `/balance_points/account/${account_id}/date/${date}`,
       {

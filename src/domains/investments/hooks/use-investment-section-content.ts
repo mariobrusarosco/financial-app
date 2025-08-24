@@ -40,6 +40,7 @@ export const useInvestmentSectionContent = ({
         };
       case 'individual':
         if (!selectedInvestment) {
+          // Fallback to accounts if no investment is selected for individual view
           return {
             type: 'accounts' as const,
             props: {},

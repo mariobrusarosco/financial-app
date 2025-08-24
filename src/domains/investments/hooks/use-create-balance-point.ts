@@ -11,7 +11,7 @@ export const useCreateBalancePoint = () => {
     mutationFn: investmentsApi.upsertBalancePoint,
     onSuccess: (data, variables) => {
       toast.success('Balance point saved successfully!');
-      
+
       // Invalidate monthly summaries to refresh the data
       queryClient.invalidateQueries({
         queryKey: MONTHLY_BALANCE_SUMMARIES_QUERY_KEY({
