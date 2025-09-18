@@ -3193,6 +3193,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-devtools@npm:5.87.3":
+  version: 5.87.3
+  resolution: "@tanstack/query-devtools@npm:5.87.3"
+  checksum: 63d138f4f7295a31f1f6224e2601ccf5fb2b0e38aed7fe8c6c0fa2d661da82b6d6670911d92d31b1c8267f2cc3f25fde28dfb8beb165b9c8f24c110c9d8e2507
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-form@npm:^1.19.2":
   version: 1.19.2
   resolution: "@tanstack/react-form@npm:1.19.2"
@@ -3208,6 +3215,18 @@ __metadata:
     "@tanstack/react-start":
       optional: true
   checksum: 9a3946b1c1fa3efe223412f9b02641ec28b32d61cf752ec469d3a8023fd553a1808ec7118e28a3d6e03623a606b41f9f2a754b8ff791e867558d4b8de431413d
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:^5.89.0":
+  version: 5.89.0
+  resolution: "@tanstack/react-query-devtools@npm:5.89.0"
+  dependencies:
+    "@tanstack/query-devtools": 5.87.3
+  peerDependencies:
+    "@tanstack/react-query": ^5.89.0
+    react: ^18 || ^19
+  checksum: c0f961d255afaa3cad99a591c9ea92007d23e3a9de2bd3a1bbe8c645fd7accbbad6c5d4fcbfed32aa0f1215cf686148deee12e58617a7eacfbf70af47d1ebf08
   languageName: node
   linkType: hard
 
@@ -4753,6 +4772,7 @@ __metadata:
     "@tailwindcss/vite": ^4.1.4
     "@tanstack/react-form": ^1.19.2
     "@tanstack/react-query": ^5.75.7
+    "@tanstack/react-query-devtools": ^5.89.0
     "@tanstack/react-router": ^1.120.20
     "@tanstack/react-start": ^1.120.20
     "@tanstack/start": ^1.120.20

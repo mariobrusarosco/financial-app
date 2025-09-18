@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import appCss from '@/domains/ui-system/styles/app.css?url';
 import { ThemeProvider } from '@/domains/ui-system/components/theme-provider';
 import { Toaster } from '@/domains/ui-system/components/sonner';
@@ -47,6 +48,9 @@ function RootComponent() {
           <Toaster />
         </RootDocument>
       </ThemeProvider>
+      {process.env.NODE_ENV === 'development' && (
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      )}
     </QueryClientProvider>
   );
 }

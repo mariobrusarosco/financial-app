@@ -8,6 +8,7 @@ import type {
   I_User,
 } from '../types/auth.types';
 import { AuthStorage } from '../utils/auth-storage';
+import { T_AppError } from '@/domains/global/typing/types-and-interfaces';
 
 const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
   try {
@@ -62,8 +63,7 @@ const signup = async (data: I_SignupRequest): Promise<I_AuthResponse> => {
         expiresIn: expires_in,
       },
     };
-  } catch (error) {
-    console.error('Signup error:', error);
+  } catch (error: T_AppError | unknown) {
     throw error;
   }
 };
