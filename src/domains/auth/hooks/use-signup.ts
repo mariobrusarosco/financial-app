@@ -22,8 +22,8 @@ export const useSignup = () => {
 
       void navigate({ to: '/dashboard' });
     },
-    onError: error => {
-      toast.error(error.message || 'Signup failed. Please try again.');
+    onError: () => {
+      toast.error('Signup failed. Please try again.');
     },
   });
 };
