@@ -56,10 +56,11 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
       category: '',
     } as I_CreateTransactionForm,
     onSubmit: ({ value }) => {
+      debugger;
       // Include the computed broker_id in the transaction
       const completeTransaction = {
         ...value,
-        broker_id: brokerId || '',
+        broker_id: getBrokerId() || 'fuck',
       };
 
       if (onAddTransaction) {
@@ -74,19 +75,15 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
     },
   });
 
-  const brokerId = useMemo(() => {
+  const getBrokerId = () => {
     if (transactionSource === 'creditCard') {
       return creditCards?.data?.find(card => card.id === form.state.values.credit_card_id)
         ?.broker_id;
     }
     return accounts?.find(account => account.id === form.state.values.account_id)?.broker?.id;
-  }, [
-    transactionSource,
-    creditCards,
-    accounts,
-    form.state.values.credit_card_id,
-    form.state.values.account_id,
-  ]);
+  };
+
+  console.log('brokerId', getBrokerId());
 
   if (isFetchingAccounts || isFetchingCreditCards)
     return (
