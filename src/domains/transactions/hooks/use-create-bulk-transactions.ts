@@ -16,7 +16,7 @@ export const useCreateBulkTransactions = () => {
       };
       return transactionsApi.createBulkTransactions(bulkRequest);
     },
-    onSuccess: response => {
+    onSuccess: (response, variables) => {
       const { total_submitted, total_successful, total_failed, success_rate } = response;
 
       if (total_failed === 0) {
@@ -29,13 +29,27 @@ export const useCreateBulkTransactions = () => {
         toast.error(`Failed to create all ${total_submitted} transactions`);
       }
 
-      // TODO: Update with actual query keys when available
-      // void queryClient.invalidateQueries({
-      //   queryKey: ['transactions'],
-      // });
-
-      // Close drawer on success
+      // Invalidate account transactions caches for all affected accounts
       if (total_successful > 0) {
+        const affectedAccountIds = new Set(
+          variables.map(t => t.account_id).filter((id): id is string => Boolean(id))
+        );
+
+        // Invalidate paginated transactions for each affected account
+        affectedAccountIds.forEach(accountId => {
+          void queryClient.invalidateQueries({
+            queryKey: ['account-transactions-paginated', accountId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ['account-transactions-infinite', accountId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ['account-transactions', accountId],
+          });
+        });
+
+        // Close drawer on success
+        // @ts-ignore
         void navigate({ search: {} });
       }
     },
