@@ -1,4 +1,5 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
+import { useDeleteAccount } from '@/domains/accounts/hooks/use-delete-account';
 import { Link } from '@tanstack/react-router';
 import { Building2, PiggyBank, CreditCard, MoreVertical } from 'lucide-react';
 import {
@@ -12,6 +13,14 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Surface } from '@/domains/global/components/surface';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
+  const deleteAccount = useDeleteAccount();
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deleteAccount.mutate(account.id);
+  };
+
   const getAccountIcon = (type: string) => {
     switch (type) {
       case 'checking':
@@ -61,7 +70,13 @@ const AccountCard = ({ account }: { account: I_Account }) => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>View Details</DropdownMenuItem>
               <DropdownMenuItem>Edit Account</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">Delete Account</DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={handleDelete}
+                disabled={deleteAccount.isPending}
+              >
+                {deleteAccount.isPending ? 'Deleting...' : 'Delete Account'}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

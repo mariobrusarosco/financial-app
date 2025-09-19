@@ -85,6 +85,15 @@ const getAccount = async (id: string): Promise<I_Account> => {
   }
 };
 
+const deleteAccount = async (id: string): Promise<void> => {
+  try {
+    await apiClient.delete<void>(`/accounts/${id}`);
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    throw error;
+  }
+};
+
 const parseAccountStatement = async (formData: FormData): Promise<I_AccountRawStatement> => {
   return await parsePdf({ data: formData });
 };
@@ -120,6 +129,7 @@ export const accountsApi = {
   getAllAccounts,
   getAllActiveAccounts,
   createAccount,
+  deleteAccount,
   getAccount,
   parseAccountStatement,
   createAccountStatement,

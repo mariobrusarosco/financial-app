@@ -34,9 +34,11 @@ export const useCreateAccount = () => {
       });
     },
     onError: error => {
-      handleErrorWithToast(error, {
+      const errorInfo = handleErrorWithToast(error, {
         userMessage: AccountErrorMessages.ACCOUNT_CREATION_FAILED,
       });
+
+      // TODO LOG ERROR ON SENTRY
     },
   });
 };
