@@ -1,5 +1,6 @@
 export * from './app-layout';
 export * from './avatar';
+export * from './beta-banner';
 export * from './badge';
 export * from './button';
 export * from './calendar';

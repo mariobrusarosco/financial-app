@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import appCss from '@/domains/ui-system/styles/app.css?url';
 import { ThemeProvider } from '@/domains/ui-system/components/theme-provider';
 import { Toaster } from '@/domains/ui-system/components/sonner';
+import { BetaBanner } from '@/domains/ui-system/components/beta-banner';
 import { initSentry } from '@/config/sentry';
 
 const queryClient = new QueryClient();
@@ -44,7 +45,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <RootDocument>
-          <Outlet />
+          <BetaBanner />
+          <div className="pt-20">
+            <Outlet />
+          </div>
           <Toaster />
         </RootDocument>
       </ThemeProvider>
