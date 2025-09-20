@@ -56,11 +56,10 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
       category: '',
     } as I_CreateTransactionForm,
     onSubmit: ({ value }) => {
-      debugger;
       // Include the computed broker_id in the transaction
       const completeTransaction = {
         ...value,
-        broker_id: getBrokerId() || 'fuck',
+        broker_id: getBrokerId() || 'But ',
       };
 
       if (onAddTransaction) {

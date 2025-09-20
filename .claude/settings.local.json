@@ -40,7 +40,8 @@
       "Bash(corepack prepare:*)",
       "Bash(corepack yarn --version)",
       "Bash(corepack yarn install:*)",
-      "WebFetch(domain:api-better-call-buffet.mariobrusarosco.com)"
+      "WebFetch(domain:api-better-call-buffet.mariobrusarosco.com)",
+      "Bash(yarn add:*)"
     ],
     "deny": []
   }

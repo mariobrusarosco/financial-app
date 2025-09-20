@@ -25,12 +25,8 @@ export const useCreateAccount = () => {
 
       // Close the drawer by clearing search params, then navigate to the account
       void navigate({
-        search: {},
-      }).then(() => {
-        void navigate({
-          to: '/accounts/$slug',
-          params: { slug: newAccount.id },
-        });
+        to: '/accounts/$slug',
+        params: { slug: newAccount.id },
       });
     },
     onError: error => {

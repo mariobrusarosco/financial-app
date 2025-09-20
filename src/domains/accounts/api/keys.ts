@@ -6,3 +6,8 @@ export const GET_ALL_CREDIT_CARDS_QUERY_KEY = (accountId: string) => [
   accountId,
   'credit-cards',
 ];
+export const GET_ACCOUNT_BALANCE_POINTS_QUERY_KEY = (accountId: string) => [
+  'accounts',
+  accountId,
+  'balance-points',
+];

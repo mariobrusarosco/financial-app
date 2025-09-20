@@ -94,6 +94,15 @@ const deleteAccount = async (id: string): Promise<void> => {
   }
 };
 
+const updateAccountBalance = async (id: string): Promise<void> => {
+  try {
+    await apiClient.post<void>(`/accounts/${id}/update-balance`);
+  } catch (error) {
+    console.error('Error updating account balance:', error);
+    throw error;
+  }
+};
+
 const parseAccountStatement = async (formData: FormData): Promise<I_AccountRawStatement> => {
   return await parsePdf({ data: formData });
 };
@@ -125,6 +134,30 @@ const getAccountStatements = async (accountId: string): Promise<I_AccountStateme
   }
 };
 
+// Balance Points API
+export interface I_BalancePoint {
+  id: string;
+  account_id: string;
+  user_id: string;
+  date: string;
+  balance: number;
+  snapshot_type: 'opening' | 'manual' | 'transaction';
+  note?: string;
+  source_transaction_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const getAccountBalancePoints = async (accountId: string): Promise<I_BalancePoint[]> => {
+  try {
+    const response = await apiClient.get<I_BalancePoint[]>(`/balance-points/account/${accountId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching account balance points:', error);
+    throw error;
+  }
+};
+
 export const accountsApi = {
   getAllAccounts,
   getAllActiveAccounts,
@@ -134,4 +167,6 @@ export const accountsApi = {
   parseAccountStatement,
   createAccountStatement,
   getAccountStatements,
+  updateAccountBalance,
+  getAccountBalancePoints,
 };
