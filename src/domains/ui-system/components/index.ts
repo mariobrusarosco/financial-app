@@ -19,3 +19,5 @@ export * from './theme-provider';
 export * from './pagination';
 export * from './label';
 export * from './collapsible';
+export * from './react-aria-select';
+export * from './react-aria-select-demo';
