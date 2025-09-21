@@ -46,6 +46,9 @@
       "WebFetch(domain:react-spectrum.adobe.com)",
       "WebFetch(domain:react-spectrum.adobe.com)",
       "WebSearch",
+      "WebSearch",
+      "WebFetch(domain:tremor.so)",
+      "WebFetch(domain:tremor.so)",
       "WebSearch"
     ],
     "deny": []

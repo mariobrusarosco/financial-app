@@ -53,11 +53,11 @@ const AccountCard = ({ account }: { account: I_Account }) => {
         className="flex-1 flex flex-col justify-between h-full"
       >
         <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-full bg-primary/10">{getAccountIcon(account.type)}</div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium truncate">{account.name}</h3>
-              <p className="text-sm text-muted-foreground capitalize">{account.type}</p>
+          <div className="flex items-center space-x-2">
+            <div className="p-1.5 rounded-full bg-primary/10">{getAccountIcon(account.type)}</div>
+            <div className="flex-1 min-w-0 max-w-[120px]">
+              <h3 className="text-xs font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap">{account.name}</h3>
+              <p className="text-xs text-muted-foreground capitalize">{account.type}</p>
             </div>
           </div>
           <DropdownMenu>

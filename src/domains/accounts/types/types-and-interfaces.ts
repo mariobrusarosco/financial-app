@@ -24,3 +24,16 @@ export interface I_CreateAccountForm {
 }
 
 export type T_AccountCurrency = 'BRL' | 'USD';
+
+export interface I_BalancePoint {
+  id: string;
+  account_id: string;
+  user_id: string;
+  date: string;
+  balance: number;
+  snapshot_type: 'opening' | 'manual' | 'transaction';
+  note?: string;
+  source_transaction_id?: string;
+  created_at: string;
+  updated_at: string;
+}

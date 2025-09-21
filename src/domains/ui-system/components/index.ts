@@ -21,3 +21,4 @@ export * from './label';
 export * from './collapsible';
 export * from './react-aria-select';
 export * from './react-aria-select-demo';
+export * from './tremor-charts';

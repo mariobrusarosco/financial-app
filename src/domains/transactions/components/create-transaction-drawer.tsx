@@ -93,7 +93,12 @@ export const CreateTransactionDrawer = () => {
                               {category.name}
                             </p>
                           )}
-                          <p className="text-xs text-muted-foreground">{transaction.date}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {typeof transaction.date === 'string' 
+                              ? transaction.date 
+                              : new Date(transaction.date).toLocaleDateString()
+                            }
+                          </p>
                         </div>
                         <Button
                           size="sm"

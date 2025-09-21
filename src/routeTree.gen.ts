@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as authTremorDemoRouteImport } from './routes/(auth)/tremor-demo'
 import { Route as authReactAriaDemoRouteImport } from './routes/(auth)/react-aria-demo'
 import { Route as authTransactionsIndexRouteImport } from './routes/(auth)/transactions/index'
 import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/index'
@@ -51,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const authTremorDemoRoute = authTremorDemoRouteImport.update({
+  id: '/tremor-demo',
+  path: '/tremor-demo',
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authReactAriaDemoRoute = authReactAriaDemoRouteImport.update({
   id: '/react-aria-demo',
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/react-aria-demo': typeof authReactAriaDemoRoute
+  '/tremor-demo': typeof authTremorDemoRoute
   '/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/react-aria-demo': typeof authReactAriaDemoRoute
+  '/tremor-demo': typeof authTremorDemoRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/(auth)/react-aria-demo': typeof authReactAriaDemoRoute
+  '/(auth)/tremor-demo': typeof authTremorDemoRoute
   '/(auth)/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/react-aria-demo'
+    | '/tremor-demo'
     | '/accounts/$slug'
     | '/accounts'
     | '/brokers'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/react-aria-demo'
+    | '/tremor-demo'
     | '/accounts'
     | '/brokers'
     | '/dashboard'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/(auth)/react-aria-demo'
+    | '/(auth)/tremor-demo'
     | '/(auth)/accounts/$slug'
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
@@ -338,6 +350,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/tremor-demo': {
+      id: '/(auth)/tremor-demo'
+      path: '/tremor-demo'
+      fullPath: '/tremor-demo'
+      preLoaderRoute: typeof authTremorDemoRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/react-aria-demo': {
       id: '/(auth)/react-aria-demo'
@@ -524,6 +543,7 @@ const authAccountsSlugRouteRouteWithChildren =
 
 interface authRouteRouteChildren {
   authReactAriaDemoRoute: typeof authReactAriaDemoRoute
+  authTremorDemoRoute: typeof authTremorDemoRoute
   authAccountsSlugRouteRoute: typeof authAccountsSlugRouteRouteWithChildren
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authBrokersIndexRoute: typeof authBrokersIndexRoute
@@ -537,6 +557,7 @@ interface authRouteRouteChildren {
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authReactAriaDemoRoute: authReactAriaDemoRoute,
+  authTremorDemoRoute: authTremorDemoRoute,
   authAccountsSlugRouteRoute: authAccountsSlugRouteRouteWithChildren,
   authAccountsIndexRoute: authAccountsIndexRoute,
   authBrokersIndexRoute: authBrokersIndexRoute,

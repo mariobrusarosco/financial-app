@@ -40,6 +40,7 @@
     "@tanstack/react-query-devtools": "^5.89.0",
     "@tanstack/react-router": "^1.120.20",
     "@tanstack/react-start": "^1.120.20",
+    "@tremor/react": "^3.18.7",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -60,6 +61,7 @@
     "tailwind-merge": "^3.2.0",
     "use-immer": "^0.11.0",
     "vaul": "^1.1.2",
+    "victory": "^37.3.6",
     "vinxi": "^0.5.4"
   },
   "devDependencies": {

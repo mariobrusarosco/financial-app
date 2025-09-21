@@ -1,5 +1,9 @@
 import { apiClient } from '@/config/api';
-import { I_Account, I_CreateAccountForm } from '@/domains/accounts/types/types-and-interfaces';
+import type {
+  I_Account,
+  I_CreateAccountForm,
+  I_BalancePoint,
+} from '@/domains/accounts/types/types-and-interfaces';
 import { parsePdf } from '@/server-functions/pdf-parser';
 
 // Define account statement types
@@ -134,23 +138,9 @@ const getAccountStatements = async (accountId: string): Promise<I_AccountStateme
   }
 };
 
-// Balance Points API
-export interface I_BalancePoint {
-  id: string;
-  account_id: string;
-  user_id: string;
-  date: string;
-  balance: number;
-  snapshot_type: 'opening' | 'manual' | 'transaction';
-  note?: string;
-  source_transaction_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 const getAccountBalancePoints = async (accountId: string): Promise<I_BalancePoint[]> => {
   try {
-    const response = await apiClient.get<I_BalancePoint[]>(`/balance-points/account/${accountId}`);
+    const response = await apiClient.get<I_BalancePoint[]>(`/balance_points/account/${accountId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching account balance points:', error);
