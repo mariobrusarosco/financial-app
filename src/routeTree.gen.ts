@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as authReactAriaDemoRouteImport } from './routes/(auth)/react-aria-demo'
 import { Route as authTransactionsIndexRouteImport } from './routes/(auth)/transactions/index'
 import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/index'
 import { Route as authInvestmentsIndexRouteImport } from './routes/(auth)/investments/index'
@@ -50,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const authReactAriaDemoRoute = authReactAriaDemoRouteImport.update({
+  id: '/react-aria-demo',
+  path: '/react-aria-demo',
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authTransactionsIndexRoute = authTransactionsIndexRouteImport.update({
   id: '/transactions/',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/react-aria-demo': typeof authReactAriaDemoRoute
   '/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/react-aria-demo': typeof authReactAriaDemoRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/(auth)': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/(auth)/react-aria-demo': typeof authReactAriaDemoRoute
   '/(auth)/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/react-aria-demo'
     | '/accounts/$slug'
     | '/accounts'
     | '/brokers'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/react-aria-demo'
     | '/accounts'
     | '/brokers'
     | '/dashboard'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/(auth)'
     | '/login'
     | '/signup'
+    | '/(auth)/react-aria-demo'
     | '/(auth)/accounts/$slug'
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
@@ -326,6 +338,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/react-aria-demo': {
+      id: '/(auth)/react-aria-demo'
+      path: '/react-aria-demo'
+      fullPath: '/react-aria-demo'
+      preLoaderRoute: typeof authReactAriaDemoRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/transactions/': {
       id: '/(auth)/transactions/'
@@ -504,6 +523,7 @@ const authAccountsSlugRouteRouteWithChildren =
   )
 
 interface authRouteRouteChildren {
+  authReactAriaDemoRoute: typeof authReactAriaDemoRoute
   authAccountsSlugRouteRoute: typeof authAccountsSlugRouteRouteWithChildren
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authBrokersIndexRoute: typeof authBrokersIndexRoute
@@ -516,6 +536,7 @@ interface authRouteRouteChildren {
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
+  authReactAriaDemoRoute: authReactAriaDemoRoute,
   authAccountsSlugRouteRoute: authAccountsSlugRouteRouteWithChildren,
   authAccountsIndexRoute: authAccountsIndexRoute,
   authBrokersIndexRoute: authBrokersIndexRoute,

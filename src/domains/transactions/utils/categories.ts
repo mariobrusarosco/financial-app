@@ -18,6 +18,7 @@ export const MOCK_CATEGORIES: Record<string, I_TransactionCategory[]> = {
     { id: 'transport', name: 'Transportation', icon: '🚗', type: 'expense' },
     { id: 'education', name: 'Education', icon: '📚', type: 'expense' },
     { id: 'travel', name: 'Travel', icon: '✈️', type: 'expense' },
+    { id: 'investment_loss', name: 'Investment Loss', icon: '📉', type: 'expense' },
   ],
   income: [
     { id: 'salary', name: 'Salary', icon: '💼', type: 'income' },
