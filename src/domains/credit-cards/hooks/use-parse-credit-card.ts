@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
-import { I_CreditCardRawInvoice } from '@/domains/credit-cards/types/types-and-interfaces';
+import { I_CreditCardInvoiceResponse } from '@/domains/credit-cards/types/types-and-interfaces';
 import { useState } from 'react';
+import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 
 export const CREDIT_CARD_KEYS = {
   all: ['credit-cards'] as const,
@@ -10,9 +11,9 @@ export const CREDIT_CARD_KEYS = {
   statement: (statementId: string) => [...CREDIT_CARD_KEYS.statements(), statementId] as const,
 } as const;
 
-export const useParseCreditCardInvoice = () => {
+export const useParseCreditCardInvoice = (creditCardId: string, accountId?: string) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [rawInvoice, setRawInvoice] = useState<I_CreditCardRawInvoice | null>(null);
+  const [invoice, setInvoice] = useState<I_CreditCardInvoiceResponse | null>(null);
   const queryClient = useQueryClient();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,13 +31,18 @@ export const useParseCreditCardInvoice = () => {
     await Promise.resolve(); // Satisfy require-await
     void mutation.mutate(formData, {
       onSuccess: data => {
-        setRawInvoice(data);
+        setInvoice(data);
       },
     });
   };
 
-  const mutation = useMutation<I_CreditCardRawInvoice, Error, FormData>({
-    mutationFn: creditCardApi.parseInvoice,
+  const mutation = useMutation<I_CreditCardInvoiceResponse, Error, FormData>({
+    mutationFn: async (formData: FormData) => {
+      if (accountId) {
+        formData.append('account_id', accountId);
+      }
+      return creditCardApi.parseInvoicePdf(formData, creditCardId);
+    },
 
     onSuccess: data => {
       console.log('Statement parsed successfully:', data);
@@ -48,7 +54,9 @@ export const useParseCreditCardInvoice = () => {
     },
 
     onError: error => {
-      console.error('Failed to parse statement:', error.message);
+      handleErrorWithToast(error, {
+        userMessage: 'Failed to parse credit card statement. Please check the file and try again.',
+      });
     },
 
     retry: false,
@@ -56,7 +64,7 @@ export const useParseCreditCardInvoice = () => {
 
   return {
     mutation,
-    invoice: rawInvoice,
+    invoice,
     handleFileUpload,
     handleFileChange,
     selectedFile,

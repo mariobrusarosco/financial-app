@@ -1,17 +1,13 @@
 import {
-  I_CreditCardInvoiceRequest,
   I_CreditCardInvoiceResponse,
   I_CreditCardInvoicesResponse,
-  I_CreditCardRawInvoice,
   I_CreateCreditCardRequest,
   I_CreateCreditCardResponse,
   I_CreateCreditCardsResponse,
   I_CreditCard,
-  I_CreditCardTransaction,
   I_CreditCardTransactionsResponse,
   I_CreditCardTransactionsParams,
 } from '@/domains/credit-cards/types/types-and-interfaces';
-import { parsePdf } from '@/server-functions/pdf-parser';
 import { apiClient } from '@/config/api';
 
 export const creditCardApi = {
@@ -21,13 +17,18 @@ export const creditCardApi = {
     const response = await apiClient.post<I_CreateCreditCardResponse>('/credit_cards', data);
     return response.data;
   },
-  parseInvoice: async (formData: FormData): Promise<I_CreditCardRawInvoice> => {
-    return await parsePdf({ data: formData });
-  },
-  createCreditCardInvoice: async (data: I_CreditCardInvoiceRequest) => {
-    const response = await apiClient.post<I_CreditCardInvoiceResponse>(
-      `/credit_cards/${data.credit_card_id}/invoices`,
-      data
+  parseInvoicePdf: async (
+    formData: FormData,
+    creditCardId: string
+  ): Promise<any> => {
+    const response = await apiClient.post<any>(
+      `/credit_cards/${creditCardId}/invoices/parse-pdf`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
     return response.data;
   },

@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { accountsApi, I_AccountRawStatement } from '@/domains/accounts/api';
+import * as React from 'react';
+import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 
-export const useParseAccountStatement = () => {
+export const useParseAccountStatement = (accountId: string) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [statement, setStatement] = useState<I_AccountRawStatement | null>(null);
 
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const result = await accountsApi.parseAccountStatement(formData);
-      return result;
+      formData.append('account_id', accountId);
+      return accountsApi.parseAccountStatement(formData);
     },
     onSuccess: data => {
       setStatement(data);
     },
     onError: error => {
-      console.error('Error parsing account statement:', error);
+      handleErrorWithToast(error, {
+        userMessage: 'Failed to parse account statement. Please check the file and try again.',
+      });
       setStatement(null);
     },
   });
