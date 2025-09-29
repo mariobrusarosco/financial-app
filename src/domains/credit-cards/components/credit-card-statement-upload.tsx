@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParseCreditCardInvoice } from '@/domains/credit-cards/hooks/use-parse-credit-card';
+import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
 import type { I_Transaction } from '@/domains/transactions/types/types-and-interfaces';
 import {
   Table,
@@ -12,7 +13,7 @@ import {
 import { Card } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
-import { Upload, FileText, CheckCircle, AlertTriangle, Edit3 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 import { EditableTransactionsTable } from '@/domains/transactions/components/editable-transactions-table';
 import { convertCreditCardTransactionsToEditableFormat } from '@/domains/credit-cards/utils/transaction-converter';
 
@@ -24,12 +25,13 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
   const { invoice, handleFileUpload, handleFileChange, selectedFile, mutation } =
     useParseCreditCardInvoice(creditCardId);
 
-  const [useAdvancedEditor, setUseAdvancedEditor] = useState(false);
+  // Always use the advanced editor mode
+  const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
+    useCreateBulkTransactions();
 
   // Convert credit card transactions to editable format
   const editableTransactions = useMemo(() => {
-    if (!invoice?.raw_invoice?.transactions) return [];
-    // @ts-expect-error - Temporary fix for type issues
+    if (!invoice || !invoice.raw_invoice?.transactions) return [];
     return convertCreditCardTransactionsToEditableFormat(
       invoice.raw_invoice.transactions,
       invoice.account_id || '',
@@ -37,14 +39,23 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
     );
   }, [invoice?.raw_invoice?.transactions, invoice?.account_id, invoice?.broker_id]);
 
-  // Use a void function for onSave if EditableTransactionsTable expects void
-  const handleSaveEditedTransactions = async (editedTransactions: I_Transaction[]) => {
+  // Save all edited transactions using the existing bulk transaction API
+  const handleSaveEditedTransactions = (editedTransactions: I_Transaction[]) => {
     console.log('💾 Saving edited transactions:', editedTransactions);
-    // Convert back to credit card format for API
-    // const updatedCreditCardTransactions =
-    //   convertEditableTransactionsToCreditCardFormat(editedTransactions);
-    // TODO: Add API call or further processing here if needed
-    await Promise.resolve();
+
+    // Convert I_Transaction[] to I_CreateTransactionForm[] for the bulk API
+    const transactionsToSave = editedTransactions.map(transaction => ({
+      credit_card_id: creditCardId, // Use credit_card_id instead of account_id for credit card transactions
+      broker_id: transaction.broker_id,
+      description: transaction.description,
+      amount: parseFloat(transaction.amount),
+      type: 'expense' as const, // Credit card transactions are typically expenses
+      category: 'Credit Card', // Default category for credit card transactions
+      date: transaction.date,
+      is_paid: false, // Default to unpaid
+    }));
+
+    createBulkTransactions(transactionsToSave);
   };
 
   if (mutation.isPending) {
@@ -143,7 +154,6 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
             </Card>
 
             {/* Installment Options */}
-            {/* @ts-expect-error */}
             {invoice?.raw_invoice?.installment_options &&
               invoice.raw_invoice.installment_options.length > 0 && (
                 <Card className="p-6">
@@ -156,7 +166,6 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {/* @ts-expect-error */}
                       {invoice.raw_invoice.installment_options.map((option, index) => (
                         <TableRow key={index}>
                           <TableCell className="font-medium">
@@ -178,14 +187,12 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Next Due Amount</p>
                     <p className="text-2xl font-bold text-foreground">
-                      {/* @ts-expect-error */}
                       {invoice.raw_invoice.next_due_info.amount}
                     </p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Total Balance Due</p>
                     <p className="text-2xl font-bold text-foreground">
-                      {/* @ts-expect-error */}
                       {invoice.raw_invoice.next_due_info.balance}
                     </p>
                   </div>
@@ -200,69 +207,44 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
               <h3 className="text-lg font-semibold">Transactions</h3>
               <div className="flex items-center gap-3">
                 <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                  {/* @ts-expect-error */}
                   {invoice?.raw_invoice?.transactions?.length || 0} transactions
                 </div>
-                <Button
-                  variant={useAdvancedEditor ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUseAdvancedEditor(!useAdvancedEditor)}
-                  className="flex items-center gap-2"
-                >
-                  <Edit3 className="h-4 w-4" />
-                  {useAdvancedEditor ? 'Switch to Basic View' : 'Enable Advanced Editing'}
-                </Button>
               </div>
             </div>
 
-            {useAdvancedEditor ? (
-              // Advanced Editable Table with Lazy Loading Immer
-              <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="h-4 w-4 text-blue-600" />
-                    <h4 className="font-medium text-blue-800">🎓 Advanced Editing Mode</h4>
-                  </div>
-                  <p className="text-sm text-blue-700">
-                    This table demonstrates <strong>lazy loading Immer</strong> for state
-                    management. Simple edits use native JavaScript, while complex operations lazy
-                    load Immer (~43KB) on demand. Open DevTools Network tab to see the optimization
-                    in action!
-                  </p>
+            {/* Advanced Editable Table with Lazy Loading Immer */}
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="h-4 w-4 text-blue-600" />
+                  <h4 className="font-medium text-blue-800">🎓 Advanced Editing Mode</h4>
                 </div>
-                <EditableTransactionsTable
-                  initialTransactions={editableTransactions}
-                  onSave={handleSaveEditedTransactions}
-                />
+                <p className="text-sm text-blue-700">
+                  This table demonstrates <strong>lazy loading Immer</strong> for state management.
+                  Simple edits use native JavaScript, while complex operations lazy load Immer
+                  (~43KB) on demand. Open DevTools Network tab to see the optimization in action!
+                </p>
               </div>
-            ) : (
-              // Basic Read-Only Table
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="font-semibold">Date</TableHead>
-                    <TableHead className="font-semibold">Description</TableHead>
-                    <TableHead className="font-semibold">Category</TableHead>
-                    <TableHead className="text-right font-semibold">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {/* @ts-expect-error */}
-                  {invoice?.raw_invoice?.transactions?.map((transaction, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{transaction.date}</TableCell>
-                      <TableCell>{transaction.description}</TableCell>
-                      <TableCell>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                          {transaction.category}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right font-medium">{transaction.amount}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
+
+              {/* Save All Button */}
+              <div className="flex justify-end mb-4">
+                <Button
+                  onClick={() => void handleSaveEditedTransactions(editableTransactions)}
+                  disabled={isSavingTransactions || editableTransactions.length === 0}
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  {isSavingTransactions
+                    ? 'Saving...'
+                    : `Save All ${editableTransactions.length} Transactions`}
+                </Button>
+              </div>
+
+              <EditableTransactionsTable
+                initialTransactions={editableTransactions}
+                onSave={handleSaveEditedTransactions}
+              />
+            </div>
           </Card>
 
           {/* Success Message */}
@@ -280,6 +262,25 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
                     Your credit card statement has been processed and saved.
                   </p>
                 </div>
+              </div>
+              <div className="mt-4">
+                <Button
+                  onClick={() => {
+                    // Reset the file input
+                    const fileInput = document.querySelector(
+                      'input[type="file"]'
+                    ) as HTMLInputElement;
+                    if (fileInput) {
+                      fileInput.value = '';
+                    }
+                    // Reset the component state
+                    mutation.reset();
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  Upload Another Statement
+                </Button>
               </div>
             </Card>
           )}

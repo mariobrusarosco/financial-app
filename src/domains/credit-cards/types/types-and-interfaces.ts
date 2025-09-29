@@ -92,6 +92,15 @@ export interface I_CreditCardInvoiceResponse {
   is_deleted: boolean;
   created_at: string;
   updated_at: string;
+  raw_invoice: {
+    total_due: string;
+    due_date: string;
+    period: string;
+    min_payment: string;
+    installment_options: I_CreditCardInstallmentOption[];
+    transactions: I_CreditCardTransaction[];
+    next_due_info?: I_CreditCardNextDueInfo;
+  };
 }
 
 export interface I_CreditCardTransaction {
