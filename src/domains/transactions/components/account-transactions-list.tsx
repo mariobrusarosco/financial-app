@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
-import { TransactionCard } from '@/domains/transactions/components/transaction-card';
+import { Button } from '@/domains/ui-system/components/button';
+import { Badge } from '@/domains/ui-system/components/badge';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
+import { useCreateTransaction } from '@/domains/transactions/hooks/use-create-transaction';
 import { AccountTransactionFilters } from './account-transaction-filters';
-import { CreditCard, Loader2 } from 'lucide-react';
+import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
 import type {
   T_TransactionType,
   I_AccountTransactionsParams,
+  I_TransactionResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
 
 interface AccountTransactionsListProps {
@@ -22,6 +26,11 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
     sort_by: 'date',
     sort_order: 'desc',
   });
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const { mutate: createTransaction } = useCreateTransaction();
 
   const {
     data: response,
@@ -67,6 +76,61 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
     setParams(prev => ({ ...prev, page }));
   };
 
+  const handleEdit = (transaction: I_TransactionResponse) => {
+    setEditingId(transaction.id);
+  };
+
+  const handleSave = (updatedTransaction: I_TransactionResponse) => {
+    // For now, we'll just close the edit mode
+    // In a real implementation, you'd call an update mutation
+    setEditingId(null);
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+  };
+
+  const handleDelete = (transaction: I_TransactionResponse) => {
+    // TODO: Implement delete functionality when API is available
+    console.log('Delete transaction:', transaction.id);
+  };
+
+  // Selection handlers
+  const handleSelectTransaction = (transactionId: string, selected: boolean) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(transactionId);
+      } else {
+        newSet.delete(transactionId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === transactions.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(transactions.map(t => t.id)));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.size === 0) return;
+
+    if (
+      window.confirm(`Are you sure you want to delete ${selectedIds.size} selected transactions?`)
+    ) {
+      // TODO: Implement bulk delete when API is available
+      console.log('Delete selected transactions:', Array.from(selectedIds));
+      setSelectedIds(new Set());
+    }
+  };
+
+  const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
+  const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
+
   return (
     <Surface data-ui="account-transactions-list" className="w-full flex-1">
       <div className="space-y-4">
@@ -89,45 +153,92 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
 
         <AccountTransactionFilters params={params} onParamsChange={setParams} />
 
+        {/* Pagination - Moved to top */}
+        {meta && meta.total > meta.per_page && (
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
+                {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} transactions
+                {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
+              </span>
+            </div>
+            <Pagination
+              currentPage={meta.page}
+              totalPages={Math.ceil(meta.total / meta.per_page)}
+              hasNext={meta.has_next && !isPlaceholderData}
+              hasPrevious={meta.has_previous && !isPlaceholderData}
+              onPageChange={handlePageChange}
+              className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
+            />
+          </div>
+        )}
+
+        {/* Bulk Actions */}
+        {selectedIds.size > 0 && (
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                {selectedIds.size} selected
+              </Badge>
+              <span className="text-sm text-muted-foreground">
+                {selectedIds.size === 1 ? 'transaction' : 'transactions'} selected
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeleteSelected}
+                className="text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Selected
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
           {transactions && transactions.length > 0 ? (
             <>
+              {/* Select All Header */}
+              <div className="flex items-center gap-3 p-2 border-b">
+                <button
+                  onClick={handleSelectAll}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {isAllSelected ? (
+                    <CheckSquare className="h-4 w-4 text-primary" />
+                  ) : isPartiallySelected ? (
+                    <div className="h-4 w-4 border-2 border-primary rounded bg-primary/20 flex items-center justify-center">
+                      <div className="h-2 w-2 bg-primary rounded-sm" />
+                    </div>
+                  ) : (
+                    <Square className="h-4 w-4" />
+                  )}
+                  <span>{isAllSelected ? 'Deselect All' : 'Select All'}</span>
+                </button>
+                <span className="text-xs text-muted-foreground">
+                  {transactions.length} transactions
+                </span>
+              </div>
+
               {transactions.map(transaction => (
-                <TransactionCard
+                <UnifiedTransactionItem
                   key={transaction.id}
-                  id={transaction.id}
-                  description={transaction.description}
-                  category={transaction.category}
-                  amount={transaction.amount}
-                  date={transaction.date}
-                  movementType={transaction.movement_type as T_TransactionType}
-                  isPaid={transaction.is_paid}
-                  creditCardId={transaction.credit_card_id}
+                  transaction={transaction}
+                  mode="default"
+                  isEditing={editingId === transaction.id}
+                  isSelected={selectedIds.has(transaction.id)}
+                  onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
+                  showCheckbox={true}
+                  onEdit={handleEdit}
+                  onSave={handleSave}
+                  onCancel={handleCancel}
+                  onDelete={handleDelete}
                 />
               ))}
-
-              {meta && meta.total > meta.per_page && (
-                <div className="pt-4">
-                  <Pagination
-                    currentPage={meta.page}
-                    totalPages={Math.ceil(meta.total / meta.per_page)}
-                    hasNext={meta.has_next && !isPlaceholderData} // Disable navigation while loading
-                    hasPrevious={meta.has_previous && !isPlaceholderData}
-                    onPageChange={handlePageChange}
-                    className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
-                  />
-
-                  <div className="text-center mt-4">
-                    <p className="text-sm text-muted-foreground">
-                      Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
-                      {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} transactions
-                      {isPlaceholderData && (
-                        <span className="text-xs ml-2">(Previous data shown)</span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              )}
             </>
           ) : (
             <div className="text-center py-8">
