@@ -1,0 +1,61 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { transactionsApi } from '../api/transactions.api';
+import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
+
+export const useBulkDeleteTransactions = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (transactionIds: string[]) =>
+      transactionsApi.deleteBulkTransactions(transactionIds),
+    onSuccess: (result, transactionIds) => {
+      toast.success(`Successfully deleted ${result.deleted_count} transactions`);
+
+      // Invalidate all transaction-related queries to refresh the data
+      void queryClient.invalidateQueries({
+        queryKey: ['transactions'],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['account-transactions'],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['all-transactions'],
+      });
+    },
+    onError: error => {
+      handleErrorWithToast(error, {
+        userMessage: 'Failed to delete transactions. Please try again.',
+      });
+    },
+  });
+};
+
+export const useDeleteTransaction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (transactionId: string) => transactionsApi.deleteTransaction(transactionId),
+    onSuccess: () => {
+      toast.success('Transaction deleted successfully');
+
+      // Invalidate all transaction-related queries to refresh the data
+      void queryClient.invalidateQueries({
+        queryKey: ['transactions'],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['account-transactions'],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['all-transactions'],
+      });
+    },
+    onError: error => {
+      handleErrorWithToast(error, {
+        userMessage: 'Failed to delete transaction. Please try again.',
+      });
+    },
+  });
+};
+
+

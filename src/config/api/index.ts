@@ -125,8 +125,8 @@ apiClient.interceptors.response.use(
       if ('response' in error && error.response) {
         // Server responded with error status
         const { status, data } = error.response as { status: number; data?: any };
-        const message = data?.message || data?.error || error.message || 'An error occurred';
-        throw new ApiError(message, status, data?.code, data);
+        const message = data?.message || data?.error?.message || data?.error || error.message || 'An error occurred';
+        throw new ApiError(message, status, data?.code || data?.error?.code, data);
       } else if ('request' in error && error.request) {
         // Network error - request was made but no response received
         throw new NetworkError('Network connection failed. Please check your internet connection.');

@@ -41,6 +41,32 @@ export const transactionsApi = {
     );
     return response.data;
   },
+
+  deleteBulkTransactions: async (transactionIds: string[]): Promise<{ deleted_count: number }> => {
+    // Validate that all transaction IDs are valid UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const invalidIds = transactionIds.filter(id => !uuidRegex.test(id));
+
+    if (invalidIds.length > 0) {
+      throw new Error(`Invalid transaction IDs: ${invalidIds.join(', ')}`);
+    }
+
+    const response = await apiClient.delete('/transactions/bulk', {
+      data: { transaction_ids: transactionIds },
+    });
+    return response.data;
+  },
+
+  deleteTransaction: async (transactionId: string): Promise<void> => {
+    // Validate that the transaction ID is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!uuidRegex.test(transactionId)) {
+      throw new Error(`Invalid transaction ID: ${transactionId}`);
+    }
+
+    await apiClient.delete(`/transactions/${transactionId}`);
+  },
 };
 
 // Helper function to transform form data to API format

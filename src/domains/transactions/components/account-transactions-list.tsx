@@ -7,6 +7,10 @@ import { UnifiedTransactionItem } from '@/domains/transactions/components/unifie
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import { useCreateTransaction } from '@/domains/transactions/hooks/use-create-transaction';
+import {
+  useBulkDeleteTransactions,
+  useDeleteTransaction,
+} from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { AccountTransactionFilters } from './account-transaction-filters';
 import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
 import type {
@@ -31,6 +35,8 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { mutate: createTransaction } = useCreateTransaction();
+  const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
+  const { mutate: deleteTransaction } = useDeleteTransaction();
 
   const {
     data: response,
@@ -91,8 +97,9 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
   };
 
   const handleDelete = (transaction: I_TransactionResponse) => {
-    // TODO: Implement delete functionality when API is available
-    console.log('Delete transaction:', transaction.id);
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      deleteTransaction(String(transaction.id));
+    }
   };
 
   // Selection handlers
@@ -122,9 +129,11 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
     if (
       window.confirm(`Are you sure you want to delete ${selectedIds.size} selected transactions?`)
     ) {
-      // TODO: Implement bulk delete when API is available
-      console.log('Delete selected transactions:', Array.from(selectedIds));
-      setSelectedIds(new Set());
+      bulkDeleteTransactions(Array.from(selectedIds), {
+        onSuccess: () => {
+          setSelectedIds(new Set());
+        },
+      });
     }
   };
 
@@ -190,10 +199,15 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
                 variant="outline"
                 size="sm"
                 onClick={handleDeleteSelected}
+                disabled={isBulkDeleting}
                 className="text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Selected
+                {isBulkDeleting ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4 mr-2" />
+                )}
+                {isBulkDeleting ? 'Deleting...' : 'Delete Selected'}
               </Button>
             </div>
           </div>
