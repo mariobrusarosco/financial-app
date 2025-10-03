@@ -7,34 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/domains/ui-system/components/table';
 import { Surface } from '@/domains/global/components/surface';
 import {
   Upload,
   FileText,
   CheckCircle,
-  AlertTriangle,
   DollarSign,
   Calendar,
-  Edit3,
 } from 'lucide-react';
-import { useRef, useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParseAccountStatement } from '@/domains/accounts/hooks/use-parse-account-statement';
 import { useCreateAccountStatement } from '@/domains/accounts/hooks/use-create-account-statement';
-import { EditableTransactionsTable } from '@/domains/transactions/components/editable-transactions-table';
-import { convertAccountStatementTransactionsToEditableFormat } from '@/domains/accounts/utils/statement-converter';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
+import type { I_ParsedAccountStatement } from '@/domains/accounts/api';
 import type {
-  I_Transaction,
+  I_TransactionResponse,
   I_CreateTransactionForm,
-  T_TransactionType,
 } from '@/domains/transactions/types/types-and-interfaces';
 
 interface AccountStatementsUploadProps {
@@ -42,65 +31,85 @@ interface AccountStatementsUploadProps {
 }
 
 export const AccountStatementsUpload = ({ accountId }: AccountStatementsUploadProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { selectedFile, statement, handleFileChange, isLoading } = useParseAccountStatement();
+  const { selectedFile, statement, handleFileChange, handleFileUpload, mutation, isLoading } =
+    useParseAccountStatement(accountId);
   const { createStatement, isLoading: isCreating } = useCreateAccountStatement();
-  const createBulkTransactionsMutation = useCreateBulkTransactions();
-  const [useAdvancedEditor, setUseAdvancedEditor] = useState(false);
+  const { mutate: createBulkTransactions, isPending: isSavingTransactions } = useCreateBulkTransactions();
+  
+  // State for managing editable transactions
+  const [editableTransactions, setEditableTransactions] = useState<I_TransactionResponse[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Convert account statement transactions to editable format
-  const editableTransactions = useMemo(() => {
-    if (!statement?.transactions) return [];
-    return convertAccountStatementTransactionsToEditableFormat(
-      statement.transactions,
-      accountId,
-      '1' // TODO: Get actual broker ID
-    );
-  }, [statement?.transactions, accountId]);
 
-  const handleButtonClick = () => {
-    inputRef.current?.click();
-  };
+  // Use transactions directly from the statement (already in standard format)
+  const displayTransactions = useMemo((): I_TransactionResponse[] => {
+    if (!statement?.raw_statement?.transactions) return [];
+    
+    // Initialize editable transactions when statement changes
+    if (statement.raw_statement.transactions.length > 0 && editableTransactions.length === 0) {
+      setEditableTransactions(statement.raw_statement.transactions);
+    }
+    
+    return editableTransactions.length > 0 ? editableTransactions : statement.raw_statement.transactions;
+  }, [statement?.raw_statement?.transactions, editableTransactions]);
 
   const handleCreateStatement = () => {
     if (statement && accountId) {
       createStatement({
         account_id: accountId,
-        raw_statement: statement,
+        raw_statement: statement.raw_statement,
       });
     }
   };
 
-  const handleSaveEditedTransactions = async (editedTransactions: I_Transaction[]) => {
-    console.log('💾 Saving edited transactions:', editedTransactions);
+  const handleEditTransaction = (transaction: I_TransactionResponse) => {
+    setEditingId(transaction.id);
+  };
 
-    // Convert I_Transaction to I_CreateTransactionForm format for the API
-    const transactionForms: I_CreateTransactionForm[] = editedTransactions.map(transaction => ({
+  const handleDeleteTransaction = (transaction: I_TransactionResponse) => {
+    setEditableTransactions(prev => prev.filter(t => t.id !== transaction.id));
+  };
+
+  const handleSaveTransaction = (updatedTransaction: I_TransactionResponse) => {
+    setEditableTransactions(prev => 
+      prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
+    );
+    setEditingId(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+  };
+
+  const handleSaveAllTransactions = () => {
+    // Convert to bulk transaction format
+    const transactionForms: I_CreateTransactionForm[] = editableTransactions.map(transaction => ({
       description: transaction.description,
       amount: parseFloat(transaction.amount),
       date: transaction.date,
       account_id: transaction.account_id,
-      credit_card_id: undefined,
+      credit_card_id: transaction.credit_card_id,
       broker_id: transaction.broker_id,
       is_paid: transaction.is_paid,
-      type: 'expense' as T_TransactionType, // Default to expense for account statements
-      category: 'General', // Default category
+      type: transaction.movement_type,
+      category: transaction.category || 'General',
     }));
 
-    // Create bulk transactions
-    createBulkTransactionsMutation.mutate(transactionForms);
+    createBulkTransactions(transactionForms);
   };
 
-  if (isLoading) {
+
+  if (mutation.isPending) {
     return (
-      <Surface className="flex-1">
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4 animate-pulse" />
-            <p className="text-muted-foreground">Parsing statement...</p>
+      <Card className="p-8">
+        <div className="flex flex-col items-center justify-center text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent"></div>
+          <div>
+            <h3 className="font-semibold text-lg">Processing Statement</h3>
+            <p className="text-muted-foreground">Parsing your PDF statement...</p>
           </div>
         </div>
-      </Surface>
+      </Card>
     );
   }
 
@@ -117,71 +126,95 @@ export const AccountStatementsUpload = ({ accountId }: AccountStatementsUploadPr
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <Button
-            onClick={handleButtonClick}
-            className="w-full h-24 border-2 border-dashed border-border hover:border-primary/50 bg-background"
-            variant="outline"
-            disabled={isLoading || isCreating}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <Upload className="h-8 w-8 text-muted-foreground" />
-              <span className="font-medium">Click to upload PDF statement</span>
-              <span className="text-sm text-muted-foreground">Supports PDF files up to 10MB</span>
-            </div>
-          </Button>
+          <div className="space-y-4">
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              className="w-full cursor-pointer"
+            />
 
-          <input
-            ref={inputRef}
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-
-          {selectedFile && (
-            <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-              <div className="flex items-center gap-3">
-                <FileText className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Selected file: {selectedFile.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
+            {selectedFile && (
+              <div className="flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium text-sm">{selectedFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
                 </div>
+                <Button
+                  onClick={() => void handleFileUpload()}
+                  disabled={!selectedFile || mutation.isPending}
+                  size="sm"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {mutation.isPending ? 'Processing...' : 'Upload & Parse'}
+                </Button>
               </div>
-            </div>
-          )}
+            )}
 
-          {statement && (
+            {mutation.isError && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive">{mutation.error?.message}</p>
+              </div>
+            )}
+          </div>
+
+          {statement && !mutation.isError && (
             <div className="space-y-4">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
+              <div className="p-2 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                   <div className="flex-1">
                     <p className="font-medium text-green-800 dark:text-green-200">
                       Statement parsed successfully!
                     </p>
-                    <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                    <div className="flex gap-2 justify-between items-center">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
-                        <span>Period: {statement.period}</span>
+                        <span>Period: {statement.raw_statement?.period}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4" />
-                        <span>Balance: </span>
+                        <span>Closing Balance: </span>
                         <Currency
-                          value={parseFloat(statement.balance)}
+                          value={parseFloat(
+                            statement.closing_balance?.replace(/[^\d,-]/g, '').replace(',', '.') ||
+                              '0'
+                          )}
                           autoColor
-                          variant="compact"
+                          variant="default"
                         />
                       </div>
+                      <p className="text-sm text-green-700 dark:text-green-300 mt-2">
+                        Found {statement.raw_statement?.transactions?.length || 0} transactions
+                      </p>
                     </div>
-                    <p className="text-sm text-green-700 dark:text-green-300 mt-2">
-                      Found {statement.transactions?.length || 0} transactions
-                    </p>
                   </div>
                 </div>
               </div>
+
+              <Card className="p-6">
+                <h2 className="text-xl font-semibold">Statement Summary</h2>
+                <div className="flex gap-2 justify-between items-center">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Period</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {statement.raw_statement?.period}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Opening Balance</p>
+                    <p className="text-lg font-bold text-foreground">{statement.opening_balance}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Closing Balance</p>
+                    <p className="text-lg font-bold text-foreground">{statement.closing_balance}</p>
+                  </div>
+                </div>
+              </Card>
 
               {/* Transactions Section */}
               <Card className="p-6">
@@ -189,79 +222,79 @@ export const AccountStatementsUpload = ({ accountId }: AccountStatementsUploadPr
                   <h3 className="text-lg font-semibold">Transactions</h3>
                   <div className="flex items-center gap-3">
                     <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                      {statement.transactions?.length || 0} transactions
+                      {displayTransactions.length} transactions
                     </div>
                     <Button
-                      variant={useAdvancedEditor ? 'default' : 'outline'}
+                      onClick={handleSaveAllTransactions}
+                      disabled={isSavingTransactions || displayTransactions.length === 0}
                       size="sm"
-                      onClick={() => setUseAdvancedEditor(!useAdvancedEditor)}
-                      className="flex items-center gap-2"
+                      className="bg-green-600 hover:bg-green-700"
                     >
-                      <Edit3 className="h-4 w-4" />
-                      {useAdvancedEditor ? 'Switch to Basic View' : 'Enable Advanced Editing'}
+                      {isSavingTransactions ? 'Saving...' : 'Save Transactions'}
                     </Button>
                   </div>
                 </div>
 
-                {useAdvancedEditor ? (
-                  // Advanced Editable Table with Lazy Loading Immer
-                  <div className="space-y-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle className="h-4 w-4 text-blue-600" />
-                        <h4 className="font-medium text-blue-800">🎓 Advanced Editing Mode</h4>
-                      </div>
-                      <p className="text-sm text-blue-700">
-                        This table demonstrates <strong>lazy loading Immer</strong> for state
-                        management. Simple edits use native JavaScript, while complex operations
-                        lazy load Immer (~43KB) on demand. Open DevTools Network tab to see the
-                        optimization in action!
-                      </p>
-                    </div>
-                    <EditableTransactionsTable
-                      initialTransactions={editableTransactions}
-                      onSave={handleSaveEditedTransactions}
+                {/* Main Transaction View using UnifiedTransactionItem */}
+                <div className="space-y-3">
+                  {displayTransactions.map(transaction => (
+                    <UnifiedTransactionItem
+                      key={transaction.id}
+                      transaction={transaction}
+                      mode="compact"
+                      className="border rounded-lg"
+                      onEdit={handleEditTransaction}
+                      onDelete={handleDeleteTransaction}
+                      onSave={handleSaveTransaction}
+                      onCancel={handleCancelEdit}
+                      isEditing={editingId === transaction.id}
                     />
-                  </div>
-                ) : (
-                  // Basic Read-Only Table
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="font-semibold">Date</TableHead>
-                        <TableHead className="font-semibold">Description</TableHead>
-                        <TableHead className="font-semibold">Category</TableHead>
-                        <TableHead className="text-right font-semibold">Amount</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {statement.transactions?.map((transaction, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{transaction.date}</TableCell>
-                          <TableCell>{transaction.description}</TableCell>
-                          <TableCell>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                              {transaction.category || 'Uncategorized'}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            <Currency
-                              value={parseFloat(transaction.amount)}
-                              autoColor
-                              variant="compact"
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
+                  ))}
+                </div>
               </Card>
 
               <Button onClick={handleCreateStatement} className="w-full" disabled={isCreating}>
                 {isCreating ? 'Creating...' : 'Save Statement'}
               </Button>
             </div>
+          )}
+
+          {/* Success Message */}
+          {mutation.isSuccess && (
+            <Card className="p-6 bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-green-500 p-1">
+                  <CheckCircle className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-green-800 dark:text-green-400">
+                    Statement Processed Successfully!
+                  </h3>
+                  <p className="text-green-700 dark:text-green-300">
+                    Your account statement has been parsed and is ready to save.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4">
+                <Button
+                  onClick={() => {
+                    // Reset the file input
+                    const fileInput = document.querySelector(
+                      'input[type="file"]'
+                    ) as HTMLInputElement;
+                    if (fileInput) {
+                      fileInput.value = '';
+                    }
+                    // Reset the component state
+                    mutation.reset();
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  Upload Another Statement
+                </Button>
+              </div>
+            </Card>
           )}
         </div>
       </CardContent>

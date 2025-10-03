@@ -4,7 +4,7 @@ import type {
   I_CreateAccountForm,
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
-import { parsePdf } from '@/server-functions/pdf-parser';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 
 // Define account statement types
 export interface I_AccountStatement {
@@ -20,16 +20,23 @@ export interface I_AccountStatement {
 export interface I_AccountRawStatement {
   balance: string;
   period: string;
-  transactions: I_AccountStatementTransaction[];
+  transactions: I_TransactionResponse[];
 }
 
-export interface I_AccountStatementTransaction {
-  id: string | null;
-  date: string;
-  description: string;
-  amount: string;
-  type: 'debit' | 'credit';
-  category: string;
+// Full API response structure for parsed statements
+export interface I_ParsedAccountStatement {
+  id: string;
+  account_id: string;
+  user_id: string;
+  period_start: string;
+  period_end: string;
+  opening_balance: string;
+  closing_balance: string;
+  raw_statement: I_AccountRawStatement;
+  is_processed: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface I_CreateAccountStatementRequest {
@@ -107,8 +114,25 @@ const updateAccountBalance = async (id: string): Promise<void> => {
   }
 };
 
-const parseAccountStatement = async (formData: FormData): Promise<I_AccountRawStatement> => {
-  return await parsePdf({ data: formData });
+const parseAccountStatement = async (
+  formData: FormData,
+  accountId: string
+): Promise<I_ParsedAccountStatement> => {
+  try {
+    const response = await apiClient.post<I_ParsedAccountStatement>(
+      `/accounts/${accountId}/statements/parse-pdf`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error parsing account statement:', error);
+    throw error;
+  }
 };
 
 const createAccountStatement = async (

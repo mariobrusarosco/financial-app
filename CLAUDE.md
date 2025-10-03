@@ -81,6 +81,24 @@ domain-name/
 - Types: `types-and-interfaces.ts`
 - Always import types with `type` keyword: `import type { MyType } from './types'`
 
+### API Type Naming Convention
+
+For consistent API integration, follow this pattern:
+
+**Single Resource:**
+- `I_[Resource]Response` - Data FROM backend (GET /resource/:id)
+- `I_[Resource]Payload` - Data TO backend (POST/PUT /resource)
+
+**Collections:**
+- `I_[Resources]Response` - Collection FROM backend (GET /resources)
+- `I_[Resources]Payload` - Collection TO backend (bulk operations)
+
+**Examples:**
+- `I_TransactionResponse` - Single transaction from API
+- `I_TransactionPayload` - Single transaction to API
+- `I_TransactionsResponse` - Transaction list from API
+- `I_TransactionsPayload` - Transaction list to API (bulk operations)
+
 ### Path Aliases (tsconfig.json)
 
 - `@/*` → `src/*`

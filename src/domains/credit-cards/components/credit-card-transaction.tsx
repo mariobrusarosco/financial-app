@@ -1,10 +1,10 @@
-import { I_CreditCardTransaction } from '@/domains/credit-cards/types/types-and-interfaces';
+import { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { formatDateMedium } from '@/domains/transactions/utils/transaction-formatting';
 
 interface Props {
-  transaction: I_CreditCardTransaction;
+  transaction: I_TransactionResponse;
 }
 
 export const CreditCardTransaction = ({ transaction }: Props) => {
@@ -26,7 +26,7 @@ export const CreditCardTransaction = ({ transaction }: Props) => {
       </div>
 
       <div className="flex-shrink-0">
-        <Currency value={transaction.amount} color="negative" variant="default" />
+        <Currency value={parseFloat(transaction.amount)} color="negative" variant="default" />
       </div>
     </div>
   );

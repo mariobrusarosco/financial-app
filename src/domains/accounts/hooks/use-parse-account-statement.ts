@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { accountsApi, I_AccountRawStatement } from '@/domains/accounts/api';
+import { accountsApi, I_ParsedAccountStatement } from '@/domains/accounts/api';
 import * as React from 'react';
 import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 
 export const useParseAccountStatement = (accountId: string) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [statement, setStatement] = useState<I_AccountRawStatement | null>(null);
+  const [statement, setStatement] = useState<I_ParsedAccountStatement | null>(null);
 
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      formData.append('account_id', accountId);
-      return accountsApi.parseAccountStatement(formData);
+      return accountsApi.parseAccountStatement(formData, accountId);
     },
     onSuccess: data => {
       setStatement(data);
@@ -29,20 +28,22 @@ export const useParseAccountStatement = (accountId: string) => {
     if (file) {
       setSelectedFile(file);
       setStatement(null); // Reset previous statement
-
-      const formData = new FormData();
-      formData.append('file', file);
-      mutation.mutate(formData);
+      // Don't auto-upload on file change, let user manually trigger upload
     }
   };
 
-  const handleFileUpload = (file: File) => {
-    setSelectedFile(file);
-    setStatement(null);
+  const handleFileUpload = async () => {
+    if (!selectedFile) return;
 
     const formData = new FormData();
-    formData.append('file', file);
-    mutation.mutate(formData);
+    formData.append('file', selectedFile);
+
+    await Promise.resolve(); // Satisfy require-await
+    mutation.mutate(formData, {
+      onSuccess: data => {
+        setStatement(data);
+      },
+    });
   };
 
   const resetStatement = () => {

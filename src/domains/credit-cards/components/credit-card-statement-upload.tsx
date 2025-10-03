@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useParseCreditCardInvoice } from '@/domains/credit-cards/hooks/use-parse-credit-card';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
-import type { I_Transaction } from '@/domains/transactions/types/types-and-interfaces';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import {
   Table,
   TableBody,
@@ -15,7 +15,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Upload, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 import { EditableTransactionsTable } from '@/domains/transactions/components/editable-transactions-table';
-import { convertCreditCardTransactionsToEditableFormat } from '@/domains/credit-cards/utils/transaction-converter';
 
 interface CreditCardStatementUploadProps {
   creditCardId: string;
@@ -29,30 +28,27 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
 
-  // Convert credit card transactions to editable format
+  // Use transactions directly from the invoice (already in standard format)
   const editableTransactions = useMemo(() => {
     if (!invoice || !invoice.raw_invoice?.transactions) return [];
-    return convertCreditCardTransactionsToEditableFormat(
-      invoice.raw_invoice.transactions,
-      invoice.account_id || '',
-      invoice.broker_id || ''
-    );
-  }, [invoice?.raw_invoice?.transactions, invoice?.account_id, invoice?.broker_id]);
+    return invoice.raw_invoice.transactions;
+  }, [invoice?.raw_invoice?.transactions]);
 
   // Save all edited transactions using the existing bulk transaction API
-  const handleSaveEditedTransactions = (editedTransactions: I_Transaction[]) => {
+  const handleSaveEditedTransactions = (editedTransactions: I_TransactionResponse[]) => {
     console.log('💾 Saving edited transactions:', editedTransactions);
 
-    // Convert I_Transaction[] to I_CreateTransactionForm[] for the bulk API
+    // Convert I_TransactionResponse[] to I_CreateTransactionForm[] for the bulk API
     const transactionsToSave = editedTransactions.map(transaction => ({
-      credit_card_id: creditCardId, // Use credit_card_id instead of account_id for credit card transactions
+      credit_card_id: transaction.credit_card_id || creditCardId,
+      account_id: transaction.account_id,
       broker_id: transaction.broker_id,
       description: transaction.description,
       amount: parseFloat(transaction.amount),
-      type: 'expense' as const, // Credit card transactions are typically expenses
-      category: 'Credit Card', // Default category for credit card transactions
+      type: transaction.movement_type,
+      category: transaction.category || 'Credit Card',
       date: transaction.date,
-      is_paid: false, // Default to unpaid
+      is_paid: transaction.is_paid,
     }));
 
     createBulkTransactions(transactionsToSave);

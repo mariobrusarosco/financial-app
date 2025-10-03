@@ -1,3 +1,5 @@
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+
 // Credit Card Entity
 export interface I_CreditCard {
   id: string;
@@ -44,7 +46,7 @@ export interface I_CreditCardRawInvoice {
   period: string;
   min_payment: string;
   installment_options: I_CreditCardInstallmentOption[];
-  transactions: I_CreditCardTransaction[];
+  transactions: I_TransactionResponse[];
   next_due_info?: I_CreditCardNextDueInfo;
 }
 
@@ -86,7 +88,7 @@ export interface I_CreditCardInvoiceResponse {
   period: string;
   min_payment: string;
   installment_options: I_CreditCardInstallmentOption[];
-  transactions: I_CreditCardTransaction[];
+  transactions: I_TransactionResponse[];
   next_due_info?: I_CreditCardNextDueInfo;
   is_paid: boolean;
   is_deleted: boolean;
@@ -98,29 +100,13 @@ export interface I_CreditCardInvoiceResponse {
     period: string;
     min_payment: string;
     installment_options: I_CreditCardInstallmentOption[];
-    transactions: I_CreditCardTransaction[];
+    transactions: I_TransactionResponse[];
     next_due_info?: I_CreditCardNextDueInfo;
   };
 }
 
-export interface I_CreditCardTransaction {
-  id: string;
-  account_id: string | null;
-  credit_card_id: string;
-  broker_id: string;
-  is_paid: boolean;
-  date: string;
-  amount: number;
-  description: string;
-  movement_type: string;
-  category: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface I_CreditCardTransactionsResponse {
-  data: I_CreditCardTransaction[];
+  data: I_TransactionResponse[];
   meta: {
     total: number;
     page: number;

@@ -1,3 +1,4 @@
+// Legacy transaction interface - use I_TransactionResponse instead
 export interface I_Transaction {
   id: string;
   account_id: string;
@@ -11,7 +12,8 @@ export interface I_Transaction {
 
 export type T_TransactionType = 'expense' | 'income' | 'investment' | 'transfer';
 
-export interface I_CreateTransactionForm {
+// Single transaction payload (data going TO backend)
+export interface I_TransactionPayload {
   description: string;
   amount: number | null;
   date: string;
@@ -23,7 +25,15 @@ export interface I_CreateTransactionForm {
   category: string;
 }
 
-// Bulk transaction types
+// Legacy alias for backward compatibility - will be removed
+export interface I_CreateTransactionForm extends I_TransactionPayload {}
+
+// Collection transactions payload (data going TO backend)
+export interface I_TransactionsPayload {
+  transactions: I_TransactionPayload[];
+}
+
+// Legacy bulk transaction types - will be removed
 export interface I_BulkTransactionRequest {
   account_id?: string | null;
   credit_card_id?: string | null;
@@ -89,7 +99,8 @@ export interface I_AccountTransactionsParams {
   include_credit_cards?: boolean; // New parameter to include credit card transactions
 }
 
-export interface I_AccountTransactionsResponse {
+// Collection transactions response (data coming FROM backend)
+export interface I_TransactionsResponse {
   data: I_TransactionResponse[];
   meta: {
     total: number;
@@ -99,3 +110,6 @@ export interface I_AccountTransactionsResponse {
     has_previous: boolean;
   };
 }
+
+// Legacy alias for backward compatibility - will be removed
+export interface I_AccountTransactionsResponse extends I_TransactionsResponse {}
