@@ -133,7 +133,32 @@ export const formatCurrencyAmount = (
   if (!amount && amount !== 0) return '$0.00';
 
   try {
-    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    let numAmount: number;
+    
+    if (typeof amount === 'string') {
+      // Handle Brazilian format (e.g., "5.861,36" or "+ 5.861,36" or "- 1.772,93")
+      let cleanAmount = amount.trim();
+      
+      // Remove leading + or - signs for parsing
+      const isNegative = cleanAmount.startsWith('-');
+      cleanAmount = cleanAmount.replace(/^[+-]\s*/, '');
+      
+      // Check if it's Brazilian format (contains comma as decimal separator and possibly dots as thousands)
+      if (cleanAmount.includes(',') && cleanAmount.lastIndexOf(',') > cleanAmount.lastIndexOf('.')) {
+        // Brazilian format: "5.861,36" -> "5861.36"
+        cleanAmount = cleanAmount.replace(/\./g, '').replace(',', '.');
+      }
+      
+      numAmount = parseFloat(cleanAmount);
+      
+      // Apply original sign if it was negative
+      if (isNegative) {
+        numAmount = -numAmount;
+      }
+    } else {
+      numAmount = amount;
+    }
+    
     if (isNaN(numAmount)) return '$0.00';
 
     return new Intl.NumberFormat('en-US', {

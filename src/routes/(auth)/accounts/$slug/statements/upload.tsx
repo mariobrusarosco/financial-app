@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AccountStatementsUpload } from '@/domains/accounts/components/account-statements-upload';
+import { AccountStatementsUpload } from '@/domains/accounts/components/account-statements-upload/account-statements-upload';
 
 export const Route = createFileRoute('/(auth)/accounts/$slug/statements/upload')({
   component: UploadRouteComponent,

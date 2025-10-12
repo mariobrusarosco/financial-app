@@ -14,6 +14,8 @@ import {
   getMovementTypeLabel,
   getMovementTypeColor,
 } from '@/domains/transactions/utils/transaction-formatting';
+import { CategorySelector } from './category-selector';
+import { EditTransaction } from './edit-transaction';
 
 interface UnifiedTransactionItemProps {
   // Core transaction data
@@ -24,17 +26,17 @@ interface UnifiedTransactionItemProps {
 
   // Interaction handlers
   onEdit?: (transaction: I_TransactionResponse) => void;
-  onDelete?: (transaction: I_TransactionResponse) => void;
+  onIgnoreTransaction: (id: string) => void | null;
   onSave?: (transaction: I_TransactionResponse) => void;
   onCancel?: () => void;
 
   // Edit state (for default mode)
+  onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
   isEditing?: boolean;
 
-  // Selection state
-  isSelected?: boolean;
-  onSelectionChange?: (selected: boolean) => void;
-  showCheckbox?: boolean;
+  isSelected: boolean;
+  isIgnored: boolean;
+  onSelectTransaction: (id: string) => void;
 
   // Styling
   className?: string;
@@ -44,22 +46,17 @@ export const UnifiedTransactionItem = ({
   transaction,
   mode,
   onEdit,
-  onDelete,
+  onTriggerEditMode,
+  onIgnoreTransaction,
   onSave,
   onCancel,
   isEditing = false,
   isSelected = false,
-  onSelectionChange,
-  showCheckbox = false,
+  isIgnored = false,
+  onSelectTransaction,
   className,
 }: UnifiedTransactionItemProps) => {
   const [editForm, setEditForm] = useState<Partial<I_TransactionResponse>>(transaction);
-
-  // Handle edit mode
-  const handleEdit = () => {
-    setEditForm(transaction);
-    onEdit?.(transaction);
-  };
 
   const handleSave = () => {
     onSave?.(editForm as I_TransactionResponse);
@@ -69,20 +66,6 @@ export const UnifiedTransactionItem = ({
   const handleCancel = () => {
     setEditForm(transaction);
     onCancel?.();
-  };
-
-  // Handle delete with confirmation
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
-      onDelete?.(transaction);
-    }
-  };
-
-  // Handle click to select/deselect
-  const handleClick = () => {
-    if (showCheckbox && onSelectionChange) {
-      onSelectionChange(!isSelected);
-    }
   };
 
   // Format transaction data
@@ -109,7 +92,7 @@ export const UnifiedTransactionItem = ({
       <Button
         size="sm"
         variant="ghost"
-        onClick={handleEdit}
+        onClick={() => onTriggerEditMode?.(transaction)}
         className="h-6 w-6 p-0 hover:bg-primary/10"
       >
         <Edit className="h-3 w-3" />
@@ -117,7 +100,7 @@ export const UnifiedTransactionItem = ({
       <Button
         size="sm"
         variant="ghost"
-        onClick={handleDelete}
+        onClick={() => onIgnoreTransaction(transaction.id)}
         className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
       >
         <Trash2 className="h-3 w-3" />
@@ -149,47 +132,25 @@ export const UnifiedTransactionItem = ({
 
   // Compact Mode
   if (mode === 'compact') {
+    if (isEditing) {
+      return (
+        <EditTransaction
+          transaction={transaction}
+          onSave={onSave || (() => {})}
+          onCancel={onCancel || (() => {})}
+        />
+      );
+    }
+    
     return (
-      <div
-        className={cn(
-          'group flex items-center space-x-3 py-2 hover:bg-muted/50 transition-colors',
-          showCheckbox && 'cursor-pointer',
-          className
-        )}
-        onClick={handleClick}
-      >
-        {showCheckbox && (
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={e => onSelectionChange?.(e.target.checked)}
-            onClick={e => e.stopPropagation()}
-            className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-          />
-        )}
-        <div className="p-1.5 rounded-full bg-primary/10 flex-shrink-0">
-          <IconComponent className={getIconSizeClass('sm')} />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">{transaction.description}</p>
-          <p className="text-xs text-muted-foreground truncate">
-            {transaction.category || 'Uncategorized'}
-          </p>
-        </div>
-
-        <div className="text-right flex-shrink-0">
-          <div className="text-sm">
-            <span className={getCurrencyClasses(transaction.movement_type, 'compact')}>
-              {currency.sign}
-              {currency.amount}
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground">{formatDateShort(transaction.date)}</div>
-        </div>
-
-        <HoverActions />
-      </div>
+      <ViewableTransaction
+        transaction={transaction}
+        isSelected={isSelected}
+        isIgnored={isIgnored}
+        onSelectTransaction={onSelectTransaction}
+        onIgnoreTransaction={onIgnoreTransaction}
+        onTriggerEditMode={onTriggerEditMode || (() => {})}
+      />
     );
   }
 
@@ -199,22 +160,20 @@ export const UnifiedTransactionItem = ({
       data-ui="unified-transaction-item"
       className={cn(
         'group transition-colors hover:bg-muted/50 rounded-sm',
-        showCheckbox && 'cursor-pointer',
+        isIgnored && 'cursor-not-allowed opacity-80',
         className
       )}
       size="sm"
-      onClick={handleClick}
+      onClick={() => null}
     >
       <div className="flex items-center">
-        {showCheckbox && (
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={e => onSelectionChange?.(e.target.checked)}
-            onClick={e => e.stopPropagation()}
-            className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-3"
-          />
-        )}
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={e => (isIgnored ? null : onSelectTransaction(transaction.id))}
+          onClick={e => e.stopPropagation()}
+          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-3"
+        />
         <div className="flex gap-2 items-center">
           <IconComponent className={cn(getIconSizeClass('xs'), 'text-muted-foreground')} />
           <p className="text-xs leading-tight">{transaction.description}</p>
@@ -262,5 +221,101 @@ export const UnifiedTransactionItem = ({
         {isEditing ? <EditActions /> : <HoverActions />}
       </div>
     </Surface>
+  );
+};
+
+
+interface ViewableTransactionProps {
+  transaction: I_TransactionResponse;
+  isSelected: boolean;
+  isIgnored: boolean;
+  onSelectTransaction: (id: string) => void;
+  onIgnoreTransaction: (id: string) => void;
+  onTriggerEditMode: (transaction: I_TransactionResponse) => void;
+}
+
+const ViewableTransaction = ({
+  transaction,
+  isSelected,
+  isIgnored,
+  onSelectTransaction,
+  onIgnoreTransaction,
+  onTriggerEditMode,
+}: ViewableTransactionProps) => {
+  const IconComponent = getTransactionIconComponent(
+    transaction.category,
+    transaction.movement_type
+  );
+  const currency = formatCurrencyWithSign(transaction.amount, transaction.movement_type);
+  const currencyClasses = getCurrencyClasses(transaction.movement_type, 'compact');
+
+  return (
+    <div
+      className={cn(
+        'group flex items-center space-x-3 py-2 hover:bg-muted/50 transition-colors cursor-pointer',
+        isIgnored && 'opacity-30 bg-gray-100 cursor-not-allowed',
+        isSelected && 'bg-primary/10 border-l-4 border-primary',
+        'border rounded-lg p-3'
+      )}
+      onClick={() => !isIgnored && onSelectTransaction(transaction.id)}
+    >
+      <input
+        type="checkbox"
+        checked={isSelected}
+        onChange={() => !isIgnored && onSelectTransaction(transaction.id)}
+        onClick={e => e.stopPropagation()}
+        className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+        disabled={isIgnored}
+      />
+      
+      <div className="p-1.5 rounded-full bg-primary/10 flex-shrink-0">
+        <IconComponent className={getIconSizeClass('sm')} />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium truncate">{transaction.description}</p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>{transaction.category || 'Uncategorized'}</span>
+          <span>•</span>
+          <span>{formatDateShort(transaction.date)}</span>
+        </div>
+      </div>
+
+      <div className="text-right flex-shrink-0">
+        <div className="text-sm">
+          <span className={currencyClasses}>
+            {currency.sign}
+            {currency.amount}
+          </span>
+        </div>
+      </div>
+
+      {!isIgnored && (
+        <div className="hover-actions opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTriggerEditMode(transaction);
+            }}
+            className="h-6 w-6 p-0 hover:bg-primary/10"
+          >
+            <Edit className="h-3 w-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIgnoreTransaction(transaction.id);
+            }}
+            className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+    </div>
   );
 };

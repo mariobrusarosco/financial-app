@@ -15,22 +15,11 @@ import {
 import { Switch } from '@/domains/ui-system/components/switch';
 import { RadioGroup, RadioGroupItem } from '@/domains/ui-system/components/radio-group';
 import { Label } from '@/domains/ui-system/components/label';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/domains/ui-system/components/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/components/popover';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/domains/ui-system/utils';
 import { TransactionDatePicker } from './transaction-date-picker';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { Textarea } from '@/domains/ui-system/components/textarea';
-import { getCategoriesForType, findCategoryById } from '../utils/categories';
+import { CategorySelector } from './category-selector';
 
 interface CreateTransactionProps {
   onAddTransaction?: (transaction: I_CreateTransactionForm) => void;
@@ -39,7 +28,6 @@ interface CreateTransactionProps {
 const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
   const { mutate: createTransaction } = useCreateTransaction();
   const { data: accounts, isFetching: isFetchingAccounts } = useAccounts();
-  const [categoryOpen, setCategoryOpen] = useState(false);
   const [transactionSource, setTransactionSource] = useState<'account' | 'creditCard'>('account'); // UI mode state
   const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards(undefined); // Get all credit cards
 
@@ -226,74 +214,23 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
             {field => (
               <form.Subscribe
                 selector={state => state.values.type}
-                children={currentType => {
-                  const availableCategories = getCategoriesForType(currentType);
-                  const selectedCategory = findCategoryById(field.state.value || '');
-
-                  return (
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Category</label>
-                      <Popover open={categoryOpen} onOpenChange={setCategoryOpen}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={categoryOpen}
-                            className="w-full justify-between"
-                          >
-                            {selectedCategory ? (
-                              <span className="flex items-center gap-2">
-                                <span>{selectedCategory.icon}</span>
-                                {selectedCategory.name}
-                              </span>
-                            ) : (
-                              'Select category...'
-                            )}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            <CommandInput placeholder="Search categories..." />
-                            <CommandList>
-                              <CommandEmpty>No category found.</CommandEmpty>
-                              <CommandGroup>
-                                {availableCategories.map(category => (
-                                  <CommandItem
-                                    key={category.id}
-                                    value={category.id}
-                                    onSelect={value => {
-                                      field.handleChange(value === field.state.value ? '' : value);
-                                      setCategoryOpen(false);
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        'mr-2 h-4 w-4',
-                                        field.state.value === category.id
-                                          ? 'opacity-100'
-                                          : 'opacity-0'
-                                      )}
-                                    />
-                                    <span className="flex items-center gap-2">
-                                      <span>{category.icon}</span>
-                                      {category.name}
-                                    </span>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      {field.state.meta.errors.length > 0 && (
-                        <p className="text-sm text-destructive">
-                          {field.state.meta.errors.join(', ')}
-                        </p>
-                      )}
-                    </div>
-                  );
-                }}
+                children={currentType => (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Category</label>
+                    <CategorySelector
+                      value={field.state.value || ''}
+                      onValueChange={field.handleChange}
+                      transactionType={currentType}
+                      placeholder="Select category..."
+                      className="w-full"
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <p className="text-sm text-destructive">
+                        {field.state.meta.errors.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                )}
               />
             )}
           </form.Field>

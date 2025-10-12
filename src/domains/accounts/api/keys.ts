@@ -11,3 +11,9 @@ export const GET_ACCOUNT_BALANCE_POINTS_QUERY_KEY = (accountId: string) => [
   accountId,
   'balance-points',
 ];
+
+export const GET_UPLOADED_STATEMENT_QUERY_KEY = (accountId: string) => [
+  'accounts',
+  accountId,
+  'uploaded-statement',
+];

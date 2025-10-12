@@ -1,6 +1,6 @@
 import { useLocation, Navigate } from '@tanstack/react-router';
 import { AccountStatementsHeading } from '@/domains/accounts/components/account-statements-heading';
-import { AccountStatementsUpload } from '@/domains/accounts/components/account-statements-upload';
+import { AccountStatementsUpload } from '@/domains/accounts/components/account-statements-upload/account-statements-upload';
 import { AccountStatementsHistory } from '@/domains/accounts/components/account-statements-history';
 
 interface AccountStatementsScreenProps {
