@@ -155,10 +155,6 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
                   </div>
                 </div>
               </Card>
-
-              <Button onClick={handleCreateStatement} className="w-full" disabled={isCreating}>
-                {isCreating ? 'Creating...' : 'Save Statement'}
-              </Button>
             </div>
           )}
         </div>

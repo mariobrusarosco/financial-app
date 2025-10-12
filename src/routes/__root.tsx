@@ -46,7 +46,7 @@ function RootComponent() {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <RootDocument>
           <BetaBanner />
-          <div className="pt-20">
+          <div className="pt-8">
             <Outlet />
           </div>
           <Toaster />

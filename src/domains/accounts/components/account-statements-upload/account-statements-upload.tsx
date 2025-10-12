@@ -1,8 +1,7 @@
 import { Surface } from '@/domains/global/components/surface';
 import { UploadProcess } from './upload-process';
 import { TransactionsRefinementProcess } from './transactions-refinement-process';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import type { I_ParsedAccountStatement } from '@/domains/accounts/api';
 import { GET_UPLOADED_STATEMENT_QUERY_KEY } from '@/domains/accounts/api/keys';
 

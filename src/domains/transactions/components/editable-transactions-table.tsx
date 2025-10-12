@@ -25,9 +25,9 @@ export const EditableTransactionsTable = ({
   onSave: _onSave,
 }: EditableTransactionsTableProps) => {
   const {
-    transactions,
-    selectedIds,
-    setSelectedIds,
+    editableTransactions,
+    selectedTransactions,
+    setSelectedTransactions,
     editTransaction,
     removeSelected,
     removeTransaction,
@@ -63,15 +63,15 @@ export const EditableTransactionsTable = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Editable Transactions</h2>
-          {selectedIds.size > 0 && (
+          {selectedTransactions.size > 0 && (
             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-              {selectedIds.size} selected
+              {selectedTransactions.size} selected
             </Badge>
           )}
         </div>
 
         <div className="flex items-center gap-2">
-          {selectedIds.size > 0 && (
+          {selectedTransactions.size > 0 && (
             <Button variant="outline" size="sm" onClick={removeSelected}>
               <Trash2 className="h-4 w-4 mr-2" />
               Remove Selected
@@ -88,12 +88,12 @@ export const EditableTransactionsTable = ({
               <TableHead className="w-[50px]">
                 <input
                   type="checkbox"
-                  checked={selectedIds.size === transactions.length && transactions.length > 0}
+                  checked={selectedTransactions.size === transactions.length && transactions.length > 0}
                   onChange={e => {
                     if (e.target.checked) {
-                      setSelectedIds(new Set(transactions.map(t => t.id)));
+                      setSelectedTransactions(new Set(transactions.map(t => t.id)));
                     } else {
-                      setSelectedIds(new Set());
+                      setSelectedTransactions(new Set());
                     }
                   }}
                 />
@@ -111,15 +111,15 @@ export const EditableTransactionsTable = ({
                 <TableCell>
                   <input
                     type="checkbox"
-                    checked={selectedIds.has(transaction.id)}
+                    checked={selectedTransactions.has(transaction.id)}
                     onChange={e => {
-                      const newSelected = new Set(selectedIds);
+                      const newSelected = new Set(selectedTransactions);
                       if (e.target.checked) {
                         newSelected.add(transaction.id);
                       } else {
                         newSelected.delete(transaction.id);
                       }
-                      setSelectedIds(newSelected);
+                      setSelectedTransactions(newSelected);
                     }}
                   />
                 </TableCell>

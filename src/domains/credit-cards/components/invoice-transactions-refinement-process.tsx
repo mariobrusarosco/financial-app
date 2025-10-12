@@ -2,28 +2,21 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Card } from '@/domains/ui-system/components/card';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
-import { useEditableTransactions } from '@/domains/transactions/hooks/use-editable-transactions';
-import type { I_ParsedAccountStatement } from '@/domains/accounts/api';
+import { useEditableCreditCardTransactions } from '@/domains/credit-cards/hooks/use-editable-credit-card-transactions';
+import type { I_CreditCardInvoiceResponse } from '@/domains/credit-cards/types/types-and-interfaces';
 import type { I_CreateTransactionForm } from '@/domains/transactions/types/types-and-interfaces';
-import { useCreateAccountStatement } from '../../hooks/use-create-account-statement';
-import { useAccount } from '@/domains/accounts/hooks/use-account';
-import { Route } from '@/routes/(auth)/accounts/$slug/statements/upload';
 
-interface TransactionsRefinementProcessProps {
-  statement: I_ParsedAccountStatement | undefined;
+interface InvoiceTransactionsRefinementProcessProps {
+  invoice: I_CreditCardInvoiceResponse;
 }
 
-export const TransactionsRefinementProcess = ({
-  statement,
-}: TransactionsRefinementProcessProps) => {
-  const params = Route.useParams();
-  const accountId = params.slug;
-  const { data: account } = useAccount(accountId);
-
+export const InvoiceTransactionsRefinementProcess = ({ 
+  invoice
+}: InvoiceTransactionsRefinementProcessProps) => {
   const {
     editableTransactions,
     selectedTransactions,
-    toogleTransaction,
+    toggleTransaction,
     ignoreTransaction,
     ignoredTransactions,
     resetRefinement,
@@ -31,21 +24,16 @@ export const TransactionsRefinementProcess = ({
     setTransactionInEditMode,
     triggerEditMode,
     updateTransactionInEditionMode,
-  } = useEditableTransactions({ statement, account });
+  } = useEditableCreditCardTransactions({ 
+    invoice, 
+    creditCardId: invoice.credit_card_id,
+    brokerId: invoice.broker_id
+  });
+
+  console.log('💾 InvoiceTransactionsRefinementProcess - editableTransactions:', editableTransactions);
 
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
-
-  const { createStatement, isLoading: isCreating } = useCreateAccountStatement();
-
-  const handleCreateStatement = () => {
-    if (statement) {
-      createStatement({
-        account_id: statement.account_id,
-        raw_statement: statement.raw_statement,
-      });
-    }
-  };
 
   const handleSaveAllTransactions = () => {
     // Convert to bulk transaction format
@@ -60,34 +48,32 @@ export const TransactionsRefinementProcess = ({
         broker_id: transaction.broker_id,
         is_paid: transaction.is_paid,
         type: transaction.movement_type,
-        category: transaction.category || 'General',
+        category: transaction.category || 'Credit Card',
         is_deleted: transaction.is_deleted,
       }))
       .filter(transaction => !ignoredTransactions.has(transaction.id));
 
-    console.log('transactionForms', transactionForms);
-
+    console.log('💾 Saving credit card transactions:', transactionForms);
     createBulkTransactions(transactionForms);
-    handleCreateStatement();
   };
 
   const handleTransactionIgnored = (transactionId: string) => {
     ignoreTransaction(transactionId);
-    toogleTransaction(transactionId);
+    toggleTransaction(transactionId);
   };
 
   const handleResetRefinement = () => {
     resetRefinement();
   };
 
-  if (!statement) {
+  if (!invoice) {
     return null;
   }
 
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold">Transactions</h3>
+        <h3 className="text-lg font-semibold">Transaction Refinement</h3>
         <div className="flex items-center gap-3">
           <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
             {editableTransactions.length} transactions
@@ -122,7 +108,7 @@ export const TransactionsRefinementProcess = ({
               className="border rounded-lg"
               onIgnoreTransaction={handleTransactionIgnored}
               isIgnored={isIgnored}
-              onSelectTransaction={toogleTransaction}
+              onSelectTransaction={toggleTransaction}
               isSelected={isSelected}
               onTriggerEditMode={triggerEditMode}
               isEditing={isEditing}
