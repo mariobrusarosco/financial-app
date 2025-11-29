@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
-import { TransactionCard } from '@/domains/transactions/components/transaction-card';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useCreditCardTransactions } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
 import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2 } from 'lucide-react';
-import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
 
 interface CreditCardTransactionsListProps {
@@ -27,7 +26,6 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     isLoading,
     isError,
     isPlaceholderData,
-    isPreviousData,
   } = useCreditCardTransactions(creditCardId, params);
 
   const { mutate: deleteTransaction } = useDeleteTransaction();
@@ -35,8 +33,8 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
   const transactions = response?.data || [];
   const meta = response?.meta;
 
-  const handleDelete = (transactionId: string) => {
-    deleteTransaction(transactionId);
+  const handleDelete = (transaction: { id: string }) => {
+    deleteTransaction(transaction.id);
   };
 
   // Show loading state only on initial load, not when using placeholder data
@@ -97,16 +95,11 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
           {transactions && transactions.length > 0 ? (
             <>
               {transactions.map(transaction => (
-                <TransactionCard
+                <UnifiedTransactionItem
                   key={transaction.id}
-                  id={transaction.id}
-                  description={transaction.description}
-                  category={transaction.category}
-                  amount={transaction.amount.toString()}
-                  date={transaction.date}
-                  movementType={transaction.movement_type as T_TransactionType}
-                  isPaid={transaction.is_paid}
-                  creditCardId={creditCardId}
+                  transaction={transaction}
+                  mode="default"
+                  isSelected={false}
                   onDelete={handleDelete}
                 />
               ))}

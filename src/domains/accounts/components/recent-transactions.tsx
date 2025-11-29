@@ -3,7 +3,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useAccountRecentTransactions } from '@/domains/transactions/hooks/use-account-transactions';
-import { TransactionCard } from '@/domains/transactions/components/transaction-card';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 
 interface RecentTransactionsProps {
   accountId?: string;
@@ -47,16 +47,11 @@ export function RecentTransactions({ accountId }: RecentTransactionsProps) {
         </div>
       ) : (
         transactions.map(transaction => (
-          <TransactionCard
+          <UnifiedTransactionItem
             key={transaction.id}
-            id={transaction.id}
-            description={transaction.description}
-            category={transaction.category}
-            amount={transaction.amount}
-            date={transaction.date}
-            movementType={transaction.movement_type}
-            isPaid={transaction.is_paid}
-            creditCardId={transaction.credit_card_id}
+            transaction={transaction}
+            mode="default"
+            isSelected={false}
           />
         ))
       )}

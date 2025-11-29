@@ -2,12 +2,11 @@ import { Fragment } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
-import { TransactionCard } from '@/domains/transactions/components/transaction-card';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { useCreditCardTransactionsInfinite } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
 import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2, ChevronDown } from 'lucide-react';
-import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
 
 interface CreditCardTransactionsInfiniteProps {
@@ -38,12 +37,12 @@ export const CreditCardTransactionsInfinite = ({
 
   const handleFiltersChange = (newFilters: I_CreditCardTransactionsParams) => {
     // Remove page from filters since infinite query manages pagination
-    const { page, ...filtersWithoutPage } = newFilters;
+    const { page: _page, ...filtersWithoutPage } = newFilters;
     onFiltersChange?.(filtersWithoutPage);
   };
 
-  const handleDelete = (transactionId: string) => {
-    deleteTransaction(transactionId);
+  const handleDelete = (transaction: { id: string }) => {
+    deleteTransaction(transaction.id);
   };
 
   // Show loading state only on initial load
@@ -108,7 +107,7 @@ export const CreditCardTransactionsInfinite = ({
             <div className="flex justify-center">
               <Button
                 variant="outline"
-                onClick={() => fetchPreviousPage()}
+                onClick={() => void fetchPreviousPage()}
                 disabled={isFetchingPreviousPage}
                 className="flex items-center gap-2"
               >
@@ -133,16 +132,11 @@ export const CreditCardTransactionsInfinite = ({
               data?.pages.map((page, pageIndex) => (
                 <Fragment key={pageIndex}>
                   {page.data.map(transaction => (
-                    <TransactionCard
+                    <UnifiedTransactionItem
                       key={transaction.id}
-                      id={transaction.id}
-                      description={transaction.description}
-                      category={transaction.category}
-                      amount={transaction.amount.toString()}
-                      date={transaction.date}
-                      movementType={transaction.movement_type as T_TransactionType}
-                      isPaid={transaction.is_paid}
-                      creditCardId={creditCardId}
+                      transaction={transaction}
+                      mode="default"
+                      isSelected={false}
                       onDelete={handleDelete}
                     />
                   ))}
@@ -170,7 +164,7 @@ export const CreditCardTransactionsInfinite = ({
             <div className="flex justify-center">
               <Button
                 variant="outline"
-                onClick={() => fetchNextPage()}
+                onClick={() => void fetchNextPage()}
                 disabled={isFetchingNextPage}
                 className="flex items-center gap-2"
               >
@@ -193,7 +187,8 @@ export const CreditCardTransactionsInfinite = ({
           {!hasNextPage && allTransactions.length > 0 && (
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground">
-                You've reached the end of the list • {allTransactions.length} transactions total
+                You&apos;ve reached the end of the list • {allTransactions.length} transactions
+                total
               </p>
             </div>
           )}
