@@ -4,6 +4,8 @@ package-lock.json
 .DS_Store
 .cache
 .env
+.env.*.local
+.env.e2e.demo
 .vercel
 .output
 .vinxi

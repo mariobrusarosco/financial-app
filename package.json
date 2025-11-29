@@ -15,7 +15,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:demo": "E2E_ENV=demo playwright test"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,md}": "prettier --write"
@@ -65,6 +71,7 @@
     "vinxi": "^0.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.4",
     "@tailwindcss/vite": "^4.1.4",
     "@tanstack/start": "^1.120.20",
