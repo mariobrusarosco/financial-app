@@ -5,6 +5,7 @@ import { TransactionCard } from '@/domains/transactions/components/transaction-c
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useCreditCardTransactions } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
+import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2 } from 'lucide-react';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
@@ -29,8 +30,14 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     isPreviousData,
   } = useCreditCardTransactions(creditCardId, params);
 
+  const { mutate: deleteTransaction } = useDeleteTransaction();
+
   const transactions = response?.data || [];
   const meta = response?.meta;
+
+  const handleDelete = (transactionId: string) => {
+    deleteTransaction(transactionId);
+  };
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -100,6 +107,7 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
                   movementType={transaction.movement_type as T_TransactionType}
                   isPaid={transaction.is_paid}
                   creditCardId={creditCardId}
+                  onDelete={handleDelete}
                 />
               ))}
 

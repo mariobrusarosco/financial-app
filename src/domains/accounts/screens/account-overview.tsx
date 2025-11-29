@@ -6,7 +6,10 @@ interface AccountOverviewScreenProps {
 
 export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
   return (
-    <div className="grid grid-cols-[300px_1fr] justify-between gap-12">
+    <div
+      data-ui="account-overview-screen"
+      className="grid grid-cols-[300px_1fr] justify-between gap-12"
+    >
       <AccountBalancePoints slug={slug} />
       <AccountTransactionsList accountId={slug} />
     </div>

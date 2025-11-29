@@ -36,6 +36,22 @@ const mapBalancePointsToChartData = (balancePoints: I_BalancePoint[]) => {
     }));
 };
 
+const EmptyBalancePoints = ({ title }: { title: string }) => {
+  return (
+    <div data-ui="empty-balance-points">
+      <Title>{title}</Title>
+      <div className="flex items-center justify-center h-64 text-center">
+        <div>
+          <Text className="text-muted-foreground">No balance history available</Text>
+          <Text className="text-sm text-muted-foreground mt-1">
+            Balance points will appear here as they are recorded
+          </Text>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props) => {
   const { data: balancePoints, isLoading: isLoadingBalancePoints } = useAccountBalancePoints(slug);
 
@@ -46,19 +62,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
 
   // Handle empty data
   if (!balancePoints || balancePoints.length === 0) {
-    return (
-      <>
-        <Title>{title}</Title>
-        <div className="flex items-center justify-center h-64 text-center">
-          <div>
-            <Text className="text-muted-foreground">No balance history available</Text>
-            <Text className="text-sm text-muted-foreground mt-1">
-              Balance points will appear here as they are recorded
-            </Text>
-          </div>
-        </div>
-      </>
-    );
+    return <EmptyBalancePoints />;
   }
 
   if (isLoadingBalancePoints) {
@@ -72,7 +76,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
   const trendPercentage = previousBalance !== 0 ? (trend / previousBalance) * 100 : 0;
 
   return (
-    <>
+    <div data-ui="account-balance-points">
       <div className="mb-6 min-w-80">
         <Title className="text-lg font-semibold">{title}</Title>
         <div className="min-h-[400px] w-full">
@@ -110,6 +114,6 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };

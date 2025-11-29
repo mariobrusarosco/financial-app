@@ -26,7 +26,8 @@ interface UnifiedTransactionItemProps {
 
   // Interaction handlers
   onEdit?: (transaction: I_TransactionResponse) => void;
-  onIgnoreTransaction: (id: string) => void | null;
+  onDelete?: (transaction: I_TransactionResponse) => void;
+  onIgnoreTransaction?: (id: string) => void | null;
   onSave?: (transaction: I_TransactionResponse) => void;
   onCancel?: () => void;
 
@@ -34,9 +35,12 @@ interface UnifiedTransactionItemProps {
   onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
   isEditing?: boolean;
 
+  // Selection handlers
   isSelected: boolean;
-  isIgnored: boolean;
-  onSelectTransaction: (id: string) => void;
+  isIgnored?: boolean;
+  onSelectTransaction?: (id: string) => void;
+  onSelectionChange?: (selected: boolean) => void;
+  showCheckbox?: boolean;
 
   // Styling
   className?: string;
@@ -46,6 +50,7 @@ export const UnifiedTransactionItem = ({
   transaction,
   mode,
   onEdit,
+  onDelete,
   onTriggerEditMode,
   onIgnoreTransaction,
   onSave,
@@ -54,6 +59,8 @@ export const UnifiedTransactionItem = ({
   isSelected = false,
   isIgnored = false,
   onSelectTransaction,
+  onSelectionChange,
+  showCheckbox = false,
   className,
 }: UnifiedTransactionItemProps) => {
   const [editForm, setEditForm] = useState<Partial<I_TransactionResponse>>(transaction);
@@ -83,6 +90,24 @@ export const UnifiedTransactionItem = ({
   const transactionTypeIcon = isCredit ? CreditCard : Wallet;
   const transactionTypeLabel = isCredit ? 'Credit' : 'Account';
 
+  // Handle delete action - prefer onDelete, fallback to onIgnoreTransaction
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(transaction);
+    } else if (onIgnoreTransaction) {
+      onIgnoreTransaction(transaction.id);
+    }
+  };
+
+  // Handle selection - support both onSelectTransaction and onSelectionChange
+  const handleSelection = () => {
+    if (onSelectionChange) {
+      onSelectionChange(!isSelected);
+    } else if (onSelectTransaction) {
+      onSelectTransaction(transaction.id);
+    }
+  };
+
   // Hover Actions Component
   const HoverActions = () => (
     <div
@@ -97,14 +122,16 @@ export const UnifiedTransactionItem = ({
       >
         <Edit className="h-3 w-3" />
       </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={() => onIgnoreTransaction(transaction.id)}
-        className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
-      >
-        <Trash2 className="h-3 w-3" />
-      </Button>
+      {(onDelete || onIgnoreTransaction) && (
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleDelete}
+          className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      )}
     </div>
   );
 
@@ -148,6 +175,8 @@ export const UnifiedTransactionItem = ({
         isSelected={isSelected}
         isIgnored={isIgnored}
         onSelectTransaction={onSelectTransaction}
+        onSelectionChange={onSelectionChange}
+        onDelete={onDelete}
         onIgnoreTransaction={onIgnoreTransaction}
         onTriggerEditMode={onTriggerEditMode || (() => {})}
       />
@@ -167,13 +196,21 @@ export const UnifiedTransactionItem = ({
       onClick={() => null}
     >
       <div className="flex items-center">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={e => (isIgnored ? null : onSelectTransaction(transaction.id))}
-          onClick={e => e.stopPropagation()}
-          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-3"
-        />
+        {showCheckbox && (
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={e => {
+              e.stopPropagation();
+              if (!isIgnored) {
+                handleSelection();
+              }
+            }}
+            onClick={e => e.stopPropagation()}
+            className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-3"
+            disabled={isIgnored}
+          />
+        )}
         <div className="flex gap-2 items-center">
           <IconComponent className={cn(getIconSizeClass('xs'), 'text-muted-foreground')} />
           <p className="text-xs leading-tight">{transaction.description}</p>
@@ -229,8 +266,10 @@ interface ViewableTransactionProps {
   transaction: I_TransactionResponse;
   isSelected: boolean;
   isIgnored: boolean;
-  onSelectTransaction: (id: string) => void;
-  onIgnoreTransaction: (id: string) => void;
+  onSelectTransaction?: (id: string) => void;
+  onSelectionChange?: (selected: boolean) => void;
+  onDelete?: (transaction: I_TransactionResponse) => void;
+  onIgnoreTransaction?: (id: string) => void;
   onTriggerEditMode: (transaction: I_TransactionResponse) => void;
 }
 
@@ -239,9 +278,29 @@ const ViewableTransaction = ({
   isSelected,
   isIgnored,
   onSelectTransaction,
+  onSelectionChange,
+  onDelete,
   onIgnoreTransaction,
   onTriggerEditMode,
 }: ViewableTransactionProps) => {
+  // Handle delete action - prefer onDelete, fallback to onIgnoreTransaction
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(transaction);
+    } else if (onIgnoreTransaction) {
+      onIgnoreTransaction(transaction.id);
+    }
+  };
+
+  // Handle selection - support both onSelectTransaction and onSelectionChange
+  const handleSelection = () => {
+    if (onSelectionChange) {
+      onSelectionChange(!isSelected);
+    } else if (onSelectTransaction) {
+      onSelectTransaction(transaction.id);
+    }
+  };
   const IconComponent = getTransactionIconComponent(
     transaction.category,
     transaction.movement_type
@@ -257,12 +316,12 @@ const ViewableTransaction = ({
         isSelected && 'bg-primary/10 border-l-4 border-primary',
         'border rounded-lg p-3'
       )}
-      onClick={() => !isIgnored && onSelectTransaction(transaction.id)}
+      onClick={() => !isIgnored && handleSelection()}
     >
       <input
         type="checkbox"
         checked={isSelected}
-        onChange={() => !isIgnored && onSelectTransaction(transaction.id)}
+        onChange={() => !isIgnored && handleSelection()}
         onClick={e => e.stopPropagation()}
         className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
         disabled={isIgnored}
@@ -303,17 +362,16 @@ const ViewableTransaction = ({
           >
             <Edit className="h-3 w-3" />
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              onIgnoreTransaction(transaction.id);
-            }}
-            className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
-          >
-            <Trash2 className="h-3 w-3" />
-          </Button>
+          {(onDelete || onIgnoreTransaction) && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDelete}
+              className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       )}
     </div>

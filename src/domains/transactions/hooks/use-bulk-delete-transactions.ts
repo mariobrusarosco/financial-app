@@ -9,18 +9,12 @@ export const useBulkDeleteTransactions = () => {
   return useMutation({
     mutationFn: (transactionIds: string[]) =>
       transactionsApi.deleteBulkTransactions(transactionIds),
-    onSuccess: (result, transactionIds) => {
+    onSuccess: result => {
       toast.success(`Successfully deleted ${result.deleted_count} transactions`);
 
-      // Invalidate all transaction-related queries to refresh the data
+      // Invalidate transaction queries - using base key matches all variations
       void queryClient.invalidateQueries({
-        queryKey: ['transactions'],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: ['account-transactions'],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: ['all-transactions'],
+        queryKey: ['account-transactions-paginated'],
       });
     },
     onError: error => {
@@ -39,15 +33,9 @@ export const useDeleteTransaction = () => {
     onSuccess: () => {
       toast.success('Transaction deleted successfully');
 
-      // Invalidate all transaction-related queries to refresh the data
+      // Invalidate transaction queries - using base key matches all variations
       void queryClient.invalidateQueries({
-        queryKey: ['transactions'],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: ['account-transactions'],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: ['all-transactions'],
+        queryKey: ['account-transactions-paginated'],
       });
     },
     onError: error => {
@@ -57,5 +45,3 @@ export const useDeleteTransaction = () => {
     },
   });
 };
-
-

@@ -5,6 +5,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { TransactionCard } from '@/domains/transactions/components/transaction-card';
 import { useCreditCardTransactionsInfinite } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
+import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2, ChevronDown } from 'lucide-react';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
@@ -33,10 +34,16 @@ export const CreditCardTransactionsInfinite = ({
     error,
   } = useCreditCardTransactionsInfinite(creditCardId, filters);
 
+  const { mutate: deleteTransaction } = useDeleteTransaction();
+
   const handleFiltersChange = (newFilters: I_CreditCardTransactionsParams) => {
     // Remove page from filters since infinite query manages pagination
     const { page, ...filtersWithoutPage } = newFilters;
     onFiltersChange?.(filtersWithoutPage);
+  };
+
+  const handleDelete = (transactionId: string) => {
+    deleteTransaction(transactionId);
   };
 
   // Show loading state only on initial load
@@ -136,6 +143,7 @@ export const CreditCardTransactionsInfinite = ({
                       movementType={transaction.movement_type as T_TransactionType}
                       isPaid={transaction.is_paid}
                       creditCardId={creditCardId}
+                      onDelete={handleDelete}
                     />
                   ))}
                 </Fragment>
