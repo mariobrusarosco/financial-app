@@ -10,6 +10,7 @@ export const DashboardIndexScreen = () => {
     const month = date.toLocaleString('en-US', { month: 'short' });
     const day = date.getDate();
     const year = date.getFullYear();
+    const weekday = date.toLocaleString('en-US', { weekday: 'long' });
 
     // Add ordinal suffix (st, nd, rd, th)
     const getOrdinalSuffix = (day: number) => {
@@ -26,18 +27,49 @@ export const DashboardIndexScreen = () => {
       }
     };
 
-    return `${month} ${day}${getOrdinalSuffix(day)}, ${year}`;
+    return {
+      weekday,
+      month,
+      day,
+      year,
+    };
   };
 
   return (
-    <div data-ui="dashboard-index-screen" className="p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Hello, {user?.name || 'User'}</h1>
-        <div className="flex items-center gap-2 text-lg text-muted-foreground">
-          <Calendar className="h-5 w-5" />
-          <p>{formatDate()}</p>
+    <div data-ui="dashboard-index-screen" className="h-full flex flex-col  pt-20 relative">
+      <div className="grid place-content-center place-items-center max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <h1 className="text-7xl font-thin">Hello, {user?.full_name || 'User'}</h1>
+        <div className="flex flex-col items-center pt-6 text-muted-foreground font-thin tracking-widest uppercase">
+          <span className="text-2xl">
+            {formatDate().weekday} {formatDate().month} {formatDate().day}
+          </span>
+          <span className="text-md font-light">{formatDate().year}</span>
+        </div>
+        <div className="mt-12 spinner w-20 h-20 text-center rounded-full" data-ui="spinner">
+          <div className="spinner1"></div>
         </div>
       </div>
+
+      <footer className="mt-auto pb-8 flex justify-center">
+        <svg
+          viewBox="0 0 70 69"
+          className="w-[200px] h-[200px]"
+          xmlns="http://www.w3.org/2000/svg"
+          data-ui="footer-circle"
+        >
+          {/* Circle - color controlled via Tailwind fill-* classes */}
+          <circle cx="35" cy="34.5" r="34.5" className="fill-teal-700" />
+
+          {/* Arch - path that follows circle circumference exactly */}
+          <path
+            d="M 10 10.724 A 34.5 34.5 0 0 1 60 10.724"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+            className="arch-path stroke-white"
+          />
+        </svg>
+      </footer>
     </div>
   );
 };

@@ -138,8 +138,7 @@ export const Navigation = () => {
     <>
       <nav className="hidden md:flex md:justify-between md:w-full md:p-3 md:px-4 md:items-center">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/wb.png" alt="Better Call Buffet" className="w-4 h-4" />
-          <span className="text-sm font-bold text-foreground">Better Call Buffet</span>
+          <span className="text-xl font-light font-sans text-foreground">Better Call Buffet</span>
         </Link>
 
         <nav className="flex px-2 h-fit gap-2">
@@ -152,20 +151,10 @@ export const Navigation = () => {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  'group flex items-center text-sm px-4 py-2 rounded-md transition-colors',
-                  isActive
-                    ? 'text-primary border-b-1 border-primary'
-                    : 'text-muted-foreground hover:text-accent-foreground'
+                  'group flex items-center  px-4 transition-colors font-sans font-thin',
+                  isActive ? 'text-primary' : 'hover:text-primary'
                 )}
               >
-                <Icon
-                  className={cn(
-                    'mr-3 flex-shrink-0 h-4 w-4',
-                    isActive
-                      ? 'text-primary'
-                      : 'text-muted-foreground group-hover:text-accent-foreground'
-                  )}
-                />
                 {item.label}
               </Link>
             );
@@ -184,7 +173,9 @@ export const Navigation = () => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="ml-2 text-lg font-bold text-foreground">Better Call Buffet</span>
+            <span className="ml-2 text-lg font-thin font-sans text-foreground">
+              Better Call Buffet
+            </span>
           </Link>
 
           <div className="flex items-center gap-2">

@@ -46,9 +46,7 @@ function RootComponent() {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <RootDocument>
           <BetaBanner />
-          <div className="pt-8">
-            <Outlet />
-          </div>
+          <Outlet />
           <Toaster />
         </RootDocument>
       </ThemeProvider>
@@ -65,7 +63,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="h-screen">
         {children}
         <Scripts />
       </body>

@@ -1263,6 +1263,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/montserrat@npm:^5.2.8":
+  version: 5.2.8
+  resolution: "@fontsource/montserrat@npm:5.2.8"
+  checksum: b7f955ac0d953a071392500847ea89686bcc914c7675ee83a3c757c6a7d49708658615e815c45f89bb8c3a1eb47aa98ce359c385c136ef2264748bf2adffef84
+  languageName: node
+  linkType: hard
+
+"@fontsource/quicksand@npm:^5.2.10":
+  version: 5.2.10
+  resolution: "@fontsource/quicksand@npm:5.2.10"
+  checksum: bbf99584f51b0db089f15140e6239dc930fc27da5339e9eda41b3097a0efcecb5f045880b2e388a4f8f7a8194ad18d6cdbbaf46f017a44e6559891693670b4e8
+  languageName: node
+  linkType: hard
+
 "@formatjs/ecma402-abstract@npm:2.3.4":
   version: 2.3.4
   resolution: "@formatjs/ecma402-abstract@npm:2.3.4"
@@ -6706,6 +6720,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "better-call-buffet-front@workspace:."
   dependencies:
+    "@fontsource/montserrat": ^5.2.8
+    "@fontsource/quicksand": ^5.2.10
     "@radix-ui/react-avatar": ^1.1.9
     "@radix-ui/react-checkbox": ^1.1.1
     "@radix-ui/react-collapsible": ^1.1.11

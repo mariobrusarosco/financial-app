@@ -7,11 +7,11 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div data-ui="app" className="bg-background pt-10 h-full flex flex-col">
       <Navigation />
 
-      <main className="pt-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">{children}</div>
+      <main data-ui="app-container" className="flex-1">
+        {children}
       </main>
     </div>
   );

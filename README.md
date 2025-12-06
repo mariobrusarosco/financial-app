@@ -134,6 +134,26 @@ financial-app/
    - Import types using the `type` keyword
    - Use kebab-case for file naming
 
+### API Type Naming Convention
+
+For consistent API integration across all domains, follow this standardized pattern:
+
+**Single Resource:**
+- `I_[Resource]Response` - Data FROM backend (GET /resource/:id)
+- `I_[Resource]Payload` - Data TO backend (POST/PUT /resource)
+
+**Collections:**
+- `I_[Resources]Response` - Collection FROM backend (GET /resources)
+- `I_[Resources]Payload` - Collection TO backend (bulk operations)
+
+**Examples:**
+- `I_TransactionResponse` - Single transaction from API
+- `I_TransactionPayload` - Single transaction to API
+- `I_TransactionsResponse` - Transaction list from API
+- `I_TransactionsPayload` - Transaction list to API (bulk operations)
+
+This pattern ensures predictable type names and clear distinction between data flowing in different directions.
+
 ## Contributing
 
 Before contributing to this project, please read through the relevant ADRs and planning documents to understand the project's architecture and roadmap.

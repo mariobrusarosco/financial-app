@@ -1,9 +1,15 @@
+@import '@fontsource/montserrat/100.css';
+@import '@fontsource/montserrat/300.css';
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/500.css';
+@import '@fontsource/montserrat/700.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -77,10 +83,10 @@
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
+  --background: oklch(0.24 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
+  --card-foreground: oklch(0.24 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.645 0.246 16.439);
@@ -88,7 +94,7 @@
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
+  --muted-foreground: oklch(0.88 0 0);
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -115,6 +121,42 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
+}
+
+.card-neumorphic {
+  background: #1f1f1f;
+  box-shadow:
+    inset 20px 20px 60px #1a1a1a,
+    inset -20px -20px 60px #242424;
+}
+
+.spinner {
+  background-image: linear-gradient(rgb(248 113 113) 35%, rgb(0, 225, 255));
+  animation: full-rotation 10s linear infinite;
+  filter: blur(1px);
+  box-shadow:
+    0px -5px 20px 0px rgb(248, 113, 113),
+    0px 5px 20px 0px rgb(0, 225, 255);
+  transform-origin: center;
+}
+
+.spinner1 {
+  background-color: rgb(36, 36, 36);
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  filter: blur(10px);
+}
+
+@keyframes full-rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Arch positioning - use translateY to move up/down */
+.arch-path {
+  /* transform: translateY(2px); */ /* Uncomment and adjust: positive = down, negative = up */
 }
