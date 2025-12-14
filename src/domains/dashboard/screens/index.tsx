@@ -1,5 +1,6 @@
 import { useAuth } from '@/domains/auth/hooks/use-auth';
-import { Calendar } from 'lucide-react';
+import { GaugeChart } from '@ui-system/components/gauge-chart';
+import { GaugeChartSVG } from '@ui-system/components/gauge-chart-svg';
 
 export const DashboardIndexScreen = () => {
   const { user } = useAuth();
@@ -46,30 +47,30 @@ export const DashboardIndexScreen = () => {
           <span className="text-md font-light">{formatDate().year}</span>
         </div>
         <div className="mt-12 spinner w-20 h-20 text-center rounded-full" data-ui="spinner">
-          <div className="spinner1"></div>
+          <div className="spinner1" />
         </div>
-      </div>
 
-      <footer className="mt-auto pb-8 flex justify-center">
-        <svg
-          viewBox="0 0 70 69"
-          className="w-[200px] h-[200px]"
-          xmlns="http://www.w3.org/2000/svg"
-          data-ui="footer-circle"
+        {/* Option 1: Gauge Chart SVG */}
+        {/* <footer
+          className="flex flex-col items-center gap-2 bg-gray-200 rounded-full fixed  bottom-[0%] p-[15px] w-[130vw]
+        translate-x-[0]
+        translate-y-[110vw]
+        scale-110
+        xl:w-[1550px]
+        xl:translate-y-[1400px]
+        xl:scale-120
+          "
         >
-          {/* Circle - color controlled via Tailwind fill-* classes */}
-          <circle cx="35" cy="34.5" r="34.5" className="fill-teal-700" />
-
-          {/* Arch - path that follows circle circumference exactly */}
-          <path
-            d="M 10 10.724 A 34.5 34.5 0 0 1 60 10.724"
-            strokeWidth="4"
-            fill="none"
-            strokeLinecap="round"
-            className="arch-path stroke-white"
+          <GaugeChartSVG
+            value={50}
+            max={100}
+            size={500}
+            strokeWidth={0.8}
+            backgroundColor="#d4d4d4"
+            color="#000000"
           />
-        </svg>
-      </footer>
+        </footer> */}
+      </div>
     </div>
   );
 };

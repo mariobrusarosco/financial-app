@@ -33,12 +33,7 @@ export const LoginForm = () => {
   });
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-        <CardDescription>Enter your email and password to access your account</CardDescription>
-      </CardHeader>
-
+    <Card data-ui="login-form" className="shadow-lg mt-20 max-w-md">
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -60,7 +55,9 @@ export const LoginForm = () => {
           >
             {field => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Email</Label>
+                <Label htmlFor={field.name} className="text-foreground">
+                  Email
+                </Label>
                 <Input
                   id={field.name}
                   type="email"
@@ -90,7 +87,9 @@ export const LoginForm = () => {
           >
             {field => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Password</Label>
+                <Label htmlFor={field.name} className="text-foreground">
+                  Password
+                </Label>
                 <div className="relative">
                   <Input
                     id={field.name}
@@ -119,17 +118,22 @@ export const LoginForm = () => {
                   onCheckedChange={checked => field.handleChange(!!checked)}
                   disabled={isPending}
                 />
-                <Label htmlFor="rememberMe" className="text-sm font-normal cursor-pointer">
+                <Label
+                  htmlFor="rememberMe"
+                  className="text-sm font-normal cursor-pointer text-foreground"
+                >
                   Remember me
                 </Label>
               </div>
             )}
           </form.Field>
 
-          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-            <p className="font-medium mb-1">Demo Credentials:</p>
-            <p>Email: user@example.com</p>
-            <p>Password: password123</p>
+          <div className="text-sm text-muted-foreground bg-muted/30 border border-border/50 p-4 rounded-lg">
+            <p className="font-medium mb-2 text-foreground">Demo Credentials:</p>
+            <div className="space-y-1 font-mono text-xs">
+              <p>Email: user@example.com</p>
+              <p>Password: password123</p>
+            </div>
           </div>
         </CardContent>
 

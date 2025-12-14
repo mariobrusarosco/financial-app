@@ -24,9 +24,13 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
       <div className="mb-8 text-center">
-        <img src="/wb.png" alt="Better Call Buffet" className="w-12 h-12 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-foreground">Better Call Buffet</h1>
-        <p className="text-muted-foreground mt-2">Manage your finances with confidence</p>
+        <div className="flex gap-10 items-center justify-center">
+          <div className="spinner w-20 h-20 text-center rounded-full" data-ui="spinner">
+            <div className="spinner1" />
+          </div>
+          <h1 className="text-7xl font-thin text-foreground">Better Call Buffet</h1>
+        </div>
+        <p className="text-muted-foreground mt-2 font-light">Personal finances management</p>
       </div>
 
       <LoginForm />

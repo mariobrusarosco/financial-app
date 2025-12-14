@@ -6775,7 +6775,7 @@ __metadata:
     immer: ^10.1.1
     jsdom: ^26.1.0
     lint-staged: ^16.1.2
-    lucide-react: ^0.509.0
+    lucide-react: ^0.556.0
     next-themes: ^0.4.6
     openai: ^5.1.1
     pdf-parse: ^1.1.1
@@ -6786,6 +6786,7 @@ __metadata:
     react-aria-components: ^1.12.2
     react-day-picker: 9.6.7
     react-dom: ^19.1.0
+    recharts: 2.15.4
     sonner: ^2.0.5
     tailwind-merge: ^3.2.0
     tailwindcss: ^4.1.4
@@ -11290,12 +11291,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.509.0":
-  version: 0.509.0
-  resolution: "lucide-react@npm:0.509.0"
+"lucide-react@npm:^0.556.0":
+  version: 0.556.0
+  resolution: "lucide-react@npm:0.556.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 45e5eabf2f280994badf76bbfc815937c2cbea9b03cdea4a8642462f8052d9060d5d8f7a9c3153e58871d9ffa1094922a4b1c7ab17bad46bd0decb79165140ed
+  checksum: b90a2f53f9d8844002996c7f3f8120259a3a49f91d174a1a12402b7467e75cbeb77ec77bb48712c8ec6dbaa7a8550396a85bad29645586d4d65dd3d874109cac
   languageName: node
   linkType: hard
 
@@ -13150,7 +13151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:^2.13.3":
+"recharts@npm:2.15.4, recharts@npm:^2.13.3":
   version: 2.15.4
   resolution: "recharts@npm:2.15.4"
   dependencies:

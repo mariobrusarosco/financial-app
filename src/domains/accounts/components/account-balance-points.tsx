@@ -1,7 +1,9 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
-import { AreaChart, Card, Title, Text } from '@tremor/react';
-import { useMemo } from 'react';
+import { AreaChart, Title, Text } from '@tremor/react';
+import { useMemo, useState } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
+import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
+import type { DateRange } from 'react-day-picker';
 
 interface Props {
   title?: string;
@@ -36,10 +38,21 @@ const mapBalancePointsToChartData = (balancePoints: I_BalancePoint[]) => {
     }));
 };
 
-const EmptyBalancePoints = ({ title }: { title: string }) => {
+const EmptyBalancePoints = ({
+  title,
+  dateRange,
+  setDateRange,
+}: {
+  title: string;
+  dateRange: DateRange;
+  setDateRange: (dateRange: DateRange) => void;
+}) => {
   return (
     <div data-ui="empty-balance-points">
-      <Title>{title}</Title>
+      <div className="flex items-center justify-between mb-4">
+        <Title>{title}</Title>
+        <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
+      </div>
       <div className="flex items-center justify-center h-64 text-center">
         <div>
           <Text className="text-muted-foreground">No balance history available</Text>
@@ -52,8 +65,47 @@ const EmptyBalancePoints = ({ title }: { title: string }) => {
   );
 };
 
+const getDefaultDateRange = (): DateRange => {
+  const today = new Date();
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  return {
+    from: firstDayOfMonth,
+    to: lastDayOfMonth,
+  };
+};
+
+const formatDateForAPI = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props) => {
-  const { data: balancePoints, isLoading: isLoadingBalancePoints } = useAccountBalancePoints(slug);
+  const [dateRange, setDateRange] = useState<DateRange>(getDefaultDateRange());
+
+  const apiDateRange = useMemo(() => {
+    if (!dateRange?.from || !dateRange?.to) {
+      const defaultRange = getDefaultDateRange();
+      return {
+        startDate: formatDateForAPI(defaultRange.from!),
+        endDate: formatDateForAPI(defaultRange.to!),
+      };
+    }
+
+    return {
+      startDate: formatDateForAPI(dateRange.from),
+      endDate: formatDateForAPI(dateRange.to),
+    };
+  }, [dateRange]);
+
+  const { data: balancePoints, isLoading: isLoadingBalancePoints } = useAccountBalancePoints(
+    slug,
+    apiDateRange.startDate,
+    apiDateRange.endDate
+  );
 
   const chartData = useMemo(
     () => mapBalancePointsToChartData(balancePoints ?? []),
@@ -62,23 +114,20 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
 
   // Handle empty data
   if (!balancePoints || balancePoints.length === 0) {
-    return <EmptyBalancePoints />;
+    return <EmptyBalancePoints title={title} dateRange={dateRange} setDateRange={setDateRange} />;
   }
 
   if (isLoadingBalancePoints) {
     return <div className="flex items-center justify-center h-64 text-center">Loading...</div>;
   }
 
-  // Calculate trend information
-  const latestBalance = chartData[chartData.length - 1]?.balance || 0;
-  const previousBalance = chartData[chartData.length - 2]?.balance || latestBalance;
-  const trend = latestBalance - previousBalance;
-  const trendPercentage = previousBalance !== 0 ? (trend / previousBalance) * 100 : 0;
-
   return (
     <div data-ui="account-balance-points">
       <div className="mb-6 min-w-80">
-        <Title className="text-lg font-semibold">{title}</Title>
+        <div className="flex items-center justify-between mb-4">
+          <Title className="text-lg font-semibold">{title}</Title>
+          <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
+        </div>
         <div className="min-h-[400px] w-full">
           <AreaChart
             className="h-96 w-full"

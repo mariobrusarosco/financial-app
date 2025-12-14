@@ -162,9 +162,21 @@ const getAccountStatements = async (accountId: string): Promise<I_AccountStateme
   }
 };
 
-const getAccountBalancePoints = async (accountId: string): Promise<I_BalancePoint[]> => {
+const getAccountBalancePoints = async (
+  accountId: string,
+  startDate: string,
+  endDate: string
+): Promise<I_BalancePoint[]> => {
   try {
-    const response = await apiClient.get<I_BalancePoint[]>(`/balance_points/account/${accountId}`);
+    const response = await apiClient.get<I_BalancePoint[]>(
+      `/balance_points/${accountId}/timeline`,
+      {
+        params: {
+          start_date: startDate,
+          end_date: endDate,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching account balance points:', error);
@@ -184,3 +196,5 @@ export const accountsApi = {
   updateAccountBalance,
   getAccountBalancePoints,
 };
+
+export type { I_BalancePoint };

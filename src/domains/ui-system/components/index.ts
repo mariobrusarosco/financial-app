@@ -4,6 +4,7 @@ export * from './beta-banner';
 export * from './badge';
 export * from './button';
 export * from './calendar';
+export * from './date-range-picker';
 export * from './card';
 export * from './currency';
 export * from './dropdown-menu';

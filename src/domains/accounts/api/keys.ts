@@ -6,11 +6,11 @@ export const GET_ALL_CREDIT_CARDS_QUERY_KEY = (accountId: string) => [
   accountId,
   'credit-cards',
 ];
-export const GET_ACCOUNT_BALANCE_POINTS_QUERY_KEY = (accountId: string) => [
-  'accounts',
-  accountId,
-  'balance-points',
-];
+export const GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY = (
+  accountId: string,
+  startDate: string,
+  endDate: string
+) => ['balance-points', accountId, 'timeline', startDate, endDate];
 
 export const GET_UPLOADED_STATEMENT_QUERY_KEY = (accountId: string) => [
   'accounts',
