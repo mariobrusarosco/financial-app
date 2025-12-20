@@ -128,9 +128,9 @@ export const LoginForm = () => {
             )}
           </form.Field>
 
-          <div className="text-sm text-muted-foreground bg-muted/30 border border-border/50 p-4 rounded-lg">
+          <div className="text-sm bg-muted/50 border border-border/50 p-4 rounded-lg">
             <p className="font-medium mb-2 text-foreground">Demo Credentials:</p>
-            <div className="space-y-1 font-mono text-xs">
+            <div className="space-y-1 font-mono text-xs text-foreground/70">
               <p>Email: user@example.com</p>
               <p>Password: password123</p>
             </div>

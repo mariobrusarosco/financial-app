@@ -10,7 +10,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     <div data-ui="app" className="bg-background pt-10 h-full flex flex-col">
       <Navigation />
 
-      <main data-ui="app-container" className="flex-1">
+      <main data-ui="app-container" className="flex-1 app-container">
         {children}
       </main>
     </div>

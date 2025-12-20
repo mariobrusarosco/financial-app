@@ -43,7 +43,7 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
         </Link>
       </div>
 
-      <div className="flex gap-4 justify-between items-start  ">
+      <div className="flex gap-4 justify-between items-start">
         <AccountOverview slug={slug} />
         <Separator orientation="vertical" className="h-full w-[1px] bg-border" />
         <AccountQuickActions slug={slug} />

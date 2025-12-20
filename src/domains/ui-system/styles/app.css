@@ -125,6 +125,10 @@
   }
 }
 
+.app-container {
+  padding: 0 1rem;
+}
+
 .card-neumorphic {
   background: #1f1f1f;
   box-shadow:

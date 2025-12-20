@@ -1,8 +1,14 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
-import { AreaChart, Title, Text } from '@tremor/react';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { useMemo, useState } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/domains/ui-system/components/chart';
 import type { DateRange } from 'react-day-picker';
 
 interface Props {
@@ -10,8 +16,15 @@ interface Props {
   slug: string;
 }
 
+// Chart configuration for shadcn/ui charts
+const chartConfig = {
+  balance: {
+    label: 'Balance',
+    color: 'hsl(var(--chart-1))',
+  },
+} satisfies ChartConfig;
+
 const formatCurrency = (value: number): string => {
-  // Handle Brazilian Real (R$) formatting based on your data
   return `R$${Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -50,15 +63,15 @@ const EmptyBalancePoints = ({
   return (
     <div data-ui="empty-balance-points">
       <div className="flex items-center justify-between mb-4">
-        <Title>{title}</Title>
+        <p className="text-sm text-muted-foreground">{title}</p>
         <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
       </div>
       <div className="flex items-center justify-center h-64 text-center">
         <div>
-          <Text className="text-muted-foreground">No balance history available</Text>
-          <Text className="text-sm text-muted-foreground mt-1">
+          <p className="text-muted-foreground">No balance history available</p>
+          <p className="text-sm text-muted-foreground mt-1">
             Balance points will appear here as they are recorded
-          </Text>
+          </p>
         </div>
       </div>
     </div>
@@ -125,43 +138,77 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     <div data-ui="account-balance-points">
       <div className="mb-6 min-w-80">
         <div className="flex items-center justify-between mb-4">
-          <Title className="text-lg font-semibold">{title}</Title>
+          <p className="text-sm text-muted-foreground">{title}</p>
           <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
         </div>
-        <div className="min-h-[400px] w-full">
+        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
           <AreaChart
-            className="h-96 w-full"
+            accessibilityLayer
             data={chartData}
-            index="date"
-            categories={['balance']}
-            colors={['blue']}
-            valueFormatter={formatCurrency}
-            showLegend={false}
-            showGridLines={true}
-            curveType="monotone"
-            showXAxis={true}
-            showYAxis={false}
-            autoMinValue={false}
-            enableLegendSlider={false}
-            // yAxisWidth={100}
-            allowDecimals={true}
-            connectNulls={true}
-            showTooltip={true}
-            customTooltip={({ active, payload, label }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{`Date: ${label}`}</p>
-                    <p className="text-blue-600 dark:text-blue-400 font-semibold">
-                      {`Balance: ${formatCurrency(payload[0].value as number)}`}
-                    </p>
-                  </div>
-                );
-              }
-              return null;
+            margin={{
+              left: 12,
+              right: 12,
+              top: 12,
+              bottom: 12,
             }}
-          />
-        </div>
+          >
+            <defs>
+              <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-balance)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--color-balance)" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={value => value}
+              className="text-xs text-muted-foreground"
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={value => formatCurrency(value)}
+              width={80}
+              className="text-xs text-muted-foreground"
+            />
+            <ChartTooltip
+              cursor={{ strokeDasharray: '3 3' }}
+              content={
+                <ChartTooltipContent
+                  formatter={(value, name) => (
+                    <div className="flex items-center justify-between gap-8">
+                      <span className="text-muted-foreground">Balance</span>
+                      <span className="font-mono font-semibold text-foreground">
+                        {formatCurrency(value as number)}
+                      </span>
+                    </div>
+                  )}
+                  labelFormatter={label => (
+                    <div className="font-medium text-foreground mb-1">{label}</div>
+                  )}
+                />
+              }
+            />
+            <Area
+              dataKey="balance"
+              type="monotone"
+              fill="url(#balanceGradient)"
+              stroke="var(--color-balance)"
+              strokeWidth={2}
+              dot={false}
+              activeDot={{
+                r: 6,
+                fill: 'var(--color-balance)',
+                stroke: 'hsl(var(--background))',
+                strokeWidth: 2,
+              }}
+            />
+          </AreaChart>
+        </ChartContainer>
       </div>
     </div>
   );

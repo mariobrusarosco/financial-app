@@ -12,6 +12,7 @@ import {
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -27,6 +28,7 @@ export const TransactionsListScreen = () => {
 
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
+  const { mutate: updateTransaction } = useUpdateTransaction();
 
   const transactions = data?.data || [];
   const meta = data?.meta;
@@ -71,7 +73,7 @@ export const TransactionsListScreen = () => {
   };
 
   const handleSave = (updatedTransaction: I_TransactionResponse) => {
-    // TODO: Implement update when API is available
+    updateTransaction(updatedTransaction);
     setEditingId(null);
   };
 
@@ -226,7 +228,7 @@ export const TransactionsListScreen = () => {
                   isSelected={selectedIds.has(transaction.id)}
                   onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
                   showCheckbox={true}
-                  onEdit={handleEdit}
+                  onTriggerEditMode={handleEdit}
                   onSave={handleSave}
                   onCancel={handleCancel}
                   onDelete={handleDelete}

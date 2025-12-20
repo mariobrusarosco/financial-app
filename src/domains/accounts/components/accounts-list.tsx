@@ -11,6 +11,25 @@ import {
 import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 import { Button } from '@/domains/ui-system/components/button';
 import { Surface } from '@/domains/global/components/surface';
+import { cn } from '@/domains/ui-system/utils';
+import { Badge } from '@/domains/ui-system/components/badge';
+
+const getMovementBadge = (type: string) => {
+  switch (type) {
+    case 'cash':
+      return (
+        <Badge variant="outline" className="bg-green-200 text-green-700 border-none">
+          Cash
+        </Badge>
+      );
+    case 'savings':
+      return <Badge variant="outline">Savings</Badge>;
+    case 'credit':
+      return <Badge variant="outline">Credit</Badge>;
+    default:
+      return <Badge variant="outline">Account</Badge>;
+  }
+};
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const deleteAccount = useDeleteAccount();
@@ -19,19 +38,6 @@ const AccountCard = ({ account }: { account: I_Account }) => {
     e.preventDefault();
     e.stopPropagation();
     deleteAccount.mutate(account.id);
-  };
-
-  const getAccountIcon = (type: string) => {
-    switch (type) {
-      case 'checking':
-        return <Building2 className="h-6 w-6" />;
-      case 'savings':
-        return <PiggyBank className="h-6 w-6" />;
-      case 'credit':
-        return <CreditCard className="h-6 w-6" />;
-      default:
-        return <Building2 className="h-6 w-6" />;
-    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -43,7 +49,8 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
   return (
     <Surface
-      className="h-32 w-full flex flex-col justify-between hover:bg-accent/50 transition-colors"
+      data-ui="account-card"
+      className="h-32 w-full flex flex-col justify-between hover:bg-accent/50 transition-colors rounded-sm"
       size="sm"
       hoverable
     >
@@ -52,12 +59,13 @@ const AccountCard = ({ account }: { account: I_Account }) => {
         params={{ slug: account.id }}
         className="flex-1 flex flex-col justify-between h-full"
       >
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between font-light ">
           <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-full bg-primary/10">{getAccountIcon(account.type)}</div>
             <div className="flex-1 min-w-0 max-w-[120px]">
-              <h3 className="text-xs font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap">{account.name}</h3>
-              <p className="text-xs text-muted-foreground capitalize">{account.type}</p>
+              <h3 className="text-lg truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                {account.name}
+              </h3>
+              {getMovementBadge(account.type)}
             </div>
           </div>
           <DropdownMenu>

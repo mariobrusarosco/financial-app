@@ -18,6 +18,7 @@ import type {
   I_AccountTransactionsParams,
   I_TransactionResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
+import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 interface AccountTransactionsListProps {
   accountId: string;
@@ -37,6 +38,7 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
   const { mutate: createTransaction } = useCreateTransaction();
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
+  const { mutate: updateTransaction } = useUpdateTransaction();
 
   const {
     data: response,
@@ -87,8 +89,7 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
   };
 
   const handleSave = (updatedTransaction: I_TransactionResponse) => {
-    // For now, we'll just close the edit mode
-    // In a real implementation, you'd call an update mutation
+    updateTransaction(updatedTransaction);
     setEditingId(null);
   };
 
@@ -247,7 +248,7 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
                   isSelected={selectedIds.has(transaction.id)}
                   onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
                   showCheckbox={true}
-                  onEdit={handleEdit}
+                  onTriggerEditMode={handleEdit}
                   onSave={handleSave}
                   onCancel={handleCancel}
                   onDelete={handleDelete}
