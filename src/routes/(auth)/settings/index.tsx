@@ -1,5 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@ui-system/components/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@ui-system/components/card';
 import { Button } from '@ui-system/components/button';
 import { Separator } from '@ui-system/components/separator';
 import { Badge } from '@ui-system/components/badge';
@@ -33,9 +39,7 @@ function RouteComponent() {
             <User className="h-5 w-5" />
             Profile Information
           </CardTitle>
-          <CardDescription>
-            Your account details and preferences
-          </CardDescription>
+          <CardDescription>Your account details and preferences</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {user && (
@@ -63,9 +67,7 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <CardTitle>Account Actions</CardTitle>
-          <CardDescription>
-            Manage your account and session
-          </CardDescription>
+          <CardDescription>Manage your account and session</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -76,8 +78,8 @@ function RouteComponent() {
                   Sign out of your account on this device
                 </p>
               </div>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={handleLogout}
                 disabled={logout.isPending}
                 className="flex items-center gap-2"
@@ -94,18 +96,14 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
-          <CardDescription>
-            Customize your app experience
-          </CardDescription>
+          <CardDescription>Customize your app experience</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-medium">Theme</h3>
-                <p className="text-sm text-muted-foreground">
-                  Choose your preferred color scheme
-                </p>
+                <p className="text-sm text-muted-foreground">Choose your preferred color scheme</p>
               </div>
               <Badge variant="outline">System</Badge>
             </div>

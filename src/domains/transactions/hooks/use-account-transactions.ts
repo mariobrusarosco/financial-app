@@ -23,8 +23,8 @@ export const useAccountTransactions = (
 // Convenience hooks for common use cases
 export const useAccountTransactionsWithPagination = (
   accountId: string | undefined,
-  page: number = 1,
-  perPage: number = 20,
+  page = 1,
+  perPage = 20,
   filters?: Omit<I_AccountTransactionsParams, 'page' | 'per_page'>
 ) => {
   return useAccountTransactions(accountId, {
@@ -36,7 +36,7 @@ export const useAccountTransactionsWithPagination = (
   });
 };
 
-export const useAccountRecentTransactions = (accountId: string | undefined, limit: number = 10) => {
+export const useAccountRecentTransactions = (accountId: string | undefined, limit = 10) => {
   return useAccountTransactions(accountId, {
     page: 1,
     per_page: limit,

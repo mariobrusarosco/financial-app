@@ -8,10 +8,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 
 // Track refresh state to prevent multiple simultaneous refresh attempts
 let isRefreshing = false;
-let failedQueue: Array<{
+let failedQueue: {
   resolve: (value?: any) => void;
   reject: (error?: any) => void;
-}> = [];
+}[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
@@ -125,7 +125,12 @@ apiClient.interceptors.response.use(
       if ('response' in error && error.response) {
         // Server responded with error status
         const { status, data } = error.response as { status: number; data?: any };
-        const message = data?.message || data?.error?.message || data?.error || error.message || 'An error occurred';
+        const message =
+          data?.message ||
+          data?.error?.message ||
+          data?.error ||
+          error.message ||
+          'An error occurred';
         throw new ApiError(message, status, data?.code || data?.error?.code, data);
       } else if ('request' in error && error.request) {
         // Network error - request was made but no response received

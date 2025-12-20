@@ -33,15 +33,15 @@ Structure your data according to Tremor's requirements:
 ```tsx
 // For time-series data (balance trends, performance)
 interface TimeSeriesData {
-  date: string;           // X-axis value
-  [key: string]: number | string;  // Y-axis values
+  date: string; // X-axis value
+  [key: string]: number | string; // Y-axis values
 }
 
 // For categorical data (spending breakdown)
 interface CategoryData {
-  category: string;       // Category name
-  amount: number;         // Value
-  percentage?: number;    // Optional percentage
+  category: string; // Category name
+  amount: number; // Value
+  percentage?: number; // Optional percentage
 }
 
 // Example data
@@ -63,21 +63,20 @@ const spendingData: CategoryData[] = [
 Always format financial values consistently:
 
 ```tsx
-const formatCurrency = (value: number): string => 
+const formatCurrency = (value: number): string =>
   `$${Intl.NumberFormat('us').format(value).toString()}`;
 
-const formatPercentage = (value: number): string => 
-  `${value.toFixed(1)}%`;
+const formatPercentage = (value: number): string => `${value.toFixed(1)}%`;
 ```
 
 ### Step 4: Choose the Right Chart Type
 
-| Chart Type | Best For | Example Use Cases |
-|------------|----------|-------------------|
-| **AreaChart** | Trends over time | Account balances, portfolio growth |
-| **LineChart** | Simple trend lines | Price movements, KPI tracking |
-| **BarChart** | Comparisons | Monthly spending, account comparison |
-| **DonutChart** | Proportions | Spending categories, asset allocation |
+| Chart Type     | Best For           | Example Use Cases                     |
+| -------------- | ------------------ | ------------------------------------- |
+| **AreaChart**  | Trends over time   | Account balances, portfolio growth    |
+| **LineChart**  | Simple trend lines | Price movements, KPI tracking         |
+| **BarChart**   | Comparisons        | Monthly spending, account comparison  |
+| **DonutChart** | Proportions        | Spending categories, asset allocation |
 
 ### Step 5: Create Your Chart Component
 
@@ -92,13 +91,13 @@ function BalanceTrendChart() {
       <AreaChart
         className="h-80 mt-6"
         data={balanceData}
-        index="date"                    // X-axis field
-        categories={['checking', 'savings', 'investment']}  // Y-axis fields
-        colors={['blue', 'emerald', 'violet']}              // Line colors
-        valueFormatter={formatCurrency}                     // Format Y-axis values
-        showLegend={true}                                   // Show legend
-        showGridLines={true}                                // Show grid
-        curveType="monotone"                               // Smooth curves
+        index="date" // X-axis field
+        categories={['checking', 'savings', 'investment']} // Y-axis fields
+        colors={['blue', 'emerald', 'violet']} // Line colors
+        valueFormatter={formatCurrency} // Format Y-axis values
+        showLegend={true} // Show legend
+        showGridLines={true} // Show grid
+        curveType="monotone" // Smooth curves
       />
     </Card>
   );
@@ -116,12 +115,12 @@ function SpendingBreakdownChart() {
       <DonutChart
         className="h-60 mt-6"
         data={spendingData}
-        category="amount"           // Value field
-        index="category"            // Label field
+        category="amount" // Value field
+        index="category" // Label field
         valueFormatter={formatCurrency}
         colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
-        showLabel={true}            // Show category labels
-        showAnimation={true}        // Enable animations
+        showLabel={true} // Show category labels
+        showAnimation={true} // Enable animations
       />
     </Card>
   );
@@ -150,7 +149,7 @@ function MonthlyComparisonChart() {
         colors={['emerald', 'red', 'blue']}
         valueFormatter={formatCurrency}
         showLegend={true}
-        stack={false}               // Side-by-side bars (not stacked)
+        stack={false} // Side-by-side bars (not stacked)
       />
     </Card>
   );
@@ -179,7 +178,7 @@ function PerformanceLineChart() {
         colors={['violet', 'gray']}
         valueFormatter={formatCurrency}
         showLegend={true}
-        curveType="monotone"        // Smooth line curves
+        curveType="monotone" // Smooth line curves
       />
     </Card>
   );
@@ -195,11 +194,11 @@ import { useAccounts } from '@domains/accounts/hooks/use-accounts';
 
 function LiveBalanceChart() {
   const { data: accounts, isLoading, error } = useAccounts();
-  
+
   // Transform API data for chart consumption
   const chartData = useMemo(() => {
     if (!accounts) return [];
-    
+
     return accounts.map(account => ({
       name: account.name,
       balance: account.balance,
@@ -264,7 +263,7 @@ function InteractiveSpendingChart() {
         category="amount"
         index="category"
         valueFormatter={formatCurrency}
-        onValueChange={(value) => {
+        onValueChange={value => {
           setSelectedCategory(value?.category || null);
           setSelectedData(value || null);
         }}
@@ -290,12 +289,12 @@ function BudgetProgressChart() {
     <Card>
       <Title>Budget Progress</Title>
       <Text>Monthly spending vs budget</Text>
-      
+
       <div className="mt-6 space-y-4">
-        {budgetCategories.map((category) => {
+        {budgetCategories.map(category => {
           const percentage = (category.spent / category.budget) * 100;
           const isOverBudget = percentage > 100;
-          
+
           return (
             <div key={category.name}>
               <Flex>
@@ -339,14 +338,12 @@ function AccountMetricCard({ account }) {
           <Text>{account.name}</Text>
           <Metric>{formatCurrency(account.currentBalance)}</Metric>
         </div>
-        <Badge 
-          size="xs" 
-          color={account.changeType === 'increase' ? 'emerald' : 'red'}
-        >
-          {account.change > 0 ? '+' : ''}{formatPercentage(account.change)}
+        <Badge size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
+          {account.change > 0 ? '+' : ''}
+          {formatPercentage(account.change)}
         </Badge>
       </Flex>
-      
+
       {/* Mini trend chart */}
       <LineChart
         className="h-16 mt-4"
@@ -378,13 +375,13 @@ function ResponsiveFinancialDashboard() {
         <div className="lg:col-span-2">
           <BalanceTrendChart />
         </div>
-        
+
         {/* Sidebar chart takes full width on mobile, 1/3 on desktop */}
         <div>
           <SpendingBreakdownChart />
         </div>
       </div>
-      
+
       {/* Metric cards - responsive grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {accounts.map(account => (
@@ -402,7 +399,7 @@ function ResponsiveFinancialDashboard() {
 function AdaptiveChart() {
   return (
     <AreaChart
-      className="h-64 sm:h-80 lg:h-96"  // Responsive heights
+      className="h-64 sm:h-80 lg:h-96" // Responsive heights
       data={data}
       // ... other props
     />
@@ -485,7 +482,7 @@ function ExpenseTrendsChart() {
         categories={['food', 'transport', 'entertainment']}
         colors={['red', 'orange', 'yellow']}
         valueFormatter={formatCurrency}
-        stack={true}  // Stacked area chart
+        stack={true} // Stacked area chart
       />
     </Card>
   );
@@ -518,14 +515,14 @@ describe('BalanceTrendChart', () => {
 
 ### Chart Selection Guide
 
-| Data Type | Chart Type | Tremor Component |
-|-----------|------------|------------------|
-| Time series (single metric) | Line | `LineChart` |
-| Time series (multiple metrics) | Area | `AreaChart` |
-| Categories comparison | Bar | `BarChart` |
-| Percentage breakdown | Donut | `DonutChart` |
-| Progress tracking | Progress bar | `ProgressBar` |
-| Multiple progress items | Category bar | `CategoryBar` |
+| Data Type                      | Chart Type   | Tremor Component |
+| ------------------------------ | ------------ | ---------------- |
+| Time series (single metric)    | Line         | `LineChart`      |
+| Time series (multiple metrics) | Area         | `AreaChart`      |
+| Categories comparison          | Bar          | `BarChart`       |
+| Percentage breakdown           | Donut        | `DonutChart`     |
+| Progress tracking              | Progress bar | `ProgressBar`    |
+| Multiple progress items        | Category bar | `CategoryBar`    |
 
 ### Essential Props
 
@@ -542,14 +539,14 @@ interface CommonChartProps {
 
 // Time-series charts (Area, Line, Bar)
 interface TimeSeriesProps extends CommonChartProps {
-  index: string;              // X-axis field name
-  categories: string[];       // Y-axis field names
+  index: string; // X-axis field name
+  categories: string[]; // Y-axis field names
 }
 
 // Categorical charts (Donut)
 interface CategoricalProps extends CommonChartProps {
-  index: string;              // Label field name
-  category: string;           // Value field name
+  index: string; // Label field name
+  category: string; // Value field name
 }
 ```
 
@@ -559,7 +556,7 @@ interface CategoricalProps extends CommonChartProps {
 // Financial color palette
 const colors = {
   income: 'emerald',
-  expenses: 'red', 
+  expenses: 'red',
   savings: 'blue',
   investment: 'violet',
   checking: 'blue',

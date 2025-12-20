@@ -21,9 +21,9 @@ function ReactAriaSelectDemo() {
   const [selectedCurrency, setSelectedCurrency] = React.useState<string | number | null>('USD');
 
   const accounts: Account[] = [
-    { id: '1', name: 'Main Checking', type: 'Checking', balance: 5420.50 },
+    { id: '1', name: 'Main Checking', type: 'Checking', balance: 5420.5 },
     { id: '2', name: 'Savings Account', type: 'Savings', balance: 12300.75 },
-    { id: '3', name: 'Investment Portfolio', type: 'Investment', balance: 45600.00 },
+    { id: '3', name: 'Investment Portfolio', type: 'Investment', balance: 45600.0 },
     { id: '4', name: 'Emergency Fund', type: 'Savings', balance: 8900.25 },
   ];
 
@@ -43,7 +43,7 @@ function ReactAriaSelectDemo() {
     },
     {
       key: 'savings',
-      title: 'Savings Accounts', 
+      title: 'Savings Accounts',
       items: accounts.filter(acc => acc.type === 'Savings'),
     },
     {
@@ -58,7 +58,8 @@ function ReactAriaSelectDemo() {
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">React Aria Select Components Demo</h1>
         <p className="text-muted-foreground">
-          Demonstrating accessible, enhanced Select components using React Aria with Tailwind styling.
+          Demonstrating accessible, enhanced Select components using React Aria with Tailwind
+          styling.
         </p>
       </div>
 
@@ -72,9 +73,9 @@ function ReactAriaSelectDemo() {
             items={currencies}
             selectedKey={selectedCurrency}
             onSelectionChange={setSelectedCurrency}
-            getKey={(currency) => currency.code}
-            getLabel={(currency) => `${currency.code} - ${currency.name}`}
-            getDescription={(currency) => `Symbol: ${currency.symbol}`}
+            getKey={currency => currency.code}
+            getLabel={currency => `${currency.code} - ${currency.name}`}
+            getDescription={currency => `Symbol: ${currency.symbol}`}
           />
           {selectedCurrency && (
             <p className="text-sm text-muted-foreground">
@@ -93,11 +94,9 @@ function ReactAriaSelectDemo() {
             sections={accountSections}
             selectedKey={selectedAccount}
             onSelectionChange={setSelectedAccount}
-            getKey={(account) => account.id}
-            getLabel={(account) => account.name}
-            getDescription={(account) => 
-              `${account.type} • $${account.balance.toLocaleString()}`
-            }
+            getKey={account => account.id}
+            getLabel={account => account.name}
+            getDescription={account => `${account.type} • $${account.balance.toLocaleString()}`}
           />
           {selectedAccount && (
             <p className="text-sm text-muted-foreground">
@@ -115,16 +114,16 @@ function ReactAriaSelectDemo() {
             label="Small Size"
             size="sm"
             items={currencies.slice(0, 3)}
-            getKey={(currency) => currency.code}
-            getLabel={(currency) => currency.name}
+            getKey={currency => currency.code}
+            getLabel={currency => currency.name}
             placeholder="Small select..."
           />
           <ReactAriaSelect
             label="Default Size"
             size="default"
             items={currencies.slice(0, 3)}
-            getKey={(currency) => currency.code}
-            getLabel={(currency) => currency.name}
+            getKey={currency => currency.code}
+            getLabel={currency => currency.name}
             placeholder="Default select..."
           />
         </div>
@@ -136,8 +135,8 @@ function ReactAriaSelectDemo() {
         <ReactAriaSelect
           label="Disabled Select"
           items={currencies}
-          getKey={(currency) => currency.code}
-          getLabel={(currency) => currency.name}
+          getKey={currency => currency.code}
+          getLabel={currency => currency.name}
           placeholder="This select is disabled"
           isDisabled
         />

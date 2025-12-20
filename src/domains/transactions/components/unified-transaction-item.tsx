@@ -133,7 +133,7 @@ export const UnifiedTransactionItem = ({
         />
       );
     }
-    
+
     return (
       <ViewableTransaction
         transaction={transaction}
@@ -236,7 +236,6 @@ export const UnifiedTransactionItem = ({
   );
 };
 
-
 interface ViewableTransactionProps {
   transaction: I_TransactionResponse;
   isSelected: boolean;
@@ -301,7 +300,7 @@ const ViewableTransaction = ({
         className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
         disabled={isIgnored}
       />
-      
+
       <div className="p-1.5 rounded-full bg-primary/10 flex-shrink-0">
         <IconComponent className={getIconSizeClass('sm')} />
       </div>
@@ -329,7 +328,7 @@ const ViewableTransaction = ({
           <Button
             size="sm"
             variant="ghost"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onTriggerEditMode(transaction);
             }}

@@ -42,7 +42,7 @@ export const InvestmentBalanceTable = ({
     investmentId ? { investment_id: investmentId } : undefined
   );
 
-  const formatCurrency = (amount: string, showSign: boolean = false) => {
+  const formatCurrency = (amount: string, showSign = false) => {
     const numericAmount = parseFloat(amount);
     const formatted = new Intl.NumberFormat('en-US', {
       style: 'currency',

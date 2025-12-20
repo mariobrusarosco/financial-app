@@ -139,14 +139,17 @@ financial-app/
 For consistent API integration across all domains, follow this standardized pattern:
 
 **Single Resource:**
+
 - `I_[Resource]Response` - Data FROM backend (GET /resource/:id)
 - `I_[Resource]Payload` - Data TO backend (POST/PUT /resource)
 
 **Collections:**
+
 - `I_[Resources]Response` - Collection FROM backend (GET /resources)
 - `I_[Resources]Payload` - Collection TO backend (bulk operations)
 
 **Examples:**
+
 - `I_TransactionResponse` - Single transaction from API
 - `I_TransactionPayload` - Single transaction to API
 - `I_TransactionsResponse` - Transaction list from API

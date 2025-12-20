@@ -4,9 +4,9 @@ import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { PlannerCTA } from '@/domains/global/components/planner-cta';
 import { AuthGuard } from '@/domains/auth/components/auth-guard';
 
-type AuthSearchParams = {
+interface AuthSearchParams {
   drawer?: 'account-create' | 'broker-create' | 'transaction-create';
-};
+}
 
 export const Route = createFileRoute('/(auth)')({
   component: AuthLayoutComponent,
