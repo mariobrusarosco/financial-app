@@ -18,14 +18,14 @@ Tremor React is our chosen chart library for building beautiful, accessible fina
 
 ### Chart Types Available
 
-| Chart Type | Use Cases | Best For |
-|------------|-----------|----------|
-| **AreaChart** | Balance trends, portfolio growth | Time-series financial data |
-| **LineChart** | Price movements, KPI tracking | Trend analysis |
-| **BarChart** | Monthly comparisons, category breakdown | Comparative analysis |
-| **DonutChart** | Spending categories, asset allocation | Percentage distributions |
-| **CategoryBar** | Budget progress, goal tracking | Progress indicators |
-| **ProgressBar** | Savings goals, debt payoff | Single metric progress |
+| Chart Type      | Use Cases                               | Best For                   |
+| --------------- | --------------------------------------- | -------------------------- |
+| **AreaChart**   | Balance trends, portfolio growth        | Time-series financial data |
+| **LineChart**   | Price movements, KPI tracking           | Trend analysis             |
+| **BarChart**    | Monthly comparisons, category breakdown | Comparative analysis       |
+| **DonutChart**  | Spending categories, asset allocation   | Percentage distributions   |
+| **CategoryBar** | Budget progress, goal tracking          | Progress indicators        |
+| **ProgressBar** | Savings goals, debt payoff              | Single metric progress     |
 
 ## Installation & Setup
 
@@ -80,7 +80,7 @@ function BalanceChart() {
         index="date"
         categories={['checking', 'savings']}
         colors={['blue', 'emerald']}
-        valueFormatter={(value) => formatCurrency(value)}
+        valueFormatter={value => formatCurrency(value)}
       />
     </Card>
   );
@@ -92,14 +92,14 @@ function BalanceChart() {
 Always use consistent currency formatting:
 
 ```tsx
-const formatCurrency = (value: number): string => 
+const formatCurrency = (value: number): string =>
   `$${Intl.NumberFormat('us').format(value).toString()}`;
 
 // Usage in charts
 <AreaChart
   valueFormatter={formatCurrency}
   // ... other props
-/>
+/>;
 ```
 
 ### Color Scheme
@@ -118,10 +118,7 @@ const financialColors = {
 };
 
 // Usage
-<BarChart
-  colors={['emerald', 'red', 'blue']}
-  categories={['income', 'expenses', 'savings']}
-/>
+<BarChart colors={['emerald', 'red', 'blue']} categories={['income', 'expenses', 'savings']} />;
 ```
 
 ## Financial Chart Examples
@@ -250,10 +247,10 @@ function BudgetTracker() {
     <Card>
       <Title>Budget Progress</Title>
       <div className="mt-6 space-y-4">
-        {categories.map((category) => {
+        {categories.map(category => {
           const percentage = (category.spent / category.budget) * 100;
           const isOverBudget = percentage > 100;
-          
+
           return (
             <div key={category.name}>
               <Flex>
@@ -285,10 +282,10 @@ import { useAccounts } from '@domains/accounts/hooks/use-accounts';
 
 function LiveBalanceChart() {
   const { data: accounts, isLoading } = useAccounts();
-  
+
   const chartData = useMemo(() => {
     if (!accounts) return [];
-    
+
     return accounts.map(account => ({
       name: account.name,
       balance: account.balance,
@@ -329,18 +326,14 @@ function InteractiveSpendingChart() {
   return (
     <Card>
       <Title>Spending Analysis</Title>
-      {selectedCategory && (
-        <Text className="mt-2">
-          Selected: {selectedCategory}
-        </Text>
-      )}
+      {selectedCategory && <Text className="mt-2">Selected: {selectedCategory}</Text>}
       <DonutChart
         className="h-60 mt-6"
         data={spendingData}
         category="amount"
         index="category"
         valueFormatter={formatCurrency}
-        onValueChange={(value) => setSelectedCategory(value?.category || null)}
+        onValueChange={value => setSelectedCategory(value?.category || null)}
       />
     </Card>
   );
@@ -388,7 +381,7 @@ const customColors = {
 <AreaChart
   colors={[customColors.brand, customColors.success]}
   // ... other props
-/>
+/>;
 ```
 
 ### Dark Mode Support
@@ -418,9 +411,7 @@ function StyledChart() {
   return (
     <Card className="border-l-4 border-l-blue-500 shadow-lg">
       <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-t">
-        <Title className="text-blue-900 dark:text-blue-100">
-          Investment Performance
-        </Title>
+        <Title className="text-blue-900 dark:text-blue-100">Investment Performance</Title>
       </div>
       <AreaChart
         className="h-80 mt-4"
@@ -440,18 +431,19 @@ function StyledChart() {
 const chartData = useMemo(() => {
   return rawTransactions
     .filter(tx => tx.date >= startDate)
-    .reduce((acc, tx) => {
-      const month = format(tx.date, 'MMM yyyy');
-      acc[month] = (acc[month] || 0) + tx.amount;
-      return acc;
-    }, {} as Record<string, number>);
+    .reduce(
+      (acc, tx) => {
+        const month = format(tx.date, 'MMM yyyy');
+        acc[month] = (acc[month] || 0) + tx.amount;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 }, [rawTransactions, startDate]);
 
 // Use React.memo for expensive chart components
 const ExpensiveChart = React.memo(function ExpensiveChart({ data }) {
-  return (
-    <AreaChart data={data} /* ... props */ />
-  );
+  return <AreaChart data={data} /* ... props */ />;
 });
 ```
 
@@ -520,7 +512,7 @@ it('displays real account data in chart', async () => {
   });
 
   render(<LiveBalanceChart />);
-  
+
   await waitFor(() => {
     expect(screen.getByText('Main Checking')).toBeInTheDocument();
   });
@@ -560,13 +552,8 @@ function ChartWithErrorHandling({ data, error }) {
     return (
       <Card>
         <div className="text-center py-12">
-          <Text className="text-red-600">
-            Failed to load chart data
-          </Text>
-          <Button 
-            className="mt-4" 
-            onClick={() => window.location.reload()}
-          >
+          <Text className="text-red-600">Failed to load chart data</Text>
+          <Button className="mt-4" onClick={() => window.location.reload()}>
             Retry
           </Button>
         </div>
@@ -578,9 +565,7 @@ function ChartWithErrorHandling({ data, error }) {
     return (
       <Card>
         <div className="text-center py-12">
-          <Text className="text-gray-600">
-            No data available for this period
-          </Text>
+          <Text className="text-gray-600">No data available for this period</Text>
         </div>
       </Card>
     );
@@ -601,10 +586,10 @@ function ChartWithErrorHandling({ data, error }) {
 ```tsx
 // Always use consistent data structures
 interface ChartDataPoint {
-  date: string;          // Use ISO date strings
-  value: number;         // Always numeric values
-  category?: string;     // Optional categorical data
-  metadata?: object;     // Additional context
+  date: string; // Use ISO date strings
+  value: number; // Always numeric values
+  category?: string; // Optional categorical data
+  metadata?: object; // Additional context
 }
 ```
 
@@ -613,10 +598,10 @@ interface ChartDataPoint {
 ```tsx
 // Use color-blind friendly palettes
 const accessibleColors = [
-  'blue',      // Safe for all color vision types
-  'orange',    // High contrast with blue
-  'emerald',   // Good contrast
-  'violet',    // Distinct from above
+  'blue', // Safe for all color vision types
+  'orange', // High contrast with blue
+  'emerald', // Good contrast
+  'violet', // Distinct from above
 ];
 ```
 
@@ -628,7 +613,7 @@ function ResponsiveChart() {
   return (
     <Card>
       <AreaChart
-        className="h-60 sm:h-80 lg:h-96"  // Responsive heights
+        className="h-60 sm:h-80 lg:h-96" // Responsive heights
         // ... other props
       />
     </Card>
@@ -680,9 +665,9 @@ function ProfiledChart() {
 
 ```tsx
 // Before (Chart.js)
-<Line 
-  data={chartData} 
-  options={chartOptions} 
+<Line
+  data={chartData}
+  options={chartOptions}
 />
 
 // After (Tremor)
@@ -699,15 +684,17 @@ function ProfiledChart() {
 ### Common Issues
 
 1. **Charts not rendering**
+
    ```tsx
    // Ensure data is properly formatted
    const data = accounts.map(account => ({
-     name: account.name,     // String index
+     name: account.name, // String index
      balance: Number(account.balance), // Numeric value
    }));
    ```
 
 2. **Currency formatting issues**
+
    ```tsx
    // Use consistent number formatting
    const formatCurrency = (value: number): string => {
@@ -737,24 +724,32 @@ function ProfiledChart() {
 
 ### Most Common Chart Types
 
-| Chart | Import | Key Props |
-|-------|--------|-----------|
-| Area | `import { AreaChart } from '@tremor/react'` | `data`, `index`, `categories`, `colors` |
-| Bar | `import { BarChart } from '@tremor/react'` | `data`, `index`, `categories`, `colors` |
-| Line | `import { LineChart } from '@tremor/react'` | `data`, `index`, `categories`, `colors` |
-| Donut | `import { DonutChart } from '@tremor/react'` | `data`, `index`, `category`, `colors` |
+| Chart | Import                                       | Key Props                               |
+| ----- | -------------------------------------------- | --------------------------------------- |
+| Area  | `import { AreaChart } from '@tremor/react'`  | `data`, `index`, `categories`, `colors` |
+| Bar   | `import { BarChart } from '@tremor/react'`   | `data`, `index`, `categories`, `colors` |
+| Line  | `import { LineChart } from '@tremor/react'`  | `data`, `index`, `categories`, `colors` |
+| Donut | `import { DonutChart } from '@tremor/react'` | `data`, `index`, `category`, `colors`   |
 
 ### Essential Imports
 
 ```tsx
 import {
   // Charts
-  AreaChart, BarChart, LineChart, DonutChart,
+  AreaChart,
+  BarChart,
+  LineChart,
+  DonutChart,
   // Layout
-  Card, Title, Text, Metric, Flex,
+  Card,
+  Title,
+  Text,
+  Metric,
+  Flex,
   // Progress
-  ProgressBar, CategoryBar,
+  ProgressBar,
+  CategoryBar,
   // Styling
-  Badge
+  Badge,
 } from '@tremor/react';
 ```

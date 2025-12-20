@@ -17,10 +17,7 @@ export const creditCardApi = {
     const response = await apiClient.post<I_CreateCreditCardResponse>('/credit_cards', data);
     return response.data;
   },
-  parseInvoicePdf: async (
-    formData: FormData,
-    creditCardId: string
-  ): Promise<any> => {
+  parseInvoicePdf: async (formData: FormData, creditCardId: string): Promise<any> => {
     const response = await apiClient.post<any>(
       `/credit_cards/${creditCardId}/invoices/parse-pdf`,
       formData,

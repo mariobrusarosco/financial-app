@@ -22,7 +22,7 @@ interface EditTransactionProps {
 export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransactionProps) => {
   const { data: accounts } = useAccounts();
   const { data: creditCards } = useCreditCards(undefined);
-  
+
   const form = useForm({
     defaultValues: {
       ...transaction,
@@ -152,10 +152,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
                 <label htmlFor={field.name} className="text-xs font-medium text-gray-700">
                   Date
                 </label>
-                <TransactionDatePicker 
-                  date={field.state.value} 
-                  setDate={field.handleChange}
-                />
+                <TransactionDatePicker date={field.state.value} setDate={field.handleChange} />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive">{field.state.meta.errors.join(', ')}</p>
                 )}
@@ -179,19 +176,27 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="expense" id="edit-expense" />
-                    <Label htmlFor="edit-expense" className="text-xs">Expense</Label>
+                    <Label htmlFor="edit-expense" className="text-xs">
+                      Expense
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="income" id="edit-income" />
-                    <Label htmlFor="edit-income" className="text-xs">Income</Label>
+                    <Label htmlFor="edit-income" className="text-xs">
+                      Income
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="investment" id="edit-investment" />
-                    <Label htmlFor="edit-investment" className="text-xs">Investment</Label>
+                    <Label htmlFor="edit-investment" className="text-xs">
+                      Investment
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="transfer" id="edit-transfer" />
-                    <Label htmlFor="edit-transfer" className="text-xs">Transfer</Label>
+                    <Label htmlFor="edit-transfer" className="text-xs">
+                      Transfer
+                    </Label>
                   </div>
                 </RadioGroup>
                 {field.state.meta.errors.length > 0 && (

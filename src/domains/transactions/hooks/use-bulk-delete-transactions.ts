@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { transactionsApi } from '../api/transactions.api';
 import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
+import { GET_ALL_TRANSACTIONS_QUERY_KEY } from '../api/keys';
 
 export const useBulkDeleteTransactions = () => {
   const queryClient = useQueryClient();
@@ -14,7 +15,7 @@ export const useBulkDeleteTransactions = () => {
 
       // Invalidate transaction queries - using base key matches all variations
       void queryClient.invalidateQueries({
-        queryKey: ['account-transactions-paginated'],
+        queryKey: GET_ALL_TRANSACTIONS_QUERY_KEY(),
       });
     },
     onError: error => {

@@ -7,6 +7,7 @@ import type {
   I_BulkTransactionRequest,
   I_AccountTransactionsParams,
   I_AccountTransactionsResponse,
+  I_TransactionResponse,
 } from '../types/types-and-interfaces';
 
 export const transactionsApi = {
@@ -84,4 +85,14 @@ export const transformFormToBulkRequest = (
     movement_type: transaction.type,
     category: transaction.category || undefined,
   }));
+};
+
+export const updateTransaction = async (
+  transaction: I_TransactionResponse
+): Promise<I_TransactionResponse> => {
+  const response = await apiClient.patch<I_TransactionResponse>(
+    `/transactions/${transaction.id}`,
+    transaction
+  );
+  return response.data;
 };

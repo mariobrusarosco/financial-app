@@ -86,14 +86,17 @@ domain-name/
 For consistent API integration, follow this pattern:
 
 **Single Resource:**
+
 - `I_[Resource]Response` - Data FROM backend (GET /resource/:id)
 - `I_[Resource]Payload` - Data TO backend (POST/PUT /resource)
 
 **Collections:**
+
 - `I_[Resources]Response` - Collection FROM backend (GET /resources)
 - `I_[Resources]Payload` - Collection TO backend (bulk operations)
 
 **Examples:**
+
 - `I_TransactionResponse` - Single transaction from API
 - `I_TransactionPayload` - Single transaction to API
 - `I_TransactionsResponse` - Transaction list from API
@@ -146,9 +149,11 @@ For consistent API integration, follow this pattern:
 When setting up this project for the first time:
 
 1. **Enable Corepack** (one-time setup per machine):
+
    ```bash
    corepack enable
    ```
+
    This ensures all developers use the exact Yarn version specified in `package.json` (3.8.7), preventing lockfile conflicts on CI/CD platforms like Netlify.
 
 2. **Install dependencies**:

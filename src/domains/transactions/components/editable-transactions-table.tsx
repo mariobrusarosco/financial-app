@@ -88,7 +88,9 @@ export const EditableTransactionsTable = ({
               <TableHead className="w-[50px]">
                 <input
                   type="checkbox"
-                  checked={selectedTransactions.size === transactions.length && transactions.length > 0}
+                  checked={
+                    selectedTransactions.size === transactions.length && transactions.length > 0
+                  }
                   onChange={e => {
                     if (e.target.checked) {
                       setSelectedTransactions(new Set(transactions.map(t => t.id)));

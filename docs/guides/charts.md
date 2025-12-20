@@ -22,6 +22,7 @@ npx shadcn@latest add chart
 ```
 
 This installs:
+
 - `recharts` package (v2.15.4)
 - Chart components in `src/domains/ui-system/components/chart.tsx`
 
@@ -45,6 +46,7 @@ A speedometer-style gauge chart perfect for financial visualizations.
 **Location:** `src/domains/ui-system/components/gauge-chart.tsx`
 
 **Use Cases:**
+
 - Budget tracking (spent vs. limit)
 - Credit card utilization (used vs. available)
 - Savings goals (current vs. target)
@@ -54,7 +56,7 @@ A speedometer-style gauge chart perfect for financial visualizations.
 **Basic Example:**
 
 ```tsx
-import { GaugeChart } from '@ui-system/components/gauge-chart'
+import { GaugeChart } from '@ui-system/components/gauge-chart';
 
 function BudgetGauge() {
   return (
@@ -64,24 +66,24 @@ function BudgetGauge() {
       label="Monthly Budget"
       valueFormatter={v => `$${v.toLocaleString()}`}
     />
-  )
+  );
 }
 ```
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | required | Current value (e.g., 750 for $750 spent) |
-| `max` | `number` | required | Maximum value (e.g., 1000 for $1000 budget) |
-| `label` | `string` | `'Progress'` | Label to display in the center |
-| `color` | `string` | `'hsl(var(--chart-1))'` | Color of the gauge arc |
-| `valueFormatter` | `(value: number) => string` | `(v) => v.toString()` | Format function for displaying values |
-| `percentageFormatter` | `(percentage: number) => string` | `(p) => \`${p}%\`` | Format function for displaying percentage |
-| `startAngle` | `number` | `90` | Start angle (0=top, 90=right, 180=bottom, 270=left) |
-| `endAngle` | `number` | `-180` | End angle (creates speedometer-style semi-circle) |
-| `className` | `string` | - | Additional CSS classes for the container |
-| `children` | `ReactNode` | - | Additional content to display below the percentage |
+| Prop                  | Type                             | Default                 | Description                                         |
+| --------------------- | -------------------------------- | ----------------------- | --------------------------------------------------- |
+| `value`               | `number`                         | required                | Current value (e.g., 750 for $750 spent)            |
+| `max`                 | `number`                         | required                | Maximum value (e.g., 1000 for $1000 budget)         |
+| `label`               | `string`                         | `'Progress'`            | Label to display in the center                      |
+| `color`               | `string`                         | `'hsl(var(--chart-1))'` | Color of the gauge arc                              |
+| `valueFormatter`      | `(value: number) => string`      | `(v) => v.toString()`   | Format function for displaying values               |
+| `percentageFormatter` | `(percentage: number) => string` | `(p) => \`${p}%\``      | Format function for displaying percentage           |
+| `startAngle`          | `number`                         | `90`                    | Start angle (0=top, 90=right, 180=bottom, 270=left) |
+| `endAngle`            | `number`                         | `-180`                  | End angle (creates speedometer-style semi-circle)   |
+| `className`           | `string`                         | -                       | Additional CSS classes for the container            |
+| `children`            | `ReactNode`                      | -                       | Additional content to display below the percentage  |
 
 **Advanced Example:**
 
@@ -102,13 +104,7 @@ function BudgetGauge() {
 
 ```tsx
 // For a complete circular gauge instead of speedometer
-<GaugeChart
-  value={75}
-  max={100}
-  label="Portfolio Diversity"
-  startAngle={0}
-  endAngle={360}
-/>
+<GaugeChart value={75} max={100} label="Portfolio Diversity" startAngle={0} endAngle={360} />
 ```
 
 ## Using Recharts Directly
@@ -121,21 +117,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from '@ui-system/components/chart'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+} from '@ui-system/components/chart';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 const chartData = [
   { month: 'Jan', revenue: 1000 },
   { month: 'Feb', revenue: 1500 },
   { month: 'Mar', revenue: 1200 },
-]
+];
 
 const chartConfig = {
   revenue: {
     label: 'Revenue',
     color: 'hsl(var(--chart-1))',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function RevenueChart() {
   return (
@@ -147,7 +143,7 @@ export function RevenueChart() {
         <Bar dataKey="revenue" fill="var(--color-revenue)" />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }
 ```
 
@@ -170,7 +166,7 @@ const chartConfig = {
     color: 'hsl(var(--chart-3))',
     icon: SavingsIcon, // Optional icon component
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 ## Theme Colors
@@ -178,11 +174,7 @@ const chartConfig = {
 Charts automatically use theme colors defined in your CSS:
 
 ```css
---chart-1: hsl(...)
---chart-2: hsl(...)
---chart-3: hsl(...)
---chart-4: hsl(...)
---chart-5: hsl(...)
+--chart-1: hsl(...) --chart-2: hsl(...) --chart-3: hsl(...) --chart-4: hsl(...) --chart-5: hsl(...);
 ```
 
 These automatically switch for dark mode.
@@ -200,6 +192,7 @@ All charts are responsive by default using `ResponsiveContainer` from Recharts. 
 ## Accessibility
 
 Charts include accessibility features:
+
 - Screen reader support via ARIA labels
 - Keyboard navigation
 - High contrast mode support

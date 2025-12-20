@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calendar, Tag, CreditCard, Wallet, Edit, Trash2, Save, X } from 'lucide-react';
+import React from 'react';
+import { Calendar, Tag, CreditCard, Wallet, Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import { Button } from '@/domains/ui-system/components/button';
 import { Surface } from '@/domains/global/components/surface';
@@ -14,7 +14,6 @@ import {
   getMovementTypeLabel,
   getMovementTypeColor,
 } from '@/domains/transactions/utils/transaction-formatting';
-import { CategorySelector } from './category-selector';
 import { EditTransaction } from './edit-transaction';
 
 interface UnifiedTransactionItemProps {
@@ -63,18 +62,6 @@ export const UnifiedTransactionItem = ({
   showCheckbox = false,
   className,
 }: UnifiedTransactionItemProps) => {
-  const [editForm, setEditForm] = useState<Partial<I_TransactionResponse>>(transaction);
-
-  const handleSave = () => {
-    onSave?.(editForm as I_TransactionResponse);
-    setEditForm(transaction);
-  };
-
-  const handleCancel = () => {
-    setEditForm(transaction);
-    onCancel?.();
-  };
-
   // Format transaction data
   const IconComponent = getTransactionIconComponent(
     transaction.category,
@@ -135,28 +122,6 @@ export const UnifiedTransactionItem = ({
     </div>
   );
 
-  // Edit Actions Component
-  const EditActions = () => (
-    <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={handleSave}
-        className="h-6 w-6 p-0 hover:bg-green-100 hover:text-green-700"
-      >
-        <Save className="h-3 w-3" />
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={handleCancel}
-        className="h-6 w-6 p-0 hover:bg-gray-100 hover:text-gray-700"
-      >
-        <X className="h-3 w-3" />
-      </Button>
-    </div>
-  );
-
   // Compact Mode
   if (mode === 'compact') {
     if (isEditing) {
@@ -168,7 +133,7 @@ export const UnifiedTransactionItem = ({
         />
       );
     }
-    
+
     return (
       <ViewableTransaction
         transaction={transaction}
@@ -184,6 +149,16 @@ export const UnifiedTransactionItem = ({
   }
 
   // Default Mode (Auto-Editable)
+  if (isEditing) {
+    return (
+      <EditTransaction
+        transaction={transaction}
+        onSave={onSave || (() => {})}
+        onCancel={onCancel || (() => {})}
+      />
+    );
+  }
+
   return (
     <Surface
       data-ui="unified-transaction-item"
@@ -255,12 +230,11 @@ export const UnifiedTransactionItem = ({
           <span className="text-xs text-muted-foreground">{formatDateLong(transaction.date)}</span>
         </div>
 
-        {isEditing ? <EditActions /> : <HoverActions />}
+        <HoverActions />
       </div>
     </Surface>
   );
 };
-
 
 interface ViewableTransactionProps {
   transaction: I_TransactionResponse;
@@ -326,7 +300,7 @@ const ViewableTransaction = ({
         className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
         disabled={isIgnored}
       />
-      
+
       <div className="p-1.5 rounded-full bg-primary/10 flex-shrink-0">
         <IconComponent className={getIconSizeClass('sm')} />
       </div>
@@ -354,7 +328,7 @@ const ViewableTransaction = ({
           <Button
             size="sm"
             variant="ghost"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onTriggerEditMode(transaction);
             }}

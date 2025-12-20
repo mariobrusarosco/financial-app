@@ -12,8 +12,11 @@ export const useEditableCreditCardTransactions = ({
   brokerId?: string;
 }) => {
   console.log('💾 useEditableCreditCardTransactions - invoice:', invoice);
-  console.log('💾 useEditableCreditCardTransactions - raw transactions:', invoice?.raw_invoice?.transactions);
-  
+  console.log(
+    '💾 useEditableCreditCardTransactions - raw transactions:',
+    invoice?.raw_invoice?.transactions
+  );
+
   const [editableTransactions, setEditableTransactions] = useState<I_TransactionResponse[]>(
     invoice?.raw_invoice?.transactions?.map((transaction, index) => ({
       id: index.toString(),
@@ -31,7 +34,7 @@ export const useEditableCreditCardTransactions = ({
       updated_at: new Date().toISOString(),
     })) || []
   );
-  
+
   const [selectedTransactions, setSelectedTransactions] = useState(new Set<string>());
   const [ignoredTransactions, setIgnoredTransactions] = useState(new Set<string>());
   const [transactionInEditMode, setTransactionInEditMode] = useState<I_TransactionResponse | null>(

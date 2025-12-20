@@ -29,11 +29,11 @@ interface ReactAriaSelectProps<T extends object> {
   isDisabled?: boolean;
   className?: string;
   size?: 'sm' | 'default';
-  sections?: Array<{
+  sections?: {
     key: string | number;
     title: string;
     items: T[];
-  }>;
+  }[];
 }
 
 function ReactAriaSelect<T extends object>({
@@ -58,16 +58,14 @@ function ReactAriaSelect<T extends object>({
       className={cn('group flex flex-col gap-1', className)}
     >
       {label && (
-        <Label className="text-sm font-medium text-foreground cursor-default">
-          {label}
-        </Label>
+        <Label className="text-sm font-medium text-foreground cursor-default">{label}</Label>
       )}
-      
+
       <Button
         className={cn(
           // Base styles
           'relative flex items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none',
-          // Focus styles  
+          // Focus styles
           'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
           // Hover styles
           'hover:bg-accent/50',
@@ -89,13 +87,13 @@ function ReactAriaSelect<T extends object>({
             return selectedText;
           }}
         </SelectValue>
-        <ChevronDownIcon 
-          className="size-4 opacity-50 transition-transform group-data-[open]:rotate-180" 
-          aria-hidden="true" 
+        <ChevronDownIcon
+          className="size-4 opacity-50 transition-transform group-data-[open]:rotate-180"
+          aria-hidden="true"
         />
       </Button>
 
-      <Popover 
+      <Popover
         className={cn(
           // Base popover styles
           'min-w-[var(--trigger-width)] bg-popover text-popover-foreground rounded-md border shadow-md',
@@ -114,13 +112,13 @@ function ReactAriaSelect<T extends object>({
         <ListBox className="max-h-72 overflow-auto p-1">
           {sections ? (
             <Collection items={sections}>
-              {(section) => (
+              {section => (
                 <Section key={section.key}>
                   <Header className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
                     {section.title}
                   </Header>
                   <Collection items={section.items}>
-                    {(item) => (
+                    {item => (
                       <ListBoxItem
                         key={getKey(item)}
                         id={getKey(item)}
@@ -139,10 +137,7 @@ function ReactAriaSelect<T extends object>({
                         <div className="flex flex-1 flex-col gap-0.5">
                           <Text slot="label">{getLabel(item)}</Text>
                           {getDescription && (
-                            <Text 
-                              slot="description" 
-                              className="text-xs text-muted-foreground"
-                            >
+                            <Text slot="description" className="text-xs text-muted-foreground">
                               {getDescription(item)}
                             </Text>
                           )}
@@ -158,7 +153,7 @@ function ReactAriaSelect<T extends object>({
             </Collection>
           ) : (
             <Collection items={items}>
-              {(item) => (
+              {item => (
                 <ListBoxItem
                   key={getKey(item)}
                   id={getKey(item)}
@@ -177,10 +172,7 @@ function ReactAriaSelect<T extends object>({
                   <div className="flex flex-1 flex-col gap-0.5">
                     <Text slot="label">{getLabel(item)}</Text>
                     {getDescription && (
-                      <Text 
-                        slot="description" 
-                        className="text-xs text-muted-foreground"
-                      >
+                      <Text slot="description" className="text-xs text-muted-foreground">
                         {getDescription(item)}
                       </Text>
                     )}

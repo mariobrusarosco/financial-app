@@ -38,8 +38,8 @@ export const useAllInvestmentBalances = (params?: I_InvestmentBalanceHistoryPara
 // Convenience hooks for common use cases
 export const useInvestmentBalanceHistoryWithPagination = (
   investmentId: string | undefined,
-  page: number = 1,
-  perPage: number = 20,
+  page = 1,
+  perPage = 20,
   filters?: Omit<I_InvestmentBalanceHistoryParams, 'page' | 'per_page'>
 ) => {
   return useInvestmentBalanceHistory(investmentId, {
@@ -52,8 +52,8 @@ export const useInvestmentBalanceHistoryWithPagination = (
 };
 
 export const useAllInvestmentBalancesWithPagination = (
-  page: number = 1,
-  perPage: number = 20,
+  page = 1,
+  perPage = 20,
   filters?: Omit<I_InvestmentBalanceHistoryParams, 'page' | 'per_page'>
 ) => {
   return useAllInvestmentBalances({

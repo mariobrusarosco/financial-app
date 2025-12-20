@@ -34,7 +34,7 @@ export const CategorySelector = ({
   size = 'default',
 }: CategorySelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const availableCategories = getCategoriesForType(transactionType);
   const selectedCategory = findCategoryById(value || '');
 
@@ -46,11 +46,7 @@ export const CategorySelector = ({
           role="combobox"
           aria-expanded={isOpen}
           disabled={disabled}
-          className={cn(
-            'justify-between',
-            size === 'sm' ? 'h-8 text-xs' : 'h-10',
-            className
-          )}
+          className={cn('justify-between', size === 'sm' ? 'h-8 text-xs' : 'h-10', className)}
         >
           {selectedCategory ? (
             <span className="flex items-center gap-2">

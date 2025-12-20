@@ -11,7 +11,7 @@ export const GET_ACCOUNT_TRANSACTIONS_PAGINATED_QUERY_KEY = (
 export const useAccountTransactionsPaginated = (
   accountId: string,
   params?: I_AccountTransactionsParams,
-  includeCreditCards: boolean = true // Default to include credit cards for unified view
+  includeCreditCards = true // Default to include credit cards for unified view
 ) => {
   const queryParams = {
     ...params,
@@ -32,7 +32,7 @@ export const useAccountTransactionsPaginated = (
 export const useAccountTransactionsInfinite = (
   accountId: string,
   baseParams?: Omit<I_AccountTransactionsParams, 'page'>,
-  includeCreditCards: boolean = true // Default to include credit cards for unified view
+  includeCreditCards = true // Default to include credit cards for unified view
 ) => {
   const queryParams = {
     ...baseParams,

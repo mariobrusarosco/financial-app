@@ -1,6 +1,6 @@
 import type { I_User } from '../types/auth.types';
 
-export const mockUsers: Array<I_User & { password: string }> = [
+export const mockUsers: (I_User & { password: string })[] = [
   {
     id: '1',
     email: 'user@example.com',
@@ -25,4 +25,4 @@ export const generateMockTokens = (userId: string) => ({
   expiresIn: 3600,
 });
 
-export const delay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));

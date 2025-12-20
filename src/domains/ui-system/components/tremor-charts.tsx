@@ -46,11 +46,10 @@ interface AccountPerformanceData {
 }
 
 // Utility functions
-const formatCurrency = (value: number): string => 
+const formatCurrency = (value: number): string =>
   `$${Intl.NumberFormat('us').format(value).toString()}`;
 
-const formatPercentage = (value: number): string => 
-  `${value.toFixed(1)}%`;
+const formatPercentage = (value: number): string => `${value.toFixed(1)}%`;
 
 // Sample data for demonstrations
 const balanceTrendData: BalanceData[] = [
@@ -125,7 +124,7 @@ function SpendingBreakdownChart() {
         showAnimation={true}
       />
       <div className="mt-6 space-y-2">
-        {categorySpendingData.slice(0, 3).map((item) => (
+        {categorySpendingData.slice(0, 3).map(item => (
           <div key={item.category} className="flex items-center justify-between">
             <Text className="truncate">{item.category}</Text>
             <div className="flex items-center space-x-2">
@@ -164,18 +163,16 @@ function CashFlowChart() {
 function AccountPerformanceCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl">
-      {accountPerformanceData.map((account) => (
+      {accountPerformanceData.map(account => (
         <Card key={account.account} className="max-w-xs">
           <Flex alignItems="start">
             <div className="truncate">
               <Text>{account.account}</Text>
               <Metric className="truncate">{formatCurrency(account.balance)}</Metric>
             </div>
-            <Badge
-              size="xs"
-              color={account.changeType === 'increase' ? 'emerald' : 'red'}
-            >
-              {account.change > 0 ? '+' : ''}{formatPercentage(account.change)}
+            <Badge size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
+              {account.change > 0 ? '+' : ''}
+              {formatPercentage(account.change)}
             </Badge>
           </Flex>
           <Flex className="mt-4 space-x-2">
@@ -204,11 +201,7 @@ function SavingsGoalProgress() {
       <Text>Progress towards $20,000 target</Text>
       <Metric className="mt-2">{formatCurrency(currentSavings)}</Metric>
       <Text className="mt-1">of {formatCurrency(savingsGoal)}</Text>
-      <ProgressBar
-        value={progressPercentage}
-        color="emerald"
-        className="mt-4"
-      />
+      <ProgressBar value={progressPercentage} color="emerald" className="mt-4" />
       <Flex className="mt-2">
         <Text>{formatPercentage(progressPercentage)} complete</Text>
         <Text>{formatCurrency(savingsGoal - currentSavings)} remaining</Text>
@@ -235,12 +228,12 @@ function ExpenseTracker() {
       <Text>Spending vs. budget by category</Text>
       <Metric className="mt-2">{formatCurrency(currentSpending)}</Metric>
       <Text className="mt-1">of {formatCurrency(monthlyBudget)} budgeted</Text>
-      
+
       <div className="mt-6 space-y-4">
-        {categories.map((category) => {
+        {categories.map(category => {
           const percentage = (category.spent / category.budget) * 100;
           const isOverBudget = percentage > 100;
-          
+
           return (
             <div key={category.name}>
               <Flex>

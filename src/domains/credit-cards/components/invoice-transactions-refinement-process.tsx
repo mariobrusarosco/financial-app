@@ -10,8 +10,8 @@ interface InvoiceTransactionsRefinementProcessProps {
   invoice: I_CreditCardInvoiceResponse;
 }
 
-export const InvoiceTransactionsRefinementProcess = ({ 
-  invoice
+export const InvoiceTransactionsRefinementProcess = ({
+  invoice,
 }: InvoiceTransactionsRefinementProcessProps) => {
   const {
     editableTransactions,
@@ -24,13 +24,16 @@ export const InvoiceTransactionsRefinementProcess = ({
     setTransactionInEditMode,
     triggerEditMode,
     updateTransactionInEditionMode,
-  } = useEditableCreditCardTransactions({ 
-    invoice, 
+  } = useEditableCreditCardTransactions({
+    invoice,
     creditCardId: invoice.credit_card_id,
-    brokerId: invoice.broker_id
+    brokerId: invoice.broker_id,
   });
 
-  console.log('💾 InvoiceTransactionsRefinementProcess - editableTransactions:', editableTransactions);
+  console.log(
+    '💾 InvoiceTransactionsRefinementProcess - editableTransactions:',
+    editableTransactions
+  );
 
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
