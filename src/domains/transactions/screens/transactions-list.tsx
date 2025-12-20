@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
@@ -10,7 +11,7 @@ import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
-import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
+import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
@@ -126,21 +127,29 @@ export const TransactionsListScreen = () => {
   return (
     <Surface data-ui="transactions-list" className="w-full flex-1">
       <div className="space-y-4">
-        <div>
-          <CardTitle className="flex items-center gap-2">
-            Transaction History
-            {isPlaceholderData && (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            )}
-          </CardTitle>
-          <CardDescription>
-            {meta
-              ? `${meta.total} transactions found`
-              : 'A complete record of all your financial transactions'}
-            {isPlaceholderData && (
-              <span className="text-xs text-muted-foreground ml-2">(Loading new data...)</span>
-            )}
-          </CardDescription>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              Transaction History
+              {isPlaceholderData && (
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              )}
+            </CardTitle>
+            <CardDescription>
+              {meta
+                ? `${meta.total} transactions found`
+                : 'A complete record of all your financial transactions'}
+              {isPlaceholderData && (
+                <span className="text-xs text-muted-foreground ml-2">(Loading new data...)</span>
+              )}
+            </CardDescription>
+          </div>
+          <Link search={{ drawer: 'transaction-create' }}>
+            <Button size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Transaction
+            </Button>
+          </Link>
         </div>
 
         {/* Pagination - At the top */}

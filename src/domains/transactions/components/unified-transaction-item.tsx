@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, Tag, CreditCard, Wallet, Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import { Button } from '@/domains/ui-system/components/button';
+import { Badge } from '@/domains/ui-system/components/badge';
 import { Surface } from '@/domains/global/components/surface';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import {
@@ -162,11 +163,7 @@ export const UnifiedTransactionItem = ({
   return (
     <Surface
       data-ui="unified-transaction-item"
-      className={cn(
-        'group transition-colors hover:bg-muted/50 rounded-sm',
-        isIgnored && 'cursor-not-allowed opacity-80',
-        className
-      )}
+      className={cn('group transition-colors hover:bg-muted/50 rounded-sm', className)}
       size="sm"
       onClick={() => null}
     >
@@ -177,24 +174,32 @@ export const UnifiedTransactionItem = ({
             checked={isSelected}
             onChange={e => {
               e.stopPropagation();
-              if (!isIgnored) {
-                handleSelection();
-              }
+              handleSelection();
             }}
             onClick={e => e.stopPropagation()}
             className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-3"
-            disabled={isIgnored}
           />
         )}
         <div className="flex gap-2 items-center">
           <IconComponent className={cn(getIconSizeClass('xs'), 'text-muted-foreground')} />
-          <p className="text-xs leading-tight">{transaction.description}</p>
+          <p className={cn('text-xs leading-tight', transaction.ignored && 'opacity-50')}>
+            {transaction.description}
+          </p>
         </div>
 
-        <p className={cn(currencyClasses, 'text-sm ml-2')}>
+        <p className={cn(currencyClasses, 'text-sm ml-2', transaction.ignored && 'opacity-50')}>
           {currency.sign}
           {currency.amount}
         </p>
+
+        {transaction.ignored && (
+          <Badge
+            variant="outline"
+            className="ml-2 text-xs bg-orange-50 text-orange-700 border-orange-200"
+          >
+            Ignored
+          </Badge>
+        )}
 
         <div className="flex gap-1 ml-9 items-center" data-ui="transaction-tags">
           <span
@@ -286,19 +291,17 @@ const ViewableTransaction = ({
     <div
       className={cn(
         'group flex items-center space-x-3 py-2 hover:bg-muted/50 transition-colors cursor-pointer',
-        isIgnored && 'opacity-30 bg-gray-100 cursor-not-allowed',
         isSelected && 'bg-primary/10 border-l-4 border-primary',
         'border rounded-lg p-3'
       )}
-      onClick={() => !isIgnored && handleSelection()}
+      onClick={() => handleSelection()}
     >
       <input
         type="checkbox"
         checked={isSelected}
-        onChange={() => !isIgnored && handleSelection()}
+        onChange={() => handleSelection()}
         onClick={e => e.stopPropagation()}
         className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-        disabled={isIgnored}
       />
 
       <div className="p-1.5 rounded-full bg-primary/10 flex-shrink-0">
@@ -306,7 +309,19 @@ const ViewableTransaction = ({
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{transaction.description}</p>
+        <div className="flex items-center gap-2">
+          <p className={cn('text-sm font-medium truncate', transaction.ignored && 'opacity-50')}>
+            {transaction.description}
+          </p>
+          {transaction.ignored && (
+            <Badge
+              variant="outline"
+              className="text-xs bg-orange-50 text-orange-700 border-orange-200 flex-shrink-0"
+            >
+              Ignored
+            </Badge>
+          )}
+        </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>{transaction.category || 'Uncategorized'}</span>
           <span>•</span>
@@ -316,38 +331,36 @@ const ViewableTransaction = ({
 
       <div className="text-right flex-shrink-0">
         <div className="text-sm">
-          <span className={currencyClasses}>
+          <span className={cn(currencyClasses, transaction.ignored && 'opacity-50')}>
             {currency.sign}
             {currency.amount}
           </span>
         </div>
       </div>
 
-      {!isIgnored && (
-        <div className="hover-actions opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1">
+      <div className="hover-actions opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={e => {
+            e.stopPropagation();
+            onTriggerEditMode(transaction);
+          }}
+          className="h-6 w-6 p-0 hover:bg-primary/10"
+        >
+          <Edit className="h-3 w-3" />
+        </Button>
+        {(onDelete || onIgnoreTransaction) && (
           <Button
             size="sm"
             variant="ghost"
-            onClick={e => {
-              e.stopPropagation();
-              onTriggerEditMode(transaction);
-            }}
-            className="h-6 w-6 p-0 hover:bg-primary/10"
+            onClick={handleDelete}
+            className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
           >
-            <Edit className="h-3 w-3" />
+            <Trash2 className="h-3 w-3" />
           </Button>
-          {(onDelete || onIgnoreTransaction) && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={handleDelete}
-              className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

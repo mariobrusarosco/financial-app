@@ -40,6 +40,7 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
       credit_card_id: '',
       broker_id: '',
       is_paid: false,
+      ignored: false,
       type: 'expense',
       category: '',
     } as I_CreateTransactionForm,
@@ -347,6 +348,26 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                   />
                   <label htmlFor={field.name} className="text-sm text-muted-foreground">
                     {field.state.value ? 'Paid' : 'Unpaid'}
+                  </label>
+                </div>
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="ignored">
+            {field => (
+              <div className="space-y-2">
+                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  Ignore Transaction:
+                </label>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id={field.name}
+                    checked={field.state.value}
+                    onCheckedChange={value => field.handleChange(value)}
+                  />
+                  <label htmlFor={field.name} className="text-sm text-muted-foreground">
+                    {field.state.value ? 'Ignored' : 'Active'}
                   </label>
                 </div>
               </div>

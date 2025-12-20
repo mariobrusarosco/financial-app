@@ -80,6 +80,16 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.645 0.246 16.439);
+  --neumorphic-bg: #ffffff;
+  --neumorphic-shadow-inset-1: #c5c5c5;
+  --neumorphic-shadow-inset-2: #ffffff;
+
+  /* Spinner theme variables */
+  --spinner-gradient-start: rgb(220, 80, 80);
+  --spinner-gradient-end: rgb(0, 180, 210);
+  --spinner-shadow-top: rgb(220, 80, 80);
+  --spinner-shadow-bottom: rgb(0, 180, 210);
+  --spinner-inner-bg: rgb(255, 255, 255);
 }
 
 .dark {
@@ -114,6 +124,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.645 0.246 16.439);
+  --neumorphic-bg: #1f1f1f;
+  --neumorphic-shadow-inset-1: #1a1a1a;
+  --neumorphic-shadow-inset-2: #242424;
+
+  /* Spinner theme variables */
+  --spinner-gradient-start: rgb(248, 113, 113);
+  --spinner-gradient-end: rgb(0, 225, 255);
+  --spinner-shadow-top: rgb(248, 113, 113);
+  --spinner-shadow-bottom: rgb(0, 225, 255);
+  --spinner-inner-bg: rgb(36, 36, 36);
 }
 
 @layer base {
@@ -130,24 +150,24 @@
 }
 
 .card-neumorphic {
-  background: #1f1f1f;
+  background: var(--neumorphic-bg);
   box-shadow:
-    inset 20px 20px 60px #1a1a1a,
-    inset -20px -20px 60px #242424;
+    inset 20px 20px 60px var(--neumorphic-shadow-inset-1),
+    inset -20px -20px 60px var(--neumorphic-shadow-inset-2);
 }
 
 .spinner {
-  background-image: linear-gradient(rgb(248 113 113) 35%, rgb(0, 225, 255));
+  background-image: linear-gradient(var(--spinner-gradient-start) 35%, var(--spinner-gradient-end));
   animation: full-rotation 10s linear infinite;
   filter: blur(1px);
   box-shadow:
-    0px -5px 20px 0px rgb(248, 113, 113),
-    0px 5px 20px 0px rgb(0, 225, 255);
+    0px -5px 20px 0px var(--spinner-shadow-top),
+    0px 5px 20px 0px var(--spinner-shadow-bottom);
   transform-origin: center;
 }
 
 .spinner1 {
-  background-color: rgb(36, 36, 36);
+  background-color: var(--spinner-inner-bg);
   width: 100px;
   height: 100px;
   border-radius: 50px;

@@ -258,6 +258,27 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
             )}
           </form.Field>
         </div>
+
+        {/* Fourth Row - Ignored Status */}
+        <div className="grid grid-cols-1 gap-4">
+          <form.Field name="ignored">
+            {field => (
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-700">Ignore Transaction</label>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={field.state.value}
+                    onCheckedChange={field.handleChange}
+                    size="sm"
+                  />
+                  <label className="text-xs text-muted-foreground">
+                    {field.state.value ? 'Ignored' : 'Active'}
+                  </label>
+                </div>
+              </div>
+            )}
+          </form.Field>
+        </div>
       </form>
     </div>
   );
