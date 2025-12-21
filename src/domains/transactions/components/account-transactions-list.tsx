@@ -23,14 +23,16 @@ import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 interface AccountTransactionsListProps {
   accountId: string;
+  initialType?: T_TransactionType;
 }
 
-export const AccountTransactionsList = ({ accountId }: AccountTransactionsListProps) => {
+export const AccountTransactionsList = ({ accountId, initialType }: AccountTransactionsListProps) => {
   const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
     per_page: 20,
     sort_by: 'date',
     sort_order: 'desc',
+    movement_type: initialType,
   });
 
   const [editingId, setEditingId] = useState<string | null>(null);

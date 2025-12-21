@@ -16,6 +16,8 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
     const pathname = location.pathname;
     if (pathname.includes('/statements')) return 'statements';
     if (pathname.includes('/credit-card')) return 'credit-cards';
+    if (pathname.includes('/expenses')) return 'expenses';
+    if (pathname.includes('/income')) return 'income';
     return 'overview';
   }, [location.pathname]);
 
@@ -38,6 +40,18 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
             <TabsTrigger value="statements" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Statements
+            </TabsTrigger>
+          </Link>
+          <Link to="/accounts/$slug/expenses" params={{ slug }}>
+            <TabsTrigger value="expenses" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Expenses
+            </TabsTrigger>
+          </Link>
+          <Link to="/accounts/$slug/income" params={{ slug }}>
+            <TabsTrigger value="income" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Income
             </TabsTrigger>
           </Link>
           <Link to="/accounts/$slug/credit-card" params={{ slug }}>
