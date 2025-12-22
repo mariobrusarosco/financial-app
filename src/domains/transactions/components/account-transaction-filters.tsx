@@ -163,32 +163,32 @@ export const AccountTransactionFilters = ({
             <Label className="text-sm font-medium">Status</Label>
             <div className="space-y-2">
               <Select
-                value={params.is_paid?.toString() || ''}
+                value={params.is_paid?.toString() || 'all'}
                 onValueChange={value =>
-                  updateParam('is_paid', value === '' ? undefined : value === 'true')
+                  updateParam('is_paid', value === 'all' ? undefined : value === 'true')
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Payment status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="true">Paid</SelectItem>
                   <SelectItem value="false">Unpaid</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select
-                value={params.movement_type || ''}
+                value={params.movement_type || 'all'}
                 onValueChange={value =>
-                  updateParam('movement_type', value === '' ? undefined : value)
+                  updateParam('movement_type', value === 'all' ? undefined : value)
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Movement type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All types</SelectItem>
+                  <SelectItem value="all">All types</SelectItem>
                   <SelectItem value="income">Income</SelectItem>
                   <SelectItem value="expense">Expense</SelectItem>
                   <SelectItem value="investment">Investment</SelectItem>
