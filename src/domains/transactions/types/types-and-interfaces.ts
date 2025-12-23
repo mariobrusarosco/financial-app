@@ -70,8 +70,13 @@ export interface I_TransactionResponse {
   description: string;
   movement_type: T_TransactionType;
   category?: string;
+  category_id?: string | null;
+  category_name?: string | null;
   sub_category?: string;
+  sub_category_id?: string | null;
+  parent_category_name?: string | null;
   created_at: string;
+
   updated_at: string;
 }
 

@@ -25,10 +25,10 @@ interface UnifiedTransactionItemProps {
   mode: 'compact' | 'default';
 
   // Interaction handlers
-  onEdit?: (transaction: I_TransactionResponse) => void;
   onDelete?: (transaction: I_TransactionResponse) => void;
   onIgnoreTransaction?: (id: string) => void | null;
-  onSave?: (transaction: I_TransactionResponse) => void;
+  onSave?: (updates: Partial<I_TransactionResponse>) => void;
+
   onCancel?: () => void;
 
   // Edit state (for default mode)
@@ -37,7 +37,6 @@ interface UnifiedTransactionItemProps {
 
   // Selection handlers
   isSelected: boolean;
-  isIgnored?: boolean;
   onSelectTransaction?: (id: string) => void;
   onSelectionChange?: (selected: boolean) => void;
   showCheckbox?: boolean;
@@ -49,7 +48,6 @@ interface UnifiedTransactionItemProps {
 export const UnifiedTransactionItem = ({
   transaction,
   mode,
-  onEdit,
   onDelete,
   onTriggerEditMode,
   onIgnoreTransaction,
@@ -57,17 +55,18 @@ export const UnifiedTransactionItem = ({
   onCancel,
   isEditing = false,
   isSelected = false,
-  isIgnored = false,
   onSelectTransaction,
   onSelectionChange,
   showCheckbox = false,
   className,
 }: UnifiedTransactionItemProps) => {
+
   // Format transaction data
   const IconComponent = getTransactionIconComponent(
-    transaction.category,
+    transaction.category_name || transaction.category,
     transaction.movement_type
   );
+
   const currency = formatCurrencyWithSign(transaction.amount, transaction.movement_type);
   const movementTypeColor = getMovementTypeColor(transaction.movement_type);
   const movementTypeLabel = getMovementTypeLabel(transaction.movement_type);
@@ -139,13 +138,13 @@ export const UnifiedTransactionItem = ({
       <ViewableTransaction
         transaction={transaction}
         isSelected={isSelected}
-        isIgnored={isIgnored}
-        onSelectTransaction={onSelectTransaction}
-        onSelectionChange={onSelectionChange}
         onDelete={onDelete}
         onIgnoreTransaction={onIgnoreTransaction}
         onTriggerEditMode={onTriggerEditMode || (() => {})}
+        onSelectTransaction={onSelectTransaction}
+        onSelectionChange={onSelectionChange}
       />
+
     );
   }
 
@@ -226,8 +225,9 @@ export const UnifiedTransactionItem = ({
         <div className="flex gap-1 items-center ml-3">
           <Tag className="h-3 w-3" />
           <span className="text-xs text-muted-foreground">
-            {transaction.category || 'Uncategorized'}
+            {transaction.category_name || transaction.category || 'Uncategorized'}
           </span>
+
         </div>
 
         <div className="flex gap-1 items-center ml-auto mr-10">
@@ -244,24 +244,24 @@ export const UnifiedTransactionItem = ({
 interface ViewableTransactionProps {
   transaction: I_TransactionResponse;
   isSelected: boolean;
-  isIgnored: boolean;
-  onSelectTransaction?: (id: string) => void;
-  onSelectionChange?: (selected: boolean) => void;
   onDelete?: (transaction: I_TransactionResponse) => void;
   onIgnoreTransaction?: (id: string) => void;
   onTriggerEditMode: (transaction: I_TransactionResponse) => void;
+  onSelectTransaction?: (id: string) => void;
+  onSelectionChange?: (selected: boolean) => void;
 }
 
 const ViewableTransaction = ({
   transaction,
   isSelected,
-  isIgnored,
-  onSelectTransaction,
-  onSelectionChange,
   onDelete,
   onIgnoreTransaction,
   onTriggerEditMode,
+  onSelectTransaction,
+  onSelectionChange,
 }: ViewableTransactionProps) => {
+
+
   // Handle delete action - prefer onDelete, fallback to onIgnoreTransaction
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -280,10 +280,11 @@ const ViewableTransaction = ({
       onSelectTransaction(transaction.id);
     }
   };
-  const IconComponent = getTransactionIconComponent(
-    transaction.category,
+   const IconComponent = getTransactionIconComponent(
+    transaction.category_name || transaction.category,
     transaction.movement_type
   );
+
   const currency = formatCurrencyWithSign(transaction.amount, transaction.movement_type);
   const currencyClasses = getCurrencyClasses(transaction.movement_type, 'compact');
 
@@ -323,10 +324,11 @@ const ViewableTransaction = ({
           )}
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{transaction.category || 'Uncategorized'}</span>
+          <span>{transaction.category_name || transaction.category || 'Uncategorized'}</span>
           <span>•</span>
           <span>{formatDateShort(transaction.date)}</span>
         </div>
+
       </div>
 
       <div className="text-right flex-shrink-0">

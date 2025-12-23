@@ -1,7 +1,6 @@
 import { apiClient } from '@/config/api';
 import type {
   I_CreateTransactionForm,
-  I_Transaction,
   I_BulkTransactionRequestPayload,
   I_BulkTransactionResponse,
   I_BulkTransactionRequest,
@@ -10,11 +9,13 @@ import type {
   I_TransactionResponse,
 } from '../types/types-and-interfaces';
 
+
 export const transactionsApi = {
-  createTransaction: async (transaction: I_CreateTransactionForm): Promise<I_Transaction> => {
-    const response = await apiClient.post<I_Transaction>('/transactions', transaction);
+  createTransaction: async (transaction: I_CreateTransactionForm): Promise<I_TransactionResponse> => {
+    const response = await apiClient.post<I_TransactionResponse>('/transactions', transaction);
     return response.data;
   },
+
 
   createBulkTransactions: async (
     payload: I_BulkTransactionRequestPayload
@@ -88,11 +89,15 @@ export const transformFormToBulkRequest = (
 };
 
 export const updateTransaction = async (
-  transaction: I_TransactionResponse
+  id: string,
+  updates: Partial<I_TransactionResponse>
 ): Promise<I_TransactionResponse> => {
   const response = await apiClient.patch<I_TransactionResponse>(
-    `/transactions/${transaction.id}`,
-    transaction
+    `/transactions/${id}`,
+    updates
   );
   return response.data;
 };
+
+
+

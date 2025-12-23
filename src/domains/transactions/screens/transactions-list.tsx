@@ -76,10 +76,13 @@ export const TransactionsListScreen = () => {
     setEditingId(transaction.id);
   };
 
-  const handleSave = (updatedTransaction: I_TransactionResponse) => {
-    updateTransaction(updatedTransaction);
+  const handleSave = (updates: Partial<I_TransactionResponse>) => {
+    if (editingId) {
+      updateTransaction({ id: editingId, updates });
+    }
     setEditingId(null);
   };
+
 
   const handleCancel = () => {
     setEditingId(null);
