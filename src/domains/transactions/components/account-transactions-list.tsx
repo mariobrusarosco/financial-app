@@ -6,7 +6,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
@@ -15,25 +14,35 @@ import {
 import { AccountTransactionFilters } from './account-transaction-filters';
 import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
 import type {
-  T_TransactionType,
   I_AccountTransactionsParams,
   I_TransactionResponse,
+  I_TransactionsResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 interface AccountTransactionsListProps {
-  accountId: string;
-  initialType?: T_TransactionType;
+  params: I_AccountTransactionsParams;
+  onParamsChange: (
+    params:
+      | I_AccountTransactionsParams
+      | ((prev: I_AccountTransactionsParams) => I_AccountTransactionsParams)
+  ) => void;
+  query: {
+    data?: I_TransactionsResponse;
+    isLoading: boolean;
+    isError: boolean;
+    isPlaceholderData: boolean;
+  };
 }
 
-export const AccountTransactionsList = ({ accountId, initialType }: AccountTransactionsListProps) => {
-  const [params, setParams] = useState<I_AccountTransactionsParams>({
-    page: 1,
-    per_page: 20,
-    sort_by: 'date',
-    sort_order: 'desc',
-    movement_type: initialType,
-  });
+export const AccountTransactionsList = ({
+  params,
+  onParamsChange,
+  query,
+}: AccountTransactionsListProps) => {
+  const { data: response, isLoading, isError, isPlaceholderData } = query;
+  const transactions = response?.data || [];
+  const meta = response?.meta;
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -42,16 +51,6 @@ export const AccountTransactionsList = ({ accountId, initialType }: AccountTrans
 
   const { mutate: deleteTransaction } = useDeleteTransaction();
   const { mutate: updateTransaction } = useUpdateTransaction();
-
-  const {
-    data: response,
-    isLoading,
-    isError,
-    isPlaceholderData,
-  } = useAccountTransactionsPaginated(accountId, params, true); // Include credit cards by default
-
-  const transactions = response?.data || [];
-  const meta = response?.meta;
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -84,7 +83,7 @@ export const AccountTransactionsList = ({ accountId, initialType }: AccountTrans
   }
 
   const handlePageChange = (page: number) => {
-    setParams(prev => ({ ...prev, page }));
+    onParamsChange(prev => ({ ...prev, page }));
   };
 
   const handleEdit = (transaction: I_TransactionResponse) => {
@@ -97,7 +96,6 @@ export const AccountTransactionsList = ({ accountId, initialType }: AccountTrans
     }
     setEditingId(null);
   };
-
 
   const handleCancel = () => {
     setEditingId(null);
@@ -167,7 +165,10 @@ export const AccountTransactionsList = ({ accountId, initialType }: AccountTrans
               )}
             </CardDescription>
           </div>
-          <Link search={{ drawer: 'transaction-create' }}>
+          <Link
+            to="."
+            search={((prev: any) => ({ ...prev, drawer: 'transaction-create' })) as any}
+          >
             <Button size="sm">
               <Plus className="h-4 w-4 mr-2" />
               Add Transaction
@@ -175,7 +176,7 @@ export const AccountTransactionsList = ({ accountId, initialType }: AccountTrans
           </Link>
         </div>
 
-        <AccountTransactionFilters params={params} onParamsChange={setParams} />
+        <AccountTransactionFilters params={params} onParamsChange={onParamsChange} />
 
         {/* Pagination - Moved to top */}
         {meta && meta.total > meta.per_page && (

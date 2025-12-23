@@ -225,8 +225,19 @@ export const UnifiedTransactionItem = ({
         <div className="flex gap-1 items-center ml-3">
           <Tag className="h-3 w-3" />
           <span className="text-xs text-muted-foreground">
-            {transaction.category_name || transaction.category || 'Uncategorized'}
+            {transaction.category_tree?.name || transaction.category_name || transaction.category || 'Uncategorized'}
           </span>
+
+
+          {/* Add subcategory if exists */}
+          {transaction.category_tree?.parent && (
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-muted-foreground">(sub)</span>
+              <span className="text-xs text-muted-foreground">
+                {transaction.category_tree.parent.name}
+              </span>
+            </div>
+          )}
 
         </div>
 
@@ -324,7 +335,7 @@ const ViewableTransaction = ({
           )}
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{transaction.category_name || transaction.category || 'Uncategorized'}</span>
+          <span>{transaction.category_tree?.name || transaction.category_name || transaction.category || 'Uncategorized'}</span>
           <span>•</span>
           <span>{formatDateShort(transaction.date)}</span>
         </div>
