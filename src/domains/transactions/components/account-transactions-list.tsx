@@ -7,11 +7,11 @@ import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
-import { useCreateTransaction } from '@/domains/transactions/hooks/use-create-transaction';
 import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
+
 import { AccountTransactionFilters } from './account-transaction-filters';
 import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
 import type {
@@ -23,21 +23,23 @@ import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 interface AccountTransactionsListProps {
   accountId: string;
+  initialType?: T_TransactionType;
 }
 
-export const AccountTransactionsList = ({ accountId }: AccountTransactionsListProps) => {
+export const AccountTransactionsList = ({ accountId, initialType }: AccountTransactionsListProps) => {
   const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
     per_page: 20,
     sort_by: 'date',
     sort_order: 'desc',
+    movement_type: initialType,
   });
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const { mutate: createTransaction } = useCreateTransaction();
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
+
   const { mutate: deleteTransaction } = useDeleteTransaction();
   const { mutate: updateTransaction } = useUpdateTransaction();
 
@@ -89,10 +91,13 @@ export const AccountTransactionsList = ({ accountId }: AccountTransactionsListPr
     setEditingId(transaction.id);
   };
 
-  const handleSave = (updatedTransaction: I_TransactionResponse) => {
-    updateTransaction(updatedTransaction);
+  const handleSave = (updates: Partial<I_TransactionResponse>) => {
+    if (editingId) {
+      updateTransaction({ id: editingId, updates });
+    }
     setEditingId(null);
   };
+
 
   const handleCancel = () => {
     setEditingId(null);

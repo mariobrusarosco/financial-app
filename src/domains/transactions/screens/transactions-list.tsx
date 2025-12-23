@@ -14,6 +14,9 @@ import {
 import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
+import { CategoryManager } from '@/domains/categories/components/category-manager';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/domains/ui-system/components/collapsible';
+import { Settings2 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -73,10 +76,13 @@ export const TransactionsListScreen = () => {
     setEditingId(transaction.id);
   };
 
-  const handleSave = (updatedTransaction: I_TransactionResponse) => {
-    updateTransaction(updatedTransaction);
+  const handleSave = (updates: Partial<I_TransactionResponse>) => {
+    if (editingId) {
+      updateTransaction({ id: editingId, updates });
+    }
     setEditingId(null);
   };
+
 
   const handleCancel = () => {
     setEditingId(null);
@@ -139,9 +145,6 @@ export const TransactionsListScreen = () => {
               {meta
                 ? `${meta.total} transactions found`
                 : 'A complete record of all your financial transactions'}
-              {isPlaceholderData && (
-                <span className="text-xs text-muted-foreground ml-2">(Loading new data...)</span>
-              )}
             </CardDescription>
           </div>
           <Link search={{ drawer: 'transaction-create' }}>
@@ -151,6 +154,18 @@ export const TransactionsListScreen = () => {
             </Button>
           </Link>
         </div>
+
+        <Collapsible>
+          <CollapsibleTrigger asChild>
+            <Button variant="outline" size="sm" className="w-full justify-start">
+              <Settings2 className="h-4 w-4 mr-2" />
+              Manage Categories
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-4">
+            <CategoryManager />
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Pagination - At the top */}
         {meta && meta.total > meta.per_page && (

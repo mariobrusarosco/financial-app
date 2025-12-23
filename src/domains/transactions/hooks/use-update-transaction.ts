@@ -9,8 +9,10 @@ export const useUpdateTransaction = (onUpdateSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (transaction: I_TransactionResponse) => updateTransaction(transaction),
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<I_TransactionResponse> }) =>
+      updateTransaction(id, updates),
     onSuccess: data => {
+
       onUpdateSuccess?.();
       toast.success('Transaction updated successfully');
       // Invalidate account transactions caches for all affected accounts

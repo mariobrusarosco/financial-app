@@ -20,6 +20,7 @@ import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { Textarea } from '@/domains/ui-system/components/textarea';
 import { CategorySelector } from './category-selector';
+import { SubCategorySelector } from './subcategory-selector';
 
 interface CreateTransactionProps {
   onAddTransaction?: (transaction: I_CreateTransactionForm) => void;
@@ -43,6 +44,7 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
       ignored: false,
       type: 'expense',
       category: '',
+      sub_category: '', // Add sub_category default
     } as I_CreateTransactionForm,
     onSubmit: ({ value }) => {
       // Include the computed broker_id in the transaction
@@ -134,9 +136,9 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onBlur={field.handleBlur}
-                  onChange={e => field.handleChange(e.target.valueAsNumber || null)}
+                  onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
                   type="number"
                   step="0.01"
                   placeholder="0.00"
@@ -160,7 +162,10 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                 <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                   Date:
                 </label>
-                <TransactionDatePicker date={field.state.value} setDate={field.handleChange} />
+                <TransactionDatePicker 
+                  date={field.state.value ? new Date(field.state.value) : new Date()} 
+                  setDate={(date) => field.handleChange(date ? date.toISOString().split('T')[0] : '')} 
+                />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
                 )}
@@ -234,6 +239,27 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                 )}
               />
             )}
+          </form.Field>
+
+          {/* Column 2b: Sub-Category Selection */}
+          <form.Field name="sub_category">
+             {field => (
+                <form.Subscribe
+                  selector={state => state.values.category}
+                  children={currentCategoryId => (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Sub-Category</label>
+                      <SubCategorySelector
+                        categoryId={currentCategoryId}
+                        value={field.state.value || ''}
+                        onValueChange={field.handleChange}
+                        placeholder="Select sub-category..."
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                />
+             )}
           </form.Field>
         </div>
 
