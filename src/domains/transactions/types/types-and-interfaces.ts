@@ -72,11 +72,15 @@ export interface I_TransactionResponse {
   category?: string;
   category_id?: string | null;
   category_name?: string | null;
-  sub_category?: string;
-  sub_category_id?: string | null;
-  parent_category_name?: string | null;
+  category_tree?: {
+    id: string;
+    name: string;
+    parent: {
+      id: string;
+      name: string;
+    } | null;
+  } | null;
   created_at: string;
-
   updated_at: string;
 }
 
