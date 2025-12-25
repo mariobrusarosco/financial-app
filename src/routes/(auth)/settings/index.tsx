@@ -12,6 +12,7 @@ import { Badge } from '@ui-system/components/badge';
 import { useAuth } from '@/domains/auth/hooks/use-auth';
 import { useLogout } from '@/domains/auth/hooks/use-logout';
 import { User, LogOut, Settings as SettingsIcon } from 'lucide-react';
+import { ModeToggle } from '@/domains/ui-system/components/mode-toggle';
 
 export const Route = createFileRoute('/(auth)/settings/')({
   component: RouteComponent,
@@ -32,7 +33,6 @@ function RouteComponent() {
         <h1 className="text-3xl font-bold">Settings</h1>
       </div>
 
-      {/* User Profile Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -92,7 +92,6 @@ function RouteComponent() {
         </CardContent>
       </Card>
 
-      {/* Future Settings Sections */}
       <Card>
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
@@ -105,7 +104,7 @@ function RouteComponent() {
                 <h3 className="text-sm font-medium">Theme</h3>
                 <p className="text-sm text-muted-foreground">Choose your preferred color scheme</p>
               </div>
-              <Badge variant="outline">System</Badge>
+              <ModeToggle />
             </div>
             <Separator />
             <div className="flex items-center justify-between">

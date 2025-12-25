@@ -13,6 +13,8 @@ import {
   Receipt,
   User,
   LogOut,
+  House,
+  PiggyBank,
 } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
@@ -36,14 +38,14 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   {
-    label: 'Dashboard',
+    label: 'Home',
     href: '/dashboard',
-    icon: LayoutDashboard,
+    icon: House,
   },
   {
     label: 'Accounts',
     href: '/accounts',
-    icon: CreditCard,
+    icon: PiggyBank,
   },
   {
     label: 'Transactions',
@@ -63,7 +65,7 @@ const navigationItems: NavigationItem[] = [
   {
     label: 'Settings',
     href: '/settings',
-    icon: Settings,
+    icon: User,
   },
 ];
 
@@ -136,12 +138,12 @@ export const Navigation = () => {
 
   return (
     <>
-      <nav className="hidden md:flex md:justify-between md:w-full md:p-3 md:px-4 md:items-center">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-xl font-light font-sans text-foreground">Better Call Buffet</span>
-        </Link>
-
-        <nav className="flex px-2 h-fit gap-2">
+      <nav
+        data-ui="app-navigation"
+        className="hidden md:flex md:flex-col md:justify-center md:items-center bg-primary rounded-r-3xl font-sans
+        text-neutral-white"
+      >
+        <nav className="flex flex-col px-2 h-fit gap-6">
           {navigationItems.map(item => {
             const Icon = item.icon;
             const isActive = isActiveRoute(item.href);
@@ -150,20 +152,17 @@ export const Navigation = () => {
               <Link
                 key={item.href}
                 to={item.href}
+                title={item.label}
                 className={cn(
-                  'group flex items-center  px-4 transition-colors font-sans font-thin',
-                  isActive ? 'text-primary' : 'hover:text-primary'
+                  'group flex items-center justify-center p-3 rounded-lg transition-colors',
+                  isActive ? 'bg-neutral-white/10' : 'hover:bg-neutral-white/10'
                 )}
               >
-                {item.label}
+                <Icon className="h-5 w-5" />
               </Link>
             );
           })}
         </nav>
-        <div className="flex items-center space-x-2">
-          <UserMenu />
-          <ModeToggle />
-        </div>
       </nav>
 
       <div className="md:hidden">
