@@ -1,8 +1,7 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
-import { ChevronRight } from 'lucide-react';
+import { BrushCleaning, ChevronRight, RefreshCcw, XCircle } from 'lucide-react';
 import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
-// import { Badge } from '@/domains/ui-system/components/badge';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const formatCurrency = (amount: number) => {
@@ -49,24 +48,34 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
 const LoadingState = () => {
   return (
-    <div className="text-center py-8">
-      <p className="text-muted-foreground">Loading accounts...</p>
+    <div className="flex flex-col items-center justify-center gap-4 h-full">
+      <div className="p-6 rounded-3xl">
+        <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
+      </div>
     </div>
   );
 };
 
 const EmptyState = () => {
   return (
-    <div className="text-center py-8">
-      <p className="text-muted-foreground">No active accounts found</p>
+    <div className="flex flex-col items-center justify-center gap-4 h-full">
+      <div className="p-6 bg-muted-foreground/10 rounded-3xl">
+        <BrushCleaning className="h-15 w-15 text-muted-foreground stroke-1" />
+      </div>
+      <p className="text-2xl font-light">You don&apos;t have any accounts yet</p>
     </div>
   );
 };
 
 const ErrorState = ({ error }: { error: Error }) => {
   return (
-    <div className="text-center py-8">
-      <p className="text-destructive">Error loading accounts: {error.message}</p>
+    <div className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
+      <div className="p-6 bg-destructive/10 rounded-3xl">
+        <XCircle className="h-15 w-15 text-destructive stroke-1" />
+      </div>
+      <p className="text-destructive text-2xl font-light">
+        Ops! Something went wrong while loading accounts
+      </p>
     </div>
   );
 };

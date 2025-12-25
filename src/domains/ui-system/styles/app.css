@@ -147,8 +147,9 @@
 }
 
 .app-container {
-  padding: 0 1rem;
+  @apply md:px-10 lg:px-20 lg:py-10;
 }
+
 .spinner {
   background-image: linear-gradient(var(--spinner-gradient-start) 35%, var(--spinner-gradient-end));
   animation: full-rotation 10s linear infinite;

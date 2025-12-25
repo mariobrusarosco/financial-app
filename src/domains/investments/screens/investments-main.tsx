@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { TrendingUp } from 'lucide-react';
 import { InvestmentSectionNavigation } from '@/domains/investments/components/investment-section-navigation';
 import { InvestmentSectionContent } from '@/domains/investments/components/investment-section-content';
+import { PageHeader } from '@/domains/global/components';
 import type { I_InvestmentPortfolio } from '@/domains/investments/types/types-and-interfaces';
 
 export const InvestmentsMainScreen = () => {
@@ -11,16 +13,12 @@ export const InvestmentsMainScreen = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Investments</h1>
-          <p className="text-muted-foreground">
-            Track your investment portfolio performance and balance history
-          </p>
-        </div>
-      </div>
+    <div className="py-4 space-y-5 rounded-3xl">
+      <PageHeader title="Investments" icon={TrendingUp} showAddButton={false} />
+
+      <p className="text-sm text-muted-foreground">
+        Track your investment portfolio performance and balance history
+      </p>
 
       {/* Section Navigation */}
       <div className="border-b">

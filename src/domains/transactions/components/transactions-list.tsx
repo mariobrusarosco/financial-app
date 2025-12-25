@@ -1,41 +1,50 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Surface } from '@/domains/global/components/surface';
-import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import { useAllTransactionsWithPagination } from '@/domains/transactions/hooks/use-all-transactions';
 import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
-import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
+import { Loader2, Trash2, CheckSquare, Square, Plus, Settings2, ArrowRightLeft } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { CategoryManager } from '@/domains/categories/components/category-manager';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/domains/ui-system/components/collapsible';
-import { Settings2 } from 'lucide-react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/domains/ui-system/components/collapsible';
+import { PageHeader } from '@/domains/global/components';
 
-const ITEMS_PER_PAGE = 20;
+interface TransactionsListProps {
+  transactions: I_TransactionResponse[];
+  meta?: {
+    page: number;
+    per_page: number;
+    total: number;
+    has_next: boolean;
+    has_previous: boolean;
+  };
+  isPlaceholderData: boolean;
+  onPageChange: (page: number) => void;
+}
 
-export const TransactionsListScreen = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+export const TransactionsList = ({
+  transactions,
+  meta,
+  isPlaceholderData,
+  onPageChange,
+}: TransactionsListProps) => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data, isLoading, error, isPlaceholderData } = useAllTransactionsWithPagination(
-    currentPage,
-    ITEMS_PER_PAGE
-  );
-
-  const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
+  const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } =
+    useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
   const { mutate: updateTransaction } = useUpdateTransaction();
-
-  const transactions = data?.data || [];
-  const meta = data?.meta;
 
   // Selection handlers
   const handleSelectTransaction = (transactionId: string, selected: boolean) => {
@@ -83,7 +92,6 @@ export const TransactionsListScreen = () => {
     setEditingId(null);
   };
 
-
   const handleCancel = () => {
     setEditingId(null);
   };
@@ -94,59 +102,19 @@ export const TransactionsListScreen = () => {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
-  if (error) {
-    return (
-      <Surface data-ui="transactions-list" className="w-full flex-1">
-        <div>
-          <CardTitle>Transaction History</CardTitle>
-          <CardDescription>A complete record of all your financial transactions</CardDescription>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-destructive">Failed to load transactions: {error.message}</p>
-        </div>
-      </Surface>
-    );
-  }
-
-  if (isLoading && !isPlaceholderData) {
-    return (
-      <Surface data-ui="transactions-list" className="w-full flex-1">
-        <div>
-          <CardTitle>Transaction History</CardTitle>
-          <CardDescription>A complete record of all your financial transactions</CardDescription>
-        </div>
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          <span className="ml-2 text-muted-foreground">Loading transactions...</span>
-        </div>
-      </Surface>
-    );
-  }
-
   return (
-    <Surface data-ui="transactions-list" className="w-full flex-1">
+    <div data-ui="transactions-main-screen" className="py-4 space-y-5 rounded-3xl">
+      <PageHeader title="Transaction History" icon={ArrowRightLeft} showAddButton={false} />
+
       <div className="space-y-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              Transaction History
-              {isPlaceholderData && (
-                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-              )}
-            </CardTitle>
-            <CardDescription>
-              {meta
-                ? `${meta.total} transactions found`
-                : 'A complete record of all your financial transactions'}
-            </CardDescription>
-          </div>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {meta ? `${meta.total} transactions found` : 'A complete record of all your financial transactions'}
+            {isPlaceholderData && <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin" />}
+          </p>
           <Link search={{ drawer: 'transaction-create' }}>
             <Button size="sm">
               <Plus className="h-4 w-4 mr-2" />
@@ -182,7 +150,7 @@ export const TransactionsListScreen = () => {
               totalPages={Math.ceil(meta.total / meta.per_page)}
               hasNext={meta.has_next && !isPlaceholderData}
               hasPrevious={meta.has_previous && !isPlaceholderData}
-              onPageChange={handlePageChange}
+              onPageChange={onPageChange}
               className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
             />
           </div>
@@ -219,57 +187,44 @@ export const TransactionsListScreen = () => {
         )}
 
         <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
-          {transactions && transactions.length > 0 ? (
-            <>
-              {/* Select All Header */}
-              <div className="flex items-center gap-3 p-2 border-b">
-                <button
-                  onClick={handleSelectAll}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {isAllSelected ? (
-                    <CheckSquare className="h-4 w-4 text-primary" />
-                  ) : isPartiallySelected ? (
-                    <div className="h-4 w-4 border-2 border-primary rounded bg-primary/20 flex items-center justify-center">
-                      <div className="h-2 w-2 bg-primary rounded-sm" />
-                    </div>
-                  ) : (
-                    <Square className="h-4 w-4" />
-                  )}
-                  <span>{isAllSelected ? 'Deselect All' : 'Select All'}</span>
-                </button>
-                <span className="text-xs text-muted-foreground">
-                  {transactions.length} transactions
-                </span>
-              </div>
-
-              {transactions.map(transaction => (
-                <UnifiedTransactionItem
-                  key={transaction.id}
-                  transaction={transaction}
-                  mode="default"
-                  isEditing={editingId === transaction.id}
-                  isSelected={selectedIds.has(transaction.id)}
-                  onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-                  showCheckbox={true}
-                  onTriggerEditMode={handleEdit}
-                  onSave={handleSave}
-                  onCancel={handleCancel}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </>
-          ) : (
-            <div className="text-center py-8">
-              <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No transactions yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Transactions will appear here once you start using your accounts
-              </p>
+          <>
+            <div className="flex items-center gap-3 p-2 border-b">
+              <button
+                onClick={handleSelectAll}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isAllSelected ? (
+                  <CheckSquare className="h-4 w-4 text-primary" />
+                ) : isPartiallySelected ? (
+                  <div className="h-4 w-4 border-2 border-primary rounded bg-primary/20 flex items-center justify-center">
+                    <div className="h-2 w-2 bg-primary rounded-sm" />
+                  </div>
+                ) : (
+                  <Square className="h-4 w-4" />
+                )}
+                <span>{isAllSelected ? 'Deselect All' : 'Select All'}</span>
+              </button>
+              <span className="text-xs text-muted-foreground">{transactions.length} transactions</span>
             </div>
-          )}
+
+            {transactions.map(transaction => (
+              <UnifiedTransactionItem
+                key={transaction.id}
+                transaction={transaction}
+                mode="default"
+                isEditing={editingId === transaction.id}
+                isSelected={selectedIds.has(transaction.id)}
+                onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
+                showCheckbox={true}
+                onTriggerEditMode={handleEdit}
+                onSave={handleSave}
+                onCancel={handleCancel}
+                onDelete={handleDelete}
+              />
+            ))}
+          </>
         </div>
       </div>
-    </Surface>
+    </div>
   );
 };

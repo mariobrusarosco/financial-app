@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AccountIndexScreen } from '@/domains/accounts/screens/index';
+import { AccountMainScreen } from '@/domains/accounts/screens/main';
 
 export const Route = createFileRoute('/(auth)/accounts/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <AccountIndexScreen />;
+  return <AccountMainScreen />;
 }
