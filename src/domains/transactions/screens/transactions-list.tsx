@@ -155,7 +155,7 @@ export const TransactionsListScreen = () => {
           </Link>
         </div>
 
-        <Collapsible>
+        <Collapsible className="w-100">
           <CollapsibleTrigger asChild>
             <Button variant="outline" size="sm" className="w-full justify-start">
               <Settings2 className="h-4 w-4 mr-2" />

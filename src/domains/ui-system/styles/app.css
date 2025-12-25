@@ -10,6 +10,10 @@
 
 @theme inline {
   --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --color-card-background: var(--neutral-white);
+  --color-section-background: var(--section-background);
+  --color-neutral-white: var(--neutral-white);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -49,13 +53,16 @@
 
 :root {
   --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
+  --background: #fafafa;
+  --section-background: #f2f2f2;
+  --neutral-white: #ffffff;
+  --primary: #263a49;
+  --foreground: #797d7c;
+
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.645 0.246 16.439);
   --primary-foreground: oklch(0.969 0.015 12.422);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -80,9 +87,6 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.645 0.246 16.439);
-  --neumorphic-bg: #ffffff;
-  --neumorphic-shadow-inset-1: #c5c5c5;
-  --neumorphic-shadow-inset-2: #ffffff;
 
   /* Spinner theme variables */
   --spinner-gradient-start: rgb(220, 80, 80);
@@ -124,9 +128,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.645 0.246 16.439);
-  --neumorphic-bg: #1f1f1f;
-  --neumorphic-shadow-inset-1: #1a1a1a;
-  --neumorphic-shadow-inset-2: #242424;
 
   /* Spinner theme variables */
   --spinner-gradient-start: rgb(248, 113, 113);
@@ -148,14 +149,6 @@
 .app-container {
   padding: 0 1rem;
 }
-
-.card-neumorphic {
-  background: var(--neumorphic-bg);
-  box-shadow:
-    inset 20px 20px 60px var(--neumorphic-shadow-inset-1),
-    inset -20px -20px 60px var(--neumorphic-shadow-inset-2);
-}
-
 .spinner {
   background-image: linear-gradient(var(--spinner-gradient-start) 35%, var(--spinner-gradient-end));
   animation: full-rotation 10s linear infinite;

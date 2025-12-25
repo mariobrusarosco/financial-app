@@ -33,14 +33,25 @@ export const LoginForm = () => {
   });
 
   return (
-    <Card data-ui="login-form" className="shadow-lg mt-20 max-w-md">
+    <div
+      data-ui="login-form"
+      className="grid place-content-center"
+      style={{
+        backgroundImage: `
+        radial-gradient(at 100% -50%, #263a49 0px, transparent 60%),
+        radial-gradient(at 40% 10%, #c9c9c9 0px, transparent 40%),
+        radial-gradient(at 50% 1020%, #9e4963 0px, transparent 90%)
+      `,
+      }}
+    >
       <form
         onSubmit={e => {
           e.preventDefault();
           void form.handleSubmit();
         }}
+        className="w-100"
       >
-        <CardContent className="space-y-4">
+        <div className="space-y-4">
           <form.Field
             name="email"
             validators={{
@@ -135,10 +146,14 @@ export const LoginForm = () => {
               <p>Password: password123</p>
             </div>
           </div>
-        </CardContent>
+        </div>
 
-        <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full" disabled={isPending || !form.state.canSubmit}>
+        <div className="flex flex-col gap-2 items-center mt-8">
+          <Button
+            type="submit"
+            className="w-fit px-8 py-4"
+            disabled={isPending || !form.state.canSubmit}
+          >
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -155,8 +170,8 @@ export const LoginForm = () => {
               Sign up
             </Link>
           </div>
-        </CardFooter>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 };

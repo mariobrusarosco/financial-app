@@ -34,7 +34,7 @@ const BrokersList = () => {
   if (!brokers || brokers.length === 0) return <EmptyState />;
 
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 bg-section-background rounded-3xl p-6">
       {brokers.map(broker => (
         <li key={broker.id}>
           <BrokerCard broker={broker} />

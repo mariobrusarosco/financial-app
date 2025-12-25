@@ -1,4 +1,4 @@
-import { MoreVertical, Trash2, Loader2, Building2 } from 'lucide-react';
+import { MoreVertical, Trash2, Loader2 } from 'lucide-react';
 import type { I_Broker } from '../type/types-and-interfaces';
 import { useDeleteBroker } from '../hooks/use-delete-broker';
 import {
@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
 import { Button } from '@/domains/ui-system/components/button';
-import { Surface } from '@/domains/global/components/surface';
 
 interface BrokerCardProps {
   broker: I_Broker;
@@ -21,33 +20,29 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
     deleteBrokerMutation.mutate(broker.id);
   };
 
+  const brokerPrimaryColor = broker.colors[0];
+
   return (
-    <Surface
-      className="h-32 w-full flex flex-col justify-between hover:bg-accent/50 transition-colors"
-      size="sm"
-      hoverable
+    <div
+      className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
+      data-ui="broker-card"
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <div className="p-2 rounded-full bg-primary/10">
-            <Building2 className="h-6 w-6" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{broker.name}</h3>
-            <p className="text-sm text-muted-foreground">Investment Broker</p>
-          </div>
+      <div className="flex items-start justify-between px-6 py-5">
+        <div className="">
+          <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
+            {broker.name}
+          </h3>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
+            <button
+              style={{ backgroundColor: brokerPrimaryColor }}
+              className="text-neutral-white rounded-lg p-2"
               onClick={e => e.stopPropagation()}
             >
               <MoreVertical className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
-            </Button>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem
@@ -69,12 +64,12 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
         </DropdownMenu>
       </div>
 
-      {broker.description && (
-        <div className="mt-auto">
-          <p className="text-sm text-muted-foreground line-clamp-2">{broker.description}</p>
-        </div>
-      )}
-    </Surface>
+      <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerPrimaryColor }}>
+        <p className="font-light text-neutral-white text-base tracking-tight line-clamp-2">
+          {broker.description || 'Investment Broker'}
+        </p>
+      </div>
+    </div>
   );
 };
 
