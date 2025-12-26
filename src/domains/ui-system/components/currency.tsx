@@ -62,6 +62,9 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
     },
     ref
   ) => {
+    // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
+    // (Rules of Hooks: hooks must be called in the same order every render)
+
     // Determine size classes first
     const sizeClasses = React.useMemo(() => {
       switch (variant) {
@@ -76,24 +79,6 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
           return 'text-base font-semibold';
       }
     }, [variant]);
-
-    // Handle loading state for undefined values
-    if ((value === undefined || value === null) && showLoading) {
-      return (
-        <span
-          className={cn(
-            'tabular-nums inline-flex items-baseline animate-pulse',
-            sizeClasses,
-            'text-muted-foreground',
-            className
-          )}
-          ref={ref}
-          {...props}
-        >
-          <span className="bg-muted rounded h-4 w-16"></span>
-        </span>
-      );
-    }
 
     // Convert to number and handle edge cases
     const numericValue = React.useMemo(() => {
@@ -155,6 +140,25 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
           return 'text-foreground';
       }
     }, [color, isNegative, showSign, numericValue, autoColor]);
+
+    // Handle loading state for undefined values
+    // (Placed after all hooks to comply with Rules of Hooks)
+    if ((value === undefined || value === null) && showLoading) {
+      return (
+        <span
+          className={cn(
+            'tabular-nums inline-flex items-baseline animate-pulse',
+            sizeClasses,
+            'text-muted-foreground',
+            className
+          )}
+          ref={ref}
+          {...props}
+        >
+          <span className="bg-muted rounded h-4 w-16"></span>
+        </span>
+      );
+    }
 
     return (
       <span

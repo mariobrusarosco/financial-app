@@ -50,7 +50,10 @@ export const AccountTransactionsList = ({
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
 
   const { mutate: deleteTransaction } = useDeleteTransaction();
-  const { mutate: updateTransaction } = useUpdateTransaction();
+  const { mutate: updateTransaction } = useUpdateTransaction(() => {
+    // Close edit mode after successful update
+    setEditingId(null);
+  });
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -93,8 +96,8 @@ export const AccountTransactionsList = ({
   const handleSave = (updates: Partial<I_TransactionResponse>) => {
     if (editingId) {
       updateTransaction({ id: editingId, updates });
+      // Note: setEditingId(null) is now called in the mutation's onSuccess callback
     }
-    setEditingId(null);
   };
 
   const handleCancel = () => {

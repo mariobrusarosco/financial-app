@@ -68,7 +68,7 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
                   size="lg"
                   className="h-48 w-full hover:bg-primary/5 p-4 flex flex-col justify-between"
                 >
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 mb-3">
                     <div className="flex items-center gap-1 mb-3">
                       <span className="font-medium truncate">{creditCard.name}</span>
                       <span className="text-sm text-muted-foreground">
@@ -79,13 +79,13 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
 
                   <div className="flex flex-col gap-3 flex-grow">
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs text-muted-foreground">Available</span>
-                      <Currency value={1000} autoColor />
+                      <span className="text-sm text-primary">Available</span>
+                      <span className="text-xs text-muted-foreground">Coming soon</span>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs text-muted-foreground">Compromised</span>
-                      <Currency value={4046.5} color="negative" />
+                      <span className="text-sm text-primary">Compromised</span>
+                      <span className="text-xs text-muted-foreground">Coming soon</span>
                     </div>
                   </div>
                 </Surface>

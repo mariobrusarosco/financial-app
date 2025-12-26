@@ -28,10 +28,27 @@ export const useCreateTransaction = () => {
     onSuccess: newTransaction => {
       toast.success('Transaction created successfully!');
 
-      // TODO: Update with actual query keys when available
-      // void queryClient.invalidateQueries({
-      //   queryKey: ['transactions'],
-      // });
+      // Partial key invalidation - invalidates ALL variations for the affected account
+      if (newTransaction.account_id) {
+        void queryClient.invalidateQueries({
+          queryKey: ['account-transactions-paginated', newTransaction.account_id],
+        });
+
+        // Invalidate account details (balance changes)
+        void queryClient.invalidateQueries({
+          queryKey: ['accounts', 'account', newTransaction.account_id],
+        });
+
+        // Invalidate balance timeline
+        void queryClient.invalidateQueries({
+          queryKey: ['balance-points', newTransaction.account_id],
+        });
+      }
+
+      // Invalidate active accounts list
+      void queryClient.invalidateQueries({
+        queryKey: ['accounts', 'active'],
+      });
 
       // Close drawer
       void navigate({ search: {} });

@@ -29,14 +29,15 @@ export const useCreateBulkTransactions = () => {
         toast.error(`Failed to create all ${total_submitted} transactions`);
       }
 
-      // Invalidate account transactions caches for all affected accounts
+      // Partial key invalidation for all affected accounts
       if (total_successful > 0) {
         const affectedAccountIds = new Set(
           variables.map(t => t.account_id).filter((id): id is string => Boolean(id))
         );
 
-        // Invalidate paginated transactions for each affected account
+        // Invalidate all related queries for each affected account
         affectedAccountIds.forEach(accountId => {
+          // All transaction lists (paginated, infinite, regular)
           void queryClient.invalidateQueries({
             queryKey: ['account-transactions-paginated', accountId],
           });
@@ -46,6 +47,21 @@ export const useCreateBulkTransactions = () => {
           void queryClient.invalidateQueries({
             queryKey: ['account-transactions', accountId],
           });
+
+          // Account details (balance changes)
+          void queryClient.invalidateQueries({
+            queryKey: ['accounts', 'account', accountId],
+          });
+
+          // Balance timeline
+          void queryClient.invalidateQueries({
+            queryKey: ['balance-points', accountId],
+          });
+        });
+
+        // Invalidate active accounts list
+        void queryClient.invalidateQueries({
+          queryKey: ['accounts', 'active'],
         });
 
         // Close drawer on success

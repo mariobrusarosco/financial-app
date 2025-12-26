@@ -10,10 +10,13 @@ import {
 } from '@/domains/ui-system/components/chart';
 import { Route } from '@/routes/(auth)/route';
 import { startOfMonth, endOfMonth, format, parseISO, isValid } from 'date-fns';
+import { UseQueryResult } from '@tanstack/react-query';
+import { I_AccountTransactionsResponse } from '@/domains/transactions/types/types-and-interfaces';
 
 interface Props {
   title?: string;
   slug: string;
+  transactionsQuery: UseQueryResult<I_AccountTransactionsResponse, Error>;
 }
 
 // Chart configuration for shadcn/ui charts

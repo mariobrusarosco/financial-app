@@ -6,7 +6,17 @@ import { PlannerCTA } from '@/domains/global/components/planner-cta';
 import { AuthGuard } from '@/domains/auth/components/auth-guard';
 
 const authSearchSchema = z.object({
-  drawer: z.enum(['account-create', 'broker-create', 'transaction-create']).optional(),
+  drawer: z
+    .enum([
+      'account-create',
+      'broker-create',
+      'transaction-create',
+      'credit-card-create',
+      'investment-create',
+      'investment-data-create',
+      'category-manager',
+    ])
+    .optional(),
   from: z.string().optional(),
   to: z.string().optional(),
 });

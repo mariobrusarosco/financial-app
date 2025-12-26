@@ -23,20 +23,19 @@ interface I_GroupedCategory {
 }
 
 const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAnalyzerProps) => {
+  const transactionsToAnalyze = transactions.filter(transaction => !transaction.ignored);
+
   // 1. Hierarchical Grouping Algorithm
   const analytics = useMemo(() => {
     const categoryGroups: Record<string, I_GroupedCategory> = {};
 
-    transactions.forEach(transaction => {
+    transactionsToAnalyze.forEach(transaction => {
       const { category_tree: tree, category_id, category_name, amount } = transaction;
       const transactionAmount = parseFloat(amount);
 
-      // A "Main Category" is either the parent of the current category
-      // or the category itself if it's already a root category.
       const mainId = tree?.parent?.id || category_id || 'un-categorized';
       const mainName = tree?.parent?.name || tree?.name || category_name || 'Uncategorized';
 
-      // Initialize the Main Category group if it doesn't exist
       if (!categoryGroups[mainId]) {
         categoryGroups[mainId] = {
           id: mainId,
@@ -82,7 +81,7 @@ const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAn
       }));
   }, [transactions]);
 
-  const overallTotal = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+  const overallTotal = transactionsToAnalyze.reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
   const currencyFormatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -100,9 +99,9 @@ const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAn
   return (
     <div className="p-4 border rounded-lg bg-muted/30 space-y-4 h-fit">
       <div>
-        <h3 className="font-semibold text-lg">Category Distribution</h3>
-        <p className="text-sm text-muted-foreground">
-          Analysis of {transactions.length} transactions
+        <h3 className="text-lg">Category Distribution</h3>
+        <p className="text-xs text-muted-foreground">
+          Analysis of {transactionsToAnalyze.length} transactions
         </p>
       </div>
 

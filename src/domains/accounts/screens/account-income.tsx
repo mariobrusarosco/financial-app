@@ -40,8 +40,8 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
         className="grid grid-cols-[300px_1fr] justify-between gap-12"
       >
         <AccountTransactionAnalyzer transactions={transactions} type="income" />
+        <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />
       </div>
-      <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />
     </div>
   );
 };

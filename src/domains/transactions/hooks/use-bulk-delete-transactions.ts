@@ -13,9 +13,29 @@ export const useBulkDeleteTransactions = () => {
     onSuccess: result => {
       toast.success(`Successfully deleted ${result.deleted_count} transactions`);
 
-      // Invalidate transaction queries - using base key matches all variations
+      // Partial key invalidation - invalidates ALL variations
       void queryClient.invalidateQueries({
         queryKey: GET_ALL_TRANSACTIONS_QUERY_KEY(),
+      });
+
+      // Invalidate all account transactions (transactions may belong to multiple accounts)
+      void queryClient.invalidateQueries({
+        queryKey: ['account-transactions-paginated'],
+      });
+
+      // Invalidate all account details (balances may have changed)
+      void queryClient.invalidateQueries({
+        queryKey: ['accounts', 'account'],
+      });
+
+      // Invalidate all balance timelines
+      void queryClient.invalidateQueries({
+        queryKey: ['balance-points'],
+      });
+
+      // Invalidate active accounts list
+      void queryClient.invalidateQueries({
+        queryKey: ['accounts', 'active'],
       });
     },
     onError: error => {
@@ -34,9 +54,25 @@ export const useDeleteTransaction = () => {
     onSuccess: () => {
       toast.success('Transaction deleted successfully');
 
-      // Invalidate transaction queries - using base key matches all variations
+      // Partial key invalidation - invalidates ALL account transactions
+      // (we don't know which account this transaction belonged to from the API response)
       void queryClient.invalidateQueries({
         queryKey: ['account-transactions-paginated'],
+      });
+
+      // Invalidate all account details (balances may have changed)
+      void queryClient.invalidateQueries({
+        queryKey: ['accounts', 'account'],
+      });
+
+      // Invalidate all balance timelines
+      void queryClient.invalidateQueries({
+        queryKey: ['balance-points'],
+      });
+
+      // Invalidate active accounts list
+      void queryClient.invalidateQueries({
+        queryKey: ['accounts', 'active'],
       });
     },
     onError: error => {

@@ -27,7 +27,7 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
     [params, from, to]
   );
 
-  const query = useAccountTransactionsPaginated(slug, mergedParams, true);
+  const transactionsQuery = useAccountTransactionsPaginated(slug, mergedParams, true);
 
   return (
     <div className="space-y-6">
@@ -35,8 +35,12 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
         data-ui="account-overview-screen"
         className="grid grid-cols-[300px_1fr] justify-between gap-12"
       >
-        <AccountBalancePoints slug={slug} />
-        <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />
+        <AccountBalancePoints slug={slug} transactionsQuery={transactionsQuery} />
+        <AccountTransactionsList
+          params={mergedParams}
+          onParamsChange={setParams}
+          query={transactionsQuery}
+        />
       </div>
     </div>
   );

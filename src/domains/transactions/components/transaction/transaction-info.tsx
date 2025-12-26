@@ -25,7 +25,7 @@ export const TransactionInfo = ({
   };
 
   return (
-    <div className="md:min-w-[400px] flex flex-col">
+    <div className="md:w-full md:max-w-[450px] flex flex-col">
       <p className={cn('leading-tight text-primary', ignored && 'opacity-50')}>{description}</p>
       <p className="text-xs text-muted-foreground">{formatDate()}</p>
     </div>
