@@ -32,6 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Framework**: TanStack Start (full-stack React framework)
 - **Router**: TanStack Router with file-based routing
 - **UI Library**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Icons**: Lucide React v0.556.0
 - **Styling**: Tailwind CSS v4
 - **State Management**: React Query for server state, React Context for local state
 - **API Client**: Axios with centralized configuration
@@ -164,3 +165,49 @@ When setting up this project for the first time:
 ### shadcn UI
 
 Always use shadcn CLI to create shadcn UI components
+
+### Icons and UI Conventions
+
+#### Icon Library
+
+This project uses **Lucide React** (v0.556.0) for all icons. Lucide is configured in `components.json` and integrates with shadcn/ui.
+
+**Installation Pattern:**
+Always use named imports from 'lucide-react':
+
+```tsx
+import { IconName, AnotherIcon } from 'lucide-react';
+```
+
+**Common Usage Patterns:**
+
+1. **Static JSX rendering:**
+   ```tsx
+   import { Plus } from 'lucide-react';
+   <Plus className="h-4 w-4" />
+   ```
+
+2. **Component type reference (for dynamic rendering):**
+   ```tsx
+   const navigationItems = [
+     { icon: LayoutDashboard, label: 'Dashboard' }
+   ];
+   const Icon = item.icon;
+   <Icon className="h-5 w-5" />
+   ```
+
+3. **React.createElement (for conditional icons):**
+   ```tsx
+   const TransactionIcon = isCredit ? CreditCard : Wallet;
+   React.createElement(TransactionIcon, { className: 'h-3 w-3' })
+   ```
+
+**Standard Icon Sizes:**
+- `h-3 w-3` - Small icons (12px)
+- `h-4 w-4` - Standard buttons and controls (16px)
+- `h-5 w-5` - Navigation items (20px)
+- `h-6 w-6` - Larger UI elements (24px)
+
+**Resources:**
+- [Lucide Icon Library](https://lucide.dev)
+- Icon search and browser at https://lucide.dev/icons

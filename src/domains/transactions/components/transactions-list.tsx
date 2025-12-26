@@ -2,21 +2,23 @@ import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/domains/ui-system/components/button';
 import { Badge } from '@/domains/ui-system/components/badge';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
-import { Loader2, Trash2, CheckSquare, Square, Plus, Settings2, ArrowRightLeft } from 'lucide-react';
+import {
+  Loader2,
+  Trash2,
+  CheckSquare,
+  Square,
+  Plus,
+  Settings2,
+  ArrowRightLeft,
+} from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
-import { CategoryManager } from '@/domains/categories/components/category-manager';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/domains/ui-system/components/collapsible';
 import { PageHeader } from '@/domains/global/components';
 
 interface TransactionsListProps {
@@ -41,8 +43,7 @@ export const TransactionsList = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } =
-    useBulkDeleteTransactions();
+  const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
   const { mutate: updateTransaction } = useUpdateTransaction();
 
@@ -112,28 +113,28 @@ export const TransactionsList = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {meta ? `${meta.total} transactions found` : 'A complete record of all your financial transactions'}
+            {meta
+              ? `${meta.total} transactions found`
+              : 'A complete record of all your financial transactions'}
             {isPlaceholderData && <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin" />}
           </p>
-          <Link search={{ drawer: 'transaction-create' }}>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Transaction
-            </Button>
-          </Link>
-        </div>
 
-        <Collapsible className="w-100">
-          <CollapsibleTrigger asChild>
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Settings2 className="h-4 w-4 mr-2" />
-              Manage Categories
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4">
-            <CategoryManager />
-          </CollapsibleContent>
-        </Collapsible>
+          <div className="flex items-center gap-2">
+            <Link search={{ drawer: 'category-manager' }}>
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <Settings2 className="h-4 w-4 mr-2" />
+                Manage Categories
+              </Button>
+            </Link>
+
+            <Link search={{ drawer: 'transaction-create' }}>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Transaction
+              </Button>
+            </Link>
+          </div>
+        </div>
 
         {/* Pagination - At the top */}
         {meta && meta.total > meta.per_page && (
@@ -204,7 +205,9 @@ export const TransactionsList = ({
                 )}
                 <span>{isAllSelected ? 'Deselect All' : 'Select All'}</span>
               </button>
-              <span className="text-xs text-muted-foreground">{transactions.length} transactions</span>
+              <span className="text-xs text-muted-foreground">
+                {transactions.length} transactions
+              </span>
             </div>
 
             {transactions.map(transaction => (

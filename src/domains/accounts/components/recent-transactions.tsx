@@ -3,7 +3,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useAccountRecentTransactions } from '@/domains/transactions/hooks/use-account-transactions';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 
 interface RecentTransactionsProps {
   accountId?: string;

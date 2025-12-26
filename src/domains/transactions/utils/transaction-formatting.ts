@@ -179,7 +179,7 @@ export const getCurrencyClasses = (
 ) => {
   const isDebit = isDebitTransaction(movementType);
   const baseClasses = 'tabular-nums';
-  const colorClasses = isDebit ? 'text-red-500' : 'text-green-500';
+  const colorClasses = isDebit ? 'text-red-700/90' : 'text-teal-500/80';
   const sizeClasses = {
     default: 'font-medium',
     large: 'text-lg font-semibold',

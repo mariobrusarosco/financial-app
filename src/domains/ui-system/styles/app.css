@@ -147,7 +147,7 @@
 }
 
 .app-container {
-  @apply md:px-10 lg:px-20 lg:py-10;
+  @apply md:px-10 lg:px-20 lg:py-2;
 }
 
 .spinner {

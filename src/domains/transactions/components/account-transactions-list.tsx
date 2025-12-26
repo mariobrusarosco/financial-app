@@ -4,7 +4,7 @@ import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
 import { Badge } from '@/domains/ui-system/components/badge';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import {
   useBulkDeleteTransactions,
@@ -12,7 +12,7 @@ import {
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 
 import { AccountTransactionFilters } from './account-transaction-filters';
-import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus } from 'lucide-react';
+import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus, Settings2 } from 'lucide-react';
 import type {
   I_AccountTransactionsParams,
   I_TransactionResponse,
@@ -146,7 +146,7 @@ export const AccountTransactionsList = ({
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
   return (
-    <Surface data-ui="account-transactions-list" className="w-full flex-1">
+    <div data-ui="account-transactions-list" className="w-full flex-1">
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <div>
@@ -165,22 +165,35 @@ export const AccountTransactionsList = ({
               )}
             </CardDescription>
           </div>
-          <Link
-            to="."
-            search={((prev: any) => ({ ...prev, drawer: 'transaction-create' })) as any}
-          >
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Transaction
-            </Button>
-          </Link>
+
+          <div className="flex items-center gap-2">
+            <Link search={{ drawer: 'category-manager' }}>
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <Settings2 className="h-4 w-4 mr-2" />
+                Manage Categories
+              </Button>
+            </Link>
+
+            <Link
+              to="."
+              search={((prev: any) => ({ ...prev, drawer: 'transaction-create' })) as any}
+            >
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Transaction
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <AccountTransactionFilters params={params} onParamsChange={onParamsChange} />
 
         {/* Pagination - Moved to top */}
         {meta && meta.total > meta.per_page && (
-          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+          <div
+            data-ui="account-transactions-list-pagination"
+            className="flex items-center justify-between p-3 bg-muted/50 rounded-lg sticky top-0 z-10 bg-neutral-white shadow-lg"
+          >
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
                 Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
@@ -254,21 +267,25 @@ export const AccountTransactionsList = ({
                 </span>
               </div>
 
-              {transactions.map(transaction => (
-                <UnifiedTransactionItem
-                  key={transaction.id}
-                  transaction={transaction}
-                  mode="default"
-                  isEditing={editingId === transaction.id}
-                  isSelected={selectedIds.has(transaction.id)}
-                  onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-                  showCheckbox={true}
-                  onTriggerEditMode={handleEdit}
-                  onSave={handleSave}
-                  onCancel={handleCancel}
-                  onDelete={handleDelete}
-                />
-              ))}
+              <ul data-ui="account-transactions-list-items" className="pr-2 grid gap-3">
+                {transactions.map(transaction => (
+                  <UnifiedTransactionItem
+                    key={transaction.id}
+                    transaction={transaction}
+                    mode="default"
+                    isEditing={editingId === transaction.id}
+                    isSelected={selectedIds.has(transaction.id)}
+                    onSelectionChange={selected =>
+                      handleSelectTransaction(transaction.id, selected)
+                    }
+                    showCheckbox={true}
+                    onTriggerEditMode={handleEdit}
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </ul>
             </>
           ) : (
             <div className="text-center py-8">
@@ -301,6 +318,6 @@ export const AccountTransactionsList = ({
           )}
         </div>
       </div>
-    </Surface>
+    </div>
   );
 };
