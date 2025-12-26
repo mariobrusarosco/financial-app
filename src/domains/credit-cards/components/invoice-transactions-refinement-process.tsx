@@ -50,6 +50,7 @@ export const InvoiceTransactionsRefinementProcess = ({
         credit_card_id: transaction.credit_card_id,
         broker_id: transaction.broker_id,
         is_paid: transaction.is_paid,
+        ignored: transaction.ignored ?? false,
         type: transaction.movement_type,
         category: transaction.category || 'Credit Card',
         is_deleted: transaction.is_deleted,

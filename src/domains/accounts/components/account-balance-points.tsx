@@ -1,15 +1,15 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
-import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from '@/domains/ui-system/components/chart';
-import type { DateRange } from 'react-day-picker';
+import { Route } from '@/routes/(auth)/route';
+import { startOfMonth, endOfMonth, format, parseISO, isValid } from 'date-fns';
 
 interface Props {
   title?: string;
@@ -51,20 +51,11 @@ const mapBalancePointsToChartData = (balancePoints: I_BalancePoint[]) => {
     }));
 };
 
-const EmptyBalancePoints = ({
-  title,
-  dateRange,
-  setDateRange,
-}: {
-  title: string;
-  dateRange: DateRange;
-  setDateRange: (dateRange: DateRange) => void;
-}) => {
+const EmptyBalancePoints = ({ title }: { title: string }) => {
   return (
     <div data-ui="empty-balance-points">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-muted-foreground">{title}</p>
-        <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
       </div>
       <div className="flex items-center justify-center h-64 text-center">
         <div>
@@ -78,41 +69,26 @@ const EmptyBalancePoints = ({
   );
 };
 
-const getDefaultDateRange = (): DateRange => {
-  const today = new Date();
-  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-  return {
-    from: firstDayOfMonth,
-    to: lastDayOfMonth,
-  };
-};
-
 const formatDateForAPI = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return format(date, 'yyyy-MM-dd');
 };
 
 export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props) => {
-  const [dateRange, setDateRange] = useState<DateRange>(getDefaultDateRange());
+  const { from, to } = Route.useSearch();
 
   const apiDateRange = useMemo(() => {
-    if (!dateRange?.from || !dateRange?.to) {
-      const defaultRange = getDefaultDateRange();
-      return {
-        startDate: formatDateForAPI(defaultRange.from!),
-        endDate: formatDateForAPI(defaultRange.to!),
-      };
-    }
+    const today = new Date();
+    const defaultFrom = startOfMonth(today);
+    const defaultTo = endOfMonth(today);
+
+    const fromDate = from ? parseISO(from) : defaultFrom;
+    const toDate = to ? parseISO(to) : defaultTo;
 
     return {
-      startDate: formatDateForAPI(dateRange.from),
-      endDate: formatDateForAPI(dateRange.to),
+      startDate: formatDateForAPI(isValid(fromDate) ? fromDate : defaultFrom),
+      endDate: formatDateForAPI(isValid(toDate) ? toDate : defaultTo),
     };
-  }, [dateRange]);
+  }, [from, to]);
 
   const { data: balancePoints, isLoading: isLoadingBalancePoints } = useAccountBalancePoints(
     slug,
@@ -125,13 +101,13 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     [balancePoints]
   );
 
-  // Handle empty data
-  if (!balancePoints || balancePoints.length === 0) {
-    return <EmptyBalancePoints title={title} dateRange={dateRange} setDateRange={setDateRange} />;
-  }
-
   if (isLoadingBalancePoints) {
     return <div className="flex items-center justify-center h-64 text-center">Loading...</div>;
+  }
+
+  // Handle empty data
+  if (!balancePoints || balancePoints.length === 0) {
+    return <EmptyBalancePoints title={title} />;
   }
 
   return (
@@ -139,7 +115,6 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
       <div className="mb-6 min-w-80">
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-muted-foreground">{title}</p>
-          <DateRangePicker dateRange={dateRange} setDateRange={setDateRange} />
         </div>
         <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
           <AreaChart

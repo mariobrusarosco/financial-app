@@ -37,12 +37,12 @@ export const SubCategorySelector = ({
 
   const subCategories = useMemo(() => {
     if (!categoryId) return [];
-    
+
     const parent = findCategoryById(categories, categoryId);
     return parent?.children || [];
   }, [categories, categoryId]);
 
-  const selectedSubCategory = subCategories.find((c) => c.id === value);
+  const selectedSubCategory = subCategories.find(c => c.id === value);
 
   if (!categoryId || subCategories.length === 0) {
     return (
@@ -83,7 +83,7 @@ export const SubCategorySelector = ({
           <CommandList>
             <CommandEmpty>No sub-category found.</CommandEmpty>
             <CommandGroup>
-              {subCategories.map((category) => (
+              {subCategories.map(category => (
                 <CommandItem
                   key={category.id}
                   value={category.name}

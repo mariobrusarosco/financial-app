@@ -36,7 +36,7 @@ export const TransactionsRefinementProcess = ({
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
 
-  const { createStatement, isLoading: isCreating } = useCreateAccountStatement();
+  const { createStatement, isLoading: _isCreating } = useCreateAccountStatement();
 
   const handleCreateStatement = () => {
     if (statement) {
@@ -59,6 +59,7 @@ export const TransactionsRefinementProcess = ({
         credit_card_id: transaction.credit_card_id,
         broker_id: transaction.broker_id,
         is_paid: transaction.is_paid,
+        ignored: transaction.ignored ?? false,
         type: transaction.movement_type,
         category: transaction.category || 'General',
         is_deleted: transaction.is_deleted,

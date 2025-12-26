@@ -234,7 +234,7 @@ export const EditableTransactionsTable = ({
               </TableRow>
             ))}
 
-            {transactions.length === 0 && (
+            {editableTransactions.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                   No transactions yet.

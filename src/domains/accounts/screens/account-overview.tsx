@@ -27,14 +27,8 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
         className="grid grid-cols-[300px_1fr] justify-between gap-12"
       >
         <AccountBalancePoints slug={slug} />
-        <div className="p-4 border rounded-lg bg-muted/30">
-          <h3 className="font-semibold mb-2">Account Analysis</h3>
-          <p className="text-sm text-muted-foreground">
-            Analysis for {transactions.length} transactions...
-          </p>
-        </div>
+        <AccountTransactionsList params={params} onParamsChange={setParams} query={query} />
       </div>
-      <AccountTransactionsList params={params} onParamsChange={setParams} query={query} />
     </div>
   );
 };

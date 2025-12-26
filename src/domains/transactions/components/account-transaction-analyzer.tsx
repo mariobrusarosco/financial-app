@@ -90,7 +90,7 @@ const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAn
   });
 
   const isExpense = type === 'expense';
-  
+
   const colors = {
     bar: isExpense ? 'bg-red-500' : 'bg-green-500',
     subBar: isExpense ? 'bg-red-500/30' : 'bg-green-500/30',

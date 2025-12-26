@@ -43,9 +43,7 @@ export const TransactionItemCompact = ({
           <p className={cn('text-sm font-medium truncate', transaction.ignored && 'opacity-50')}>
             {transaction.description}
           </p>
-          <span className="text-xs text-muted-foreground">
-            {formatDateShort(transaction.date)}
-          </span>
+          <span className="text-xs text-muted-foreground">{formatDateShort(transaction.date)}</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>

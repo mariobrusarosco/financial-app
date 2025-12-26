@@ -27,9 +27,9 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
     enabled: false, // Don't fetch, just read from cache
   });
 
-  const { createStatement, isLoading: isCreating } = useCreateAccountStatement();
+  const { createStatement, isLoading: _isCreating } = useCreateAccountStatement();
 
-  const handleCreateStatement = () => {
+  const _handleCreateStatement = () => {
     if (statement) {
       createStatement({
         account_id: accountId,

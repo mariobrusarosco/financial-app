@@ -162,9 +162,9 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
                 <label htmlFor={field.name} className="text-sm font-medium text-foreground">
                   Date:
                 </label>
-                <TransactionDatePicker 
-                  date={field.state.value ? new Date(field.state.value) : new Date()} 
-                  setDate={(date) => field.handleChange(date ? date.toISOString().split('T')[0] : '')} 
+                <TransactionDatePicker
+                  date={field.state.value ? new Date(field.state.value) : new Date()}
+                  setDate={date => field.handleChange(date ? date.toISOString().split('T')[0] : '')}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
@@ -243,23 +243,23 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
 
           {/* Column 2b: Sub-Category Selection */}
           <form.Field name="sub_category">
-             {field => (
-                <form.Subscribe
-                  selector={state => state.values.category}
-                  children={currentCategoryId => (
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Sub-Category</label>
-                      <SubCategorySelector
-                        categoryId={currentCategoryId}
-                        value={field.state.value || ''}
-                        onValueChange={field.handleChange}
-                        placeholder="Select sub-category..."
-                        className="w-full"
-                      />
-                    </div>
-                  )}
-                />
-             )}
+            {field => (
+              <form.Subscribe
+                selector={state => state.values.category}
+                children={currentCategoryId => (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Sub-Category</label>
+                    <SubCategorySelector
+                      categoryId={currentCategoryId}
+                      value={field.state.value || ''}
+                      onValueChange={field.handleChange}
+                      placeholder="Select sub-category..."
+                      className="w-full"
+                    />
+                  </div>
+                )}
+              />
+            )}
           </form.Field>
         </div>
 

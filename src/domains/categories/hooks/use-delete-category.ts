@@ -13,8 +13,8 @@ export const useDeleteCategory = () => {
       toast.success('Category deleted successfully');
       queryClient.invalidateQueries({ queryKey: GET_ALL_CATEGORIES_QUERY_KEY() });
     },
-    onError: (error) => {
+    onError: error => {
       handleErrorWithToast(error, { userMessage: 'Failed to delete category' });
-    }
+    },
   });
 };

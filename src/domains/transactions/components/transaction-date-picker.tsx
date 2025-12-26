@@ -33,9 +33,11 @@ export function TransactionDatePicker({ date, setDate }: Props) {
           mode="single"
           selected={date}
           captionLayout="dropdown"
-          onSelect={date => {
-            setDate(date);
-            setIsOpen(false);
+          onSelect={selectedDate => {
+            if (selectedDate) {
+              setDate(selectedDate);
+              setIsOpen(false);
+            }
           }}
         />
       </PopoverContent>

@@ -12,7 +12,6 @@ export const useUpdateTransaction = (onUpdateSuccess?: () => void) => {
     mutationFn: ({ id, updates }: { id: string; updates: Partial<I_TransactionResponse> }) =>
       updateTransaction(id, updates),
     onSuccess: data => {
-
       onUpdateSuccess?.();
       toast.success('Transaction updated successfully');
       // Invalidate account transactions caches for all affected accounts

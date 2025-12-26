@@ -15,8 +15,8 @@ export const useUpdateCategory = () => {
       toast.success('Category updated successfully');
       queryClient.invalidateQueries({ queryKey: GET_ALL_CATEGORIES_QUERY_KEY() });
     },
-    onError: (error) => {
+    onError: error => {
       handleErrorWithToast(error, { userMessage: 'Failed to update category' });
-    }
+    },
   });
 };

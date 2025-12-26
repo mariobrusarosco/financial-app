@@ -26,5 +26,5 @@ export const CategoriesApi = {
   updateCategoryOrder: async (id: string, display_order: number): Promise<I_Category> => {
     const { data } = await apiClient.patch<I_Category>(`${BASE_URL}/${id}`, { display_order });
     return data;
-  }
+  },
 };

@@ -182,32 +182,34 @@ import { IconName, AnotherIcon } from 'lucide-react';
 **Common Usage Patterns:**
 
 1. **Static JSX rendering:**
+
    ```tsx
    import { Plus } from 'lucide-react';
-   <Plus className="h-4 w-4" />
+   <Plus className="h-4 w-4" />;
    ```
 
 2. **Component type reference (for dynamic rendering):**
+
    ```tsx
-   const navigationItems = [
-     { icon: LayoutDashboard, label: 'Dashboard' }
-   ];
+   const navigationItems = [{ icon: LayoutDashboard, label: 'Dashboard' }];
    const Icon = item.icon;
-   <Icon className="h-5 w-5" />
+   <Icon className="h-5 w-5" />;
    ```
 
 3. **React.createElement (for conditional icons):**
    ```tsx
    const TransactionIcon = isCredit ? CreditCard : Wallet;
-   React.createElement(TransactionIcon, { className: 'h-3 w-3' })
+   React.createElement(TransactionIcon, { className: 'h-3 w-3' });
    ```
 
 **Standard Icon Sizes:**
+
 - `h-3 w-3` - Small icons (12px)
 - `h-4 w-4` - Standard buttons and controls (16px)
 - `h-5 w-5` - Navigation items (20px)
 - `h-6 w-6` - Larger UI elements (24px)
 
 **Resources:**
+
 - [Lucide Icon Library](https://lucide.dev)
 - Icon search and browser at https://lucide.dev/icons

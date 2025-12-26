@@ -19,7 +19,6 @@ interface EditTransactionProps {
   onCancel: () => void;
 }
 
-
 export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransactionProps) => {
   const { data: accounts } = useAccounts();
   const { data: creditCards } = useCreditCards(undefined);
@@ -31,11 +30,11 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
     },
     onSubmit: ({ value }) => {
       const updates: Partial<I_TransactionResponse> = {};
-      
+
       // Generic shallow diff: Compare current values with initial transaction
-      Object.keys(value).forEach((key) => {
+      Object.keys(value).forEach(key => {
         const field = key as keyof I_TransactionResponse;
-        
+
         // We compare the value in the form with the original transaction value
         // Note: amount is converted to string for the form, so we compare strings
         if (String(value[field]) !== String((transaction as any)[field])) {
@@ -49,8 +48,6 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
         onCancel(); // Nothing actually changed
       }
     },
-
-
   });
 
   // Determine display info for locked fields
@@ -168,9 +165,9 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
                 <label htmlFor={field.name} className="text-xs font-medium text-gray-700">
                   Date
                 </label>
-                <TransactionDatePicker 
-                  date={field.state.value ? new Date(field.state.value) : new Date()} 
-                  setDate={(date) => field.handleChange(date ? date.toISOString().split('T')[0] : '')} 
+                <TransactionDatePicker
+                  date={field.state.value ? new Date(field.state.value) : new Date()}
+                  setDate={date => field.handleChange(date ? date.toISOString().split('T')[0] : '')}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive">{field.state.meta.errors.join(', ')}</p>
@@ -238,7 +235,6 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
               </div>
             )}
           </form.Field>
-
         </div>
 
         {/* Third Row - Locked Payment Method and Payment Status */}
@@ -259,10 +255,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-700">Payment Status</label>
                 <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={field.state.value}
-                    onCheckedChange={field.handleChange}
-                  />
+                  <Switch checked={field.state.value} onCheckedChange={field.handleChange} />
                   <label className="text-xs text-muted-foreground">
                     {field.state.value ? 'Paid' : 'Unpaid'}
                   </label>
@@ -279,10 +272,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-700">Ignore Transaction</label>
                 <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={field.state.value}
-                    onCheckedChange={field.handleChange}
-                  />
+                  <Switch checked={field.state.value} onCheckedChange={field.handleChange} />
                   <label className="text-xs text-muted-foreground">
                     {field.state.value ? 'Ignored' : 'Active'}
                   </label>

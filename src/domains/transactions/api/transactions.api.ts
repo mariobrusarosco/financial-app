@@ -9,13 +9,13 @@ import type {
   I_TransactionResponse,
 } from '../types/types-and-interfaces';
 
-
 export const transactionsApi = {
-  createTransaction: async (transaction: I_CreateTransactionForm): Promise<I_TransactionResponse> => {
+  createTransaction: async (
+    transaction: I_CreateTransactionForm
+  ): Promise<I_TransactionResponse> => {
     const response = await apiClient.post<I_TransactionResponse>('/transactions', transaction);
     return response.data;
   },
-
 
   createBulkTransactions: async (
     payload: I_BulkTransactionRequestPayload
@@ -92,12 +92,6 @@ export const updateTransaction = async (
   id: string,
   updates: Partial<I_TransactionResponse>
 ): Promise<I_TransactionResponse> => {
-  const response = await apiClient.patch<I_TransactionResponse>(
-    `/transactions/${id}`,
-    updates
-  );
+  const response = await apiClient.patch<I_TransactionResponse>(`/transactions/${id}`, updates);
   return response.data;
 };
-
-
-

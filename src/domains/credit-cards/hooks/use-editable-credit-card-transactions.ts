@@ -25,6 +25,7 @@ export const useEditableCreditCardTransactions = ({
       credit_card_id: creditCardId,
       is_deleted: false,
       is_paid: false,
+      ignored: false,
       date: transaction.date,
       amount: transaction.amount,
       description: transaction.description,
@@ -45,10 +46,10 @@ export const useEditableCreditCardTransactions = ({
     setTransactionInEditMode(transaction);
   };
 
-  const updateTransactionInEditionMode = (updatedTransaction: I_TransactionResponse) => {
+  const updateTransactionInEditionMode = (updates: Partial<I_TransactionResponse> & { id: string }) => {
     setEditableTransactions(transactions => {
       return transactions.map(transaction =>
-        transaction.id === updatedTransaction.id ? updatedTransaction : transaction
+        transaction.id === updates.id ? { ...transaction, ...updates } : transaction
       );
     });
     setTransactionInEditMode(null);

@@ -16,6 +16,7 @@ This guide covers the UI architecture, component usage, styling conventions, and
 ## Overview
 
 Better Call Buffet uses a modern, component-based UI architecture built on:
+
 - **shadcn/ui** - Copy-paste component library built on Radix UI
 - **Lucide React** - Icon library
 - **Tailwind CSS v4** - Utility-first CSS framework
@@ -25,12 +26,12 @@ Better Call Buffet uses a modern, component-based UI architecture built on:
 
 ### Core UI Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| shadcn/ui | Latest | Component library (Radix UI + Tailwind) |
-| Lucide React | 0.556.0 | Icon library |
-| Tailwind CSS | v4 | Styling framework |
-| Radix UI | Various | Accessible UI primitives |
+| Technology   | Version | Purpose                                 |
+| ------------ | ------- | --------------------------------------- |
+| shadcn/ui    | Latest  | Component library (Radix UI + Tailwind) |
+| Lucide React | 0.556.0 | Icon library                            |
+| Tailwind CSS | v4      | Styling framework                       |
+| Radix UI     | Various | Accessible UI primitives                |
 
 ### Related Documentation
 
@@ -56,22 +57,23 @@ npx shadcn@latest add dialog
 ### Component Location
 
 All shadcn/ui components are located in:
+
 ```
 src/domains/ui-system/components/
 ```
 
 ### Common Components
 
-| Component | Use Case | Example |
-|-----------|----------|---------|
-| `Button` | Actions, form submissions | `<Button variant="default">Save</Button>` |
-| `Card` | Content containers | `<Card><CardHeader>...</CardHeader></Card>` |
-| `Dialog` | Modal dialogs | `<Dialog><DialogTrigger>...</DialogTrigger></Dialog>` |
-| `Drawer` | Side panels | `<Drawer><DrawerTrigger>...</DrawerTrigger></Drawer>` |
-| `Select` | Dropdowns | `<Select><SelectTrigger>...</SelectTrigger></Select>` |
-| `Input` | Text input | `<Input type="text" placeholder="..." />` |
-| `Table` | Data tables | `<Table><TableHeader>...</TableHeader></Table>` |
-| `Tabs` | Tabbed interfaces | `<Tabs><TabsList>...</TabsList></Tabs>` |
+| Component | Use Case                  | Example                                               |
+| --------- | ------------------------- | ----------------------------------------------------- |
+| `Button`  | Actions, form submissions | `<Button variant="default">Save</Button>`             |
+| `Card`    | Content containers        | `<Card><CardHeader>...</CardHeader></Card>`           |
+| `Dialog`  | Modal dialogs             | `<Dialog><DialogTrigger>...</DialogTrigger></Dialog>` |
+| `Drawer`  | Side panels               | `<Drawer><DrawerTrigger>...</DrawerTrigger></Drawer>` |
+| `Select`  | Dropdowns                 | `<Select><SelectTrigger>...</SelectTrigger></Select>` |
+| `Input`   | Text input                | `<Input type="text" placeholder="..." />`             |
+| `Table`   | Data tables               | `<Table><TableHeader>...</TableHeader></Table>`       |
+| `Tabs`    | Tabbed interfaces         | `<Tabs><TabsList>...</TabsList></Tabs>`               |
 
 ### Customization
 
@@ -80,18 +82,15 @@ Components can be customized directly in the codebase:
 ```tsx
 // src/domains/ui-system/components/button.tsx
 // Modify variants, sizes, or add new ones
-const buttonVariants = cva(
-  "inline-flex items-center justify-center...",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground...",
-        destructive: "bg-destructive text-destructive-foreground...",
-        // Add custom variants here
-      }
-    }
-  }
-)
+const buttonVariants = cva('inline-flex items-center justify-center...', {
+  variants: {
+    variant: {
+      default: 'bg-primary text-primary-foreground...',
+      destructive: 'bg-destructive text-destructive-foreground...',
+      // Add custom variants here
+    },
+  },
+});
 ```
 
 ### Component Composition
@@ -104,9 +103,7 @@ shadcn/ui components are designed for composition:
     <CardTitle>Transaction Details</CardTitle>
     <CardDescription>View and edit transaction information</CardDescription>
   </CardHeader>
-  <CardContent>
-    {/* Content here */}
-  </CardContent>
+  <CardContent>{/* Content here */}</CardContent>
   <CardFooter>
     <Button>Save Changes</Button>
   </CardFooter>
@@ -120,6 +117,7 @@ shadcn/ui components are designed for composition:
 Lucide React is the standard icon library for this project. It's tree-shakable, TypeScript-friendly, and integrates seamlessly with shadcn/ui.
 
 **Configuration:** Set in `components.json`:
+
 ```json
 {
   "iconLibrary": "lucide"
@@ -146,9 +144,18 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 function ActionButtons() {
   return (
     <div>
-      <Button><Plus className="h-4 w-4 mr-2" />Add</Button>
-      <Button><Edit className="h-4 w-4 mr-2" />Edit</Button>
-      <Button><Trash2 className="h-4 w-4 mr-2" />Delete</Button>
+      <Button>
+        <Plus className="h-4 w-4 mr-2" />
+        Add
+      </Button>
+      <Button>
+        <Edit className="h-4 w-4 mr-2" />
+        Edit
+      </Button>
+      <Button>
+        <Trash2 className="h-4 w-4 mr-2" />
+        Delete
+      </Button>
     </div>
   );
 }
@@ -178,7 +185,7 @@ const navigationItems: NavigationItem[] = [
 function Navigation() {
   return (
     <nav>
-      {navigationItems.map((item) => {
+      {navigationItems.map(item => {
         const Icon = item.icon;
         return (
           <a key={item.href} href={item.href}>
@@ -213,21 +220,22 @@ When the icon name conflicts with a component name:
 ```tsx
 import { Calendar as CalendarIcon } from 'lucide-react';
 
-<CalendarIcon className="h-4 w-4" />
+<CalendarIcon className="h-4 w-4" />;
 ```
 
 ### Standard Icon Sizes
 
 Follow these size conventions for consistency:
 
-| Size Class | Pixels | Use Case | Example |
-|------------|--------|----------|---------|
-| `h-3 w-3` | 12px | Small inline icons, badges | Transaction type indicators |
-| `h-4 w-4` | 16px | Button icons, form controls | Add/Edit/Delete buttons |
-| `h-5 w-5` | 20px | Navigation, list items | Main navigation icons |
-| `h-6 w-6` | 24px | Large UI elements, headers | Page titles, hero sections |
+| Size Class | Pixels | Use Case                    | Example                     |
+| ---------- | ------ | --------------------------- | --------------------------- |
+| `h-3 w-3`  | 12px   | Small inline icons, badges  | Transaction type indicators |
+| `h-4 w-4`  | 16px   | Button icons, form controls | Add/Edit/Delete buttons     |
+| `h-5 w-5`  | 20px   | Navigation, list items      | Main navigation icons       |
+| `h-6 w-6`  | 24px   | Large UI elements, headers  | Page titles, hero sections  |
 
 **Example:**
+
 ```tsx
 // Navigation - use h-5 w-5
 <LayoutDashboard className="h-5 w-5" />
@@ -241,24 +249,24 @@ Follow these size conventions for consistency:
 
 ### Common Icons Used in the Project
 
-| Icon | Import | Use Case |
-|------|--------|----------|
-| `LayoutDashboard` | `lucide-react` | Dashboard navigation |
-| `CreditCard` | `lucide-react` | Credit cards, payment methods |
-| `Building2` | `lucide-react` | Bank accounts, institutions |
-| `TrendingUp` | `lucide-react` | Investments, growth |
-| `Receipt` | `lucide-react` | Transactions |
-| `Calendar` | `lucide-react` | Dates, scheduling |
-| `Tag` | `lucide-react` | Categories, labels |
-| `Wallet` | `lucide-react` | Expenses, debit transactions |
-| `Plus` | `lucide-react` | Add actions |
-| `Edit` | `lucide-react` | Edit actions |
-| `Trash2` | `lucide-react` | Delete actions |
-| `ChevronDown` | `lucide-react` | Dropdowns, expandable items |
-| `ChevronLeft`/`ChevronRight` | `lucide-react` | Pagination, navigation |
-| `X` | `lucide-react` | Close, dismiss |
-| `Loader2` | `lucide-react` | Loading states |
-| `Filter` | `lucide-react` | Filtering options |
+| Icon                         | Import         | Use Case                      |
+| ---------------------------- | -------------- | ----------------------------- |
+| `LayoutDashboard`            | `lucide-react` | Dashboard navigation          |
+| `CreditCard`                 | `lucide-react` | Credit cards, payment methods |
+| `Building2`                  | `lucide-react` | Bank accounts, institutions   |
+| `TrendingUp`                 | `lucide-react` | Investments, growth           |
+| `Receipt`                    | `lucide-react` | Transactions                  |
+| `Calendar`                   | `lucide-react` | Dates, scheduling             |
+| `Tag`                        | `lucide-react` | Categories, labels            |
+| `Wallet`                     | `lucide-react` | Expenses, debit transactions  |
+| `Plus`                       | `lucide-react` | Add actions                   |
+| `Edit`                       | `lucide-react` | Edit actions                  |
+| `Trash2`                     | `lucide-react` | Delete actions                |
+| `ChevronDown`                | `lucide-react` | Dropdowns, expandable items   |
+| `ChevronLeft`/`ChevronRight` | `lucide-react` | Pagination, navigation        |
+| `X`                          | `lucide-react` | Close, dismiss                |
+| `Loader2`                    | `lucide-react` | Loading states                |
+| `Filter`                     | `lucide-react` | Filtering options             |
 
 ### Icon Resources
 
@@ -275,6 +283,7 @@ This project uses Tailwind CSS v4 for styling. All styles should use Tailwind ut
 ### Common Utility Patterns
 
 #### Layout
+
 ```tsx
 // Flexbox
 <div className="flex items-center justify-between">
@@ -290,6 +299,7 @@ This project uses Tailwind CSS v4 for styling. All styles should use Tailwind ut
 ```
 
 #### Typography
+
 ```tsx
 <h1 className="text-2xl font-bold">
 <p className="text-sm text-muted-foreground">
@@ -297,6 +307,7 @@ This project uses Tailwind CSS v4 for styling. All styles should use Tailwind ut
 ```
 
 #### Colors
+
 ```tsx
 // Use theme colors
 <div className="bg-primary text-primary-foreground">
@@ -309,6 +320,7 @@ This project uses Tailwind CSS v4 for styling. All styles should use Tailwind ut
 ```
 
 #### Responsive Design
+
 ```tsx
 <div className="w-full md:w-1/2 lg:w-1/3">
 <div className="hidden md:block">
@@ -318,11 +330,13 @@ This project uses Tailwind CSS v4 for styling. All styles should use Tailwind ut
 ### Custom Styles Location
 
 Domain-specific styles are located in:
+
 ```
 src/domains/ui-system/styles/
 ```
 
 Global app styles:
+
 ```
 src/domains/ui-system/styles/app.css
 ```
@@ -334,10 +348,12 @@ src/domains/ui-system/styles/app.css
 The project uses the **Rose theme** configured in `tailwind.config.ts`.
 
 #### Primary Colors
+
 - `primary` - Main brand color (Rose-based)
 - `primary-foreground` - Text on primary backgrounds
 
 #### Semantic Colors
+
 - `secondary` - Secondary actions, less prominent elements
 - `muted` - Subtle backgrounds, disabled states
 - `accent` - Highlights, hover states
@@ -345,6 +361,7 @@ The project uses the **Rose theme** configured in `tailwind.config.ts`.
 - `success` - Success states, positive actions
 
 #### UI Colors
+
 - `background` - Page background
 - `foreground` - Main text color
 - `card` - Card backgrounds
@@ -355,6 +372,7 @@ The project uses the **Rose theme** configured in `tailwind.config.ts`.
 ### Typography
 
 Tailwind's default typography scale is used:
+
 - `text-xs` - 12px
 - `text-sm` - 14px
 - `text-base` - 16px (default)
@@ -366,6 +384,7 @@ Tailwind's default typography scale is used:
 ### Spacing
 
 Follow the Tailwind spacing scale (1 unit = 0.25rem = 4px):
+
 - `gap-2` - 8px
 - `gap-4` - 16px
 - `gap-6` - 24px
@@ -389,14 +408,16 @@ import { Loader2 } from 'lucide-react';
   ) : (
     'Submit'
   )}
-</Button>
+</Button>;
 
 // Page loading state
-{isLoading && (
-  <div className="flex items-center justify-center p-8">
-    <Loader2 className="h-6 w-6 animate-spin" />
-  </div>
-)}
+{
+  isLoading && (
+    <div className="flex items-center justify-center p-8">
+      <Loader2 className="h-6 w-6 animate-spin" />
+    </div>
+  );
+}
 ```
 
 ### Empty States
@@ -467,9 +488,7 @@ function AccountCard({ account }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-      <CardContent>
-        {/* Account details */}
-      </CardContent>
+      <CardContent>{/* Account details */}</CardContent>
     </Card>
   );
 }
@@ -522,7 +541,7 @@ const navItems = [
 function Sidebar() {
   return (
     <nav className="space-y-2">
-      {navItems.map((item) => {
+      {navItems.map(item => {
         const Icon = item.icon;
         return (
           <a
@@ -571,6 +590,7 @@ function Sidebar() {
 4. **Focus states** - Maintain visible focus indicators
 
 **Example:**
+
 ```tsx
 // Good - Accessible icon button
 <Button variant="ghost" size="icon" aria-label="Edit transaction">

@@ -1,4 +1,8 @@
-import { DrawerHeader, DrawerTitle, DrawerDescription } from '@/domains/ui-system/components/drawer';
+import {
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from '@/domains/ui-system/components/drawer';
 import { CategoryManager } from './category-manager';
 
 export const CategoryManagerDrawer = () => {

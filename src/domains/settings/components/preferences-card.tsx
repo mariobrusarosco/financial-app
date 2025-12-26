@@ -29,9 +29,7 @@ export const PreferencesCard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-medium">Notifications</h3>
-              <p className="text-sm text-muted-foreground">
-                Manage how you receive notifications
-              </p>
+              <p className="text-sm text-muted-foreground">Manage how you receive notifications</p>
             </div>
             <Badge variant="outline">Enabled</Badge>
           </div>

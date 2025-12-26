@@ -77,7 +77,7 @@ export const CategorySelector = ({
                   key={category.id}
                   value={category.name} // CommandItem value is usually for filtering, better use name
                   onSelect={() => {
-                    onValueChange(category.id); 
+                    onValueChange(category.id);
                     setIsOpen(false);
                   }}
                 >
@@ -87,9 +87,7 @@ export const CategorySelector = ({
                       value === category.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
-                  <span className="flex items-center gap-2">
-                    {category.name}
-                  </span>
+                  <span className="flex items-center gap-2">{category.name}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

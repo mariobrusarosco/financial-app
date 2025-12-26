@@ -28,11 +28,9 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
       data-ui="broker-card"
     >
       <div className="flex items-start justify-between px-6 py-5">
-        <div className="">
-          <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
-            {broker.name}
-          </h3>
-        </div>
+        <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
+          {broker.name}
+        </h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button

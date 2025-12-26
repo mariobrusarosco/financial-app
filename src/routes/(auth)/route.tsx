@@ -1,25 +1,21 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { z } from 'zod';
 import { AppLayout } from '@/domains/ui-system/components/app-layout';
 import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { PlannerCTA } from '@/domains/global/components/planner-cta';
 import { AuthGuard } from '@/domains/auth/components/auth-guard';
 
-interface AuthSearchParams {
-  drawer?: 'account-create' | 'broker-create' | 'transaction-create';
-}
+const authSearchSchema = z.object({
+  drawer: z.enum(['account-create', 'broker-create', 'transaction-create']).optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
+});
+
+export type AuthSearchParams = z.infer<typeof authSearchSchema>;
 
 export const Route = createFileRoute('/(auth)')({
   component: AuthLayoutComponent,
-  validateSearch: (search: Record<string, unknown>): AuthSearchParams => {
-    const drawer = search.drawer;
-    if (
-      typeof drawer === 'string' &&
-      ['account-create', 'broker-create', 'transaction-create'].includes(drawer)
-    ) {
-      return { drawer: drawer as AuthSearchParams['drawer'] };
-    }
-    return {};
-  },
+  validateSearch: authSearchSchema,
 });
 
 function AuthLayoutComponent() {

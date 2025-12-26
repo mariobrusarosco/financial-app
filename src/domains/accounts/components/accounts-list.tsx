@@ -19,14 +19,12 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       data-ui="account-card"
     >
       <div className="flex items-start justify-between px-6 py-5">
-        <div className="">
-          <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
-            {account.name}
-          </h3>
-          {/* <Badge variant="outline" className="bg-primary/20 text-primary border-none">
+        <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
+          {account.name}
+        </h3>
+        {/* <Badge variant="outline" className="bg-primary/20 text-primary border-none">
             {account.type}
           </Badge> */}
-        </div>
         <Link
           to="/accounts/$slug"
           params={{ slug: account.id }}

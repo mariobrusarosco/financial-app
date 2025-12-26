@@ -39,11 +39,11 @@ export const HierarchicalCategorySelector = ({
   const currentCategory = findCategoryById(categories, value);
 
   // Flatten categories for rendering with hierarchy information
-  const flattenedCategories: Array<{
+  const flattenedCategories: {
     category: I_CategoryTreeNode;
     isChild: boolean;
     parentName?: string;
-  }> = [];
+  }[] = [];
 
   categories.forEach(parent => {
     // Add parent category

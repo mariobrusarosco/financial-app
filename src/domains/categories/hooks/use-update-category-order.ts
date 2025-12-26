@@ -11,13 +11,13 @@ export const useUpdateCategoryOrder = () => {
       CategoriesApi.updateCategoryOrder(id, display_order),
     onSuccess: () => {
       // Order updates might be frequent or drag-driven, maybe skip toast or use a subtle one?
-      // I'll skip toast for DnD to reduce noise, or verify with user. 
+      // I'll skip toast for DnD to reduce noise, or verify with user.
       // User style seems to be "toast on success" generally.
       // But for DnD usually we don't spam.
       queryClient.invalidateQueries({ queryKey: GET_ALL_CATEGORIES_QUERY_KEY() });
     },
-    onError: (error) => {
+    onError: error => {
       handleErrorWithToast(error, { userMessage: 'Failed to update category order' });
-    }
+    },
   });
 };
