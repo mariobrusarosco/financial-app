@@ -4,15 +4,21 @@ import { TransactionsErrorState } from '../components/transactions-error-state';
 import { TransactionsLoadingState } from '../components/transactions-loading-state';
 import { TransactionsEmptyState } from '../components/transactions-empty-state';
 import { TransactionsList } from '../components/transactions-list';
+import { Route } from '@/routes/(auth)/route';
 
 const ITEMS_PER_PAGE = 20;
 
 export const TransactionsMainScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { from, to } = Route.useSearch();
 
   const { data, isLoading, error, isPlaceholderData } = useAllTransactionsWithPagination(
     currentPage,
-    ITEMS_PER_PAGE
+    ITEMS_PER_PAGE,
+    {
+      date_from: from,
+      date_to: to,
+    }
   );
 
   const transactions = data?.data || [];

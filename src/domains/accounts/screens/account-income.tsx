@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AccountTransactionsList } from '@/domains/transactions/components/account-transactions-list';
 import { AccountBalancePoints } from '@/domains/accounts/components/account-balance-points';
 import AccountTransactionAnalyzer from '@/domains/transactions/components/account-transaction-analyzer';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
+import { Route } from '@/routes/(auth)/route';
 
 interface AccountIncomeScreenProps {
   slug: string;
 }
 
 export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
+  const { from, to } = Route.useSearch();
   const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
     per_page: 20,
@@ -18,7 +20,16 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
     movement_type: 'income',
   });
 
-  const query = useAccountTransactionsPaginated(slug, params, true);
+  const mergedParams = useMemo(
+    () => ({
+      ...params,
+      date_from: from,
+      date_to: to,
+    }),
+    [params, from, to]
+  );
+
+  const query = useAccountTransactionsPaginated(slug, mergedParams, true);
 
   const transactions = query.data?.data || [];
 
@@ -30,7 +41,7 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
       >
         <AccountTransactionAnalyzer transactions={transactions} type="income" />
       </div>
-      <AccountTransactionsList params={params} onParamsChange={setParams} query={query} />
+      <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />
     </div>
   );
 };

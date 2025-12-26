@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AccountTransactionsList } from '@/domains/transactions/components/account-transactions-list';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
 import AccountTransactionAnalyzer from '@/domains/transactions/components/account-transaction-analyzer';
+import { Route } from '@/routes/(auth)/route';
 
 interface AccountExpensesScreenProps {
   slug: string;
 }
 
 export const AccountExpensesScreen = ({ slug }: AccountExpensesScreenProps) => {
+  const { from, to } = Route.useSearch();
   const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
     per_page: 20,
@@ -17,7 +19,16 @@ export const AccountExpensesScreen = ({ slug }: AccountExpensesScreenProps) => {
     movement_type: 'expense',
   });
 
-  const query = useAccountTransactionsPaginated(slug, params, true);
+  const mergedParams = useMemo(
+    () => ({
+      ...params,
+      date_from: from,
+      date_to: to,
+    }),
+    [params, from, to]
+  );
+
+  const query = useAccountTransactionsPaginated(slug, mergedParams, true);
   const transactions = query.data?.data || [];
 
   return (
@@ -28,7 +39,7 @@ export const AccountExpensesScreen = ({ slug }: AccountExpensesScreenProps) => {
       >
         <AccountTransactionAnalyzer transactions={transactions} type="expense" />
       </div>
-      <AccountTransactionsList params={params} onParamsChange={setParams} query={query} />
+      <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />
     </div>
   );
 };

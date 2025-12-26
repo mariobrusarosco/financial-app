@@ -3,8 +3,21 @@
 import { useMemo } from 'react';
 import { Route } from '@/routes/(auth)/route';
 import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
+import { Button } from '@/domains/ui-system/components/button';
 import type { DateRange } from 'react-day-picker';
-import { format, parseISO, startOfMonth, endOfMonth, isValid } from 'date-fns';
+import {
+  format,
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+  isValid,
+  subDays,
+  subMonths,
+  startOfYear,
+  endOfYear,
+  isSameDay,
+} from 'date-fns';
+import { cn } from '@/domains/ui-system/utils';
 
 const formatDateForURL = (date: Date): string => {
   return format(date, 'yyyy-MM-dd');
@@ -17,6 +30,49 @@ const getDefaultDateRange = (): DateRange => {
     to: endOfMonth(today),
   };
 };
+
+interface Preset {
+  label: string;
+  getValue: () => DateRange;
+}
+
+const PRESETS: Preset[] = [
+  {
+    label: 'Today',
+    getValue: () => {
+      const today = new Date();
+      return { from: today, to: today };
+    },
+  },
+  {
+    label: '30d',
+    getValue: () => {
+      const today = new Date();
+      return { from: subDays(today, 30), to: today };
+    },
+  },
+  {
+    label: '3M',
+    getValue: () => {
+      const today = new Date();
+      return { from: subMonths(today, 3), to: today };
+    },
+  },
+  {
+    label: '6M',
+    getValue: () => {
+      const today = new Date();
+      return { from: subMonths(today, 6), to: today };
+    },
+  },
+  {
+    label: 'YTD',
+    getValue: () => {
+      const today = new Date();
+      return { from: startOfYear(today), to: endOfYear(today) };
+    },
+  },
+];
 
 export const GlobalDateFilter = () => {
   const { from, to } = Route.useSearch();
@@ -35,7 +91,7 @@ export const GlobalDateFilter = () => {
   }, [from, to]);
 
   const handleSetDateRange = (range: DateRange) => {
-    navigate({
+    void navigate({
       search: prev => ({
         ...prev,
         from: range?.from ? formatDateForURL(range.from) : undefined,
@@ -44,8 +100,40 @@ export const GlobalDateFilter = () => {
     });
   };
 
+  const isPresetActive = (preset: Preset) => {
+    const presetRange = preset.getValue();
+
+    if (!dateRange.from || !dateRange.to || !presetRange.from || !presetRange.to) {
+      return false;
+    }
+
+    return isSameDay(dateRange.from, presetRange.from) && isSameDay(dateRange.to, presetRange.to);
+  };
+
   return (
     <div data-ui="global-date-filter" className="flex items-center gap-2">
+      <div className="flex gap-1 items-center bg-muted/50 p-1 rounded-lg border border-border">
+        {PRESETS.map(preset => {
+          const isActive = isPresetActive(preset);
+          return (
+            <Button
+              key={preset.label}
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSetDateRange(preset.getValue())}
+              className={cn(
+                'h-7 px-3 text-xs font-medium rounded-md transition-all hover:bg-primary/10',
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground  hover:text-foreground'
+              )}
+            >
+              {preset.label}
+            </Button>
+          );
+        })}
+      </div>
+      <div className="w-px h-8 bg-border mx-1" />
       <DateRangePicker dateRange={dateRange} setDateRange={handleSetDateRange} />
     </div>
   );

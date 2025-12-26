@@ -31,7 +31,7 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
   }
 
   return (
-    <div className="space-y-6 max-h-full overflow-y-auto" data-ui="account-layout">
+    <div className="space-y-6 md:pr-4 max-h-full overflow-y-auto" data-ui="account-layout">
       <div className="flex items-center justify-between items-center">
         <AccountHeading slug={slug} />
 

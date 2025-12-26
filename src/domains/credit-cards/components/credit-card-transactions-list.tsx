@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
@@ -8,12 +8,14 @@ import { CreditCardTransactionFilters } from './credit-card-transaction-filters'
 import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2 } from 'lucide-react';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
+import { Route } from '@/routes/(auth)/route';
 
 interface CreditCardTransactionsListProps {
   creditCardId: string;
 }
 
 export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransactionsListProps) => {
+  const { from, to } = Route.useSearch();
   const [params, setParams] = useState<I_CreditCardTransactionsParams>({
     page: 1,
     per_page: 20,
@@ -21,12 +23,21 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     sort_order: 'desc',
   });
 
+  const mergedParams = useMemo(
+    () => ({
+      ...params,
+      date_from: from,
+      date_to: to,
+    }),
+    [params, from, to]
+  );
+
   const {
     data: response,
     isLoading,
     isError,
     isPlaceholderData,
-  } = useCreditCardTransactions(creditCardId, params);
+  } = useCreditCardTransactions(creditCardId, mergedParams);
 
   const { mutate: deleteTransaction } = useDeleteTransaction();
 
@@ -89,7 +100,7 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
           </CardDescription>
         </div>
 
-        <CreditCardTransactionFilters params={params} onParamsChange={setParams} />
+        <CreditCardTransactionFilters params={mergedParams} onParamsChange={setParams} />
 
         <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
           {transactions && transactions.length > 0 ? (

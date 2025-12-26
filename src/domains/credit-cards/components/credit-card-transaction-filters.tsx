@@ -86,25 +86,8 @@ export const CreditCardTransactionFilters = ({
 
       <CollapsibleContent className="space-y-4 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/50">
-          {/* Date Range */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Date Range</Label>
-            <div className="space-y-2">
-              <Input
-                type="date"
-                placeholder="From date"
-                value={params.date_from || ''}
-                onChange={e => updateParam('date_from', e.target.value)}
-              />
-              <Input
-                type="date"
-                placeholder="To date"
-                value={params.date_to || ''}
-                onChange={e => updateParam('date_to', e.target.value)}
-              />
-            </div>
-          </div>
-
+          {/* Date Range - Handled Globally */}
+          
           {/* Amount Range */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Amount Range</Label>

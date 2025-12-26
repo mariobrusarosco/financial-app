@@ -188,30 +188,6 @@ export const AccountTransactionsList = ({
 
         <AccountTransactionFilters params={params} onParamsChange={onParamsChange} />
 
-        {/* Pagination - Moved to top */}
-        {meta && meta.total > meta.per_page && (
-          <div
-            data-ui="account-transactions-list-pagination"
-            className="flex items-center justify-between p-3 bg-muted/50 rounded-lg sticky top-0 z-10 bg-neutral-white shadow-lg"
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
-                {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} transactions
-                {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
-              </span>
-            </div>
-            <Pagination
-              currentPage={meta.page}
-              totalPages={Math.ceil(meta.total / meta.per_page)}
-              hasNext={meta.has_next && !isPlaceholderData}
-              hasPrevious={meta.has_previous && !isPlaceholderData}
-              onPageChange={handlePageChange}
-              className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
-            />
-          </div>
-        )}
-
         {/* Bulk Actions */}
         {selectedIds.size > 0 && (
           <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
@@ -317,6 +293,29 @@ export const AccountTransactionsList = ({
             </div>
           )}
         </div>
+
+        {meta && meta.total > meta.per_page && (
+          <div
+            data-ui="account-transactions-list-pagination"
+            className="flex items-center justify-between p-3 bg-muted/50 rounded-lg sticky bottom-0 z-10 bg-neutral-white shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
+                {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} transactions
+                {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
+              </span>
+            </div>
+            <Pagination
+              currentPage={meta.page}
+              totalPages={Math.ceil(meta.total / meta.per_page)}
+              hasNext={meta.has_next && !isPlaceholderData}
+              hasPrevious={meta.has_previous && !isPlaceholderData}
+              onPageChange={handlePageChange}
+              className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
