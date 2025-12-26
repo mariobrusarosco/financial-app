@@ -1,6 +1,6 @@
 import { Button } from '@/domains/ui-system/components/button';
 import { Card } from '@/domains/ui-system/components/card';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/unified-transaction-item';
+import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
 import { useEditableTransactions } from '@/domains/transactions/hooks/use-editable-transactions';
 import type { I_ParsedAccountStatement } from '@/domains/accounts/api';

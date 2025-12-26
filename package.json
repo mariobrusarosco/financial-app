@@ -1,7 +1,7 @@
 {
   "name": "better-call-buffet-front",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "scripts": {
     "dev": "./dev-with-logs.sh",
     "dev:no-logs": "vite dev",

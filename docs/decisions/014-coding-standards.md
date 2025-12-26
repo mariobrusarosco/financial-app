@@ -91,6 +91,44 @@ The `testing` domain contains test utilities and configuration, but not actual t
 - Hook files: `use-hook-name.ts`
 - Schema files: `entity-name.schema.ts`
 
+### UI Component Conventions
+
+#### Icon Usage
+
+All icons must use **Lucide React**:
+
+```typescript
+import { Calendar, Tag, CreditCard } from 'lucide-react';
+```
+
+**Naming:**
+- Use descriptive icon names that match Lucide's naming
+- When aliasing is needed: `import { Calendar as CalendarIcon } from 'lucide-react'`
+
+**Size Standards:**
+- Use Tailwind size utilities: `h-{size} w-{size}`
+- Follow project standards: h-3/w-3 (small), h-4/w-4 (medium), h-5/w-5 (large), h-6/w-6 (extra large)
+- Keep icon sizes consistent within similar contexts
+
+**Dynamic Icons:**
+- For dynamic rendering, store icons as component types, not strings
+- Use `React.createElement()` or direct component reference
+
+**Example:**
+```tsx
+// Static usage
+import { Plus } from 'lucide-react';
+<Button><Plus className="h-4 w-4" />Add Item</Button>
+
+// Dynamic usage
+const items = [
+  { icon: LayoutDashboard, label: 'Dashboard' },
+  { icon: CreditCard, label: 'Cards' }
+];
+const Icon = item.icon;
+<Icon className="h-5 w-5" />
+```
+
 ### Type Definitions
 
 - Define interfaces and types in `.schema.ts` files

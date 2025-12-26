@@ -46,16 +46,16 @@ const CategoryItem = ({ category, level }: CategoryItemProps) => {
 
   return (
     <div className="my-1">
-      <div 
+      <div
         className={cn(
-           "flex items-center gap-2 py-1 group rounded hover:bg-muted/10 pr-2",
-           level > 0 && "ml-4 border-l border-border/40 pl-2"
+          'flex items-center gap-2 py-1 group rounded hover:bg-muted/10 pr-2',
+          level > 0 && 'ml-4 border-l border-border/40 pl-2'
         )}
       >
         <Button
           variant="ghost"
           size="sm"
-          className={cn("h-6 w-6 p-0", category.children.length === 0 && "opacity-0")}
+          className={cn('h-6 w-6 p-0', category.children.length === 0 && 'opacity-0')}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -65,15 +65,20 @@ const CategoryItem = ({ category, level }: CategoryItemProps) => {
           <div className="flex items-center gap-2">
             <Input
               value={editName}
-              onChange={(e) => setEditName(e.target.value)}
+              onChange={e => setEditName(e.target.value)}
               className="h-7 w-40"
               autoFocus
-              onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
+              onKeyDown={e => e.key === 'Enter' && handleUpdate()}
             />
             <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={handleUpdate}>
               <Save className="h-3 w-3" />
             </Button>
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setIsEditing(false)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0"
+              onClick={() => setIsEditing(false)}
+            >
               <X className="h-3 w-3" />
             </Button>
           </div>
@@ -82,13 +87,28 @@ const CategoryItem = ({ category, level }: CategoryItemProps) => {
         )}
 
         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-auto">
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => setIsEditing(true)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6 p-0"
+            onClick={() => setIsEditing(true)}
+          >
             <Edit2 className="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-destructive" onClick={handleDelete}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6 p-0 text-destructive"
+            onClick={handleDelete}
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => setIsAddingSub(true)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6 p-0"
+            onClick={() => setIsAddingSub(true)}
+          >
             <Plus className="h-3 w-3" />
           </Button>
         </div>
@@ -96,33 +116,34 @@ const CategoryItem = ({ category, level }: CategoryItemProps) => {
 
       {/* Sub Category Creator */}
       {isAddingSub && (
-        <div className={cn("flex items-center gap-2 my-1", level >= 0 && "ml-12")}>
-           <Input
-              value={newSubName}
-              onChange={(e) => setNewSubName(e.target.value)}
-              placeholder="Sub-category name"
-              className="h-7 w-40"
-              autoFocus
-              onKeyDown={(e) => e.key === 'Enter' && handleAddSub()}
-            />
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={handleAddSub}>
-              <Save className="h-3 w-3" />
-            </Button>
-            <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setIsAddingSub(false)}>
-              <X className="h-3 w-3" />
-            </Button>
+        <div className={cn('flex items-center gap-2 my-1', level >= 0 && 'ml-12')}>
+          <Input
+            value={newSubName}
+            onChange={e => setNewSubName(e.target.value)}
+            placeholder="Sub-category name"
+            className="h-7 w-40"
+            autoFocus
+            onKeyDown={e => e.key === 'Enter' && handleAddSub()}
+          />
+          <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={handleAddSub}>
+            <Save className="h-3 w-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0"
+            onClick={() => setIsAddingSub(false)}
+          >
+            <X className="h-3 w-3" />
+          </Button>
         </div>
       )}
 
       {/* Children */}
       {isOpen && category.children.length > 0 && (
         <div className="flex flex-col">
-          {category.children.map((child) => (
-            <CategoryItem 
-                key={child.id} 
-                category={child} 
-                level={level + 1} 
-            />
+          {category.children.map(child => (
+            <CategoryItem key={child.id} category={child} level={level + 1} />
           ))}
         </div>
       )}
@@ -134,13 +155,13 @@ export const CategoryManager = () => {
   const { data: categories, isLoading } = useCategories();
   const [isAdding, setIsAdding] = useState(false);
   const [newName, setNewName] = useState('');
-  const { mutate: createCategory } = useCreateCategory(); 
+  const { mutate: createCategory } = useCreateCategory();
 
   const handleCreateRoot = () => {
-      if (!newName.trim()) return;
-      createCategory({ name: newName });
-      setNewName('');
-      setIsAdding(false);
+    if (!newName.trim()) return;
+    createCategory({ name: newName });
+    setNewName('');
+    setIsAdding(false);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -156,30 +177,29 @@ export const CategoryManager = () => {
       </div>
 
       {isAdding && (
-          <div className="flex items-center gap-2 mb-4 p-2 border rounded bg-muted/20">
-             <Input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="Category name"
-                className="h-8 w-60"
-                autoFocus
-                onKeyDown={(e) => e.key === 'Enter' && handleCreateRoot()}
-              />
-              <Button size="sm" onClick={handleCreateRoot}>Save</Button>
-              <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>Cancel</Button>
-          </div>
-        )}
-
-      <div className="space-y-1">
-        {categories?.map((category) => (
-          <CategoryItem 
-            key={category.id} 
-            category={category} 
-            level={0}
+        <div className="flex items-center gap-2 mb-4 p-2 border rounded bg-muted/20">
+          <Input
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
+            placeholder="Category name"
+            className="h-8 w-60"
+            autoFocus
+            onKeyDown={e => e.key === 'Enter' && handleCreateRoot()}
           />
+          <Button size="sm" onClick={handleCreateRoot}>
+            Save
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>
+            Cancel
+          </Button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+        {categories?.map(category => (
+          <CategoryItem key={category.id} category={category} level={0} />
         ))}
       </div>
     </div>
   );
 };
-

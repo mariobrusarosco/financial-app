@@ -33,6 +33,11 @@ const CreateInvestmentDataDrawer = lazy(() =>
     default: module.CreateInvestmentDataDrawer,
   }))
 );
+const CategoryManagerDrawer = lazy(() =>
+  import('@/domains/categories/components/category-manager-drawer').then(module => ({
+    default: module.CategoryManagerDrawer,
+  }))
+);
 
 interface GlobalDrawerProps {
   drawerType:
@@ -41,7 +46,8 @@ interface GlobalDrawerProps {
     | 'transaction-create'
     | 'credit-card-create'
     | 'investment-create'
-    | 'investment-data-create';
+    | 'investment-data-create'
+    | 'category-manager';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -66,6 +72,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateInvestmentDrawer;
   } else if (drawerType === 'investment-data-create') {
     DrawerComponent = CreateInvestmentDataDrawer;
+  } else if (drawerType === 'category-manager') {
+    DrawerComponent = CategoryManagerDrawer;
   }
 
   if (!DrawerComponent) {

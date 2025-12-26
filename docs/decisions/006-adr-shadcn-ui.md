@@ -85,6 +85,7 @@ We will use shadcn/ui with the Rose theme as our UI component library. Component
 ## Implementation Notes
 
 - We will use the shadcn/ui CLI exclusively to add components to our project.
+- **Icons**: Lucide React is the standard icon library, configured in `components.json` and installed via shadcn/ui setup. All icons should be imported from 'lucide-react' using named imports.
 - We will document any customizations we make to components.
 - We will create a standardized process for updating components when new versions are released.
 - We will establish a component development guide to ensure consistency across the team.

@@ -1,26 +1,16 @@
-import { Button } from '@/domains/ui-system/components/button';
-import { Plus } from 'lucide-react';
+import { Landmark } from 'lucide-react';
 import BrokersList from '../components/brokers-list';
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
+import { PageHeader } from '@/domains/global/components';
 
 const BrokerRootScreen = () => {
   const { openBrokerCreate } = useGlobalUIState();
 
   return (
-    <div data-testid="broker-root-screen" className="p-6 max-w-7xl mx-auto">
-      {/* Header Row */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Brokers</h1>
-        <Button onClick={openBrokerCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Broker
-        </Button>
-      </div>
+    <div data-testid="broker-index-screen" className="py-4 space-y-5 rounded-3xl">
+      <PageHeader title="Brokers" icon={Landmark} onAdd={openBrokerCreate} />
 
-      {/* Content Row */}
-      <div className="mt-6">
-        <BrokersList />
-      </div>
+      <BrokersList />
     </div>
   );
 };

@@ -7,7 +7,7 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div data-ui="app" className="bg-background pt-10 h-full flex flex-col">
+    <div data-ui="app" className="bg-background pt-10 h-full flex">
       <Navigation />
 
       <main data-ui="app-container" className="flex-1 app-container">
