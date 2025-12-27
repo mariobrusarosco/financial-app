@@ -16,9 +16,12 @@ const authSearchSchema = z.object({
       'investment-create',
       'investment-data-create',
       'category-manager',
+      'vendor-create', // New
+      'vendor-edit',   // New
     ])
     .optional(),
   transactionId: z.string().optional(),
+  vendorId: z.string().optional(), // New
   from: z.string().optional(),
   to: z.string().optional(),
 });

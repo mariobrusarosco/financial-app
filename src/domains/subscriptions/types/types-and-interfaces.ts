@@ -65,6 +65,7 @@ export interface I_SubscriptionsResponse {
 }
 
 export interface I_SubscriptionsParams {
+  [key: string]: unknown; // Added index signature
   page?: number;
   per_page?: number;
   vendor_id?: string;

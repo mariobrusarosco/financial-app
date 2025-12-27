@@ -44,6 +44,12 @@ const EditTransactionDrawer = lazy(() =>
   }))
 );
 
+const VendorDrawer = lazy(() =>
+  import('@/domains/vendors/components/vendor-drawer').then(module => ({
+    default: module.VendorDrawer,
+  }))
+);
+
 interface GlobalDrawerProps {
   drawerType:
     | 'account-create'
@@ -53,7 +59,9 @@ interface GlobalDrawerProps {
     | 'credit-card-create'
     | 'investment-create'
     | 'investment-data-create'
-    | 'category-manager';
+    | 'category-manager'
+    | 'vendor-create'
+    | 'vendor-edit';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -82,6 +90,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateInvestmentDataDrawer;
   } else if (drawerType === 'category-manager') {
     DrawerComponent = CategoryManagerDrawer;
+  } else if (drawerType === 'vendor-create' || drawerType === 'vendor-edit') {
+    DrawerComponent = VendorDrawer;
   }
 
   if (!DrawerComponent) {

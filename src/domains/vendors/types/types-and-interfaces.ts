@@ -36,6 +36,7 @@ export interface I_VendorsResponse {
 }
 
 export interface I_VendorsParams {
+  [key: string]: unknown; // Added index signature
   page?: number;
   per_page?: number;
   name?: string;
