@@ -5030,6 +5030,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/form-core@npm:0.42.1":
+  version: 0.42.1
+  resolution: "@tanstack/form-core@npm:0.42.1"
+  dependencies:
+    "@tanstack/store": ^0.7.0
+  checksum: 7fa24ab311878401dc6f3b8767fbf3b4706798a9bce0ee545d879592911b2416290857a24e5fb1c01212b2a0940db3cbec3367f1c2709d0d5c714f4ae0e71dc3
+  languageName: node
+  linkType: hard
+
 "@tanstack/form-core@npm:1.19.2":
   version: 1.19.2
   resolution: "@tanstack/form-core@npm:1.19.2"
@@ -5518,6 +5527,17 @@ __metadata:
   version: 1.131.2
   resolution: "@tanstack/virtual-file-routes@npm:1.131.2"
   checksum: 21d9b53caf33ab89dadf42e9f684b627a122af49330f30b08b4c1590d68deb2a0fdfac35bb8d408b45926014f99725a08b173dcc8e7d3e4952b5ea0b1c7b80c7
+  languageName: node
+  linkType: hard
+
+"@tanstack/zod-form-adapter@npm:^0.42.1":
+  version: 0.42.1
+  resolution: "@tanstack/zod-form-adapter@npm:0.42.1"
+  dependencies:
+    "@tanstack/form-core": 0.42.1
+  peerDependencies:
+    zod: ^3.x
+  checksum: 9e413d806f7e9993785e18574817eca6a110bc2d201737a18ec0ed121c36d0b345fe317ea6e6aaf3b113e2c196c5773829ff2991677e42f7cf375a58a8e5d2eb
   languageName: node
   linkType: hard
 
@@ -6744,6 +6764,7 @@ __metadata:
     "@tanstack/react-router": ^1.120.20
     "@tanstack/react-start": ^1.120.20
     "@tanstack/start": ^1.120.20
+    "@tanstack/zod-form-adapter": ^0.42.1
     "@testing-library/dom": ^10.4.0
     "@testing-library/jest-dom": ^6.6.3
     "@testing-library/react": ^16.3.0
