@@ -22,40 +22,40 @@ const CreditCardInvoiceList = ({ creditCardId }: CreditCardInvoiceListProps) => 
 
   if (isLoading) {
     return (
-      <Surface data-ui="credit-card-invoice-list" className="w-full flex-1">
+      <div data-ui="credit-card-invoice-list" className="w-1/3">
         <div>
-          <CardTitle>Invoice History</CardTitle>
-          <CardDescription>Previously uploaded invoices for this credit card</CardDescription>
+          <h1 className="text-2xl font-bold">Invoice History</h1>
+          <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
         </div>
         <div className="flex items-center justify-center py-8">
           <p className="text-muted-foreground">Loading invoices...</p>
         </div>
-      </Surface>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Surface data-ui="credit-card-invoice-list" className="w-full flex-1">
+      <div data-ui="credit-card-invoice-list" className="w-1/3">
         <div>
-          <CardTitle>Invoice History</CardTitle>
-          <CardDescription>Previously uploaded invoices for this credit card</CardDescription>
+          <h1 className="text-2xl font-bold">Invoice History</h1>
+          <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
         </div>
         <div className="text-center py-8">
           <p className="text-destructive">Failed to load invoices</p>
         </div>
-      </Surface>
+      </div>
     );
   }
 
   return (
-    <Surface data-ui="credit-card-invoice-list" className="w-full flex-1">
+    <div data-ui="credit-card-invoice-list" className="w-1/3 p-4">
       <div>
-        <CardTitle>Invoice History</CardTitle>
-        <CardDescription>Previously uploaded invoices for this credit card</CardDescription>
+        <h1 className="text-2xl font-bold">Invoice History</h1>
+        <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
       </div>
 
-      <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-4 grid gap-4">
         {invoices && invoices.length > 0 ? (
           <>
             {invoices.map((invoice: I_CreditCardInvoice) => (
@@ -136,7 +136,7 @@ const CreditCardInvoiceList = ({ creditCardId }: CreditCardInvoiceListProps) => 
           </div>
         )}
       </div>
-    </Surface>
+    </div>
   );
 };
 

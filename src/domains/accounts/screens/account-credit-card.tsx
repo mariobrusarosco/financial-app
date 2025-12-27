@@ -36,6 +36,7 @@ export const AccountCreditCardScreen = ({ params }: AccountCreditCardScreenProps
     return <div>Credit card not found</div>;
   }
 
+  console.log('💾 AccountCreditCardScreen - currentView:', currentView);
   return (
     <div className="space-y-6" data-ui="account-credit-card-screen">
       <CreditCardHeading creditCard={creditCard.data} />
@@ -54,14 +55,14 @@ const renderContent = (currentView: string, creditCard: I_CreditCard) => {
       );
     case 'invoices':
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="flex">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
           <CreditCardInvoiceList creditCardId={creditCard.id} />
         </div>
       );
     default:
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
           <CreditCardInvoiceList creditCardId={creditCard.id} />
           <CreditCardTransactionsList creditCardId={creditCard.id} />

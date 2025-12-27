@@ -16,10 +16,8 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
     enabled: false,
   });
 
-  console.log('💾 CreditCardStatementUpload - invoice from cache:', invoice);
-
   return (
-    <Surface className="flex-1" data-ui="credit-card-statement-upload">
+    <Surface className="w-2/3" data-ui="credit-card-statement-upload">
       <div className="space-y-4">
         <InvoiceUploadProcess creditCardId={creditCardId} />
         {invoice && <InvoiceTransactionsRefinementProcess invoice={invoice} />}

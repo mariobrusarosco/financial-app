@@ -2,14 +2,29 @@ import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
 import { BrushCleaning, ChevronRight, RefreshCcw, XCircle } from 'lucide-react';
 import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
+import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
+import { Route } from '@/routes/(auth)/route';
+import { useMemo } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
+  const { from, to } = Route.useSearch();
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
   };
+
+  const { isPending: isLoadingBalancePoints, data: balancePoints } = useAccountBalancePoints(
+    account.id,
+    from ?? '',
+    to ?? ''
+  );
+
+  const balancePoint = useMemo(() => {
+    return balancePoints?.at(-1);
+  }, [balancePoints]);
 
   const brokerprimaryColor = account.broker.colors[0];
 
@@ -37,7 +52,11 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
         <p className="font-light text-neutral-white text-3xl tracking-tight">
-          {formatCurrency(account.balance)}
+          {isLoadingBalancePoints ? (
+            <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
+          ) : (
+            formatCurrency(balancePoint?.balance ?? 0)
+          )}
         </p>
       </div>
     </div>

@@ -10,6 +10,7 @@ import {
   CreditCard,
   Plane,
 } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
 
@@ -69,13 +70,8 @@ export const formatDateShort = (dateString: string | Date) => {
   if (!dateString) return 'Invalid Date';
 
   try {
-    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-    if (isNaN(date.getTime())) return 'Invalid Date';
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    });
+    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+    return format(date, 'MMM d');
   } catch (error) {
     return 'Invalid Date';
   }
@@ -85,15 +81,8 @@ export const formatDateLong = (dateString: string | Date) => {
   if (!dateString) return 'Invalid Date';
 
   try {
-    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-    if (isNaN(date.getTime())) return 'Invalid Date';
-
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+    return format(date, 'EEE, MMM d, yyyy');
   } catch (error) {
     return 'Invalid Date';
   }
@@ -103,14 +92,8 @@ export const formatDateMedium = (dateString: string | Date) => {
   if (!dateString) return 'Invalid Date';
 
   try {
-    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-    if (isNaN(date.getTime())) return 'Invalid Date';
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+    return format(date, 'MMM d, yyyy');
   } catch (error) {
     return 'Invalid Date';
   }

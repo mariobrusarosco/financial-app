@@ -59,7 +59,7 @@ export interface I_BulkTransactionResponse {
 // Account transactions endpoint types
 export interface I_TransactionResponse {
   id: string;
-  account_id: string;
+  account_id: string | null; // null for credit card transactions
   broker_id: string;
   credit_card_id?: string;
   is_deleted: boolean;

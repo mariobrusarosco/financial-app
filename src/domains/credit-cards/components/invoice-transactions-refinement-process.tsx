@@ -29,12 +29,6 @@ export const InvoiceTransactionsRefinementProcess = ({
     creditCardId: invoice.credit_card_id,
     brokerId: invoice.broker_id,
   });
-
-  console.log(
-    '💾 InvoiceTransactionsRefinementProcess - editableTransactions:',
-    editableTransactions
-  );
-
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
 
