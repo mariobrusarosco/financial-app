@@ -15,6 +15,8 @@ import {
   LogOut,
   House,
   PiggyBank,
+  Store, // New icon for Vendors
+  Repeat, // New icon for Subscriptions
 } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
@@ -61,6 +63,16 @@ const navigationItems: NavigationItem[] = [
     label: 'Investments',
     href: '/investments',
     icon: TrendingUp,
+  },
+  {
+    label: 'Vendors', // New item
+    href: '/vendors',
+    icon: Store,
+  },
+  {
+    label: 'Subscriptions', // New item
+    href: '/subscriptions',
+    icon: Repeat,
   },
   {
     label: 'Settings',

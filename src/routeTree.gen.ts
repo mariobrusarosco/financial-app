@@ -15,13 +15,19 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authTremorDemoRouteImport } from './routes/(auth)/tremor-demo'
 import { Route as authReactAriaDemoRouteImport } from './routes/(auth)/react-aria-demo'
+import { Route as authVendorsIndexRouteImport } from './routes/(auth)/vendors/index'
 import { Route as authTransactionsIndexRouteImport } from './routes/(auth)/transactions/index'
+import { Route as authSubscriptionsIndexRouteImport } from './routes/(auth)/subscriptions/index'
 import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/index'
 import { Route as authInvestmentsIndexRouteImport } from './routes/(auth)/investments/index'
 import { Route as authDashboardIndexRouteImport } from './routes/(auth)/dashboard/index'
 import { Route as authBrokersIndexRouteImport } from './routes/(auth)/brokers/index'
 import { Route as authAccountsIndexRouteImport } from './routes/(auth)/accounts/index'
+import { Route as authVendorsCreateRouteImport } from './routes/(auth)/vendors/create'
+import { Route as authSubscriptionsCreateRouteImport } from './routes/(auth)/subscriptions/create'
 import { Route as authAccountsSlugRouteRouteImport } from './routes/(auth)/accounts/$slug/route'
+import { Route as authVendorsVendorIdIndexRouteImport } from './routes/(auth)/vendors/$vendorId/index'
+import { Route as authSubscriptionsSubscriptionIdIndexRouteImport } from './routes/(auth)/subscriptions/$subscriptionId/index'
 import { Route as authBrokersCreateIndexRouteImport } from './routes/(auth)/brokers/create/index'
 import { Route as authAccountsCreateIndexRouteImport } from './routes/(auth)/accounts/create/index'
 import { Route as authAccountsSlugIndexRouteImport } from './routes/(auth)/accounts/$slug/index'
@@ -65,9 +71,19 @@ const authReactAriaDemoRoute = authReactAriaDemoRouteImport.update({
   path: '/react-aria-demo',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authVendorsIndexRoute = authVendorsIndexRouteImport.update({
+  id: '/vendors/',
+  path: '/vendors/',
+  getParentRoute: () => authRouteRoute,
+} as any)
 const authTransactionsIndexRoute = authTransactionsIndexRouteImport.update({
   id: '/transactions/',
   path: '/transactions/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authSubscriptionsIndexRoute = authSubscriptionsIndexRouteImport.update({
+  id: '/subscriptions/',
+  path: '/subscriptions/',
   getParentRoute: () => authRouteRoute,
 } as any)
 const authSettingsIndexRoute = authSettingsIndexRouteImport.update({
@@ -95,11 +111,33 @@ const authAccountsIndexRoute = authAccountsIndexRouteImport.update({
   path: '/accounts/',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authVendorsCreateRoute = authVendorsCreateRouteImport.update({
+  id: '/vendors/create',
+  path: '/vendors/create',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authSubscriptionsCreateRoute = authSubscriptionsCreateRouteImport.update({
+  id: '/subscriptions/create',
+  path: '/subscriptions/create',
+  getParentRoute: () => authRouteRoute,
+} as any)
 const authAccountsSlugRouteRoute = authAccountsSlugRouteRouteImport.update({
   id: '/accounts/$slug',
   path: '/accounts/$slug',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authVendorsVendorIdIndexRoute =
+  authVendorsVendorIdIndexRouteImport.update({
+    id: '/vendors/$vendorId/',
+    path: '/vendors/$vendorId/',
+    getParentRoute: () => authRouteRoute,
+  } as any)
+const authSubscriptionsSubscriptionIdIndexRoute =
+  authSubscriptionsSubscriptionIdIndexRouteImport.update({
+    id: '/subscriptions/$subscriptionId/',
+    path: '/subscriptions/$subscriptionId/',
+    getParentRoute: () => authRouteRoute,
+  } as any)
 const authBrokersCreateIndexRoute = authBrokersCreateIndexRouteImport.update({
   id: '/brokers/create/',
   path: '/brokers/create/',
@@ -183,16 +221,22 @@ export interface FileRoutesByFullPath {
   '/react-aria-demo': typeof authReactAriaDemoRoute
   '/tremor-demo': typeof authTremorDemoRoute
   '/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
+  '/subscriptions/create': typeof authSubscriptionsCreateRoute
+  '/vendors/create': typeof authVendorsCreateRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
+  '/subscriptions': typeof authSubscriptionsIndexRoute
   '/transactions': typeof authTransactionsIndexRoute
+  '/vendors': typeof authVendorsIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
   '/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
+  '/subscriptions/$subscriptionId': typeof authSubscriptionsSubscriptionIdIndexRoute
+  '/vendors/$vendorId': typeof authVendorsVendorIdIndexRoute
   '/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
   '/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
@@ -209,15 +253,21 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/react-aria-demo': typeof authReactAriaDemoRoute
   '/tremor-demo': typeof authTremorDemoRoute
+  '/subscriptions/create': typeof authSubscriptionsCreateRoute
+  '/vendors/create': typeof authVendorsCreateRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
+  '/subscriptions': typeof authSubscriptionsIndexRoute
   '/transactions': typeof authTransactionsIndexRoute
+  '/vendors': typeof authVendorsIndexRoute
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
   '/accounts/create': typeof authAccountsCreateIndexRoute
   '/brokers/create': typeof authBrokersCreateIndexRoute
+  '/subscriptions/$subscriptionId': typeof authSubscriptionsSubscriptionIdIndexRoute
+  '/vendors/$vendorId': typeof authVendorsVendorIdIndexRoute
   '/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
   '/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
@@ -237,16 +287,22 @@ export interface FileRoutesById {
   '/(auth)/react-aria-demo': typeof authReactAriaDemoRoute
   '/(auth)/tremor-demo': typeof authTremorDemoRoute
   '/(auth)/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
+  '/(auth)/subscriptions/create': typeof authSubscriptionsCreateRoute
+  '/(auth)/vendors/create': typeof authVendorsCreateRoute
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
   '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(auth)/investments/': typeof authInvestmentsIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
+  '/(auth)/subscriptions/': typeof authSubscriptionsIndexRoute
   '/(auth)/transactions/': typeof authTransactionsIndexRoute
+  '/(auth)/vendors/': typeof authVendorsIndexRoute
   '/(auth)/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
   '/(auth)/accounts/$slug/': typeof authAccountsSlugIndexRoute
   '/(auth)/accounts/create/': typeof authAccountsCreateIndexRoute
   '/(auth)/brokers/create/': typeof authBrokersCreateIndexRoute
+  '/(auth)/subscriptions/$subscriptionId/': typeof authSubscriptionsSubscriptionIdIndexRoute
+  '/(auth)/vendors/$vendorId/': typeof authVendorsVendorIdIndexRoute
   '/(auth)/accounts/$slug/statements/history': typeof authAccountsSlugStatementsHistoryRoute
   '/(auth)/accounts/$slug/statements/upload': typeof authAccountsSlugStatementsUploadRoute
   '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
@@ -266,16 +322,22 @@ export interface FileRouteTypes {
     | '/react-aria-demo'
     | '/tremor-demo'
     | '/accounts/$slug'
+    | '/subscriptions/create'
+    | '/vendors/create'
     | '/accounts'
     | '/brokers'
     | '/dashboard'
     | '/investments'
     | '/settings'
+    | '/subscriptions'
     | '/transactions'
+    | '/vendors'
     | '/accounts/$slug/statements'
     | '/accounts/$slug/'
     | '/accounts/create'
     | '/brokers/create'
+    | '/subscriptions/$subscriptionId'
+    | '/vendors/$vendorId'
     | '/accounts/$slug/statements/history'
     | '/accounts/$slug/statements/upload'
     | '/accounts/$slug/credit-card'
@@ -292,15 +354,21 @@ export interface FileRouteTypes {
     | '/signup'
     | '/react-aria-demo'
     | '/tremor-demo'
+    | '/subscriptions/create'
+    | '/vendors/create'
     | '/accounts'
     | '/brokers'
     | '/dashboard'
     | '/investments'
     | '/settings'
+    | '/subscriptions'
     | '/transactions'
+    | '/vendors'
     | '/accounts/$slug'
     | '/accounts/create'
     | '/brokers/create'
+    | '/subscriptions/$subscriptionId'
+    | '/vendors/$vendorId'
     | '/accounts/$slug/statements/history'
     | '/accounts/$slug/statements/upload'
     | '/accounts/$slug/credit-card'
@@ -319,16 +387,22 @@ export interface FileRouteTypes {
     | '/(auth)/react-aria-demo'
     | '/(auth)/tremor-demo'
     | '/(auth)/accounts/$slug'
+    | '/(auth)/subscriptions/create'
+    | '/(auth)/vendors/create'
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
     | '/(auth)/dashboard/'
     | '/(auth)/investments/'
     | '/(auth)/settings/'
+    | '/(auth)/subscriptions/'
     | '/(auth)/transactions/'
+    | '/(auth)/vendors/'
     | '/(auth)/accounts/$slug/statements'
     | '/(auth)/accounts/$slug/'
     | '/(auth)/accounts/create/'
     | '/(auth)/brokers/create/'
+    | '/(auth)/subscriptions/$subscriptionId/'
+    | '/(auth)/vendors/$vendorId/'
     | '/(auth)/accounts/$slug/statements/history'
     | '/(auth)/accounts/$slug/statements/upload'
     | '/(auth)/accounts/$slug/credit-card/'
@@ -391,11 +465,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authReactAriaDemoRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(auth)/vendors/': {
+      id: '/(auth)/vendors/'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof authVendorsIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
     '/(auth)/transactions/': {
       id: '/(auth)/transactions/'
       path: '/transactions'
       fullPath: '/transactions'
       preLoaderRoute: typeof authTransactionsIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/subscriptions/': {
+      id: '/(auth)/subscriptions/'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof authSubscriptionsIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/settings/': {
@@ -433,11 +521,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(auth)/vendors/create': {
+      id: '/(auth)/vendors/create'
+      path: '/vendors/create'
+      fullPath: '/vendors/create'
+      preLoaderRoute: typeof authVendorsCreateRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/subscriptions/create': {
+      id: '/(auth)/subscriptions/create'
+      path: '/subscriptions/create'
+      fullPath: '/subscriptions/create'
+      preLoaderRoute: typeof authSubscriptionsCreateRouteImport
+      parentRoute: typeof authRouteRoute
+    }
     '/(auth)/accounts/$slug': {
       id: '/(auth)/accounts/$slug'
       path: '/accounts/$slug'
       fullPath: '/accounts/$slug'
       preLoaderRoute: typeof authAccountsSlugRouteRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/vendors/$vendorId/': {
+      id: '/(auth)/vendors/$vendorId/'
+      path: '/vendors/$vendorId'
+      fullPath: '/vendors/$vendorId'
+      preLoaderRoute: typeof authVendorsVendorIdIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/subscriptions/$subscriptionId/': {
+      id: '/(auth)/subscriptions/$subscriptionId/'
+      path: '/subscriptions/$subscriptionId'
+      fullPath: '/subscriptions/$subscriptionId'
+      preLoaderRoute: typeof authSubscriptionsSubscriptionIdIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/brokers/create/': {
@@ -589,28 +705,41 @@ interface authRouteRouteChildren {
   authReactAriaDemoRoute: typeof authReactAriaDemoRoute
   authTremorDemoRoute: typeof authTremorDemoRoute
   authAccountsSlugRouteRoute: typeof authAccountsSlugRouteRouteWithChildren
+  authSubscriptionsCreateRoute: typeof authSubscriptionsCreateRoute
+  authVendorsCreateRoute: typeof authVendorsCreateRoute
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authBrokersIndexRoute: typeof authBrokersIndexRoute
   authDashboardIndexRoute: typeof authDashboardIndexRoute
   authInvestmentsIndexRoute: typeof authInvestmentsIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
+  authSubscriptionsIndexRoute: typeof authSubscriptionsIndexRoute
   authTransactionsIndexRoute: typeof authTransactionsIndexRoute
+  authVendorsIndexRoute: typeof authVendorsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
   authBrokersCreateIndexRoute: typeof authBrokersCreateIndexRoute
+  authSubscriptionsSubscriptionIdIndexRoute: typeof authSubscriptionsSubscriptionIdIndexRoute
+  authVendorsVendorIdIndexRoute: typeof authVendorsVendorIdIndexRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authReactAriaDemoRoute: authReactAriaDemoRoute,
   authTremorDemoRoute: authTremorDemoRoute,
   authAccountsSlugRouteRoute: authAccountsSlugRouteRouteWithChildren,
+  authSubscriptionsCreateRoute: authSubscriptionsCreateRoute,
+  authVendorsCreateRoute: authVendorsCreateRoute,
   authAccountsIndexRoute: authAccountsIndexRoute,
   authBrokersIndexRoute: authBrokersIndexRoute,
   authDashboardIndexRoute: authDashboardIndexRoute,
   authInvestmentsIndexRoute: authInvestmentsIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
+  authSubscriptionsIndexRoute: authSubscriptionsIndexRoute,
   authTransactionsIndexRoute: authTransactionsIndexRoute,
+  authVendorsIndexRoute: authVendorsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,
   authBrokersCreateIndexRoute: authBrokersCreateIndexRoute,
+  authSubscriptionsSubscriptionIdIndexRoute:
+    authSubscriptionsSubscriptionIdIndexRoute,
+  authVendorsVendorIdIndexRoute: authVendorsVendorIdIndexRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
