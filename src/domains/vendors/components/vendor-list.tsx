@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Button } from '@/domains/ui-system/components/button';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { Loader2, Store } from 'lucide-react';
 import type { I_Vendor, I_VendorsParams } from '../types/types-and-interfaces';

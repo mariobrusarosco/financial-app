@@ -92,6 +92,7 @@ export const SubscriptionsMainScreen = () => {
           subscriptions={subscriptions}
           meta={meta}
           isLoading={isLoading}
+          isError={isError} // Pass isError prop
           isPlaceholderData={isPlaceholderData}
           params={mergedParams}
           onParamsChange={handleParamsChange}

@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/com
 import { Button } from '@/domains/ui-system/components/button';
 
 interface Props {
-  date: Date;
+  date: Date | undefined;
   setDate: (date: Date) => void;
 }
 
@@ -31,7 +31,7 @@ export function TransactionDatePicker({ date, setDate }: Props) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
+          selected={date} // Calendar component typically handles Date | undefined
           captionLayout="dropdown"
           onSelect={selectedDate => {
             if (selectedDate) {

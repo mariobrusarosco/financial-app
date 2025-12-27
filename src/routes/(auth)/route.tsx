@@ -18,10 +18,13 @@ const authSearchSchema = z.object({
       'category-manager',
       'vendor-create', // New
       'vendor-edit',   // New
+      'subscription-create', // New
+      'subscription-edit',   // New
     ])
     .optional(),
   transactionId: z.string().optional(),
   vendorId: z.string().optional(), // New
+  subscriptionId: z.string().optional(), // New
   from: z.string().optional(),
   to: z.string().optional(),
 });

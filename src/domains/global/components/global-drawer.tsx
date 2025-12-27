@@ -50,6 +50,12 @@ const VendorDrawer = lazy(() =>
   }))
 );
 
+const SubscriptionDrawer = lazy(() =>
+  import('@/domains/subscriptions/components/subscription-drawer').then(module => ({
+    default: module.SubscriptionDrawer,
+  }))
+);
+
 interface GlobalDrawerProps {
   drawerType:
     | 'account-create'
@@ -61,7 +67,9 @@ interface GlobalDrawerProps {
     | 'investment-data-create'
     | 'category-manager'
     | 'vendor-create'
-    | 'vendor-edit';
+    | 'vendor-edit'
+    | 'subscription-create' // New
+    | 'subscription-edit';   // New
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -92,6 +100,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CategoryManagerDrawer;
   } else if (drawerType === 'vendor-create' || drawerType === 'vendor-edit') {
     DrawerComponent = VendorDrawer;
+  } else if (drawerType === 'subscription-create' || drawerType === 'subscription-edit') {
+    DrawerComponent = SubscriptionDrawer;
   }
 
   if (!DrawerComponent) {
