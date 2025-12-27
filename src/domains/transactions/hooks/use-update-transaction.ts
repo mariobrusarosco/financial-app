@@ -19,14 +19,10 @@ export const useUpdateTransaction = (onUpdateSuccess?: () => void) => {
       // or from transaction data (for direct account transactions)
       const accountId = accountIdFromUrl || data.account_id;
 
-      console.log('🔄 Transaction update SUCCESS', { data, accountIdFromUrl, accountId });
-
       onUpdateSuccess?.();
       toast.success('Transaction updated successfully');
 
       if (accountId) {
-        console.log('🔑 Invalidating for account:', accountId);
-
         // Partial key invalidation - invalidates ALL variations (pages, filters, etc.)
         void queryClient.invalidateQueries({
           queryKey: GET_ACCOUNT_TRANSACTIONS_PAGINATED_QUERY_KEY(accountId),

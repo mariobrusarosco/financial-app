@@ -65,7 +65,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
   };
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
+    <div className="rounded-lg p-4 space-y-4">
       <form
         onSubmit={e => {
           e.preventDefault();

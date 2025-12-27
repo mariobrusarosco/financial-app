@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
@@ -10,7 +10,6 @@ import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
-
 import { AccountTransactionFilters } from './account-transaction-filters';
 import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus, Settings2 } from 'lucide-react';
 import type {
@@ -18,7 +17,6 @@ import type {
   I_TransactionResponse,
   I_TransactionsResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
-import { useUpdateTransaction } from '../hooks/use-update-transaction';
 
 interface AccountTransactionsListProps {
   params: I_AccountTransactionsParams;
@@ -44,16 +42,11 @@ export const AccountTransactionsList = ({
   const transactions = response?.data || [];
   const meta = response?.meta;
 
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
-
   const { mutate: deleteTransaction } = useDeleteTransaction();
-  const { mutate: updateTransaction } = useUpdateTransaction(() => {
-    // Close edit mode after successful update
-    setEditingId(null);
-  });
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -90,18 +83,9 @@ export const AccountTransactionsList = ({
   };
 
   const handleEdit = (transaction: I_TransactionResponse) => {
-    setEditingId(transaction.id);
-  };
-
-  const handleSave = (updates: Partial<I_TransactionResponse>) => {
-    if (editingId) {
-      updateTransaction({ id: editingId, updates });
-      // Note: setEditingId(null) is now called in the mutation's onSuccess callback
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
+    navigate({
+      search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }),
+    });
   };
 
   const handleDelete = (transaction: I_TransactionResponse) => {
@@ -170,17 +154,14 @@ export const AccountTransactionsList = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <Link search={{ drawer: 'category-manager' }}>
+            <Link to="." search={prev => ({ ...prev, drawer: 'category-manager' })}>
               <Button variant="outline" size="sm" className="w-full justify-start">
                 <Settings2 className="h-4 w-4 mr-2" />
                 Manage Categories
               </Button>
             </Link>
 
-            <Link
-              to="."
-              search={((prev: any) => ({ ...prev, drawer: 'transaction-create' })) as any}
-            >
+            <Link to="." search={prev => ({ ...prev, drawer: 'transaction-create' })}>
               <Button size="sm">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Transaction
@@ -252,15 +233,12 @@ export const AccountTransactionsList = ({
                     key={transaction.id}
                     transaction={transaction}
                     mode="default"
-                    isEditing={editingId === transaction.id}
                     isSelected={selectedIds.has(transaction.id)}
                     onSelectionChange={selected =>
                       handleSelectTransaction(transaction.id, selected)
                     }
                     showCheckbox={true}
                     onTriggerEditMode={handleEdit}
-                    onSave={handleSave}
-                    onCancel={handleCancel}
                     onDelete={handleDelete}
                   />
                 ))}

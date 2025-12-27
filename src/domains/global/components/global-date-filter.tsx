@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Route } from '@/routes/(auth)/route';
 import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
 import { Button } from '@/domains/ui-system/components/button';
@@ -77,6 +77,21 @@ const PRESETS: Preset[] = [
 export const GlobalDateFilter = () => {
   const { from, to } = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  // Initialize URL with default date range if not present
+  useEffect(() => {
+    if (!from && !to) {
+      const defaultRange = getDefaultDateRange();
+      void navigate({
+        search: prev => ({
+          ...prev,
+          from: formatDateForURL(defaultRange.from!),
+          to: formatDateForURL(defaultRange.to!),
+        }),
+        replace: true, // Use replace to avoid adding to history
+      });
+    }
+  }, [from, to, navigate]);
 
   const dateRange = useMemo((): DateRange => {
     const defaultRange = getDefaultDateRange();

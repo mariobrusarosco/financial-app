@@ -38,12 +38,18 @@ const CategoryManagerDrawer = lazy(() =>
     default: module.CategoryManagerDrawer,
   }))
 );
+const EditTransactionDrawer = lazy(() =>
+  import('@/domains/transactions/components/edit-transaction-drawer').then(module => ({
+    default: module.EditTransactionDrawer,
+  }))
+);
 
 interface GlobalDrawerProps {
   drawerType:
     | 'account-create'
     | 'broker-create'
     | 'transaction-create'
+    | 'transaction-edit'
     | 'credit-card-create'
     | 'investment-create'
     | 'investment-data-create'
@@ -66,6 +72,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateBrokerDrawer;
   } else if (drawerType === 'transaction-create') {
     DrawerComponent = CreateTransactionDrawer;
+  } else if (drawerType === 'transaction-edit') {
+    DrawerComponent = EditTransactionDrawer;
   } else if (drawerType === 'credit-card-create') {
     DrawerComponent = CreateCreditCardDrawer;
   } else if (drawerType === 'investment-create') {

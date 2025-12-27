@@ -95,3 +95,8 @@ export const updateTransaction = async (
   const response = await apiClient.patch<I_TransactionResponse>(`/transactions/${id}`, updates);
   return response.data;
 };
+
+export const getTransactionById = async (id: string): Promise<I_TransactionResponse> => {
+  const response = await apiClient.get<I_TransactionResponse>(`/transactions/${id}`);
+  return response.data;
+};

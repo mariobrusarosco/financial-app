@@ -11,12 +11,14 @@ const authSearchSchema = z.object({
       'account-create',
       'broker-create',
       'transaction-create',
+      'transaction-edit',
       'credit-card-create',
       'investment-create',
       'investment-data-create',
       'category-manager',
     ])
     .optional(),
+  transactionId: z.string().optional(),
   from: z.string().optional(),
   to: z.string().optional(),
 });
