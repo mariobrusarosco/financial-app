@@ -59,8 +59,13 @@
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_take_screenshot",
       "Bash(yarn format:check:*)",
-      "Bash(yarn lint:fix:*)"
+      "Bash(yarn lint:fix:*)",
+      "Bash(repomix:*)",
+      "Bash(~/.bun/bin/bun init:*)"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "/home/mario/coding/better-call-buffet/"
+    ]
   }
 }

@@ -36,3 +36,4 @@ package-lock.json
 # Logs
 /logs/*
 .aider*
+.claude/logs/*
