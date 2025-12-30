@@ -1,0 +1,26 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "https://better-call-buffet.mariobrusarosco.com",
+      "localStorage": [
+        {
+          "name": "auth_refresh_token",
+          "value": "IfarTPCDIntff51fxaQ3amezzezMDk_Wxyioh6Do8fTBcRxh1w2E62z0u29pqLSb6jtnaxBbJ3w6kgR-7PL6Rw"
+        },
+        {
+          "name": "auth_remember_me",
+          "value": "true"
+        },
+        {
+          "name": "auth_access_token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmMWNiMDMyZC05MTZhLTQ0N2UtYWRhMS0zZGYwZmRkYjhjYjQiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3NjcwMjc3NTIsImlhdCI6MTc2NzAyNTk1MiwidHlwZSI6ImFjY2VzcyJ9.vYilR6fF80F0__l6BsuGcH9dkSOIcEksjPfYxMtL2mo"
+        },
+        {
+          "name": "auth_user",
+          "value": "{\"id\":\"f1cb032d-916a-447e-ada1-3df0fddb8cb4\",\"email\":\"user@example.com\",\"full_name\":\"John Doe\",\"is_active\":true}"
+        }
+      ]
+    }
+  ]
+}
