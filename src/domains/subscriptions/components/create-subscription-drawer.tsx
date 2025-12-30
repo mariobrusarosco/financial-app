@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useCreateSubscription } from '../hooks';
 import { SubscriptionForm } from './subscription-form';
-import { DrawerHeaderWithIcon } from '@/domains/global/components/drawer-header-with-icon';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Loader2, Plus } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 
@@ -22,7 +22,7 @@ export const CreateSubscriptionDrawer = () => {
   return (
     <div className="p-6 space-y-6 h-full">
       <div className="flex justify-between items-center">
-        <DrawerHeaderWithIcon
+        <DrawerHeader
           title="Create Subscription"
           icon={Plus}
         />

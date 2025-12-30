@@ -1,8 +1,8 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useCreateVendor } from '../hooks';
 import { VendorForm } from './vendor-form';
-import { DrawerHeader, DrawerTitle, DrawerDescription } from '@/domains/ui-system/components/drawer';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const CreateVendorDrawer = () => {
   const navigate = useNavigate();
@@ -20,10 +20,11 @@ export const CreateVendorDrawer = () => {
 
   return (
     <>
-      <DrawerHeader>
-        <DrawerTitle>Create New Vendor</DrawerTitle>
-        <DrawerDescription>Add a new vendor to your list of payees.</DrawerDescription>
-      </DrawerHeader>
+      <DrawerHeader
+        title="Create New Vendor"
+        description="Add a new vendor to your list of payees."
+        icon={Plus}
+      />
       <div className="p-4">
         <VendorForm
           onSubmit={handleSubmit}

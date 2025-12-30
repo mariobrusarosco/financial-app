@@ -1,9 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
-import { DrawerTitle } from '@ui-system/components/drawer';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Badge } from '@ui-system/components/badge';
-import { Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import CreateTransaction from './create-transaction';
 import type { I_CreateTransactionForm } from '../types/types-and-interfaces';
 import { useCreateBulkTransactions } from '../hooks/use-create-bulk-transactions';
@@ -41,12 +41,13 @@ export const CreateTransactionDrawer = () => {
   return (
     <div className="p-6 space-y-6 h-full">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <DrawerTitle>Create Transactions</DrawerTitle>
-          {pendingTransactions.length > 0 && (
-            <Badge variant="secondary">{pendingTransactions.length} pending</Badge>
-          )}
-        </div>
+        <DrawerHeader
+          title="Create Transactions"
+          icon={Plus}
+        />
+        {pendingTransactions.length > 0 && (
+          <Badge variant="secondary">{pendingTransactions.length} pending</Badge>
+        )}
         <div className="flex gap-2">
           <Button size="lg" form="transaction-create-form">
             Add Transaction
@@ -119,3 +120,4 @@ export const CreateTransactionDrawer = () => {
     </div>
   );
 };
+

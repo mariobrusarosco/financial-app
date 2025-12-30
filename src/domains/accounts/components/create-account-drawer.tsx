@@ -1,7 +1,8 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@ui-system/components/button';
-import { DrawerContent, DrawerTitle } from '@ui-system/components/drawer';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import CreateAccount from './create-account';
+import { Plus } from 'lucide-react';
 
 export const CreateAccountDrawer = () => {
   const navigate = useNavigate();
@@ -14,7 +15,10 @@ export const CreateAccountDrawer = () => {
     <div className="p-6 space-y-6 h-full">
       {/* Row 1: Title and Action Button */}
       <div className="flex justify-between items-center">
-        <DrawerTitle>Create New Account</DrawerTitle>
+        <DrawerHeader
+          title="Create New Account"
+          icon={Plus}
+        />
         <Button size="lg" form="account-create-form">
           Create Account
         </Button>

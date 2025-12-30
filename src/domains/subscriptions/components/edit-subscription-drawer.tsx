@@ -5,14 +5,10 @@ import { useUpdateSubscription } from '../hooks';
 import { subscriptionsApi } from '../api/subscriptions.api';
 import { SUBSCRIPTIONS_QUERY_KEYS } from '../api/keys';
 import { SubscriptionForm } from './subscription-form';
-import {
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/domains/ui-system/components/drawer';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import type { I_Subscription } from '../types/types-and-interfaces';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const EditSubscriptionDrawer = () => {
   const navigate = useNavigate();
@@ -62,6 +58,11 @@ export const EditSubscriptionDrawer = () => {
   if (isQueryLoading && !subscription) {
     return (
       <div className="flex items-center justify-center h-full p-6">
+        <DrawerHeader
+          title="Edit Subscription"
+          description="Loading subscription details..."
+          icon={Save}
+        />
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
@@ -70,7 +71,11 @@ export const EditSubscriptionDrawer = () => {
   if (isError || !subscription) {
     return (
       <div className="flex items-center justify-center h-full p-6">
-        <p className="text-destructive">Failed to load subscription details.</p>
+        <DrawerHeader
+          title="Edit Subscription"
+          description="Failed to load subscription details."
+          icon={Save}
+        />
       </div>
     );
   }
@@ -78,9 +83,10 @@ export const EditSubscriptionDrawer = () => {
   return (
     <div className="p-6 space-y-6 h-full">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <DrawerTitle>Edit Subscription</DrawerTitle>
-        </div>
+        <DrawerHeader
+          title="Edit Subscription"
+          icon={Save}
+        />
         <div className="flex gap-2">
           <Button size="lg" form="subscription-form" type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -91,9 +97,9 @@ export const EditSubscriptionDrawer = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-3 gap-6 h-full">
           <div className="col-span-2">
-            <DrawerDescription className="sr-only">
+            <p className="text-sm text-muted-foreground">
               Edit the details of your subscription.
-            </DrawerDescription>
+            </p>
             <SubscriptionForm
               key={subscription.id}
               initialValues={subscription as unknown as I_Subscription}

@@ -1,8 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@ui-system/components/button';
-import { DrawerContent, DrawerTitle } from '@ui-system/components/drawer';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import useCreateBroker from '@/domains/broker/hooks/use-create-broker';
 import CreateBroker from './create-broker';
+import { Plus } from 'lucide-react';
 
 export const CreateBrokerDrawer = () => {
   const navigate = useNavigate();
@@ -16,7 +17,10 @@ export const CreateBrokerDrawer = () => {
     <div className="p-6 space-y-6 h-full">
       {/* Row 1: Title and Action Button */}
       <div className="flex justify-between items-center">
-        <DrawerTitle>Create New Broker</DrawerTitle>
+        <DrawerHeader
+          title="Create New Broker"
+          icon={Plus}
+        />
         <Button size="lg" form="broker-create-form" disabled={mutation.isPending}>
           {mutation.isPending ? 'Creating...' : 'Create Broker'}
         </Button>

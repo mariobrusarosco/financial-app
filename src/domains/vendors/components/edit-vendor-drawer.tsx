@@ -5,9 +5,9 @@ import { useUpdateVendor } from '../hooks';
 import { vendorsApi } from '../api/vendors.api';
 import { VENDORS_QUERY_KEYS } from '../api/keys';
 import { VendorForm } from './vendor-form';
-import { DrawerHeader, DrawerTitle, DrawerDescription } from '@/domains/ui-system/components/drawer';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import type { I_Vendor } from '../types/types-and-interfaces';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const EditVendorDrawer = () => {
   const navigate = useNavigate();
@@ -57,6 +57,11 @@ export const EditVendorDrawer = () => {
   if (isQueryLoading && !vendor) {
     return (
       <div className="flex items-center justify-center h-full p-6">
+        <DrawerHeader
+          title="Edit Vendor"
+          description="Loading vendor details..."
+          icon={Save}
+        />
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
@@ -65,19 +70,22 @@ export const EditVendorDrawer = () => {
   if (isError || !vendor) {
     return (
       <div className="flex items-center justify-center h-full p-6">
-        <p className="text-destructive">Failed to load vendor details.</p>
+        <DrawerHeader
+          title="Edit Vendor"
+          description="Failed to load vendor details."
+          icon={Save}
+        />
       </div>
     );
   }
 
   return (
     <>
-      <DrawerHeader>
-        <DrawerTitle>Edit Vendor</DrawerTitle>
-        <DrawerDescription>
-          Editing the details for vendor: {vendor.name}
-        </DrawerDescription>
-      </DrawerHeader>
+      <DrawerHeader
+        title="Edit Vendor"
+        description={`Editing the details for vendor: ${vendor.name}`}
+        icon={Save}
+      />
       <div className="p-4">
         <VendorForm
           key={vendor.id}
