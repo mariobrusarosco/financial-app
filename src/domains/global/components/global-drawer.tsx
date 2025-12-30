@@ -44,15 +44,27 @@ const EditTransactionDrawer = lazy(() =>
   }))
 );
 
-const VendorDrawer = lazy(() =>
-  import('@/domains/vendors/components/vendor-drawer').then(module => ({
-    default: module.VendorDrawer,
+// Vendors
+const CreateVendorDrawer = lazy(() =>
+  import('@/domains/vendors/components/create-vendor-drawer').then(module => ({
+    default: module.CreateVendorDrawer,
+  }))
+);
+const EditVendorDrawer = lazy(() =>
+  import('@/domains/vendors/components/edit-vendor-drawer').then(module => ({
+    default: module.EditVendorDrawer,
   }))
 );
 
-const SubscriptionDrawer = lazy(() =>
-  import('@/domains/subscriptions/components/subscription-drawer').then(module => ({
-    default: module.SubscriptionDrawer,
+// Subscriptions
+const CreateSubscriptionDrawer = lazy(() =>
+  import('@/domains/subscriptions/components/create-subscription-drawer').then(module => ({
+    default: module.CreateSubscriptionDrawer,
+  }))
+);
+const EditSubscriptionDrawer = lazy(() =>
+  import('@/domains/subscriptions/components/edit-subscription-drawer').then(module => ({
+    default: module.EditSubscriptionDrawer,
   }))
 );
 
@@ -68,8 +80,8 @@ interface GlobalDrawerProps {
     | 'category-manager'
     | 'vendor-create'
     | 'vendor-edit'
-    | 'subscription-create' // New
-    | 'subscription-edit';   // New
+    | 'subscription-create'
+    | 'subscription-edit';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -98,10 +110,14 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateInvestmentDataDrawer;
   } else if (drawerType === 'category-manager') {
     DrawerComponent = CategoryManagerDrawer;
-  } else if (drawerType === 'vendor-create' || drawerType === 'vendor-edit') {
-    DrawerComponent = VendorDrawer;
-  } else if (drawerType === 'subscription-create' || drawerType === 'subscription-edit') {
-    DrawerComponent = SubscriptionDrawer;
+  } else if (drawerType === 'vendor-create') {
+    DrawerComponent = CreateVendorDrawer;
+  } else if (drawerType === 'vendor-edit') {
+    DrawerComponent = EditVendorDrawer;
+  } else if (drawerType === 'subscription-create') {
+    DrawerComponent = CreateSubscriptionDrawer;
+  } else if (drawerType === 'subscription-edit') {
+    DrawerComponent = EditSubscriptionDrawer;
   }
 
   if (!DrawerComponent) {

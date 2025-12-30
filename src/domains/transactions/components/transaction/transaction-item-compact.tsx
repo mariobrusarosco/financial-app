@@ -5,6 +5,7 @@ import { TransactionAmount } from './transaction-amount';
 import { TransactionHoverActions } from './transaction-hover-actions';
 import { formatDateShort } from '@/domains/transactions/utils/transaction-formatting';
 import type { TransactionItemCompactProps } from './types';
+import { Repeat } from 'lucide-react'; // Import Repeat icon
 
 export const TransactionItemCompact = ({
   transaction,
@@ -52,7 +53,7 @@ export const TransactionItemCompact = ({
               transaction.category ||
               'Uncategorized'}
           </span>
-          <span>•</span>
+          {transaction.subscription && <Repeat className="h-3 w-3" />}
         </div>
       </div>
 

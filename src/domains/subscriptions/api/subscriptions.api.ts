@@ -31,4 +31,12 @@ export const subscriptionsApi = {
   deleteSubscription: async (id: string) => {
     await apiClient.delete(`/subscriptions/${id}`);
   },
+
+  linkPayment: async (subscriptionId: string, transactionId: string) => {
+    const response = await apiClient.post<I_SubscriptionResponse>(
+      `/subscriptions/${subscriptionId}/link-payment`,
+      { transaction_id: transactionId }
+    );
+    return response.data;
+  },
 };

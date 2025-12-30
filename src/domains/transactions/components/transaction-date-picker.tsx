@@ -33,6 +33,8 @@ export function TransactionDatePicker({ date, setDate }: Props) {
           mode="single"
           selected={date} // Calendar component typically handles Date | undefined
           captionLayout="dropdown"
+          fromYear={new Date().getFullYear() - 2}
+          toYear={new Date().getFullYear() + 2}
           onSelect={selectedDate => {
             if (selectedDate) {
               setDate(selectedDate);

@@ -40,8 +40,8 @@ export const VendorList = ({
   const { mutate: deleteVendorMutation } = useDeleteVendor();
 
   const handleEdit = (vendorId: string) => {
-    navigate({
-      search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'vendor-edit', vendorId }),
+    (navigate as any)({
+      search: (prev: any) => ({ ...prev, drawer: 'vendor-edit', vendorId }),
     });
   };
 
@@ -68,7 +68,7 @@ export const VendorList = ({
         <PageHeader
           title="Vendors"
           icon={Store}
-          onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'vendor-create' }) })}
+          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
           addButtonLabel="Add Vendor"
         />
         <div className="text-center py-8">
@@ -84,7 +84,7 @@ export const VendorList = ({
         <PageHeader
           title="Vendors"
           icon={Store}
-          onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'vendor-create' }) })}
+          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
           addButtonLabel="Add Vendor"
         />
         <div className="text-center py-8">
@@ -100,7 +100,7 @@ export const VendorList = ({
       <PageHeader
         title="Vendors"
         icon={Store}
-        onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'vendor-create' }) })}
+        onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
         addButtonLabel="Add Vendor"
       />
       <CardDescription>

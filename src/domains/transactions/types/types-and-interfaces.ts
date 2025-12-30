@@ -16,7 +16,9 @@ export interface I_TransactionPayload {
 }
 
 // Legacy alias for backward compatibility - will be removed
-export interface I_CreateTransactionForm extends I_TransactionPayload {}
+export interface I_CreateTransactionForm extends I_TransactionPayload {
+  subscription_id?: string;
+}
 
 // Collection transactions payload (data going TO backend)
 export interface I_TransactionsPayload {
@@ -79,6 +81,9 @@ export interface I_TransactionResponse {
       id: string;
       name: string;
     } | null;
+  } | null;
+  subscription?: { // New
+    name: string;
   } | null;
   created_at: string;
   updated_at: string;

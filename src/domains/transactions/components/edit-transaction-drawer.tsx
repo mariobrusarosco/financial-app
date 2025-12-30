@@ -13,7 +13,7 @@ import { EditTransaction } from './edit-transaction';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { getTransactionById } from '../api/transactions.api';
 import type { I_TransactionResponse } from '../types/types-and-interfaces';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Save } from 'lucide-react';
 
 export const EditTransactionDrawer = () => {
   const navigate = useNavigate();
@@ -73,14 +73,7 @@ export const EditTransactionDrawer = () => {
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button variant="outline" onClick={handleClose}>
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
+
       </>
     );
   }
@@ -123,6 +116,18 @@ export const EditTransactionDrawer = () => {
       <div className="px-4 pb-4">
         <EditTransaction transaction={transaction} onSave={handleSave} onCancel={handleClose} />
       </div>
+      <DrawerFooter>
+        <Button type="submit" form="edit-transaction-form">
+          <Save className="h-4 w-4 mr-2" />
+          Save
+        </Button>
+        <DrawerClose asChild>
+          <Button variant="outline" onClick={handleClose}>
+            <X className="h-4 w-4 mr-2" />
+            Cancel
+          </Button>
+        </DrawerClose>
+      </DrawerFooter>
     </>
   );
 };

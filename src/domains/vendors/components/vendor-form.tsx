@@ -5,7 +5,6 @@ import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
 import type { I_CreateVendorRequest, I_Vendor } from '../types/types-and-interfaces';
 import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
 
 const nameSchema = z.string().min(1, 'Vendor name is required.');
 const urlSchema = z.string().url('Please enter a valid URL.').optional().or(z.literal(''));
@@ -28,20 +27,6 @@ export const VendorForm = ({ initialValues, onSubmit, isLoading, isEditMode }: V
       onSubmit(value);
     },
   });
-
-  // Reset form if initialValues change (e.g., when switching between edit targets)
-  useEffect(() => {
-    if (initialValues) {
-      form.setFieldValue('name', initialValues.name);
-      form.setFieldValue('logo_url', initialValues.logo_url || '');
-      form.setFieldValue('website', initialValues.website || '');
-    } else {
-      // Reset to default for 'create' mode if drawer is re-opened
-      form.setFieldValue('name', '');
-      form.setFieldValue('logo_url', '');
-      form.setFieldValue('website', '');
-    }
-  }, [initialValues, form]);
 
   return (
     <form

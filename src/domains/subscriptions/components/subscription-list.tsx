@@ -40,8 +40,8 @@ export const SubscriptionList = ({
   const { mutate: deleteSubscriptionMutation } = useDeleteSubscription();
 
   const handleEdit = (subscriptionId: string) => {
-    navigate({
-      search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'subscription-edit', subscriptionId }),
+    (navigate as any)({
+      search: (prev: any) => ({ ...prev, drawer: 'subscription-edit', subscriptionId }),
     });
   };
 
@@ -68,7 +68,7 @@ export const SubscriptionList = ({
         <PageHeader
           title="Subscriptions"
           icon={Repeat}
-          onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'subscription-create' }) })}
+          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
           addButtonLabel="Add Subscription"
         />
         <div className="text-center py-8">
@@ -84,7 +84,7 @@ export const SubscriptionList = ({
         <PageHeader
           title="Subscriptions"
           icon={Repeat}
-          onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'subscription-create' }) })}
+          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
           addButtonLabel="Add Subscription"
         />
         <div className="text-center py-8">
@@ -100,7 +100,7 @@ export const SubscriptionList = ({
       <PageHeader
         title="Subscriptions"
         icon={Repeat}
-        onAdd={() => navigate({ search: (prev: AuthSearchParams) => ({ ...prev, drawer: 'subscription-create' }) })}
+        onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
         addButtonLabel="Add Subscription"
       />
       <CardDescription>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Route } from '@/routes/(auth)/route'; // Import Route for global search
+import { Route } from '@/routes/(auth)/route';
 import { useVendors } from '../hooks';
 import { VendorList } from '../components';
 import type { I_VendorsParams } from '../types/types-and-interfaces';
@@ -7,7 +7,7 @@ import type { I_VendorsParams } from '../types/types-and-interfaces';
 const ITEMS_PER_PAGE = 20;
 
 export const VendorsMainScreen = () => {
-  const { from, to } = Route.useSearch(); // Get global dates
+  const { from, to } = Route.useSearch();
   const [params, setParams] = useState<I_VendorsParams>({
     page: 1,
     per_page: ITEMS_PER_PAGE,
@@ -18,10 +18,10 @@ export const VendorsMainScreen = () => {
   const mergedParams = useMemo(
     () => ({
       ...params,
-      date_from: from, // Include global date filter
-      date_to: to,     // Include global date filter
+      date_from: from,
+      date_to: to,
     }),
-    [params, from, to] // Add from, to to dependencies
+    [params, from, to]
   );
 
   const { data, isLoading, isError, isPlaceholderData } = useVendors(mergedParams);

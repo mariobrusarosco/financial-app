@@ -63,3 +63,18 @@ export const useDeleteSubscription = () => {
     },
   });
 };
+
+export const useLinkPayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ subscriptionId, transactionId }: { subscriptionId: string; transactionId: string }) =>
+      subscriptionsApi.linkPayment(subscriptionId, transactionId),
+    onSuccess: () => {
+      toast.success('Payment linked successfully!');
+      queryClient.invalidateQueries({ queryKey: SUBSCRIPTIONS_QUERY_KEYS.all });
+    },
+    onError: (error: any) => {
+      toast.error('Failed to link payment.', { description: error.message });
+    },
+  });
+};

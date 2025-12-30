@@ -1,7 +1,7 @@
 import type { I_Subscription } from '../types/types-and-interfaces';
 import { Button } from '@/domains/ui-system/components/button';
-import { Pencil, Trash2, Repeat, DollarSign } from 'lucide-react';
-import { format } from 'date-fns';
+import { Pencil, Trash2, DollarSign } from 'lucide-react'; // Removed Repeat
+import { format, parseISO } from 'date-fns'; // Added parseISO
 import { cn } from '@/domains/ui-system/utils';
 
 interface SubscriptionItemProps {
@@ -23,10 +23,10 @@ export const SubscriptionItem = ({ subscription, onEdit, onDelete }: Subscriptio
         <div>
           <p className="font-medium">{subscription.name}</p>
           <p className="text-sm text-muted-foreground">
-            Amount: {subscription.amount} {subscription.currency} | Frequency: {subscription.frequency}
+            Amount: {subscription.amount} {subscription.currency} | Frequency: {subscription.billing_cycle}
           </p>
           <p className="text-sm text-muted-foreground">
-            Next Payment: {format(subscription.next_payment_date, 'PP')}
+            Next Payment: {format(parseISO(subscription.next_due_date), 'PP')}
           </p>
           <span
             className={cn(
