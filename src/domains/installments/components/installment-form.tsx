@@ -1,0 +1,277 @@
+import { useForm } from '@tanstack/react-form';
+import { zodValidator } from '@tanstack/zod-form-adapter';
+import { z } from 'zod';
+import { Input } from '@/domains/ui-system/components/input';
+import { Label } from '@/domains/ui-system/components/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/domains/ui-system/components/select';
+import { useVendors } from '@/domains/vendors/hooks';
+import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
+import * as dateFns from 'date-fns';
+import { useCategories } from '@/domains/categories/hooks/use-categories';
+import { useQuery } from '@tanstack/react-query';
+import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
+import type { I_CreateInstallmentPlanRequest } from '../types/types-and-interfaces';
+
+const installmentFormSchema = z.object({
+  name: z.string().min(1, 'Name is required.'),
+  description: z.string().optional().or(z.literal('')),
+  total_amount: z.number().min(0.01, 'Total amount must be greater than 0.'),
+  num_installments: z.number().int().min(1, 'At least 1 installment is required.'),
+  start_date: z.string().min(1, 'Start date is required.'),
+  vendor_id: z.string().optional().or(z.literal('')),
+  category_id: z.string().optional().or(z.literal('')),
+  credit_card_id: z.string().optional().or(z.literal('')),
+});
+
+interface InstallmentFormProps {
+  onSubmit: (values: I_CreateInstallmentPlanRequest) => void;
+  onFormChange?: (values: Partial<I_CreateInstallmentPlanRequest>) => void;
+}
+
+export const InstallmentForm = ({ onSubmit, onFormChange }: InstallmentFormProps) => {
+  const { data: vendorsData } = useVendors();
+  const { data: categoriesData } = useCategories();
+  const { data: creditCardsData } = useQuery({
+    queryKey: ['credit_cards', 'all'],
+    queryFn: () => creditCardApi.getAllCreditCards(),
+  });
+
+  const availableVendors = vendorsData?.data || [];
+  const availableCreditCards = creditCardsData?.data || [];
+
+  const availableCategories: { id: string; name: string; level: number }[] = [];
+  (categoriesData || []).forEach(cat => {
+    availableCategories.push({ id: cat.id, name: cat.name, level: 0 });
+    if (cat.children) {
+      cat.children.forEach(child => {
+        availableCategories.push({ id: child.id, name: child.name, level: 1 });
+      });
+    }
+  });
+
+  const form = useForm<I_CreateInstallmentPlanRequest, typeof zodValidator>({
+    validatorAdapter: zodValidator,
+    defaultValues: {
+      name: '',
+      description: '',
+      total_amount: 0,
+      num_installments: 1,
+      start_date: dateFns.format(new Date(), 'yyyy-MM-dd'),
+      vendor_id: '',
+      category_id: '',
+      credit_card_id: '',
+    },
+    onSubmit: async ({ value }) => {
+      const submittedValue: I_CreateInstallmentPlanRequest = {
+        ...value,
+        total_amount: parseFloat(value.total_amount.toString()),
+        vendor_id: value.vendor_id || null,
+        category_id: value.category_id || null,
+        credit_card_id: value.credit_card_id || null,
+        description: value.description || null,
+      };
+      onSubmit(submittedValue);
+    },
+  });
+
+  // Watch for changes to update preview
+  form.useStore(state => {
+    if (onFormChange) {
+      onFormChange(state.values);
+    }
+    return state.values;
+  });
+
+  return (
+    <form
+      id="installment-plan-form"
+      onSubmit={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form.Field
+          name="name"
+          validators={{
+            onChange: installmentFormSchema.shape.name,
+          }}
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Plan Name</Label>
+              <Input
+                id={field.name}
+                placeholder="e.g. New MacBook Pro"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={e => field.handleChange(e.target.value)}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
+              )}
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="start_date"
+          validators={{
+            onChange: installmentFormSchema.shape.start_date,
+          }}
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Start Date (First Installment)</Label>
+              <TransactionDatePicker
+                date={field.state.value ? dateFns.parseISO(field.state.value) : undefined}
+                setDate={date => field.handleChange(date ? dateFns.format(date, 'yyyy-MM-dd') : '')}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
+              )}
+            </div>
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form.Field
+          name="total_amount"
+          validators={{
+            onChange: installmentFormSchema.shape.total_amount,
+          }}
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Total Amount</Label>
+              <Input
+                id={field.name}
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={e => field.handleChange(parseFloat(e.target.value))}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
+              )}
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="num_installments"
+          validators={{
+            onChange: installmentFormSchema.shape.num_installments,
+          }}
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Number of Installments</Label>
+              <Input
+                id={field.name}
+                type="number"
+                min="1"
+                max="120"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={e => field.handleChange(parseInt(e.target.value))}
+              />
+              {field.state.meta.errors.length > 0 && (
+                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
+              )}
+            </div>
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form.Field
+          name="credit_card_id"
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Credit Card</Label>
+              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Card" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No Card (Cash/Debit)</SelectItem>
+                  {availableCreditCards.map(card => (
+                    <SelectItem key={card.id} value={card.id}>
+                      {card.name} (****{card.last_four_digits})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="vendor_id"
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Vendor</Label>
+              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Vendor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableVendors.map(vendor => (
+                    <SelectItem key={vendor.id} value={vendor.id}>
+                      {vendor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="category_id"
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Category</Label>
+              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableCategories.map(category => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.level > 0 ? `\u00A0\u00A0 ${category.name}` : category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        />
+      </div>
+
+      <form.Field
+        name="description"
+        children={field => (
+          <div className="space-y-2">
+            <Label htmlFor={field.name}>Notes (Optional)</Label>
+            <Input
+              id={field.name}
+              placeholder="Add extra details..."
+              value={field.state.value || ''}
+              onBlur={field.handleBlur}
+              onChange={e => field.handleChange(e.target.value)}
+            />
+          </div>
+        )}
+      />
+    </form>
+  );
+};

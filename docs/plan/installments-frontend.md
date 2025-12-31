@@ -40,14 +40,14 @@ Build a dedicated UI for creating Installment Plans, distinct from the single tr
 
 ## Tasks
 
-### Task 1 - Create Installment Drawer [ ]
-#### Task 1.1 - Create `src/domains/installments/components/create-installment-drawer.tsx` [ ]
-#### Task 1.2 - Register the new drawer in `GlobalDrawer` [ ]
+### Task 1 - Create Installment Drawer [x]
+#### Task 1.1 - Create `src/domains/installments/components/create-installment-drawer.tsx` [x]
+#### Task 1.2 - Register the new drawer in `GlobalDrawer` [x]
 
-### Task 2 - Installment Form [ ]
-#### Task 2.1 - Create `InstallmentForm` component [ ]
-#### Task 2.2 - Implement fields: Description, Total Amount, Number of Installments, Start Date, Category, Vendor [ ]
-#### Task 2.3 - Implement "Preview" logic (show the calculated monthly payment before saving) [ ]
+### Task 2 - Installment Form [x]
+#### Task 2.1 - Create `InstallmentForm` component [x]
+#### Task 2.2 - Implement fields: Description, Total Amount, Number of Installments, Start Date, Category, Vendor [x]
+#### Task 2.3 - Implement "Preview" logic (show the calculated monthly payment before saving) [x]
 
 ## Dependencies
 - Phase 1 (API Layer)
@@ -64,10 +64,10 @@ Provide a comprehensive view of all active installment plans and their progress.
 
 ## Tasks
 
-### Task 1 - Installments List Screen [ ]
-#### Task 1.1 - Create `src/domains/installments/screens/main.tsx` [ ]
-#### Task 1.2 - Implement `InstallmentPlanList` component [ ]
-#### Task 1.3 - Add summary cards: "Total Debt", "Monthly Commitment" [ ]
+### Task 1 - Installments List Screen [/]
+#### Task 1.1 - Create `src/domains/installments/screens/main.tsx` [/]
+#### Task 1.2 - Implement `InstallmentPlanList` component [/]
+#### Task 1.3 - Add summary cards: "Total Debt", "Monthly Commitment" [/]
 
 ### Task 2 - Plan Detail View [ ]
 #### Task 2.1 - Create detail view/drawer for a specific plan [ ]
