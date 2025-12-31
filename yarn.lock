@@ -1930,6 +1930,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/test@npm:^1.57.0":
+  version: 1.57.0
+  resolution: "@playwright/test@npm:1.57.0"
+  dependencies:
+    playwright: 1.57.0
+  bin:
+    playwright: cli.js
+  checksum: 1a84783a240d69c2c8081a127b446f812a8dc86fe6f60a9511dd501cc0e6229cbec7e7753972678f3f063ad2bebb2cedbe9caebc5faa41014aebed35773ea242
+  languageName: node
+  linkType: hard
+
 "@poppinss/colors@npm:^4.1.4, @poppinss/colors@npm:^4.1.5":
   version: 4.1.5
   resolution: "@poppinss/colors@npm:4.1.5"
@@ -5013,6 +5024,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/devtools-event-client@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@tanstack/devtools-event-client@npm:0.4.0"
+  checksum: e0606df13de541fae1585fa093f92bca6da4ccbe666a8c318edf0cc71319e9afb524da0d0efac1493f18ca69abde2882d17969691f1f99fd7f7795ec558c22fe
+  languageName: node
+  linkType: hard
+
 "@tanstack/directive-functions-plugin@npm:1.131.2":
   version: 1.131.2
   resolution: "@tanstack/directive-functions-plugin@npm:1.131.2"
@@ -5055,6 +5073,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/pacer@npm:0.17.0":
+  version: 0.17.0
+  resolution: "@tanstack/pacer@npm:0.17.0"
+  dependencies:
+    "@tanstack/devtools-event-client": ^0.4.0
+    "@tanstack/store": ^0.8.0
+  checksum: d2d6356714584c4d1faf4b60753a83815663aec36576dfb3abd983b530617f8aeb39779135a424175d6e3b02327de06c957f59b806a839e4e45af37207e7ff09
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-core@npm:5.85.5":
   version: 5.85.5
   resolution: "@tanstack/query-core@npm:5.85.5"
@@ -5084,6 +5112,19 @@ __metadata:
     "@tanstack/react-start":
       optional: true
   checksum: 9a3946b1c1fa3efe223412f9b02641ec28b32d61cf752ec469d3a8023fd553a1808ec7118e28a3d6e03623a606b41f9f2a754b8ff791e867558d4b8de431413d
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-pacer@npm:^0.19.0":
+  version: 0.19.0
+  resolution: "@tanstack/react-pacer@npm:0.19.0"
+  dependencies:
+    "@tanstack/pacer": 0.17.0
+    "@tanstack/react-store": ^0.8.0
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 27d9244c26b9d591a015c9980353442d398c7b46d7ea57fff497fddcba96502beaaeff234b5e4342d5f6c5129f399d9f888925c5c20493f59335f691cbab17bc
   languageName: node
   linkType: hard
 
@@ -5215,6 +5256,19 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: b5f2a529132b6361134a1e1f6f0e1951d0982f9ace0ecef0e0ace8a3bb64471ebb182dcbc3e346c1b9a4fbc5dd39edc4bb5f130b7eb68c1934c66c79e62fa332
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-store@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@tanstack/react-store@npm:0.8.0"
+  dependencies:
+    "@tanstack/store": 0.8.0
+    use-sync-external-store: ^1.6.0
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: cee99dee7d4ea909e3aaa7c9c3e36733b1d791b51a91359d3abdf0c90b2a5cac1fa1d4355614ea029a271806ab821f494497e93873d6a9f6f0996d168a90c658
   languageName: node
   linkType: hard
 
@@ -5513,6 +5567,13 @@ __metadata:
   version: 0.7.4
   resolution: "@tanstack/store@npm:0.7.4"
   checksum: fa355fc4ebac7fb859266435cd0692eab84e68976a9955fa4b875d0e526930fcf08a600bfc0cb438a72032d5da958f92c8919b14fe976dba9236f90218486d5b
+  languageName: node
+  linkType: hard
+
+"@tanstack/store@npm:0.8.0, @tanstack/store@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@tanstack/store@npm:0.8.0"
+  checksum: b838f5a22b2f9daf8bf0d2aefaf07624030217764d61c7d615de36752a40c95c621f3448847b0adadbbf01b20bc419c7f0760ae10d984db8a536a471b12387c1
   languageName: node
   linkType: hard
 
@@ -6742,6 +6803,7 @@ __metadata:
   dependencies:
     "@fontsource/montserrat": ^5.2.8
     "@fontsource/quicksand": ^5.2.10
+    "@playwright/test": ^1.57.0
     "@radix-ui/react-avatar": ^1.1.9
     "@radix-ui/react-checkbox": ^1.1.1
     "@radix-ui/react-collapsible": ^1.1.11
@@ -6759,6 +6821,7 @@ __metadata:
     "@tailwindcss/postcss": ^4.1.4
     "@tailwindcss/vite": ^4.1.4
     "@tanstack/react-form": ^1.19.2
+    "@tanstack/react-pacer": ^0.19.0
     "@tanstack/react-query": ^5.75.7
     "@tanstack/react-query-devtools": ^5.89.0
     "@tanstack/react-router": ^1.120.20
@@ -9535,12 +9598,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fsevents@npm:2.3.2":
+  version: 2.3.2
+  resolution: "fsevents@npm:2.3.2"
+  dependencies:
+    node-gyp: latest
+  checksum: 97ade64e75091afee5265e6956cb72ba34db7819b4c3e94c431d4be2b19b8bb7a2d4116da417950c3425f17c8fe693d25e20212cac583ac1521ad066b77ae31f
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
 "fsevents@npm:~2.3.2, fsevents@npm:~2.3.3":
   version: 2.3.3
   resolution: "fsevents@npm:2.3.3"
   dependencies:
     node-gyp: latest
   checksum: 11e6ea6fea15e42461fc55b4b0e4a0a3c654faa567f1877dbd353f39156f69def97a69936d1746619d656c4b93de2238bf731f6085a03a50cabf287c9d024317
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>":
+  version: 2.3.2
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  dependencies:
+    node-gyp: latest
   conditions: os=darwin
   languageName: node
   linkType: hard
@@ -12519,6 +12601,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.57.0":
+  version: 1.57.0
+  resolution: "playwright-core@npm:1.57.0"
+  bin:
+    playwright-core: cli.js
+  checksum: 960e80d6ec06305b11a3ca9e78e8e4201cc17f37dd37279cb6fece4df43d74bf589833f4f94535fadd284b427f98c5f1cf09368e22f0f00b6a9477571ce6b03b
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.57.0":
+  version: 1.57.0
+  resolution: "playwright@npm:1.57.0"
+  dependencies:
+    fsevents: 2.3.2
+    playwright-core: 1.57.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 176fd9fd890f390e0aa00d42697b70072d534243b15467d9430f3af329e77b3225b67a0afa12ea76fb440300dabd92d4cf040baf5edceee8eeff0ee1590ae5b7
+  languageName: node
+  linkType: hard
+
 "pluralize@npm:^8.0.0":
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
@@ -15098,6 +15204,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 5e639c9273200adb6985b512c96a3a02c458bc8ca1a72e91da9cdc6426144fc6538dca434b0f99b28fb1baabc82e1c383ba7900b25ccdcb43758fb058dc66c34
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 61a62e910713adfaf91bdb72ff2cd30e5ba83687accaf3b6e75a903b45bf635f5722e3694af30d83a03e92cb533c0a5c699298d2fef639a03ffc86b469f4eee2
   languageName: node
   linkType: hard
 

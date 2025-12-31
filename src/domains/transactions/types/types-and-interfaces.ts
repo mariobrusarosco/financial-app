@@ -102,7 +102,8 @@ export interface I_AccountTransactionsParams {
   is_paid?: boolean;
   sort_by?: 'date' | 'amount' | 'created_at' | 'category';
   sort_order?: 'asc' | 'desc';
-  include_credit_cards?: boolean; // New parameter to include credit card transactions
+  include_credit_cards?: boolean;
+  subscription_id?: string;
 }
 
 // Collection transactions response (data coming FROM backend)

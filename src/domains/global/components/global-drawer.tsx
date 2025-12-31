@@ -88,7 +88,16 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
   const navigate = useNavigate();
 
   const handleClose = () => {
-    navigate({ search: {} });
+    navigate({
+      search: (prev: any) => {
+        const newSearch = { ...prev };
+        delete newSearch.drawer;
+        delete newSearch.transactionId;
+        delete newSearch.vendorId;
+        delete newSearch.subscriptionId;
+        return newSearch;
+      },
+    });
   };
 
   // Simple mapping - no parsing needed

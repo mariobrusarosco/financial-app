@@ -448,15 +448,23 @@ export const GC_TIMES = {
 
 ```typescript
 // ✅ DO: Handle all states explicitly
-function AccountsList() {
-  const { data, isPending, isError, error } = useAccounts();
+const BrokersList = () => {
+  const { data: brokers, isLoading, error } = useBrokers();
 
-  if (isPending) return <AccountsSkeleton />;
-  if (isError) return <ErrorDisplay error={error} />;
-  if (!data?.length) return <EmptyState />;
+  if (isLoading) return <LoadingState />;
+  if (error) return <ErrorState error={error} />;
+  if (!brokers || brokers.length === 0) return <EmptyState />;
 
-  return <AccountsGrid accounts={data} />;
-}
+  return (
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 bg-section-background rounded-3xl p-6">
+      {brokers.map(broker => (
+        <li key={broker.id}>
+          <BrokerCard broker={broker} />
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 // ❌ DON'T: Mix loading states with data rendering
 function AccountsList() {
