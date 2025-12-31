@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import * as Sentry from '@sentry/react';
 import { toast } from 'sonner';
 import { I_CreateAccountForm } from '@/domains/accounts/types/types-and-interfaces';
 import { accountsApi } from '@/domains/accounts/api';
@@ -34,7 +35,11 @@ export const useCreateAccount = () => {
         userMessage: AccountErrorMessages.ACCOUNT_CREATION_FAILED,
       });
 
-      // TODO LOG ERROR ON SENTRY
+      Sentry.captureException(error, {
+        extra: {
+          errorInfo,
+        },
+      });
     },
   });
 };
