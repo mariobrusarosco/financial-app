@@ -16,7 +16,9 @@ export interface I_TransactionPayload {
 }
 
 // Legacy alias for backward compatibility - will be removed
-export interface I_CreateTransactionForm extends I_TransactionPayload {}
+export interface I_CreateTransactionForm extends I_TransactionPayload {
+  subscription_id?: string;
+}
 
 // Collection transactions payload (data going TO backend)
 export interface I_TransactionsPayload {
@@ -80,6 +82,9 @@ export interface I_TransactionResponse {
       name: string;
     } | null;
   } | null;
+  subscription?: { // New
+    name: string;
+  } | null;
   created_at: string;
   updated_at: string;
 }
@@ -97,7 +102,8 @@ export interface I_AccountTransactionsParams {
   is_paid?: boolean;
   sort_by?: 'date' | 'amount' | 'created_at' | 'category';
   sort_order?: 'asc' | 'desc';
-  include_credit_cards?: boolean; // New parameter to include credit card transactions
+  include_credit_cards?: boolean;
+  subscription_id?: string;
 }
 
 // Collection transactions response (data coming FROM backend)

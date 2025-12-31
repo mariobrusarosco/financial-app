@@ -37,6 +37,7 @@ export const TransactionItemDefault = ({
         description={transaction.description}
         date={transaction.date}
         ignored={transaction.ignored}
+        subscription={transaction.subscription} // Pass subscription
         dateFormat="medium"
       />
 

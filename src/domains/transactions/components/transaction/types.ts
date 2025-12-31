@@ -41,6 +41,9 @@ export interface TransactionInfoProps {
   description: string;
   date: string;
   ignored: boolean;
+  subscription?: {
+    name: string;
+  } | null;
   dateFormat?: 'short' | 'medium' | 'long';
 }
 

@@ -8,13 +8,13 @@ export interface I_Subscription {
   category_id?: string;
   name: string;
   amount: number;
-  currency: string;
-  frequency: T_BillingCycle;
-  start_date: string; // ISO Date string
+  currency: string; // Stays here for consistency with other entities
+  billing_cycle: T_BillingCycle;
+  next_due_date: string; // ISO Date string
   end_date?: string; // ISO Date string
-  next_payment_date: string; // ISO Date string
   notes?: string;
   is_active: boolean;
+  is_paid_this_cycle: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -25,11 +25,9 @@ export interface I_CreateSubscriptionRequest {
   category_id?: string;
   name: string;
   amount: number;
-  currency: string;
-  frequency: T_BillingCycle;
-  start_date: string; // ISO Date string
+  billing_cycle: T_BillingCycle;
+  next_due_date: string; // ISO Date string
   end_date?: string; // ISO Date string
-  next_payment_date: string; // ISO Date string
   notes?: string;
   is_active?: boolean;
 }
@@ -40,11 +38,9 @@ export interface I_UpdateSubscriptionRequest {
   category_id?: string;
   name?: string;
   amount?: number;
-  currency?: string;
-  frequency?: T_BillingCycle;
-  start_date?: string; // ISO Date string
+  billing_cycle?: T_BillingCycle;
+  next_due_date?: string; // ISO Date string
   end_date?: string; // ISO Date string
-  next_payment_date?: string; // ISO Date string
   notes?: string;
   is_active?: boolean;
 }
@@ -65,12 +61,12 @@ export interface I_SubscriptionsResponse {
 }
 
 export interface I_SubscriptionsParams {
-  [key: string]: unknown; // Added index signature
+  [key: string]: unknown;
   page?: number;
   per_page?: number;
   vendor_id?: string;
   account_id?: string;
   is_active?: boolean;
-  sort_by?: 'name' | 'amount' | 'next_payment_date' | 'created_at';
+  sort_by?: 'name' | 'amount' | 'next_due_date' | 'created_at';
   sort_order?: 'asc' | 'desc';
 }

@@ -67,37 +67,14 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
   return (
     <div className="rounded-lg p-4 space-y-4">
       <form
+        id="edit-transaction-form"
         onSubmit={e => {
           e.preventDefault();
           void form.handleSubmit();
         }}
         className="space-y-4"
       >
-        {/* Header with Save/Cancel actions */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-blue-800">Edit Transaction</h3>
-          <div className="flex items-center gap-2">
-            <Button
-              type="submit"
-              size="sm"
-              className="h-8 hover:bg-green-100 hover:text-green-700"
-              variant="ghost"
-            >
-              <Save className="h-4 w-4 mr-1" />
-              Save
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              onClick={onCancel}
-              className="h-8 hover:bg-gray-100 hover:text-gray-700"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Cancel
-            </Button>
-          </div>
-        </div>
+
 
         {/* First Row - Description and Amount */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

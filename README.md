@@ -76,6 +76,7 @@ All project documentation is organized in the `docs` folder:
 - [shadcn/ui Component Library](docs/decisions/adr_shadcn_ui.md)
 - [Mock Service Worker (MSW)](docs/decisions/adr_msw.md)
 - [Coding Standards and Architecture](docs/decisions/coding-standards.md)
+- [E2E Testing with Playwright](docs/decisions/015-adr-playwright-e2e.md)
 
 ### Project Planning
 
@@ -84,6 +85,24 @@ All project documentation is organized in the `docs` folder:
 - [Phase 2: Core Financial Features Implementation](docs/plan/phase-2-core-features.md)
 - [Phase 3: Testing and Refinement](docs/plan/phase-3-refinement.md)
 - [Phase 4: Future Enhancements](docs/plan/phase-4-future-enhancements.md)
+
+### Developer Guides
+
+- [Testing Guide](docs/guides/testing.md)
+- [E2E Testing Strategy](docs/guides/e2e-testing.md)
+- [Path Aliases](docs/guides/path-aliases.md)
+
+### User Journeys
+
+- [User Journeys Overview](docs/user-journeys/README.md)
+- [Authentication Journey](docs/user-journeys/01-authentication.md)
+- [Dashboard Overview](docs/user-journeys/02-dashboard-overview.md)
+- [Account Management](docs/user-journeys/03-account-management.md)
+- [Transaction Management](docs/user-journeys/04-transaction-management.md)
+- [Broker Management](docs/user-journeys/05-broker-management.md)
+- [Vendor Management](docs/user-journeys/06-vendor-management.md)
+- [Subscription Management](docs/user-journeys/07-subscription-management.md)
+- [Category Management](docs/user-journeys/08-category-management.md)
 
 ## Development Setup
 

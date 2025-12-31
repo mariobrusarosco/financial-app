@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Route } from '@/routes/(auth)/route';
+import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { Button } from '@/domains/ui-system/components/button';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
@@ -41,11 +43,14 @@ export const TransactionsList = ({
   onPageChange,
 }: TransactionsListProps) => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [editingId, setEditingId] = useState<string | null>(null);
-
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
-  const { mutate: updateTransaction } = useUpdateTransaction();
+  const navigate = useNavigate();
+  const { drawer } = Route.useSearch();
+
+  const handleEdit = (transaction: I_TransactionResponse) => {
+    navigate({ search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }) });
+  };
 
   // Selection handlers
   const handleSelectTransaction = (transactionId: string, selected: boolean) => {
@@ -80,21 +85,6 @@ export const TransactionsList = ({
         },
       });
     }
-  };
-
-  const handleEdit = (transaction: I_TransactionResponse) => {
-    setEditingId(transaction.id);
-  };
-
-  const handleSave = (updates: Partial<I_TransactionResponse>) => {
-    if (editingId) {
-      updateTransaction({ id: editingId, updates });
-    }
-    setEditingId(null);
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
   };
 
   const handleDelete = (transaction: I_TransactionResponse) => {
@@ -215,19 +205,18 @@ export const TransactionsList = ({
                 key={transaction.id}
                 transaction={transaction}
                 mode="default"
-                isEditing={editingId === transaction.id}
+                onTriggerEditMode={() => handleEdit(transaction)}
                 isSelected={selectedIds.has(transaction.id)}
                 onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
                 showCheckbox={true}
-                onTriggerEditMode={handleEdit}
-                onSave={handleSave}
-                onCancel={handleCancel}
                 onDelete={handleDelete}
               />
             ))}
           </>
         </div>
       </div>
+
+      {drawer === 'transaction-edit' && <GlobalDrawer drawerType={drawer} />}
     </div>
   );
 };

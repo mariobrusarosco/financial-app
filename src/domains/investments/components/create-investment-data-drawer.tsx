@@ -1,10 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
-import { DrawerTitle } from '@ui-system/components/drawer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/domains/ui-system/components/tabs';
 import { Badge } from '@/domains/ui-system/components/badge';
-import { Trash2 } from 'lucide-react';
+import { Trash2, TrendingUp } from 'lucide-react';
 import CreateInvestmentMovement from './create-investment-movement';
 import CreateInvestmentBalance from './create-investment-balance';
 import { useCreateInvestmentMovement, useCreateInvestmentBalance } from '../hooks/use-investments';
@@ -12,6 +11,7 @@ import type {
   I_CreateInvestmentMovementRequest,
   I_CreateInvestmentBalanceRequest,
 } from '../types/types-and-interfaces';
+import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const CreateInvestmentDataDrawer = () => {
   const navigate = useNavigate();
@@ -65,14 +65,15 @@ export const CreateInvestmentDataDrawer = () => {
   return (
     <div className="p-6 space-y-6 h-full">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <DrawerTitle>Add Investment Data</DrawerTitle>
-          {(pendingMovements.length > 0 || pendingBalances.length > 0) && (
+        <DrawerHeader
+          title="Add Investment Data"
+          icon={TrendingUp}
+        />
+        {(pendingMovements.length > 0 || pendingBalances.length > 0) && (
             <Badge variant="secondary">
               {pendingMovements.length + pendingBalances.length} pending
             </Badge>
           )}
-        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
