@@ -75,6 +75,12 @@ const CreateInstallmentDrawer = lazy(() =>
   }))
 );
 
+const EditInstallmentDrawer = lazy(() =>
+  import('@/domains/installments/components/edit-installment-drawer').then(module => ({
+    default: module.EditInstallmentDrawer,
+  }))
+);
+
 interface GlobalDrawerProps {
   drawerType:
     | 'account-create'
@@ -89,7 +95,8 @@ interface GlobalDrawerProps {
     | 'vendor-edit'
     | 'subscription-create'
     | 'subscription-edit'
-    | 'installment-create';
+    | 'installment-create'
+    | 'installment-edit';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -103,6 +110,7 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
         delete newSearch.transactionId;
         delete newSearch.vendorId;
         delete newSearch.subscriptionId;
+        delete newSearch.planId;
         return newSearch;
       },
     });
@@ -137,6 +145,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = EditSubscriptionDrawer;
   } else if (drawerType === 'installment-create') {
     DrawerComponent = CreateInstallmentDrawer;
+  } else if (drawerType === 'installment-edit') {
+    DrawerComponent = EditInstallmentDrawer;
   }
 
   if (!DrawerComponent) {

@@ -22,7 +22,7 @@ export const UpcomingSubscriptions = () => {
     return (
       <Card>
         <CardContent className="pt-6 text-center text-destructive text-sm">
-          Failed to load upcoming subscriptions
+          Failed to load subscriptions
         </CardContent>
       </Card>
     );
@@ -40,10 +40,9 @@ export const UpcomingSubscriptions = () => {
   ).slice(0, 5); // Show top 5
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full md:w-[450px]">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Upcoming Subscriptions</CardTitle>
-        <Calendar className="h-4 w-4 text-muted-foreground" />
+        <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

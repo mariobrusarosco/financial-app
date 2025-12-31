@@ -20,6 +20,7 @@ import { Route as authTransactionsIndexRouteImport } from './routes/(auth)/trans
 import { Route as authSubscriptionsIndexRouteImport } from './routes/(auth)/subscriptions/index'
 import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/index'
 import { Route as authInvestmentsIndexRouteImport } from './routes/(auth)/investments/index'
+import { Route as authInstallmentsIndexRouteImport } from './routes/(auth)/installments/index'
 import { Route as authDashboardIndexRouteImport } from './routes/(auth)/dashboard/index'
 import { Route as authBrokersIndexRouteImport } from './routes/(auth)/brokers/index'
 import { Route as authAccountsIndexRouteImport } from './routes/(auth)/accounts/index'
@@ -90,6 +91,11 @@ const authSettingsIndexRoute = authSettingsIndexRouteImport.update({
 const authInvestmentsIndexRoute = authInvestmentsIndexRouteImport.update({
   id: '/investments/',
   path: '/investments/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authInstallmentsIndexRoute = authInstallmentsIndexRouteImport.update({
+  id: '/installments/',
+  path: '/installments/',
   getParentRoute: () => authRouteRoute,
 } as any)
 const authDashboardIndexRoute = authDashboardIndexRouteImport.update({
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
+  '/installments': typeof authInstallmentsIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/subscriptions': typeof authSubscriptionsIndexRoute
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
+  '/installments': typeof authInstallmentsIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/subscriptions': typeof authSubscriptionsIndexRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
   '/(auth)/dashboard/': typeof authDashboardIndexRoute
+  '/(auth)/installments/': typeof authInstallmentsIndexRoute
   '/(auth)/investments/': typeof authInvestmentsIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/subscriptions/': typeof authSubscriptionsIndexRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/brokers'
     | '/dashboard'
+    | '/installments'
     | '/investments'
     | '/settings'
     | '/subscriptions'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/brokers'
     | '/dashboard'
+    | '/installments'
     | '/investments'
     | '/settings'
     | '/subscriptions'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
     | '/(auth)/dashboard/'
+    | '/(auth)/installments/'
     | '/(auth)/investments/'
     | '/(auth)/settings/'
     | '/(auth)/subscriptions/'
@@ -448,6 +460,13 @@ declare module '@tanstack/react-router' {
       path: '/investments'
       fullPath: '/investments'
       preLoaderRoute: typeof authInvestmentsIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/installments/': {
+      id: '/(auth)/installments/'
+      path: '/installments'
+      fullPath: '/installments'
+      preLoaderRoute: typeof authInstallmentsIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/dashboard/': {
@@ -630,6 +649,7 @@ interface authRouteRouteChildren {
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authBrokersIndexRoute: typeof authBrokersIndexRoute
   authDashboardIndexRoute: typeof authDashboardIndexRoute
+  authInstallmentsIndexRoute: typeof authInstallmentsIndexRoute
   authInvestmentsIndexRoute: typeof authInvestmentsIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
   authSubscriptionsIndexRoute: typeof authSubscriptionsIndexRoute
@@ -646,6 +666,7 @@ const authRouteRouteChildren: authRouteRouteChildren = {
   authAccountsIndexRoute: authAccountsIndexRoute,
   authBrokersIndexRoute: authBrokersIndexRoute,
   authDashboardIndexRoute: authDashboardIndexRoute,
+  authInstallmentsIndexRoute: authInstallmentsIndexRoute,
   authInvestmentsIndexRoute: authInvestmentsIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
   authSubscriptionsIndexRoute: authSubscriptionsIndexRoute,
