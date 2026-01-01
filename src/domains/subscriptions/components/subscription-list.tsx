@@ -1,13 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import { Loader2, Repeat } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import type { I_Subscription, I_SubscriptionsParams } from '../types/types-and-interfaces';
 import { useDeleteSubscription } from '../hooks';
 import { toast } from 'sonner';
-import { PageHeader } from '@/domains/global/components';
-import { CardDescription } from '@/domains/ui-system/components/card';
 import { SubscriptionItem } from './subscription-item';
-import type { AuthSearchParams } from '@/routes/(auth)/route'; // Import AuthSearchParams
+import { Button } from '@/domains/ui-system/components/button';
 
 interface SubscriptionListProps {
   subscriptions: I_Subscription[];
@@ -39,6 +37,12 @@ export const SubscriptionList = ({
   const navigate = useNavigate();
   const { mutate: deleteSubscriptionMutation } = useDeleteSubscription();
 
+  const handleAdd = () => {
+    (navigate as any)({
+      search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }),
+    });
+  };
+
   const handleEdit = (subscriptionId: string) => {
     (navigate as any)({
       search: (prev: any) => ({ ...prev, drawer: 'subscription-edit', subscriptionId }),
@@ -46,7 +50,11 @@ export const SubscriptionList = ({
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this subscription? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this subscription? This action cannot be undone.'
+      )
+    ) {
       deleteSubscriptionMutation(id, {
         onSuccess: () => {
           toast.success('Subscription deleted successfully!');
@@ -59,18 +67,12 @@ export const SubscriptionList = ({
   };
 
   const handlePageChange = (page: number) => {
-    onParamsChange(prev => ({ ...prev, page }));
+    onParamsChange((prev) => ({ ...prev, page }));
   };
 
   if (isError) {
     return (
-      <div data-ui="subscription-list" className="py-4 space-y-5 rounded-3xl">
-        <PageHeader
-          title="Subscriptions"
-          icon={Repeat}
-          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
-          addButtonLabel="Add Subscription"
-        />
+      <div data-ui="subscription-list" className="space-y-4">
         <div className="text-center py-8">
           <p className="text-destructive">Failed to load subscriptions</p>
         </div>
@@ -80,13 +82,16 @@ export const SubscriptionList = ({
 
   if (subscriptions.length === 0 && !isLoading && !isPlaceholderData) {
     return (
-      <div data-ui="subscription-list" className="py-4 space-y-5 rounded-3xl">
-        <PageHeader
-          title="Subscriptions"
-          icon={Repeat}
-          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
-          addButtonLabel="Add Subscription"
-        />
+      <div data-ui="subscription-list" className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl tracking-tight text-primary">Subscriptions</h2>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Add Subscription</span>
+            <Button className="rounded-full w-8 h-8" size="icon" onClick={handleAdd}>
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
         <div className="text-center py-8">
           <p className="text-muted-foreground">No subscriptions found.</p>
           <p className="text-sm text-muted-foreground mt-1">Start by adding a new subscription.</p>
@@ -96,25 +101,31 @@ export const SubscriptionList = ({
   }
 
   return (
-    <div data-ui="subscription-list" className="py-4 space-y-5 rounded-3xl">
-      <PageHeader
-        title="Subscriptions"
-        icon={Repeat}
-        onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'subscription-create' }) })}
-        addButtonLabel="Add Subscription"
-      />
-      <CardDescription>
-        {isLoading && !isPlaceholderData ? (
-          'Loading subscriptions...'
-        ) : (
-          <>
-            {meta ? `${meta.total} subscriptions found` : 'Manage your list of recurring subscriptions.'}
+    <div data-ui="subscription-list" className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="grid items-center">
+          <h2 className="text-2xl tracking-tight text-primary">Recurring Payments</h2>
+          <p className="text-sm">
+            {meta ? (
+              <>
+                <span>Total</span> <span className="ml-1 text-xl font-semibold">{meta.total}</span>
+              </>
+            ) : (
+              'Manage your list of recurring subscriptions.'
+            )}
             {isPlaceholderData && (
               <span className="text-xs text-muted-foreground ml-2">(Previous data shown)</span>
             )}
-          </>
-        )}
-      </CardDescription>
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Add Subscription</span>
+          <Button className="rounded-full w-8 h-8" size="icon" onClick={handleAdd}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
       {isLoading && !isPlaceholderData ? (
         <div className="flex items-center justify-center py-8">
@@ -122,7 +133,7 @@ export const SubscriptionList = ({
         </div>
       ) : (
         <ul className="space-y-3">
-          {subscriptions.map(subscription => (
+          {subscriptions.map((subscription) => (
             <SubscriptionItem
               key={subscription.id}
               subscription={subscription}

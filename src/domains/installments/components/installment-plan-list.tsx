@@ -69,7 +69,6 @@ export const InstallmentPlanList = ({
     onParamsChange(prev => ({ ...prev, page: newPage }));
   };
 
-  console.log({ plans });
   if (isLoading && !isPlaceholderData) {
     return <LoadingState />;
   }
