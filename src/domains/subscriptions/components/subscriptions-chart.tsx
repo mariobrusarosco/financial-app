@@ -14,16 +14,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import type { I_Subscription } from '../types/types-and-interfaces';
-import { groupSubscriptionsByMonth } from '../utils/subscription-calculators';
 
 interface SubscriptionsChartProps {
-  subscriptions: I_Subscription[];
+  data?: { month: string; amount: number }[];
+  isLoading?: boolean;
 }
 
-export const SubscriptionsChart = ({ subscriptions }: SubscriptionsChartProps) => {
-  const chartData = groupSubscriptionsByMonth(subscriptions);
-
+export const SubscriptionsChart = ({ data, isLoading }: SubscriptionsChartProps) => {
   const formatCurrency = (number: number) => {
     return `$${Intl.NumberFormat('us', { maximumFractionDigits: 0 }).format(number)}`;
   };
@@ -51,39 +48,45 @@ export const SubscriptionsChart = ({ subscriptions }: SubscriptionsChartProps) =
         </CardHeader>
 
         <CardContent className="h-[300px] w-full pt-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="oklch(var(--border))"
-              />
-              <XAxis
-                dataKey="month"
-                tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                dy={10}
-              />
-              <YAxis
-                tickFormatter={formatCurrency}
-                tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={60}
-              />
-              <Tooltip
-                cursor={{ fill: 'oklch(var(--muted) / 0.3)' }}
-                content={<CustomTooltip />}
-              />
-              <Bar
-                dataKey="amount"
-                fill="oklch(var(--primary))"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={50}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          {isLoading ? (
+            <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+              Loading chart...
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data || []} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="oklch(var(--border))"
+                />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  dy={10}
+                />
+                <YAxis
+                  tickFormatter={formatCurrency}
+                  tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={60}
+                />
+                <Tooltip
+                  cursor={{ fill: 'oklch(var(--muted) / 0.3)' }}
+                  content={<CustomTooltip />}
+                />
+                <Bar
+                  dataKey="amount"
+                  fill="oklch(var(--primary))"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={50}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
     </div>

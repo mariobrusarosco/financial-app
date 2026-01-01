@@ -58,12 +58,12 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
     }
   });
 
-  const form = useForm<I_CreateSubscriptionRequest, typeof zodValidator>({
+  const form = useForm({
     validatorAdapter: zodValidator,
     defaultValues: {
       name: initialValues?.name || '',
       amount: initialValues?.amount ? parseFloat(initialValues.amount.toString()) : 0,
-      billing_cycle: initialValues?.billing_cycle || 'monthly',
+      billing_cycle: (initialValues?.billing_cycle || 'monthly') as any,
       next_due_date: initialValues?.next_due_date || dateFns.format(new Date(), 'yyyy-MM-dd'),
       end_date: initialValues?.end_date || '',
       notes: initialValues?.notes || '',
@@ -77,7 +77,7 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
         ...value,
         amount: parseFloat(value.amount.toString()),
         end_date: value.end_date === '' ? undefined : value.end_date,
-      };
+      } as I_CreateSubscriptionRequest;
       onSubmit(submittedValue);
     },
   });

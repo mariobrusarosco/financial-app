@@ -6,22 +6,18 @@ import {
   CardTitle,
 } from '@/domains/ui-system/components/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import type { I_Subscription } from '../types/types-and-interfaces';
-import type { I_CategoryTreeNode } from '@/domains/categories/types';
-import { aggregateSubscriptionsByCategory } from '../utils/subscription-calculators';
 import { generateDistinctColors } from '@/domains/ui-system/utils/color-generator';
 
 interface SubscriptionsCategoryBreakdownProps {
-  subscriptions: I_Subscription[];
-  categories: I_CategoryTreeNode[];
+  data?: { name: string; amount: number }[];
+  isLoading?: boolean;
 }
 
 export const SubscriptionsCategoryBreakdown = ({
-  subscriptions,
-  categories,
+  data = [],
+  isLoading,
 }: SubscriptionsCategoryBreakdownProps) => {
-  const chartData = aggregateSubscriptionsByCategory(subscriptions, categories);
-  const colors = generateDistinctColors(chartData.length);
+  const colors = generateDistinctColors(data.length);
 
   const formatCurrency = (number: number) => {
     return `${Intl.NumberFormat('us').format(number)}`;
@@ -53,59 +49,68 @@ export const SubscriptionsCategoryBreakdown = ({
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col md:flex-row items-center gap-6">
-          <div className="w-full md:w-1/2 h-[250px] relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="amount"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-            {/* Center Text for Total */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-center">
-                <span className="text-xs text-muted-foreground font-medium block">Monthly Total</span>
-                <span className="text-lg font-bold text-primary">
-                  {formatCurrency(chartData.reduce((sum, item) => sum + item.amount, 0))}
-                </span>
-              </div>
+          {isLoading ? (
+            <div className="flex-1 flex items-center justify-center text-muted-foreground">
+              Loading breakdown...
             </div>
-          </div>
-
-          <div className="w-full md:w-1/2 h-[250px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-            <div className="space-y-3">
-              {chartData.map((item, index) => (
-                <div
-                  key={item.name}
-                  className="flex items-center justify-between text-sm group hover:bg-muted/50 p-1.5 rounded-md transition-colors"
-                >
-                  <div className="flex items-center gap-2 overflow-hidden">
-                    <div
-                      className="w-3 h-3 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: colors[index] }}
-                    />
-                    <span className="truncate font-medium text-foreground/80 group-hover:text-foreground transition-colors">
-                      {item.name}
+          ) : (
+            <>
+              <div className="w-full md:w-1/2 h-[250px] relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                                    <Pie
+                                      data={data}
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius={60}
+                                      outerRadius={80}
+                                      paddingAngle={2}
+                                      dataKey="amount"
+                                    >
+                                      {data.map((_entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
+                                      ))}
+                                    </Pie>                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                {/* Center Text for Total */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="text-center">
+                    <span className="text-xs text-muted-foreground font-medium block">
+                      Monthly Total
+                    </span>
+                    <span className="text-lg font-bold text-primary">
+                      {formatCurrency(data.reduce((sum, item) => sum + item.amount, 0))}
                     </span>
                   </div>
-                  <span className="font-mono font-semibold text-primary ml-2">
-                    {formatCurrency(item.amount)}
-                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+
+              <div className="w-full md:w-1/2 h-[250px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                <div className="space-y-3">
+                  {data.map((item, index) => (
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between text-sm group hover:bg-muted/50 p-1.5 rounded-md transition-colors"
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: colors[index] }}
+                        />
+                        <span className="truncate font-medium text-foreground/80 group-hover:text-foreground transition-colors">
+                          {item.name}
+                        </span>
+                      </div>
+                      <span className="font-mono font-semibold text-primary ml-2">
+                        {formatCurrency(item.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
