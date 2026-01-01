@@ -16,15 +16,20 @@ const authSearchSchema = z.object({
       'investment-create',
       'investment-data-create',
       'category-manager',
-      'vendor-create', // New
-      'vendor-edit',   // New
-      'subscription-create', // New
-      'subscription-edit',   // New
+      'vendor-create',
+      'vendor-edit',
+      'subscription-create',
+      'subscription-edit',
+      'installment-plan-create',
+      'installment-plan-edit',
+      'installment-link-payment',
     ])
     .optional(),
   transactionId: z.string().optional(),
-  vendorId: z.string().optional(), // New
-  subscriptionId: z.string().optional(), // New
+  vendorId: z.string().optional(),
+  subscriptionId: z.string().optional(),
+  planId: z.string().optional(),
+  installmentId: z.string().optional(),
   from: z.string().optional(),
   to: z.string().optional(),
 });

@@ -6,13 +6,14 @@ import {
 } from '@/domains/transactions/utils/transaction-formatting';
 import type { TransactionInfoProps } from './types';
 import { Badge } from '@/domains/ui-system/components/badge';
-import { Repeat } from 'lucide-react';
+import { Repeat, Calendar } from 'lucide-react';
 
 export const TransactionInfo = ({
   description,
   date,
   ignored,
-  subscription, // New prop
+  subscription,
+  installment_info,
   dateFormat = 'medium',
 }: TransactionInfoProps) => {
   const formatDate = () => {
@@ -35,6 +36,12 @@ export const TransactionInfo = ({
           <Badge variant="outline" className="flex items-center gap-1 border-blue-200 bg-blue-50 text-blue-700">
             <Repeat className="h-3 w-3" />
             Recurring
+          </Badge>
+        )}
+        {installment_info && (
+          <Badge variant="outline" className="flex items-center gap-1 border-gray-200 bg-gray-50 text-gray-700">
+            <Calendar className="h-3 w-3" />
+            {installment_info.number}/{installment_info.total}
           </Badge>
         )}
       </div>

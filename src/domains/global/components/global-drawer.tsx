@@ -68,6 +68,25 @@ const EditSubscriptionDrawer = lazy(() =>
   }))
 );
 
+// Installments
+const CreateInstallmentDrawer = lazy(() =>
+  import('@/domains/installments/components/create-installment-drawer').then(module => ({
+    default: module.CreateInstallmentDrawer,
+  }))
+);
+
+const EditInstallmentPlanDrawer = lazy(() =>
+  import('@/domains/installments/components/edit-installment-plan-drawer').then(module => ({
+    default: module.EditInstallmentPlanDrawer,
+  }))
+);
+
+const LinkPaymentToInstallmentDrawer = lazy(() =>
+  import('@/domains/installments/components/link-payment-to-installment-drawer').then(module => ({
+    default: module.LinkPaymentToInstallmentDrawer,
+  }))
+);
+
 interface GlobalDrawerProps {
   drawerType:
     | 'account-create'
@@ -81,7 +100,10 @@ interface GlobalDrawerProps {
     | 'vendor-create'
     | 'vendor-edit'
     | 'subscription-create'
-    | 'subscription-edit';
+    | 'subscription-edit'
+    | 'installment-plan-create'
+    | 'installment-plan-edit'
+    | 'installment-link-payment';
 }
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
@@ -95,6 +117,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
         delete newSearch.transactionId;
         delete newSearch.vendorId;
         delete newSearch.subscriptionId;
+        delete newSearch.planId;
+        delete newSearch.installmentId;
         return newSearch;
       },
     });
@@ -127,6 +151,12 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = CreateSubscriptionDrawer;
   } else if (drawerType === 'subscription-edit') {
     DrawerComponent = EditSubscriptionDrawer;
+  } else if (drawerType === 'installment-plan-create') {
+    DrawerComponent = CreateInstallmentDrawer;
+  } else if (drawerType === 'installment-plan-edit') {
+    DrawerComponent = EditInstallmentPlanDrawer;
+  } else if (drawerType === 'installment-link-payment') {
+    DrawerComponent = LinkPaymentToInstallmentDrawer;
   }
 
   if (!DrawerComponent) {

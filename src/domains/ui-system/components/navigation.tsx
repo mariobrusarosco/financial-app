@@ -17,6 +17,7 @@ import {
   PiggyBank,
   Store, // New icon for Vendors
   Repeat, // New icon for Subscriptions
+  Calendar, // New icon for Installments
 } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
@@ -73,6 +74,11 @@ const navigationItems: NavigationItem[] = [
     label: 'Subscriptions', // New item
     href: '/subscriptions',
     icon: Repeat,
+  },
+  {
+    label: 'Installments', // New item
+    href: '/installments',
+    icon: Calendar,
   },
   {
     label: 'Settings',
