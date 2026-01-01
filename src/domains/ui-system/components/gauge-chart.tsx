@@ -72,9 +72,6 @@ export interface GaugeChartProps {
 export function GaugeChart({
   value,
   max,
-  icon,
-  displayValue,
-  subtitle,
   color = 'hsl(var(--foreground))',
   backgroundColor = 'hsl(var(--muted) / 0.15)',
   size = 140,
@@ -82,7 +79,6 @@ export function GaugeChart({
   className,
 }: GaugeChartProps) {
   const percentage = (value / max) * 100;
-  const displayText = displayValue ?? `${Math.round(percentage)}%`;
 
   // Single data point for the radial bar
   const chartData = [{ value: percentage, fill: color }];

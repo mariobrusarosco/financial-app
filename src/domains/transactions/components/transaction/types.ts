@@ -1,4 +1,7 @@
-import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+import type {
+  I_TransactionResponse,
+  T_TransactionType,
+} from '@/domains/transactions/types/types-and-interfaces';
 
 // Main transaction item props
 export interface TransactionItemProps {
@@ -32,7 +35,7 @@ export interface TransactionHoverActionsProps {
 // Icon badge props
 export interface TransactionIconBadgeProps {
   categoryName?: string;
-  movementType: string;
+  movementType: T_TransactionType;
   size?: 'sm' | 'xs';
 }
 
@@ -53,8 +56,8 @@ export interface TransactionInfoProps {
 
 // Amount props
 export interface TransactionAmountProps {
-  amount: number;
-  movementType: string;
+  amount: number | string;
+  movementType: T_TransactionType;
   ignored: boolean;
   size?: 'compact' | 'large';
 }
@@ -62,11 +65,13 @@ export interface TransactionAmountProps {
 // Category props
 export interface TransactionCategoryProps {
   categoryTree?: {
+    id: string;
     name: string;
-    parent?: {
+    parent: {
+      id: string;
       name: string;
-    };
-  };
+    } | null;
+  } | null;
   categoryName?: string;
   category?: string;
 }

@@ -32,7 +32,7 @@ export const CategorySelector = ({
   // transactionType is temporarily unused as we fetch all categories,
   // but kept in props for future filtering if backend supports it.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  transactionType,
+  transactionType: _transactionType,
   placeholder = 'Select category...',
   className,
   disabled = false,

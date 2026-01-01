@@ -17,7 +17,7 @@ export const TransactionCategory = ({
       {hasParent && (
         <div className="text-xs text-muted-foreground flex items-center gap-1">
           <p className="">(sub)</p>
-          <p className="">{categoryTree.parent.name}</p>
+          <p className="">{hasParent.name}</p>
         </div>
       )}
     </div>

@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {
   AreaChart,
   BarChart,
@@ -14,7 +13,6 @@ import {
   Badge,
   CategoryBar,
   ProgressBar,
-  Tracker,
 } from '@tremor/react';
 
 // Types for financial data

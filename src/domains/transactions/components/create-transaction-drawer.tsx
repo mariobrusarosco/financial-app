@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
@@ -7,18 +6,11 @@ import { Plus, Trash2 } from 'lucide-react';
 import CreateTransaction from './create-transaction';
 import type { I_CreateTransactionForm } from '../types/types-and-interfaces';
 import { useCreateBulkTransactions } from '../hooks/use-create-bulk-transactions';
-import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
-import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { findCategoryById } from '../utils/categories';
 
 export const CreateTransactionDrawer = () => {
-  const navigate = useNavigate();
   const [pendingTransactions, setPendingTransactions] = useState<I_CreateTransactionForm[]>([]);
   const { mutate: createBulkTransactions, isPending: isSaving } = useCreateBulkTransactions();
-
-  const handleClose = () => {
-    navigate({ search: {} });
-  };
 
   const handleAddTransaction = (transaction: I_CreateTransactionForm) => {
     setPendingTransactions(prev => [...prev, transaction]);

@@ -1,5 +1,4 @@
 import { Edit, Trash2 } from 'lucide-react';
-import { Button } from '@/domains/ui-system/components/button';
 import type { TransactionHoverActionsProps } from './types';
 
 export const TransactionHoverActions = ({

@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { PageHeader } from '@/domains/global/components';
 import { CardDescription } from '@/domains/ui-system/components/card';
 import { VendorItem } from './vendor-item';
-import type { AuthSearchParams } from '@/routes/(auth)/route';
 
 interface VendorListProps {
   vendors: I_Vendor[];

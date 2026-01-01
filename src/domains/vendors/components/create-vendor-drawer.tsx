@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useCreateVendor } from '../hooks';
 import { VendorForm } from './vendor-form';
-import { Loader2, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const CreateVendorDrawer = () => {
