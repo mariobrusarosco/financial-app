@@ -3,8 +3,6 @@ import { cn } from '@/domains/ui-system/utils/index';
 import { Button } from '@/domains/ui-system/components/button';
 import { ModeToggle } from '@/domains/ui-system/components/mode-toggle';
 import {
-  LayoutDashboard,
-  CreditCard,
   Building2,
   TrendingUp,
   Settings,

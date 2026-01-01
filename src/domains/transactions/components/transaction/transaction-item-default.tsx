@@ -51,7 +51,7 @@ export const TransactionItemDefault = ({
 
         <TransactionCategory
           categoryTree={transaction.category_tree}
-          categoryName={transaction.category_name}
+          categoryName={transaction.category_name || undefined}
           category={transaction.category}
         />
       </div>

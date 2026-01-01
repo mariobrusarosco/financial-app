@@ -6,27 +6,31 @@ import type { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 export const useEditableTransactions = ({
   statement,
   account,
+  transactions,
 }: {
-  statement: I_ParsedAccountStatement | undefined;
-  account: I_Account | undefined;
+  statement?: I_ParsedAccountStatement | undefined;
+  account?: I_Account | undefined;
+  transactions?: I_TransactionResponse[];
 }) => {
   const [editableTransactions, setEditableTransactions] = useState<I_TransactionResponse[]>(
-    statement?.raw_statement.transactions?.map((transaction, index) => ({
-      id: index.toString(),
-      account_id: statement.account_id,
-      broker_id: account?.broker.id || '',
-      credit_card_id: undefined,
-      is_deleted: false,
-      is_paid: false,
-      ignored: false,
-      date: transaction.date,
-      amount: transaction.amount,
-      description: transaction.description,
-      movement_type: transaction.movement_type,
-      category: transaction.category || 'General',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })) || []
+    transactions ||
+      statement?.raw_statement.transactions?.map((transaction, index) => ({
+        id: index.toString(),
+        account_id: statement.account_id,
+        broker_id: account?.broker.id || '',
+        credit_card_id: undefined,
+        is_deleted: false,
+        is_paid: false,
+        ignored: false,
+        date: transaction.date,
+        amount: transaction.amount,
+        description: transaction.description,
+        movement_type: transaction.movement_type,
+        category: transaction.category || 'General',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })) ||
+      []
   );
   const [selectedTransactions, setSelectedTransactions] = useState(new Set<string>());
   const [ignoredTransactions, setIgnoredTransactions] = useState(new Set<string>());

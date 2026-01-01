@@ -84,19 +84,13 @@ export interface GaugeChartSVGProps {
 export function GaugeChartSVG({
   value,
   max,
-  icon,
-  displayValue,
-  subtitle,
   color = '#000000',
   backgroundColor = '#e5e7eb',
-  size = 140,
   strokeWidth = 2,
   arcPercentage = 0.25, // Semi-circle (180 degrees)
   rotationOffset = 153,
-  className,
 }: GaugeChartSVGProps) {
   const percentage = Math.min((value / max) * 100, 100);
-  const displayText = displayValue ?? `${Math.round(percentage)}%`;
 
   // Use viewBox coordinate system (0-100)
   const viewBoxSize = 100;

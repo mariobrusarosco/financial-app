@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useEditableTransactions } from '@/domains/transactions/hooks/use-editable-transactions';
-import type { I_Transaction } from '@/domains/transactions/types/types-and-interfaces';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import {
   Table,
   TableBody,
@@ -16,8 +16,8 @@ import { Badge } from '@/domains/ui-system/components/badge';
 import { Edit, Trash2, Save, X } from 'lucide-react';
 
 interface EditableTransactionsTableProps {
-  initialTransactions: I_Transaction[];
-  onSave?: (transactions: I_Transaction[]) => Promise<void>;
+  initialTransactions: I_TransactionResponse[];
+  onSave?: (transactions: I_TransactionResponse[]) => Promise<void>;
 }
 
 export const EditableTransactionsTable = ({
@@ -25,19 +25,19 @@ export const EditableTransactionsTable = ({
   onSave: _onSave,
 }: EditableTransactionsTableProps) => {
   const {
-    editableTransactions,
+    editableTransactions: transactions,
     selectedTransactions,
     setSelectedTransactions,
-    editTransaction,
-    removeSelected,
-    removeTransaction,
-  } = useEditableTransactions(initialTransactions);
+    updateTransactionInEditionMode,
+    ignoreTransaction,
+    ignoredTransactions,
+  } = useEditableTransactions({ transactions: initialTransactions });
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<Partial<I_Transaction>>({});
+  const [editForm, setEditForm] = useState<Partial<I_TransactionResponse>>({});
 
   // Start editing a transaction
-  const startEdit = (transaction: I_Transaction) => {
+  const startEdit = (transaction: I_TransactionResponse) => {
     setEditingId(transaction.id);
     setEditForm(transaction);
   };
@@ -51,11 +51,18 @@ export const EditableTransactionsTable = ({
   // Save edit
   const saveEdit = () => {
     if (editingId && editForm) {
-      editTransaction(editingId, editForm);
+      updateTransactionInEditionMode({ ...editForm, id: editingId });
       setEditingId(null);
       setEditForm({});
     }
   };
+
+  const removeSelected = () => {
+    selectedTransactions.forEach(id => ignoreTransaction(id));
+    setSelectedTransactions(new Set());
+  };
+
+  const visibleTransactions = transactions.filter(t => !ignoredTransactions.has(t.id));
 
   return (
     <div className="space-y-4">
@@ -89,11 +96,12 @@ export const EditableTransactionsTable = ({
                 <input
                   type="checkbox"
                   checked={
-                    selectedTransactions.size === transactions.length && transactions.length > 0
+                    selectedTransactions.size === visibleTransactions.length &&
+                    visibleTransactions.length > 0
                   }
                   onChange={e => {
                     if (e.target.checked) {
-                      setSelectedTransactions(new Set(transactions.map(t => t.id)));
+                      setSelectedTransactions(new Set(visibleTransactions.map(t => t.id)));
                     } else {
                       setSelectedTransactions(new Set());
                     }
@@ -108,7 +116,7 @@ export const EditableTransactionsTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map(transaction => (
+            {visibleTransactions.map(transaction => (
               <TableRow key={transaction.id}>
                 <TableCell>
                   <input
@@ -223,7 +231,7 @@ export const EditableTransactionsTable = ({
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => removeTransaction(transaction.id)}
+                          onClick={() => ignoreTransaction(transaction.id)}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -234,7 +242,7 @@ export const EditableTransactionsTable = ({
               </TableRow>
             ))}
 
-            {editableTransactions.length === 0 && (
+            {visibleTransactions.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                   No transactions yet.

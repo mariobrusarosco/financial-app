@@ -20,7 +20,6 @@ import {
   ArrowRightLeft,
 } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
-import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { PageHeader } from '@/domains/global/components';
 
 interface TransactionsListProps {

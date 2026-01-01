@@ -2,14 +2,12 @@ import { useForm } from '@tanstack/react-form';
 import type { I_TransactionResponse, T_TransactionType } from '../types/types-and-interfaces';
 
 import { Input } from '@/domains/ui-system/components/input';
-import { Button } from '@/domains/ui-system/components/button';
 import { RadioGroup, RadioGroupItem } from '@/domains/ui-system/components/radio-group';
 import { Label } from '@/domains/ui-system/components/label';
 import { Switch } from '@/domains/ui-system/components/switch';
 import { Textarea } from '@/domains/ui-system/components/textarea';
 import { TransactionDatePicker } from './transaction-date-picker';
 import { HierarchicalCategorySelector } from './hierarchical-category-selector';
-import { Save, X } from 'lucide-react';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 

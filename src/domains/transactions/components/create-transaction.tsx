@@ -1,10 +1,8 @@
 import { useForm } from '@tanstack/react-form';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import type { I_CreateTransactionForm, T_TransactionType } from '../types/types-and-interfaces';
-import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateTransaction } from '@/domains/transactions/hooks/use-create-transaction';
 import { Input } from '@/domains/ui-system/components/input';
-import { Button } from '@/domains/ui-system/components/button';
 import {
   Select,
   SelectContent,
