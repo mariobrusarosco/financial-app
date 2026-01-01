@@ -14,7 +14,7 @@ export const useInstallmentPlans = (params?: I_InstallmentPlansParams) => {
   });
 };
 
-export const useInstallmentPlan = (id: string) => {
+export const useInstallmentPlan = (id: string | undefined) => {
   return useQuery({
     queryKey: INSTALLMENTS_QUERY_KEYS.planDetail(id),
     queryFn: () => installmentsApi.getPlan(id),

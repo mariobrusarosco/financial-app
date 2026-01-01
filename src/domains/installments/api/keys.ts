@@ -4,5 +4,5 @@ export const INSTALLMENTS_QUERY_KEYS = {
   planList: (params?: Record<string, unknown>) =>
     [...INSTALLMENTS_QUERY_KEYS.plans(), 'list', params] as const,
   planDetails: () => [...INSTALLMENTS_QUERY_KEYS.plans(), 'detail'] as const,
-  planDetail: (id: string) => [...INSTALLMENTS_QUERY_KEYS.planDetails(), id] as const,
+  planDetail: (id: string | undefined) => [...INSTALLMENTS_QUERY_KEYS.planDetails(), id] as const,
 };

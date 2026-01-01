@@ -39,13 +39,13 @@ export const InstallmentPlanList = ({
 
   const handleAdd = () => {
     (navigate as any)({
-      search: (prev: any) => ({ ...prev, drawer: 'installment-create' }),
+      search: (prev: any) => ({ ...prev, drawer: 'installment-plan-create' }),
     });
   };
 
   const handleEdit = (planId: string) => {
     (navigate as any)({
-      search: (prev: any) => ({ ...prev, drawer: 'installment-edit', planId }),
+      search: (prev: any) => ({ ...prev, drawer: 'installment-plan-edit', planId }),
     });
   };
 
@@ -63,6 +63,7 @@ export const InstallmentPlanList = ({
     onParamsChange(prev => ({ ...prev, page: newPage }));
   };
 
+  console.log({ plans})
   if (isLoading && !isPlaceholderData) {
     return <LoadingState />;
   }

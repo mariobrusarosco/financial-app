@@ -31,7 +31,7 @@ const CreateTransaction = ({ onAddTransaction }: CreateTransactionProps) => {
   const { mutate: createTransaction } = useCreateTransaction();
   const { data: accounts, isFetching: isFetchingAccounts } = useAccounts();
   const [transactionSource, setTransactionSource] = useState<'account' | 'creditCard'>('account');
-  const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards(undefined);
+  const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards();    
   const { data: subscriptionsData, isFetching: isFetchingSubscriptions } = useSubscriptions({ is_active: true });
 
   const availableSubscriptions = useMemo(() => subscriptionsData?.data || [], [subscriptionsData]);

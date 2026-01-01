@@ -40,9 +40,13 @@ export interface TransactionIconBadgeProps {
 export interface TransactionInfoProps {
   description: string;
   date: string;
-  ignored: boolean;
+  ignored?: boolean;
   subscription?: {
     name: string;
+  } | null;
+  installment_info?: {
+    number: number;
+    total: number;
   } | null;
   dateFormat?: 'short' | 'medium' | 'long';
 }

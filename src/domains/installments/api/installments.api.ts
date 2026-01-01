@@ -5,6 +5,7 @@ import type {
   I_InstallmentPlanListResponse,
   I_InstallmentPlansParams,
   I_LinkInstallmentRequest,
+  I_InstallmentPlan,
 } from '../types/types-and-interfaces';
 
 export const installmentsApi = {
@@ -15,8 +16,8 @@ export const installmentsApi = {
     return response.data;
   },
 
-  getPlan: async (id: string) => {
-    const response = await apiClient.get<I_InstallmentPlanResponse>(`/installments/plans/${id}`);
+  getPlan: async (id: string | undefined) => {
+    const response = await apiClient.get<I_InstallmentPlan>(`/installments/plans/${id}`);
     return response.data;
   },
 

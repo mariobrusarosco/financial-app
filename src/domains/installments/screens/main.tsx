@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Route } from '@/routes/(auth)/installments/index';
 import { useInstallmentPlans } from '../hooks/use-installments';
 import { InstallmentPlanList } from '../components/installment-plan-list';
@@ -8,7 +8,7 @@ import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 const ITEMS_PER_PAGE = 20;
 
 export const InstallmentsMainScreen = () => {
-  const { drawer, planId } = Route.useSearch();
+  const { drawer } = Route.useSearch();
   const [params, setParams] = useState<I_InstallmentPlansParams>({
     page: 1,
     per_page: ITEMS_PER_PAGE,
@@ -28,17 +28,17 @@ export const InstallmentsMainScreen = () => {
   return (
     <>
       <InstallmentPlanList
-        plans={data?.items || []}
-        totalCount={data?.total_count}
-        page={data?.page}
-        perPage={data?.per_page}
+        plans={data?.data || []}
+        totalCount={data?.meta?.total}
+        page={data?.meta?.page}
+        perPage={data?.meta?.per_page}
         isLoading={isLoading}
         isError={isError}
         isPlaceholderData={isPlaceholderData}
         params={params}
         onParamsChange={handleParamsChange}
       />
-      {(drawer === 'installment-create' || drawer === 'installment-edit') && (
+      {(drawer === 'installment-plan-create' || drawer === 'installment-plan-edit') && (
         <GlobalDrawer drawerType={drawer} />
       )}
     </>

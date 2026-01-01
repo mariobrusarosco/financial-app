@@ -4,7 +4,7 @@ export type T_InstallmentStatus = 'pending' | 'paid' | 'overdue';
 export interface I_Installment {
   id: string;
   plan_id: string;
-  installment_number: number;
+  number: number;
   amount: number;
   due_date: string; // ISO date
   status: T_InstallmentStatus;
@@ -18,7 +18,7 @@ export interface I_InstallmentPlan {
   name: string;
   description: string | null;
   total_amount: number;
-  num_installments: number;
+  installment_count: number;
   start_date: string; // ISO date
   status: T_InstallmentPlanStatus;
   created_at: string;
@@ -33,7 +33,7 @@ export interface I_CreateInstallmentPlanRequest {
   name: string;
   description?: string | null;
   total_amount: number;
-  num_installments: number;
+  installment_count: number;
   start_date: string;
   credit_card_id?: string | null;
   vendor_id?: string | null;
@@ -45,10 +45,14 @@ export interface I_InstallmentPlanResponse {
 }
 
 export interface I_InstallmentPlanListResponse {
-  items: I_InstallmentPlan[];
-  total_count: number;
-  page: number;
-  per_page: number;
+  data: I_InstallmentPlan[];
+  meta: {
+    total: number;
+    page: number;
+    per_page: number;
+    has_next: boolean;
+    has_previous: boolean;
+  };
 }
 
 export interface I_InstallmentPlansParams {
