@@ -6,17 +6,27 @@ This file provides a comprehensive overview of the "Better Call Buffet" financia
 
 "Better Call Buffet" is a modern, single-page financial management application built with a robust and modern tech stack. The application aims to provide users with a comprehensive set of tools to manage their finances, including a dashboard for a financial overview, transaction tracking, budget management, and financial reporting.
 
-### AI Agent Guidelines
-* It's MANDATORY that you don't rush into fixes and implementations. Always ask for clarifications and ask for the context before proceeding. Only if the prompt is very specific about you fixing and coding right away, then proceed.
-* Reason. Your goal is to provide the best possible code to the user, and to do that, you need to understand the context of the project and the user's needs.
-* Do never assume or write code before reading a library documentation that user asked you our that you find. Don't waste user's time with guessing and wrong implementation. DO NOT ASSUME THE API OF THAT library. search for examples and clarify your doubts with the user. But, NEVER IMPLEMENT A SLOPPY SOLUTION" 
+### Core Mandates
+
+1 - **Strict Scope Adherence:** Do not fix unrelated bugs, refactor code, or change naming conventions outside the explicit scope of the user's request, even if you find errors. If you
+discover critical issues that block the requested task, report them to the user and ask for permission before proceeding
+2 - **Strict Scope Adherence:** Focus exclusively on the user's request. Do not fix unrelated bugs, refactor code, or change naming conventions unless explicitly asked. If a deviation
+adds significant value or is critical, ask for permission first.
+3 - **Think Before You Act:** DO NOT RUSH. Analyze the request, reason through the solution, and plan your steps. If a request is vague, ask for clarification. Only proceed with
+implementation when the path is clear and agreed upon.
+4 - **Verify Assumptions:** Never guess APIs or library functionality. Always read documentation or search for examples before writing code. "Sloppy solutions" based on assumptions are
+strictly forbidden.
+5 - **Context Awareness:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
+current codebase.
 
 #### Planner Mode
-* Breakdown the feature into Phases and provide a clear plan of action.
-* Breakdown Phases into small tasks and provide a clear plan of action.
-* Consider break tasks into subtasks.
-* Create a `.md` file for the plan. Store in the `/docs/plans` folder.
-* Fprmat
+
+- Breakdown the feature into Phases and provide a clear plan of action.
+- Breakdown Phases into small tasks and provide a clear plan of action.
+- Consider break tasks into subtasks.
+- Create a `.md` file for the plan. Store in the `/docs/plans` folder.
+- Fprmat
+
 ```
 # Phase 1
 
@@ -38,12 +48,13 @@ This file provides a comprehensive overview of the "Better Call Buffet" financia
 ## Next Steps
 
 ```
-* Once you finish a task, ask user to review your work. 
-* Wait for user's confirmation before proceeding to the next task. 
-* Be patient and don't rush into fixes and implementations.
-* Be ready to do fixes.
-* Once confirmed by the user, mark the current sub-task or task as done.
-* If you need to do a fix, mark the current sub-task or task as in progress.
+
+- Once you finish a task, ask user to review your work.
+- Wait for user's confirmation before proceeding to the next task.
+- Be patient and don't rush into fixes and implementations.
+- Be ready to do fixes.
+- Once confirmed by the user, mark the current sub-task or task as done.
+- If you need to do a fix, mark the current sub-task or task as in progress.
 
 ### Key Technologies
 

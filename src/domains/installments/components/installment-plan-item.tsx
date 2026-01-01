@@ -134,7 +134,7 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
                     variant="outline"
                     className={cn(
                       'text-[10px] py-0 h-4 px-1.5',
-                      installment.status === 'paid'
+                      installment.status === 'linked'
                         ? 'bg-green-500/10 text-green-500 border-green-500/20'
                         : installment.status === 'overdue'
                           ? 'bg-red-500/10 text-red-500 border-red-500/20'

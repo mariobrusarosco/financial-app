@@ -10,7 +10,9 @@ const BrokerRootScreen = () => {
     <div data-testid="broker-index-screen" className="py-4 space-y-5 rounded-3xl">
       <PageHeader title="Brokers" icon={Landmark} onAdd={openBrokerCreate} />
 
-      <BrokersList />
+      <section className="bg-section-background rounded-3xl">
+        <BrokersList />
+      </section>
     </div>
   );
 };

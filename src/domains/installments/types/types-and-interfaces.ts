@@ -1,5 +1,5 @@
 export type T_InstallmentPlanStatus = 'active' | 'completed' | 'canceled';
-export type T_InstallmentStatus = 'pending' | 'paid' | 'overdue';
+export type T_InstallmentStatus = 'pending' | 'linked' | 'overdue';
 
 export interface I_Installment {
   id: string;

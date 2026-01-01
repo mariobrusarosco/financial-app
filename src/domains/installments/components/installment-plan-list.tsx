@@ -1,13 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import { Calendar } from 'lucide-react';
+import { Calendar, Plus } from 'lucide-react';
 import type { I_InstallmentPlan, I_InstallmentPlansParams } from '../types/types-and-interfaces';
 import { useDeleteInstallmentPlan } from '../hooks/use-installments';
 import { toast } from 'sonner';
-import { PageHeader } from '@/domains/global/components';
 import { CardDescription } from '@/domains/ui-system/components/card';
 import { InstallmentPlanItem } from './installment-plan-item';
 import { LoadingState, ErrorState, EmptyState } from './installment-plan-list-states';
+import { Button } from '@/domains/ui-system/components/button';
 
 interface InstallmentPlanListProps {
   plans: I_InstallmentPlan[];
@@ -19,7 +19,9 @@ interface InstallmentPlanListProps {
   isPlaceholderData: boolean;
   params: I_InstallmentPlansParams;
   onParamsChange: (
-    params: I_InstallmentPlansParams | ((prev: I_InstallmentPlansParams) => I_InstallmentPlansParams)
+    params:
+      | I_InstallmentPlansParams
+      | ((prev: I_InstallmentPlansParams) => I_InstallmentPlansParams)
   ) => void;
 }
 
@@ -50,7 +52,11 @@ export const InstallmentPlanList = ({
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this installment plan? This will also remove all projected installments.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this installment plan? This will also remove all projected installments.'
+      )
+    ) {
       deletePlanMutation(id, {
         onSuccess: () => {
           toast.success('Plan deleted successfully.');
@@ -63,7 +69,7 @@ export const InstallmentPlanList = ({
     onParamsChange(prev => ({ ...prev, page: newPage }));
   };
 
-  console.log({ plans})
+  console.log({ plans });
   if (isLoading && !isPlaceholderData) {
     return <LoadingState />;
   }
@@ -77,22 +83,31 @@ export const InstallmentPlanList = ({
   }
 
   return (
-    <div data-ui="installment-plan-list" className="py-4 space-y-5 rounded-3xl">
-      <PageHeader
-        title="Installment Plans"
-        icon={Calendar}
-        onAdd={handleAdd}
-        addButtonLabel="Add Plan"
-      />
-      
-      <CardDescription>
-        {totalCount 
-          ? `${totalCount} plans found` 
-          : 'Manage your installment purchases and track debt progress.'}
-        {isPlaceholderData && (
-          <span className="text-xs text-muted-foreground ml-2">(Previous data shown)</span>
-        )}
-      </CardDescription>
+    <div data-ui="installment-plan-list" className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="grid items-center ">
+          <h2 className="text-2xl tracking-tight text-primary">Purchases</h2>
+          <p className="text-sm">
+            {totalCount ? (
+              <>
+                <span>Total</span> <span className="ml-1 text-xl font-semibold">{totalCount}</span>
+              </>
+            ) : (
+              'Manage your installment purchases and track debt progress.'
+            )}
+            {isPlaceholderData && (
+              <span className="text-xs text-muted-foreground ml-2">(Previous data shown)</span>
+            )}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Add Plan</span>
+          <Button className="rounded-full w-8 h-8" size="icon" onClick={handleAdd}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
       <ul className="space-y-3">
         {plans.map(plan => (
@@ -106,17 +121,17 @@ export const InstallmentPlanList = ({
       </ul>
 
       {totalCount && totalCount > perPage && (
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+        <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
-              Showing {(page - 1) * perPage + 1} to{' '}
-              {Math.min(page * perPage, totalCount)} of {totalCount} plans
+              Showing {(page - 1) * perPage + 1} to {Math.min(page * perPage, totalCount)} of{' '}
+              {totalCount} plans
             </span>
           </div>
           <Pagination
             currentPage={page}
             totalPages={Math.ceil(totalCount / perPage)}
-            hasNext={(page * perPage) < totalCount && !isPlaceholderData}
+            hasNext={page * perPage < totalCount && !isPlaceholderData}
             hasPrevious={page > 1 && !isPlaceholderData}
             onPageChange={handlePageChange}
             className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
