@@ -6,15 +6,10 @@ import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const { from, to } = Route.useSearch();
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
 
   const { isPending: isLoadingBalancePoints, data: balancePoints } = useAccountBalancePoints(
     account.id,
@@ -55,7 +50,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           {isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
           ) : (
-            formatCurrency(balancePoint?.balance ?? 0)
+            formatCurrencyAmount(balancePoint?.balance ?? 0)
           )}
         </p>
       </div>

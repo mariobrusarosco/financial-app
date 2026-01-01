@@ -19,15 +19,9 @@ import {
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 import { Plus } from 'lucide-react';
 import type { I_Account } from '@/domains/accounts/types/types-and-interfaces';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 
 const InvestmentAccountCard = ({ account }: { account: I_Account }) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-
   return (
     <Surface
       className="h-32 w-full flex flex-col justify-between hover:bg-accent/50 transition-colors"
@@ -65,7 +59,7 @@ const InvestmentAccountCard = ({ account }: { account: I_Account }) => {
         </div>
 
         <div className="mt-auto">
-          <p className="font-medium text-lg">{formatCurrency(account.balance)}</p>
+          <p className="font-medium text-lg">{formatCurrencyAmount(account.balance)}</p>
           {account.description && (
             <p className="text-sm text-muted-foreground truncate">{account.description}</p>
           )}

@@ -10,9 +10,16 @@ import {
   CreditCard,
   Plane,
 } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
+
+export {
+  formatDateShort,
+  formatDateLong,
+  formatDateMedium,
+  formatCurrencyAmount,
+} from '@/domains/global/utils/formatting';
 
 // Icon utilities
 export const getTransactionIconComponent = (
@@ -65,95 +72,9 @@ export const getIconSizeClass = (size: 'xs' | 'sm' | 'md' | 'lg' = 'md') => {
   }[size];
 };
 
-// Date formatting utilities
-export const formatDateShort = (dateString: string | Date) => {
-  if (!dateString) return 'Invalid Date';
-
-  try {
-    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
-    return format(date, 'MMM d');
-  } catch (error) {
-    return 'Invalid Date';
-  }
-};
-
-export const formatDateLong = (dateString: string | Date) => {
-  if (!dateString) return 'Invalid Date';
-
-  try {
-    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
-    return format(date, 'EEE, MMM d, yyyy');
-  } catch (error) {
-    return 'Invalid Date';
-  }
-};
-
-export const formatDateMedium = (dateString: string | Date) => {
-  if (!dateString) return 'Invalid Date';
-
-  try {
-    const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
-    return format(date, 'MMM d, yyyy');
-  } catch (error) {
-    return 'Invalid Date';
-  }
-};
-
 // Currency formatting utilities
 export const isDebitTransaction = (movementType: T_TransactionType): boolean => {
   return movementType === 'expense' || movementType === 'investment';
-};
-
-export const formatCurrencyAmount = (
-  amount: string | number,
-  options: {
-    showSign?: boolean;
-    currency?: string;
-  } = {}
-) => {
-  const { showSign = false, currency = 'USD' } = options;
-
-  if (!amount && amount !== 0) return '$0.00';
-
-  try {
-    let numAmount: number;
-
-    if (typeof amount === 'string') {
-      // Handle Brazilian format (e.g., "5.861,36" or "+ 5.861,36" or "- 1.772,93")
-      let cleanAmount = amount.trim();
-
-      // Remove leading + or - signs for parsing
-      const isNegative = cleanAmount.startsWith('-');
-      cleanAmount = cleanAmount.replace(/^[+-]\s*/, '');
-
-      // Check if it's Brazilian format (contains comma as decimal separator and possibly dots as thousands)
-      if (
-        cleanAmount.includes(',') &&
-        cleanAmount.lastIndexOf(',') > cleanAmount.lastIndexOf('.')
-      ) {
-        // Brazilian format: "5.861,36" -> "5861.36"
-        cleanAmount = cleanAmount.replace(/\./g, '').replace(',', '.');
-      }
-
-      numAmount = parseFloat(cleanAmount);
-
-      // Apply original sign if it was negative
-      if (isNegative) {
-        numAmount = -numAmount;
-      }
-    } else {
-      numAmount = amount;
-    }
-
-    if (isNaN(numAmount)) return '$0.00';
-
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-    }).format(showSign ? Math.abs(numAmount) : numAmount);
-  } catch (error) {
-    return '$0.00';
-  }
 };
 
 export const getCurrencyClasses = (

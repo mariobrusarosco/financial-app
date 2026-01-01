@@ -2,8 +2,8 @@ import { useSubscriptions } from '@/domains/subscriptions/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/domains/ui-system/components/card';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { Button } from '@/domains/ui-system/components/button';
-import { Loader2, Calendar, CheckCircle2, AlertCircle } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { formatDateMedium, formatCurrencyAmount } from '@/domains/global/utils/formatting';
 
 export const UpcomingSubscriptions = () => {
   const { data, isLoading, isError } = useSubscriptions({ is_active: true });
@@ -51,7 +51,7 @@ export const UpcomingSubscriptions = () => {
               <div className="flex flex-col space-y-1">
                 <span className="text-sm font-medium leading-none">{sub.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {format(parseISO(sub.next_due_date), 'MMM d, yyyy')} • {sub.amount} {sub.currency}
+                  {formatDateMedium(sub.next_due_date)} • {formatCurrencyAmount(sub.amount, { currency: sub.currency })}
                 </span>
               </div>
               <div className="flex items-center gap-2">
