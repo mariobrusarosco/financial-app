@@ -124,7 +124,7 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
     const colorClass = React.useMemo(() => {
       switch (color) {
         case 'positive':
-          return 'text-green-600 dark:text-green-400';
+          return 'text-teal-600 dark:text-teal-400';
         case 'negative':
           return 'text-red-600 dark:text-red-400';
         case 'muted':
@@ -135,7 +135,7 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
           if ((showSign || autoColor) && numericValue !== 0) {
             return isNegative
               ? 'text-red-600 dark:text-red-400'
-              : 'text-green-600 dark:text-green-400';
+              : 'text-teal-600 dark:text-teal-400';
           }
           return 'text-foreground';
       }

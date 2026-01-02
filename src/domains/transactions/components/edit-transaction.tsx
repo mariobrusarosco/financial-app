@@ -74,10 +74,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
         }}
         className="space-y-4"
       >
-
-
-        {/* First Row - Description and Amount */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex gap-4">
           <form.Field
             name="description"
             validators={{
@@ -85,7 +82,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
             }}
           >
             {field => (
-              <div className="space-y-1">
+              <div className="space-y-1 min-w-[250px]">
                 <label htmlFor={field.name} className="text-xs font-medium text-gray-700">
                   Description
                 </label>
@@ -129,8 +126,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
           </form.Field>
         </div>
 
-        {/* Second Row - Date, Type, Category */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex gap-4">
           <form.Field
             name="date"
             validators={{
@@ -214,9 +210,7 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
           </form.Field>
         </div>
 
-        {/* Third Row - Locked Payment Method and Payment Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Locked Payment Method Display */}
+        <div className="flex gap-4">
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-700">Payment Method</label>
             <div className="flex items-center space-x-2 p-2 bg-gray-100 border border-gray-300 rounded text-sm text-gray-600">
@@ -235,23 +229,6 @@ export const EditTransaction = ({ transaction, onSave, onCancel }: EditTransacti
                   <Switch checked={field.state.value} onCheckedChange={field.handleChange} />
                   <label className="text-xs text-muted-foreground">
                     {field.state.value ? 'Paid' : 'Unpaid'}
-                  </label>
-                </div>
-              </div>
-            )}
-          </form.Field>
-        </div>
-
-        {/* Fourth Row - Ignored Status */}
-        <div className="grid grid-cols-1 gap-4">
-          <form.Field name="ignored">
-            {field => (
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-700">Ignore Transaction</label>
-                <div className="flex items-center space-x-2">
-                  <Switch checked={field.state.value} onCheckedChange={field.handleChange} />
-                  <label className="text-xs text-muted-foreground">
-                    {field.state.value ? 'Ignored' : 'Active'}
                   </label>
                 </div>
               </div>

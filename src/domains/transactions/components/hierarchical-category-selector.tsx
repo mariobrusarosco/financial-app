@@ -64,6 +64,8 @@ export const HierarchicalCategorySelector = ({
     }
   });
 
+  console.log({ flattenedCategories });
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>

@@ -101,7 +101,7 @@ export const formatDateMedium = (dateString: string | Date) => {
 
 // Currency formatting utilities
 export const isDebitTransaction = (movementType: T_TransactionType): boolean => {
-  return movementType === 'expense' || movementType === 'investment';
+  return movementType === 'expense';
 };
 
 export const formatCurrencyAmount = (

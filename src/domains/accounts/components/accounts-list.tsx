@@ -6,6 +6,7 @@ import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
+import { Badge } from '@/domains/ui-system/components/badge';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const { from, to } = Route.useSearch();
@@ -33,13 +34,14 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
       data-ui="account-card"
     >
-      <div className="flex items-start justify-between px-6 py-5">
-        <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
-          {account.name}
-        </h3>
-        {/* <Badge variant="outline" className="bg-primary/20 text-primary border-none">
-            {account.type}
-          </Badge> */}
+      <div className="flex items-start justify-between p-4">
+        <div className="w-full overflow-hidden ">
+          {' '}
+          <h3 className="truncate text-ellipsis whitespace-nowrap">{account.name}</h3>
+          <Badge variant="outline" className="bg-primary/20 text-primary border-none">
+            {account.broker?.name}
+          </Badge>
+        </div>
         <Link
           to="/accounts/$slug"
           params={{ slug: account.id }}

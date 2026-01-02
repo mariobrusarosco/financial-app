@@ -12,7 +12,6 @@ export interface I_TransactionPayload {
   ignored: boolean;
   type: T_TransactionType;
   category: string;
-  sub_category?: string;
 }
 
 // Legacy alias for backward compatibility - will be removed
@@ -82,7 +81,8 @@ export interface I_TransactionResponse {
       name: string;
     } | null;
   } | null;
-  subscription?: { // New
+  subscription?: {
+    // New
     name: string;
   } | null;
   created_at: string;

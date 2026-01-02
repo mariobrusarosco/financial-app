@@ -54,7 +54,7 @@ export interface TransactionInfoProps {
 // Amount props
 export interface TransactionAmountProps {
   amount: number;
-  movementType: string;
+  movementType: 'income' | 'expense' | 'investment';
   ignored: boolean;
   size?: 'compact' | 'large';
 }
