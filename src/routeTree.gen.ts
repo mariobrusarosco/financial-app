@@ -22,8 +22,10 @@ import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/
 import { Route as authInvestmentsIndexRouteImport } from './routes/(auth)/investments/index'
 import { Route as authInstallmentsIndexRouteImport } from './routes/(auth)/installments/index'
 import { Route as authDashboardIndexRouteImport } from './routes/(auth)/dashboard/index'
+import { Route as authCashflowIndexRouteImport } from './routes/(auth)/cashflow/index'
 import { Route as authBrokersIndexRouteImport } from './routes/(auth)/brokers/index'
 import { Route as authAccountsIndexRouteImport } from './routes/(auth)/accounts/index'
+import { Route as authCashflowExpensesRouteImport } from './routes/(auth)/cashflow/expenses'
 import { Route as authAccountsSlugRouteRouteImport } from './routes/(auth)/accounts/$slug/route'
 import { Route as authBrokersCreateIndexRouteImport } from './routes/(auth)/brokers/create/index'
 import { Route as authAccountsCreateIndexRouteImport } from './routes/(auth)/accounts/create/index'
@@ -103,6 +105,11 @@ const authDashboardIndexRoute = authDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authCashflowIndexRoute = authCashflowIndexRouteImport.update({
+  id: '/cashflow/',
+  path: '/cashflow/',
+  getParentRoute: () => authRouteRoute,
+} as any)
 const authBrokersIndexRoute = authBrokersIndexRouteImport.update({
   id: '/brokers/',
   path: '/brokers/',
@@ -111,6 +118,11 @@ const authBrokersIndexRoute = authBrokersIndexRouteImport.update({
 const authAccountsIndexRoute = authAccountsIndexRouteImport.update({
   id: '/accounts/',
   path: '/accounts/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authCashflowExpensesRoute = authCashflowExpensesRouteImport.update({
+  id: '/cashflow/expenses',
+  path: '/cashflow/expenses',
   getParentRoute: () => authRouteRoute,
 } as any)
 const authAccountsSlugRouteRoute = authAccountsSlugRouteRouteImport.update({
@@ -201,8 +213,10 @@ export interface FileRoutesByFullPath {
   '/react-aria-demo': typeof authReactAriaDemoRoute
   '/tremor-demo': typeof authTremorDemoRoute
   '/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
+  '/cashflow/expenses': typeof authCashflowExpensesRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
+  '/cashflow': typeof authCashflowIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/installments': typeof authInstallmentsIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
@@ -230,8 +244,10 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/react-aria-demo': typeof authReactAriaDemoRoute
   '/tremor-demo': typeof authTremorDemoRoute
+  '/cashflow/expenses': typeof authCashflowExpensesRoute
   '/accounts': typeof authAccountsIndexRoute
   '/brokers': typeof authBrokersIndexRoute
+  '/cashflow': typeof authCashflowIndexRoute
   '/dashboard': typeof authDashboardIndexRoute
   '/installments': typeof authInstallmentsIndexRoute
   '/investments': typeof authInvestmentsIndexRoute
@@ -261,8 +277,10 @@ export interface FileRoutesById {
   '/(auth)/react-aria-demo': typeof authReactAriaDemoRoute
   '/(auth)/tremor-demo': typeof authTremorDemoRoute
   '/(auth)/accounts/$slug': typeof authAccountsSlugRouteRouteWithChildren
+  '/(auth)/cashflow/expenses': typeof authCashflowExpensesRoute
   '/(auth)/accounts/': typeof authAccountsIndexRoute
   '/(auth)/brokers/': typeof authBrokersIndexRoute
+  '/(auth)/cashflow/': typeof authCashflowIndexRoute
   '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(auth)/installments/': typeof authInstallmentsIndexRoute
   '/(auth)/investments/': typeof authInvestmentsIndexRoute
@@ -293,8 +311,10 @@ export interface FileRouteTypes {
     | '/react-aria-demo'
     | '/tremor-demo'
     | '/accounts/$slug'
+    | '/cashflow/expenses'
     | '/accounts'
     | '/brokers'
+    | '/cashflow'
     | '/dashboard'
     | '/installments'
     | '/investments'
@@ -322,8 +342,10 @@ export interface FileRouteTypes {
     | '/signup'
     | '/react-aria-demo'
     | '/tremor-demo'
+    | '/cashflow/expenses'
     | '/accounts'
     | '/brokers'
+    | '/cashflow'
     | '/dashboard'
     | '/installments'
     | '/investments'
@@ -352,8 +374,10 @@ export interface FileRouteTypes {
     | '/(auth)/react-aria-demo'
     | '/(auth)/tremor-demo'
     | '/(auth)/accounts/$slug'
+    | '/(auth)/cashflow/expenses'
     | '/(auth)/accounts/'
     | '/(auth)/brokers/'
+    | '/(auth)/cashflow/'
     | '/(auth)/dashboard/'
     | '/(auth)/installments/'
     | '/(auth)/investments/'
@@ -476,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authDashboardIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(auth)/cashflow/': {
+      id: '/(auth)/cashflow/'
+      path: '/cashflow'
+      fullPath: '/cashflow'
+      preLoaderRoute: typeof authCashflowIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
     '/(auth)/brokers/': {
       id: '/(auth)/brokers/'
       path: '/brokers'
@@ -488,6 +519,13 @@ declare module '@tanstack/react-router' {
       path: '/accounts'
       fullPath: '/accounts'
       preLoaderRoute: typeof authAccountsIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/cashflow/expenses': {
+      id: '/(auth)/cashflow/expenses'
+      path: '/cashflow/expenses'
+      fullPath: '/cashflow/expenses'
+      preLoaderRoute: typeof authCashflowExpensesRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/accounts/$slug': {
@@ -646,8 +684,10 @@ interface authRouteRouteChildren {
   authReactAriaDemoRoute: typeof authReactAriaDemoRoute
   authTremorDemoRoute: typeof authTremorDemoRoute
   authAccountsSlugRouteRoute: typeof authAccountsSlugRouteRouteWithChildren
+  authCashflowExpensesRoute: typeof authCashflowExpensesRoute
   authAccountsIndexRoute: typeof authAccountsIndexRoute
   authBrokersIndexRoute: typeof authBrokersIndexRoute
+  authCashflowIndexRoute: typeof authCashflowIndexRoute
   authDashboardIndexRoute: typeof authDashboardIndexRoute
   authInstallmentsIndexRoute: typeof authInstallmentsIndexRoute
   authInvestmentsIndexRoute: typeof authInvestmentsIndexRoute
@@ -663,8 +703,10 @@ const authRouteRouteChildren: authRouteRouteChildren = {
   authReactAriaDemoRoute: authReactAriaDemoRoute,
   authTremorDemoRoute: authTremorDemoRoute,
   authAccountsSlugRouteRoute: authAccountsSlugRouteRouteWithChildren,
+  authCashflowExpensesRoute: authCashflowExpensesRoute,
   authAccountsIndexRoute: authAccountsIndexRoute,
   authBrokersIndexRoute: authBrokersIndexRoute,
+  authCashflowIndexRoute: authCashflowIndexRoute,
   authDashboardIndexRoute: authDashboardIndexRoute,
   authInstallmentsIndexRoute: authInstallmentsIndexRoute,
   authInvestmentsIndexRoute: authInvestmentsIndexRoute,
