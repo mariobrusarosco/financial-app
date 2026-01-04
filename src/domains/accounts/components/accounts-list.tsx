@@ -53,7 +53,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       </div>
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
-        <p className="font-light text-neutral-white text-3xl tracking-tight">
+        <p className="font-light text-neutral-white text-2xl">
           {isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
           ) : (
@@ -106,14 +106,24 @@ const AccountsList = () => {
   if (error) return <ErrorState error={error} />;
   if (!accounts || accounts.length === 0) return <EmptyState />;
 
+  const groupedByType = Object.groupBy(accounts, ({ type }) => type);
+  console.log({ groupedByType });
+
   return (
-    <ul className="grid grid-cols-1 md:grid-cols- lg:grid-cols-5 gap-3 bg-section-background rounded-3xl p-6">
-      {accounts.map(account => (
-        <li key={account.id}>
-          <AccountCard account={account} />
-        </li>
+    <div className="flex gap-6">
+      {Object.entries(groupedByType).map(([type, accounts]) => (
+        <div key={type} className="w-1/2">
+          <h2 className="text-2xl font-light text-primary mb-4 uppercase">{type}</h2>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl p-6">
+            {accounts.map(account => (
+              <li key={account.id}>
+                <AccountCard account={account} />
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 };
 

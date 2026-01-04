@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
+import { Checkbox } from '@/domains/ui-system/components/checkbox';
 import {
   Select,
   SelectContent,
@@ -16,6 +17,7 @@ import {
 } from '@/domains/ui-system/components/collapsible';
 import { ChevronDown, Filter, X } from 'lucide-react';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
+import { HierarchicalCategorySelector } from './hierarchical-category-selector';
 
 interface AccountTransactionFiltersProps {
   params: I_AccountTransactionsParams;
@@ -103,8 +105,39 @@ export const AccountTransactionFilters = ({
 
       <CollapsibleContent className="space-y-4 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/50">
-          {/* Date Range - Handled Globally */}
-          
+          {/* Quick Filters */}
+          <div className="space-y-2 lg:col-span-3">
+            <Label className="text-sm font-medium">Quick Filters</Label>
+            <div className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="filter-income" 
+                  checked={params.movement_type === 'income'}
+                  onCheckedChange={(checked) => updateParam('movement_type', checked ? 'income' : undefined)}
+                />
+                <label
+                  htmlFor="filter-income"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Income
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="filter-expense" 
+                  checked={params.movement_type === 'expense'}
+                  onCheckedChange={(checked) => updateParam('movement_type', checked ? 'expense' : undefined)}
+                />
+                <label
+                  htmlFor="filter-expense"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Expense
+                </label>
+              </div>
+            </div>
+          </div>
+
           {/* Amount Range */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Amount Range</Label>
@@ -133,11 +166,28 @@ export const AccountTransactionFilters = ({
                 value={params.description_contains || ''}
                 onChange={e => updateParam('description_contains', e.target.value)}
               />
-              <Input
-                placeholder="Category"
-                value={params.category || ''}
-                onChange={e => updateParam('category', e.target.value)}
-              />
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <HierarchicalCategorySelector
+                    value={params.category || ''}
+                    onValueChange={value => updateParam('category', value)}
+                    placeholder="Filter by Category"
+                    className="w-full bg-background"
+                    size="sm"
+                  />
+                </div>
+                {params.category && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => updateParam('category', undefined)}
+                    title="Clear category"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 
