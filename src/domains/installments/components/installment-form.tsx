@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '@/domains/ui-system/components/select';
 import { useVendors } from '@/domains/vendors/hooks';
+import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import * as dateFns from 'date-fns';
 import { useCategories } from '@/domains/categories/hooks/use-categories';
@@ -178,18 +179,11 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
           children={field => (
             <div className="space-y-2">
               <Label htmlFor={field.name}>Vendor</Label>
-              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableVendors.map(vendor => (
-                    <SelectItem key={vendor.id} value={vendor.id}>
-                      {vendor.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <VendorSelector
+                value={field.state.value || ''}
+                onValueChange={field.handleChange}
+                vendors={availableVendors}
+              />
             </div>
           )}
         />
