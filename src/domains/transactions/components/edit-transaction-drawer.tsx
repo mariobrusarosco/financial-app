@@ -1,15 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { Route } from '@/routes/(auth)/route';
-import {
-  DrawerClose,
-  DrawerFooter,
-} from '@/domains/ui-system/components/drawer';
+import { DrawerClose, DrawerFooter } from '@/domains/ui-system/components/drawer';
 import { Button } from '@/domains/ui-system/components/button';
-import { EditTransaction } from './edit-transaction';
+import { TransactionForm } from './transaction-form';
 import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { getTransactionById } from '../api/transactions.api';
-import type { I_TransactionResponse } from '../types/types-and-interfaces';
+import type { I_TransactionResponse, I_TransactionPayload } from '../types/types-and-interfaces';
 import { Loader2, X, Save } from 'lucide-react';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
@@ -54,9 +51,12 @@ export const EditTransactionDrawer = () => {
   const handleClose = () =>
     navigate({ search: prev => ({ ...prev, drawer: undefined, transactionId: undefined }) });
 
-  const handleSave = (updates: Partial<I_TransactionResponse>) => {
+  const handleSave = (payload: I_TransactionPayload) => {
     if (transactionId) {
-      updateTransaction({ id: transactionId, updates });
+      updateTransaction({
+        id: transactionId,
+        updates: payload as unknown as Partial<I_TransactionResponse>,
+      });
     }
   };
 
@@ -72,7 +72,6 @@ export const EditTransactionDrawer = () => {
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
-
       </>
     );
   }
@@ -83,9 +82,11 @@ export const EditTransactionDrawer = () => {
       <>
         <DrawerHeader
           title="Edit Transaction"
-          description={isError
-            ? `Failed to load transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
-            : 'Transaction not found'}
+          description={
+            isError
+              ? `Failed to load transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+              : 'Transaction not found'
+          }
           icon={Save}
         />
         <div className="flex items-center justify-center py-12">
@@ -107,26 +108,33 @@ export const EditTransactionDrawer = () => {
   // Success state - render the edit form
   return (
     <>
-      <DrawerHeader
-        title="Edit Transaction"
-        description="Make changes to your transaction details"
-        icon={Save}
-      />
-      <div className="px-4 pb-4">
-        <EditTransaction transaction={transaction} onSave={handleSave} onCancel={handleClose} />
-      </div>
-      <DrawerFooter>
-        <Button type="submit" form="edit-transaction-form">
-          <Save className="h-4 w-4 mr-2" />
-          Save
-        </Button>
-        <DrawerClose asChild>
-          <Button variant="outline" onClick={handleClose}>
-            <X className="h-4 w-4 mr-2" />
-            Cancel
+      <div className="flex items-center justify-between">
+        <DrawerHeader
+          title="Edit Transaction"
+          description="Make changes to your transaction details"
+          icon={Save}
+        />
+        <div className="flex items-center gap-2 pr-4">
+          <DrawerClose asChild>
+            <Button variant="outline" onClick={handleClose}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+          </DrawerClose>
+          <Button type="submit" form="transaction-form">
+            <Save className="h-4 w-4 mr-2" />
+            Save
           </Button>
-        </DrawerClose>
-      </DrawerFooter>
+        </div>
+      </div>
+      <div className="px-4 pb-4">
+        <TransactionForm
+          initialValues={transaction}
+          onSubmit={handleSave}
+          isEditMode={true}
+          onCancel={handleClose}
+        />
+      </div>
     </>
   );
 };

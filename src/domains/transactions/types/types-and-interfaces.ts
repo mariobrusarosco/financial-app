@@ -8,6 +8,7 @@ export interface I_TransactionPayload {
   account_id?: string;
   credit_card_id?: string;
   broker_id?: string;
+  vendor_id?: string;
   is_paid: boolean;
   ignored: boolean;
   type: T_TransactionType;
@@ -63,6 +64,7 @@ export interface I_TransactionResponse {
   account_id: string | null; // null for credit card transactions
   broker_id: string;
   credit_card_id?: string;
+  vendor_id?: string;
   is_deleted: boolean;
   is_paid: boolean;
   ignored: boolean;

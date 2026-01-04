@@ -13,6 +13,7 @@ import {
 import { Checkbox } from '@/domains/ui-system/components/checkbox';
 import type { I_CreateSubscriptionRequest, I_Subscription } from '../types/types-and-interfaces';
 import { useVendors } from '@/domains/vendors/hooks';
+import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import * as dateFns from 'date-fns';
@@ -258,18 +259,11 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
           children={field => (
             <div className="space-y-2">
               <Label htmlFor={field.name}>Vendor</Label>
-              <Select value={field.state.value} onValueChange={field.handleChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableVendors.map(vendor => (
-                    <SelectItem key={vendor.id} value={vendor.id}>
-                      {vendor.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <VendorSelector
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                vendors={availableVendors}
+              />
               {field.state.meta.errors.length > 0 && (
                 <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
               )}
