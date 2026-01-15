@@ -4,7 +4,9 @@ A single-page application designed to help users manage their daily financial as
 
 ## Project Overview
 
-Better Call Buffet is a modern financial management application built with TanStack Start, using shadcn/ui for the interface and MSW for API mocking during development. We utilize **Shadcn/ui** as our primary component library, which is built on top of Radix UI and styled with **Tailwind CSS**. All custom styling, theme configurations, and UI-related utilities are centralized within the `app/domains/ui-system` domain to maintain a clear separation of concerns for our visual layer.
+Better Call Buffet is a modern financial management application built with TanStack Start, using shadcn/ui for the interface and MSW for API mocking during development. The project is hosted on **Netlify**, which provides our production environment and continuous deployment pipeline.
+
+We utilize **Shadcn/ui** as our primary component library, which is built on top of Radix UI and styled with **Tailwind CSS**. All custom styling, theme configurations, and UI-related utilities are centralized within the `app/domains/ui-system` domain to maintain a clear separation of concerns for our visual layer.
 
 ## Flowchart
 
