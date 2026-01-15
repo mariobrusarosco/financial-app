@@ -20,6 +20,7 @@ import { cn } from '@/domains/ui-system/utils';
 import { useAllInvestmentBalancesWithPagination } from '../hooks/use-investment-balance-history';
 import { useState } from 'react';
 import type { I_InvestmentBalanceWithCalculations } from '../types/types-and-interfaces';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -44,10 +45,7 @@ export const InvestmentBalanceTable = ({
 
   const formatCurrency = (amount: string, showSign = false) => {
     const numericAmount = parseFloat(amount);
-    const formatted = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(Math.abs(numericAmount));
+    const formatted = formatCurrencyAmount(Math.abs(numericAmount));
 
     if (!showSign) return formatted;
 

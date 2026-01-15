@@ -12,6 +12,7 @@ import { Route } from '@/routes/(auth)/route';
 import { startOfMonth, endOfMonth, format, parseISO, isValid } from 'date-fns';
 import { UseQueryResult } from '@tanstack/react-query';
 import { I_AccountTransactionsResponse } from '@/domains/transactions/types/types-and-interfaces';
+import { formatCurrencyAmount, formatDateMedium } from '@/domains/global/utils/formatting';
 
 interface Props {
   title?: string;
@@ -27,27 +28,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const formatCurrency = (value: number): string => {
-  return `R$${Intl.NumberFormat('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)}`;
-};
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
-  });
-};
-
 const mapBalancePointsToChartData = (balancePoints: I_BalancePoint[]) => {
   return balancePoints
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .map(balancePoint => ({
-      date: formatDate(balancePoint.date),
+      date: formatDateMedium(balancePoint.date),
       balance: balancePoint.balance,
       rawDate: balancePoint.date,
       snapshotType: balancePoint.snapshot_type,
@@ -149,7 +134,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={value => formatCurrency(value)}
+              tickFormatter={value => formatCurrencyAmount(value, { locale: 'pt-BR', currency: 'BRL' })}
               width={80}
               className="text-xs text-muted-foreground"
             />
@@ -157,11 +142,11 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
               cursor={{ strokeDasharray: '3 3' }}
               content={
                 <ChartTooltipContent
-                  formatter={(value, name) => (
+                  formatter={(value) => (
                     <div className="flex items-center justify-between gap-8">
                       <span className="text-muted-foreground">Balance</span>
                       <span className="font-mono font-semibold text-foreground">
-                        {formatCurrency(value as number)}
+                        {formatCurrencyAmount(value as number, { locale: 'pt-BR', currency: 'BRL' })}
                       </span>
                     </div>
                   )}
