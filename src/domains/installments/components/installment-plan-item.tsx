@@ -18,6 +18,10 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
   const navigate = useNavigate();
   const paidInstallments = plan.installments?.filter(i => i.status === 'linked').length || 0;
   const progress = (paidInstallments / plan.installment_count) * 100;
+  const remainingValue = plan.installments
+    ?.filter(i => i.status !== 'linked')
+    .reduce((acc, i) => acc + i.amount, 0);
+  const nextInstallment = plan.installments?.find(i => i.status === 'pending');
 
   return (
     <li data-ui="installment-plan-item" className="border rounded-lg transition-colors bg-card">
@@ -40,12 +44,38 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
                 )}
               </Button>
             </div>
+
             <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+              <span>
+                <span className="font-semibold text-primary text-lg">
+                  {nextInstallment?.amount.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })}
+                </span>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
               <span className="flex items-center gap-1">
                 <CreditCard className="h-3 w-3" />
-                {plan.total_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                <span>
+                  <span className="text-xs font-semibold text-primary">
+                    {remainingValue.toLocaleString('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                    })}
+                  </span>
+                </span>
+                <span>of</span>
+                <span className="text-xs">
+                  {plan.total_amount.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })}
+                </span>
               </span>
-              <span>Start: {format(parseISO(plan.start_date), 'PP')}</span>
+              <span className="text-xs">Started: {format(parseISO(plan.start_date), 'PP')}</span>
             </div>
 
             {/* Progress Bar */}
@@ -124,11 +154,17 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
                   key={installment.id}
                   className="p-2 border rounded-md bg-card text-xs flex justify-between items-center"
                 >
-                  <div>
+                  <div className="flex items-center gap-2">
                     <span className="font-semibold text-muted-foreground mr-2">
-                      #{installment.installment_number}
+                      #{installment.number}
                     </span>
                     <span>{format(parseISO(installment.due_date), 'MMM dd')}</span>
+                    <span className="text-primary font-semibold">
+                      {installment.amount.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      })}
+                    </span>
                   </div>
                   <Badge
                     variant="outline"

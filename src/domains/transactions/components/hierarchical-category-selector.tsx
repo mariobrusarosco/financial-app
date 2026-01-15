@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Command,
@@ -14,6 +14,7 @@ import { cn } from '@/domains/ui-system/utils';
 import { useCategories } from '@/domains/categories/hooks/use-categories';
 import { findCategoryById } from '@/domains/categories/utils/category-tree-utils';
 import type { I_CategoryTreeNode } from '@/domains/categories/types';
+import { isUUID } from '@/domains/global/utils/string-utils';
 
 interface HierarchicalCategorySelectorProps {
   value: string;
@@ -64,6 +65,19 @@ export const HierarchicalCategorySelector = ({
     }
   });
 
+  const displayName = useMemo(() => {
+    if (currentCategory) return currentCategory.name;
+    if (!value) return placeholder;
+
+    // If value is a UUID but not found in current categories list
+    if (isUUID(value)) {
+      return 'Loading...';
+    }
+
+    // Fallback for legacy categories (simple strings like "food")
+    return value;
+  }, [currentCategory, value, placeholder]);
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -74,13 +88,11 @@ export const HierarchicalCategorySelector = ({
           disabled={disabled}
           className={cn('justify-between', size === 'sm' ? 'h-8 text-xs' : 'h-10', className)}
         >
-          {currentCategory ? (
-            <span className="flex items-center gap-2">
-              <span className="truncate">{currentCategory.name}</span>
+          <span className="flex items-center gap-2 overflow-hidden">
+            <span className={cn('truncate', !currentCategory && isUUID(value) && 'text-muted-foreground')}>
+              {displayName}
             </span>
-          ) : (
-            <span className="text-muted-foreground">{placeholder}</span>
-          )}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

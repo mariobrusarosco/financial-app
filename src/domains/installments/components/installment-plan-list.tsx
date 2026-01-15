@@ -69,7 +69,6 @@ export const InstallmentPlanList = ({
     onParamsChange(prev => ({ ...prev, page: newPage }));
   };
 
-  console.log({ plans });
   if (isLoading && !isPlaceholderData) {
     return <LoadingState />;
   }
@@ -109,7 +108,7 @@ export const InstallmentPlanList = ({
         </div>
       </div>
 
-      <ul className="space-y-3">
+      <ul className="space-y-3 grid grid-cols-2 gap-4">
         {plans.map(plan => (
           <InstallmentPlanItem
             key={plan.id}

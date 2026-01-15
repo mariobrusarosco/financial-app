@@ -49,6 +49,15 @@ export interface I_SubscriptionResponse {
   data: I_Subscription;
 }
 
+export interface I_SubscriptionSummary {
+  monthly_burn_rate: number;
+  yearly_projection: number;
+  due_next_30_days: number;
+  active_count: number;
+  category_breakdown: { name: string; amount: number }[];
+  monthly_forecast: { month: string; amount: number }[];
+}
+
 export interface I_SubscriptionsResponse {
   data: I_Subscription[];
   meta: {
@@ -57,6 +66,7 @@ export interface I_SubscriptionsResponse {
     per_page: number;
     has_next: boolean;
     has_previous: boolean;
+    summary?: I_SubscriptionSummary;
   };
 }
 
@@ -69,4 +79,5 @@ export interface I_SubscriptionsParams {
   is_active?: boolean;
   sort_by?: 'name' | 'amount' | 'next_due_date' | 'created_at';
   sort_order?: 'asc' | 'desc';
+  include_summary?: boolean;
 }

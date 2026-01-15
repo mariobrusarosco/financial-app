@@ -141,11 +141,32 @@ export const LinkPaymentToInstallmentDrawer = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-6 pb-0">
+      <div className="p-6 pb-0 flex justify-between">
         <Button variant="ghost" size="sm" onClick={handleClose} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Edit
         </Button>
+
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex-1" onClick={handleClose}>
+            <X className="mr-2 h-4 w-4" />
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={!selectedTransactionId || isLinking}
+            className="flex-1"
+          >
+            {isLinking ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Linking...
+              </>
+            ) : (
+              'Confirm Link'
+            )}
+          </Button>
+        </div>
       </div>
 
       <div className="px-6 pb-0">
@@ -197,27 +218,6 @@ export const LinkPaymentToInstallmentDrawer = () => {
           />
         </div>
       </div>
-
-      <DrawerFooter className="border-t flex-row gap-2">
-        <Button variant="outline" className="flex-1" onClick={handleClose}>
-          <X className="mr-2 h-4 w-4" />
-          Cancel
-        </Button>
-        <Button
-          onClick={handleConfirm}
-          disabled={!selectedTransactionId || isLinking}
-          className="flex-1"
-        >
-          {isLinking ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Linking...
-            </>
-          ) : (
-            'Confirm Link'
-          )}
-        </Button>
-      </DrawerFooter>
     </div>
   );
 };

@@ -10,7 +10,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import type { I_Subscription } from '../types/types-and-interfaces';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { useState } from 'react';
-import { SubscriptionPaymentHistory } from './subscription-payment-history';
 import { LinkPaymentDrawer } from './link-payment-drawer';
 
 export const EditSubscriptionDrawer = () => {

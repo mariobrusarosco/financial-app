@@ -18,6 +18,7 @@ import {
   Store, // New icon for Vendors
   Repeat, // New icon for Subscriptions
   Calendar, // New icon for Installments
+  BarChart3, // New icon for Cashflow
 } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
@@ -56,6 +57,11 @@ const navigationItems: NavigationItem[] = [
     icon: Receipt,
   },
   {
+    label: 'Cashflow',
+    href: '/cashflow',
+    icon: BarChart3,
+  },
+  {
     label: 'Brokers',
     href: '/brokers',
     icon: Building2,
@@ -66,17 +72,12 @@ const navigationItems: NavigationItem[] = [
     icon: TrendingUp,
   },
   {
-    label: 'Vendors', // New item
-    href: '/vendors',
-    icon: Store,
-  },
-  {
-    label: 'Subscriptions', // New item
+    label: 'Subscriptions',
     href: '/subscriptions',
     icon: Repeat,
   },
   {
-    label: 'Installments', // New item
+    label: 'Installments',
     href: '/installments',
     icon: Calendar,
   },

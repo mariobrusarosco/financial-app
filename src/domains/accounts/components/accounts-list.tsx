@@ -7,6 +7,7 @@ import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
+import { Badge } from '@/domains/ui-system/components/badge';
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const { from, to } = Route.useSearch();
@@ -28,13 +29,14 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
       data-ui="account-card"
     >
-      <div className="flex items-start justify-between px-6 py-5">
-        <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
-          {account.name}
-        </h3>
-        {/* <Badge variant="outline" className="bg-primary/20 text-primary border-none">
-            {account.type}
-          </Badge> */}
+      <div className="flex items-start justify-between p-4">
+        <div className="w-full overflow-hidden ">
+          {' '}
+          <h3 className="truncate text-ellipsis whitespace-nowrap">{account.name}</h3>
+          <Badge variant="outline" className="bg-primary/20 text-primary border-none">
+            {account.broker?.name}
+          </Badge>
+        </div>
         <Link
           to="/accounts/$slug"
           params={{ slug: account.id }}
@@ -46,7 +48,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       </div>
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
-        <p className="font-light text-neutral-white text-3xl tracking-tight">
+        <p className="font-light text-neutral-white text-2xl">
           {isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
           ) : (
@@ -99,14 +101,24 @@ const AccountsList = () => {
   if (error) return <ErrorState error={error} />;
   if (!accounts || accounts.length === 0) return <EmptyState />;
 
+  const groupedByType = Object.groupBy(accounts, ({ type }) => type);
+  console.log({ groupedByType });
+
   return (
-    <ul className="grid grid-cols-1 md:grid-cols- lg:grid-cols-5 gap-3 bg-section-background rounded-3xl p-6">
-      {accounts.map(account => (
-        <li key={account.id}>
-          <AccountCard account={account} />
-        </li>
+    <div className="flex gap-6">
+      {Object.entries(groupedByType).map(([type, accounts]) => (
+        <div key={type} className="w-1/2">
+          <h2 className="text-2xl font-light text-primary mb-4 uppercase">{type}</h2>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl p-6">
+            {accounts.map(account => (
+              <li key={account.id}>
+                <AccountCard account={account} />
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 };
 

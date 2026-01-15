@@ -8,11 +8,11 @@ export interface I_TransactionPayload {
   account_id?: string;
   credit_card_id?: string;
   broker_id?: string;
+  vendor_id?: string;
   is_paid: boolean;
   ignored: boolean;
   type: T_TransactionType;
   category: string;
-  sub_category?: string;
 }
 
 // Legacy alias for backward compatibility - will be removed
@@ -64,6 +64,7 @@ export interface I_TransactionResponse {
   account_id: string | null; // null for credit card transactions
   broker_id: string;
   credit_card_id?: string;
+  vendor_id?: string;
   is_deleted: boolean;
   is_paid: boolean;
   ignored: boolean;
@@ -82,7 +83,8 @@ export interface I_TransactionResponse {
       name: string;
     } | null;
   } | null;
-  subscription?: { // New
+  subscription?: {
+    // New
     name: string;
   } | null;
   created_at: string;

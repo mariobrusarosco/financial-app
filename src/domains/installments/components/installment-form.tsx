@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '@/domains/ui-system/components/select';
 import { useVendors } from '@/domains/vendors/hooks';
+import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import * as dateFns from 'date-fns';
 import { useCategories } from '@/domains/categories/hooks/use-categories';
@@ -15,6 +16,10 @@ import { useQuery } from '@tanstack/react-query';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
 import type { I_CreateInstallmentPlanRequest } from '../types/types-and-interfaces';
 import type { UseForm } from '@tanstack/react-form';
+import { useState } from 'react';
+import { Button } from '@/domains/ui-system/components/button';
+import { Calculator } from 'lucide-react';
+import { CompactCalculator } from './compact-calculator';
 
 interface InstallmentFormProps {
   form: UseForm<I_CreateInstallmentPlanRequest>;
@@ -27,6 +32,7 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
     queryKey: ['credit_cards', 'all'],
     queryFn: () => creditCardApi.getAllCreditCards(),
   });
+  const [showCalculator, setShowCalculator] = useState(false);
 
   const availableVendors = vendorsData?.data || [];
   const availableCreditCards = creditCardsData?.data || [];
@@ -84,7 +90,7 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
         <form.Field
           name="total_amount"
           children={field => (
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <Label htmlFor={field.name}>Total Amount</Label>
               <Input
                 id={field.name}
@@ -95,6 +101,27 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
                 onBlur={field.handleBlur}
                 onChange={e => field.handleChange(parseFloat(e.target.value))}
               />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-xs text-muted-foreground"
+                  onClick={() => setShowCalculator(!showCalculator)}
+                  type="button"
+                >
+                  <Calculator className="w-3 h-3 mr-1" />
+                  {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
+                </Button>
+              </div>
+              {showCalculator && (
+                <div className="absolute z-50 mt-1 shadow-lg">
+                  <CompactCalculator
+                    initialValue={field.state.value}
+                    onApply={(val) => field.handleChange(val)}
+                    onClose={() => setShowCalculator(false)}
+                  />
+                </div>
+              )}
               {field.state.meta.touched && field.state.meta.errors.length > 0 && (
                 <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
               )}
@@ -152,18 +179,11 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
           children={field => (
             <div className="space-y-2">
               <Label htmlFor={field.name}>Vendor</Label>
-              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableVendors.map(vendor => (
-                    <SelectItem key={vendor.id} value={vendor.id}>
-                      {vendor.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <VendorSelector
+                value={field.state.value || ''}
+                onValueChange={field.handleChange}
+                vendors={availableVendors}
+              />
             </div>
           )}
         />
