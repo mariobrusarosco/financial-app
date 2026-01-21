@@ -17,29 +17,17 @@ interface Props {
 export function DateRangePicker({ dateRange, setDateRange }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const formatDateRange = () => {
-    if (!dateRange?.from) {
-      return 'Pick a date range';
-    }
-
-    if (!dateRange.to) {
-      return format(dateRange.from, 'PP');
-    }
-
-    return `${format(dateRange.from, 'PP')} - ${format(dateRange.to, 'PP')}`;
-  };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
+        <div
           data-empty={!dateRange?.from}
-          className="data-[empty=true]:text-muted-foreground w-full md:w-auto justify-start text-left font-normal"
+          data-testid="date-range-picker"
+          className="data-[empty=true]:text-primary text-sm text-primary bg-foreground p-3.5 rounded-md cursor-pointer"
         >
-          <CalendarIcon />
-          <span>{formatDateRange()}</span>
-        </Button>
+          <CalendarIcon className="h-4 w-4" />
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar

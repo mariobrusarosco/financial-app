@@ -45,6 +45,7 @@ const CreateAccount = () => {
       <div className="space-y-6">
         <form
           id="account-create-form"
+          data-testid="account-create-form"
           onSubmit={e => {
             e.preventDefault();
             void form.handleSubmit();
@@ -66,6 +67,7 @@ const CreateAccount = () => {
                     Account Name:
                   </label>
                   <Input
+                    data-testid="account-name-input"
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
@@ -91,7 +93,7 @@ const CreateAccount = () => {
                     value={field.state.value}
                     onValueChange={value => field.handleChange(value as T_AccountType)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="account-type-select">
                       <SelectValue placeholder="Select account type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -118,6 +120,7 @@ const CreateAccount = () => {
                     Initial Balance:
                   </label>
                   <Input
+                    data-testid="account-balance-input"
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
@@ -145,6 +148,7 @@ const CreateAccount = () => {
                     Description:
                   </label>
                   <Input
+                    data-testid="account-description-input"
                     id={field.name}
                     name={field.name}
                     value={field.state.value || ''}
@@ -167,7 +171,7 @@ const CreateAccount = () => {
                     value={field.state.value}
                     onValueChange={value => field.handleChange(value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="account-broker-select">
                       <SelectValue placeholder="Select a broker" />
                     </SelectTrigger>
                     <SelectContent>
@@ -198,7 +202,7 @@ const CreateAccount = () => {
                     value={field.state.value}
                     onValueChange={value => field.handleChange(value as T_AccountCurrency)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="account-currency-select">
                       <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
                     <SelectContent>

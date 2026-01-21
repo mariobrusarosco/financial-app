@@ -19,7 +19,7 @@ export const CreateAccountDrawer = () => {
           title="Create New Account"
           icon={Plus}
         />
-        <Button size="lg" form="account-create-form">
+        <Button data-testid="account-create-submit" size="lg" form="account-create-form">
           Create Account
         </Button>
       </div>

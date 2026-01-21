@@ -54,10 +54,10 @@
 :root {
   --radius: 0.65rem;
   --background: #fafafa;
-  --section-background: #f2f2f2;
+  --section-background: #F6F7ED;
   --neutral-white: #ffffff;
   --primary: #263a49;
-  --foreground: #797d7c;
+  --foreground: #EBECE1;
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -147,7 +147,7 @@
 }
 
 .app-container {
-  @apply md:px-10 lg:px-20 lg:py-2;
+  @apply md:px-10;
 }
 
 .spinner {
@@ -174,7 +174,3 @@
   }
 }
 
-/* Arch positioning - use translateY to move up/down */
-.arch-path {
-  /* transform: translateY(2px); */ /* Uncomment and adjust: positive = down, negative = up */
-}

@@ -29,7 +29,12 @@ export const PageHeader = ({
       {showAddButton && onAdd && (
         <div className="flex items-center gap-2">
           <span className="">{addButtonLabel}</span>
-          <Button className="rounded-full w-10 h-10" variant="default" onClick={() => void onAdd()}>
+          <Button
+            data-testid={`${title.toLowerCase()}-add-button`}
+            className="rounded-full w-10 h-10"
+            variant="default"
+            onClick={() => void onAdd()}
+          >
             <Plus className="h-4 w-4" />
           </Button>
         </div>

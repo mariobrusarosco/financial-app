@@ -45,6 +45,7 @@ export const LoginForm = () => {
       }}
     >
       <form
+        data-testid="login-form"
         onSubmit={e => {
           e.preventDefault();
           void form.handleSubmit();
@@ -70,6 +71,7 @@ export const LoginForm = () => {
                   Email
                 </Label>
                 <Input
+                  data-testid="login-email-input"
                   id={field.name}
                   type="email"
                   placeholder="user@example.com"
@@ -103,6 +105,7 @@ export const LoginForm = () => {
                 </Label>
                 <div className="relative">
                   <Input
+                    data-testid="login-password-input"
                     id={field.name}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
@@ -150,6 +153,7 @@ export const LoginForm = () => {
 
         <div className="flex flex-col gap-2 items-center mt-8">
           <Button
+            data-testid="login-submit-button"
             type="submit"
             className="w-fit px-8 py-4"
             disabled={isPending || !form.state.canSubmit}

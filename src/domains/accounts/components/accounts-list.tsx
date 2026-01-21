@@ -26,18 +26,27 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
   return (
     <div
+      data-testid="account-card"
+      data-account-id={account.id}
       className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
       data-ui="account-card"
     >
       <div className="flex items-start justify-between p-4">
         <div className="w-full overflow-hidden ">
           {' '}
-          <h3 className="truncate text-ellipsis whitespace-nowrap">{account.name}</h3>
-          <Badge variant="outline" className="bg-primary/20 text-primary border-none">
+          <h3 data-testid="account-card-name" className="truncate text-ellipsis whitespace-nowrap">
+            {account.name}
+          </h3>
+          <Badge
+            data-testid="account-card-broker"
+            variant="outline"
+            className="bg-primary/20 text-primary border-none"
+          >
             {account.broker?.name}
           </Badge>
         </div>
         <Link
+          data-testid="account-card-link"
           to="/accounts/$slug"
           params={{ slug: account.id }}
           style={{ backgroundColor: brokerprimaryColor }}
@@ -48,7 +57,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
       </div>
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
-        <p className="font-light text-neutral-white text-2xl">
+        <p data-testid="account-card-balance" className="font-light text-neutral-white text-2xl">
           {isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
           ) : (
@@ -62,7 +71,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
 const LoadingState = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 h-full">
+    <div data-testid="accounts-loading" className="flex flex-col items-center justify-center gap-4 h-full">
       <div className="p-6 rounded-3xl">
         <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
       </div>
@@ -72,7 +81,7 @@ const LoadingState = () => {
 
 const EmptyState = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 h-full">
+    <div data-testid="accounts-empty" className="flex flex-col items-center justify-center gap-4 h-full">
       <div className="p-6 bg-muted-foreground/10 rounded-3xl">
         <BrushCleaning className="h-15 w-15 text-muted-foreground stroke-1" />
       </div>
@@ -83,7 +92,7 @@ const EmptyState = () => {
 
 const ErrorState = ({ error }: { error: Error }) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
+    <div data-testid="accounts-error" className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
       <div className="p-6 bg-destructive/10 rounded-3xl">
         <XCircle className="h-15 w-15 text-destructive stroke-1" />
       </div>
@@ -105,9 +114,9 @@ const AccountsList = () => {
   console.log({ groupedByType });
 
   return (
-    <div className="flex gap-6">
+    <div data-testid="accounts-list" className="flex gap-6">
       {Object.entries(groupedByType).map(([type, accounts]) => (
-        <div key={type} className="w-1/2">
+        <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
           <h2 className="text-2xl font-light text-primary mb-4 uppercase">{type}</h2>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl p-6">
             {accounts.map(account => (

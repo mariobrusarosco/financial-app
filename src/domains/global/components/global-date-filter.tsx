@@ -125,30 +125,45 @@ export const GlobalDateFilter = () => {
     return isSameDay(dateRange.from, presetRange.from) && isSameDay(dateRange.to, presetRange.to);
   };
 
+
+  const formatDateRange = useMemo(() => {
+    if (!dateRange?.from) {
+      return 'Pick a date range';
+    }
+
+    if (!dateRange.to) {
+      return format(dateRange.from, 'PP');
+    }
+
+    return `${format(dateRange.from, 'PP')} - ${format(dateRange.to, 'PP')}`;
+  }, [dateRange]);
+
   return (
-    <div data-ui="global-date-filter" className="flex items-center gap-2">
-      <div className="flex gap-1 items-center bg-muted/50 p-1 rounded-lg border border-border">
-        {PRESETS.map(preset => {
-          const isActive = isPresetActive(preset);
-          return (
-            <Button
-              key={preset.label}
-              variant="ghost"
-              size="sm"
-              onClick={() => handleSetDateRange(preset.getValue())}
-              className={cn(
-                'h-7 px-3 text-xs font-medium rounded-md transition-all hover:bg-primary/10',
-                isActive
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground  hover:text-foreground'
-              )}
-            >
-              {preset.label}
-            </Button>
-          );
-        })}
+    <div data-ui="global-date-filter" className="flex items-end gap-6">
+      <div className="flex flex-col gap-1">
+        <span className="text-xs text-primary">{formatDateRange}</span>
+
+        <div className="flex gap-3 bg-primary rounded-md p-1">
+          {PRESETS.map(preset => {
+            const isActive = isPresetActive(preset);
+            return (
+              <div
+                key={preset.label}
+                onClick={() => handleSetDateRange(preset.getValue())}
+                className={cn(
+                  'text-xs bg-primary px-3 py-2 rounded-md cursor-pointer hover:bg-foreground hover:text-primary',
+                  isActive && 'bg-neutral-white text-primary',
+                  !isActive && 'text-neutral-white'
+                )}
+              >
+                {preset.label}
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div className="w-px h-8 bg-border mx-1" />
+
+
       <DateRangePicker dateRange={dateRange} setDateRange={handleSetDateRange} />
     </div>
   );
