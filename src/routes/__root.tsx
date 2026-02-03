@@ -51,7 +51,7 @@ function RootComponent() {
         </RootDocument>
       </ThemeProvider>
       {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
       )}
     </QueryClientProvider>
   );

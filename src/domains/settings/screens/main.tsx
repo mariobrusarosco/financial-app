@@ -5,6 +5,7 @@ import { ProfileCard } from '@/domains/settings/components/profile-card';
 import { AccountActionsCard } from '@/domains/settings/components/account-actions-card';
 import { PreferencesCard } from '@/domains/settings/components/preferences-card';
 import { VendorsCard } from '@/domains/settings/components/vendors-card';
+import { DataTransferCard } from '@/domains/settings/components/data-transfer-card';
 
 export const SettingsMainScreen = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ export const SettingsMainScreen = () => {
 
       <div className="space-y-6">
         <ProfileCard user={user} />
+        <DataTransferCard />
         <AccountActionsCard />
         <PreferencesCard />
       </div>
