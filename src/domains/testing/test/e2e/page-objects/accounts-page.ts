@@ -17,8 +17,8 @@ export class AccountsPage {
   // Actions - Account List
   async clickAddAccountButton() {
     await this.page.getByTestId('accounts-add-button').click();
-    // Wait for drawer/modal to open
-    await this.page.waitForTimeout(500);
+    // Wait for drawer/modal to open - wait for form to be visible
+    await this.page.getByTestId('account-create-form').waitFor({ state: 'visible', timeout: 5000 });
   }
 
   async getAccountCards() {
@@ -43,15 +43,16 @@ export class AccountsPage {
 
   async selectAccountType(type: 'cash' | 'savings' | 'credit' | 'investment') {
     await this.page.getByTestId('account-type-select').click();
-    await this.page.waitForTimeout(500);
-    // Radix UI Select - click the visible option by text
+    // Wait for dropdown options to appear
     const typeMap = {
       cash: 'Cash',
       savings: 'Savings',
       credit: 'Credit Card',
       investment: 'Investment',
     };
-    await this.page.locator(`[role="option"]:has-text("${typeMap[type]}")`).last().click();
+    const option = this.page.getByRole('option', { name: typeMap[type] }).last();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
   }
 
   async fillInitialBalance(balance: number) {
@@ -64,15 +65,18 @@ export class AccountsPage {
 
   async selectBroker(brokerName: string) {
     await this.page.getByTestId('account-broker-select').click();
-    await this.page.waitForTimeout(500);
-    // Find option that contains the broker name
-    await this.page.locator(`[role="option"]:has-text("${brokerName}")`).last().click();
+    // Wait for dropdown options to appear and click
+    const option = this.page.getByRole('option', { name: brokerName }).last();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
   }
 
   async selectCurrency(currency: 'BRL' | 'USD') {
     await this.page.getByTestId('account-currency-select').click();
-    await this.page.waitForTimeout(500);
-    await this.page.locator(`[role="option"]:has-text("${currency}")`).last().click();
+    // Wait for dropdown options to appear and click
+    const option = this.page.getByRole('option', { name: currency }).last();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
   }
 
   async submitCreateAccount() {
@@ -109,8 +113,8 @@ export class AccountsPage {
 
     await this.submitCreateAccount();
 
-    // Wait for account to be created and drawer to close
-    await this.page.waitForTimeout(2000);
+    // Wait for account to be created - accounts list should appear
+    await this.page.getByTestId('accounts-list').waitFor({ state: 'visible', timeout: 10000 });
   }
 
   // Assertions helpers

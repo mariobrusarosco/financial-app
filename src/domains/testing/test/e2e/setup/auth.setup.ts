@@ -14,12 +14,15 @@ setup('authenticate', async ({ page }) => {
   // Navigate to login page
   await loginPage.goto();
 
+  // Check "Remember Me" so tokens are saved to localStorage (not sessionStorage)
+  await page.getByRole('checkbox', { name: 'Remember me' }).check();
+
   // Perform login
   await loginPage.login();
 
   // Verify successful login - should be on dashboard
   await expect(page).toHaveURL(/dashboard/);
 
-  // Save authenticated state
+  // Save authenticated state (localStorage will now have tokens!)
   await page.context().storageState({ path: authFile });
 });

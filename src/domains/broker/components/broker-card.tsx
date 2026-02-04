@@ -25,15 +25,17 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
   return (
     <div
       className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
+      data-testid="broker-card"
       data-ui="broker-card"
     >
       <div className="flex items-start justify-between px-6 py-5">
-        <h3 className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
+        <h3 data-testid="broker-card-name" className="text-xl truncate overflow-hidden text-ellipsis whitespace-nowrap">
           {broker.name}
         </h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
+              data-testid="broker-card-menu"
               style={{ backgroundColor: brokerPrimaryColor }}
               className="text-neutral-white rounded-lg p-2"
               onClick={e => e.stopPropagation()}
@@ -44,6 +46,7 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem
+              data-testid="broker-delete-button"
               onClick={e => {
                 e.stopPropagation();
                 handleDelete();
@@ -63,7 +66,7 @@ const BrokerCard = ({ broker }: BrokerCardProps) => {
       </div>
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerPrimaryColor }}>
-        <p className="font-light text-neutral-white text-base tracking-tight line-clamp-2">
+        <p data-testid="broker-card-description" className="font-light text-neutral-white text-base tracking-tight line-clamp-2">
           {broker.description || 'Investment Broker'}
         </p>
       </div>

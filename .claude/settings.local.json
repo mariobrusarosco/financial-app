@@ -61,7 +61,17 @@
       "Bash(yarn format:check:*)",
       "Bash(yarn lint:fix:*)",
       "Bash(repomix:*)",
-      "Bash(~/.bun/bin/bun init:*)"
+      "Bash(~/.bun/bin/bun init:*)",
+      "Bash(tree:*)",
+      "Bash(yarn playwright:*)",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_close",
+      "Bash(yarn test:e2e:*)",
+      "Bash(PLAYWRIGHT_BASE_URL=https://better-call-buffet.mario.productions yarn test:e2e:*)",
+      "mcp__playwright__browser_run_code",
+      "WebFetch(domain:playwright.dev)",
+      "WebFetch(domain:www.checklyhq.com)",
+      "WebFetch(domain:momentic.ai)"
     ],
     "deny": [],
     "additionalDirectories": [

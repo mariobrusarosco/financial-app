@@ -9,11 +9,12 @@ export const AccountMainScreen = () => {
   const { isLoading, error } = useGetAllActiveAccounts();
 
   return (
-    <div data-ui="accounts-main-screen" className="py-4 space-y-5 rounded-3xl h-full">
+    <div data-ui="accounts-main-screen" className="h-full p-8">
       <PageHeader
         title="Accounts"
         icon={PiggyBank}
-        onAdd={openAccountCreate}
+        iconColor="bg-teal-700"
+        onAdd={() => void openAccountCreate()}
         showAddButton={!isLoading && !error}
       />
 

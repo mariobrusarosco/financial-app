@@ -1,0 +1,26 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:2000",
+      "localStorage": [
+        {
+          "name": "auth_refresh_token",
+          "value": "BxXGqtqUN-M5NcI3o-Y8-8qf8vTAAJq6YgkDx5jH2ksC1y8D5g5qywfxyKkZ75Ed72e-R22s6M0l3Q48pEfw4g"
+        },
+        {
+          "name": "auth_remember_me",
+          "value": "true"
+        },
+        {
+          "name": "auth_access_token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZDQ3NDcwMS0wODg2LTQ3M2UtYjQ5NS03ZmU5YjM4NGFjNDAiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3NzAyMTI1MzQsImlhdCI6MTc3MDIxMDczNCwidHlwZSI6ImFjY2VzcyJ9.m9lM51idgnU0jn0CDwfb5hghSPT2wPS7H_Em_iFook0"
+        },
+        {
+          "name": "auth_user",
+          "value": "{\"id\":\"6d474701-0886-473e-b495-7fe9b384ac40\",\"email\":\"user@example.com\",\"full_name\":\"Mario Almeida\",\"is_active\":true}"
+        }
+      ]
+    }
+  ]
+}

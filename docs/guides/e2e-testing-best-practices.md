@@ -74,7 +74,205 @@ test('should load accounts', async ({ page }) => {
 
 ---
 
-## 🎯 #2 Rule: Use `data-testid` - Don't Struggle with CSS Selectors
+## 🔄 #2 CRITICAL Rule: Use Auto-Retrying Assertions, NOT Manual Checks
+
+### ❌ The Race Condition Anti-Pattern
+
+```typescript
+// ❌ WRONG - Checking state at ONE moment in time creates race conditions
+const isLoading = await page.getByTestId('loading').isVisible();
+if (isLoading) {
+  await expect(page.getByTestId('loading')).not.toBeVisible();
+}
+
+// ❌ WRONG - Manual assertion doesn't wait
+expect(await page.getByTestId('content').isVisible()).toBe(true);
+
+// ❌ WRONG - Checking then waiting
+const hasError = await page.getByTestId('error').isVisible();
+if (hasError) {
+  // Handle error
+}
+```
+
+**Why this is wrong:**
+- **Race condition:** State can change between check and action
+- **No retry:** Assertion happens instantly, doesn't wait
+- **Flaky:** Works sometimes, fails randomly
+- **Unreliable:** Element state can change microseconds after check
+
+### ✅ The Correct Approach: Web-First Assertions
+
+```typescript
+// ✅ CORRECT - Auto-waits and retries until condition met (5s default)
+await expect(page.getByTestId('content')).toBeVisible();
+
+// ✅ CORRECT - Waits for loading to disappear
+await expect(page.getByTestId('loading')).toBeHidden();
+
+// ✅ CORRECT - Negation also auto-retries
+await expect(page.getByTestId('loading')).not.toBeVisible();
+
+// ✅ CORRECT - Custom timeout if needed
+await expect(page.getByTestId('slow-content')).toBeVisible({ timeout: 10000 });
+```
+
+**Why this works:**
+- ✅ **Auto-retry:** Playwright checks repeatedly until condition is met
+- ✅ **Built-in timeout:** Default 5s, configurable per assertion
+- ✅ **No race conditions:** Single atomic operation
+- ✅ **Reliable:** Works consistently across all environments
+
+---
+
+### 📖 Understanding Visibility Assertions
+
+Playwright provides three main visibility assertions:
+
+#### `toBeVisible()`
+- Element is **attached to DOM AND visible**
+- Best for: Confirming content appears to users
+- Example: `await expect(page.getByTestId('success-message')).toBeVisible();`
+
+#### `toBeHidden()`
+- Element is **not in DOM OR has CSS hiding** (display: none, visibility: hidden)
+- Best for: Confirming content is removed or hidden
+- Example: `await expect(page.getByTestId('modal')).toBeHidden();`
+
+#### `not.toBeVisible()`
+- **Negation** of toBeVisible - functionally similar to toBeHidden()
+- Best for: More explicit "should not be visible" assertions
+- Example: `await expect(page.getByTestId('error')).not.toBeVisible();`
+
+---
+
+### 🎯 Handling Loading States - The RIGHT Way
+
+```typescript
+// ❌ WRONG - Race condition checking if loading exists
+const loadingIndicator = page.getByTestId('loading');
+const isLoading = await loadingIndicator.isVisible();
+if (isLoading) {
+  await expect(loadingIndicator).not.toBeVisible({ timeout: 10000 });
+}
+
+// ✅ CORRECT - Just wait for final state (loading disappears automatically)
+await expect(page.getByTestId('content')).toBeVisible({ timeout: 10000 });
+
+// ✅ ALSO CORRECT - Explicitly wait for loader to hide
+await expect(page.getByTestId('loading')).toBeHidden({ timeout: 10000 });
+
+// ✅ BEST - Wait for final state you care about
+await expect(page.getByTestId('data-loaded')).toBeVisible();
+```
+
+---
+
+### 🔀 Handling Multiple Possible States
+
+#### **Priority 1: Wait for Loading UI to Disappear (PREFERRED)**
+
+If your page has a loading indicator, **always wait for it to disappear first**:
+
+```typescript
+// ✅ BEST - Wait for loader to hide, then content is guaranteed to be ready
+await expect(page.getByTestId('accounts-loading')).toBeHidden({ timeout: 10000 });
+
+// Now check the final state
+const hasAccounts = await page.getByTestId('accounts-list').isVisible();
+const isEmpty = await page.getByTestId('accounts-empty').isVisible();
+```
+
+**Why this is better:**
+- ✅ More semantic - "wait for loading to finish"
+- ✅ Guarantees content is ready
+- ✅ Clearer intent in test code
+- ✅ Works even if UI changes between list/empty/error states
+
+---
+
+#### **Priority 2: Wait for Final State (When No Loader)**
+
+**Only use this if you don't have a loading indicator:**
+
+```typescript
+// ✅ CORRECT - Wait for one of multiple possible final states
+await page.waitForSelector('[data-testid="accounts-list"], [data-testid="accounts-empty"]', {
+  timeout: 10000,
+});
+
+// Then check which state appeared
+const hasAccounts = await page.getByTestId('accounts-list').isVisible();
+const isEmpty = await page.getByTestId('accounts-empty').isVisible();
+
+if (isEmpty) {
+  test.skip(); // Skip test if no data
+}
+```
+
+**When to use:**
+- ❌ **DON'T use if you have a loader** - Use Priority 1 instead!
+- ✅ **Only use when no loading indicator exists**
+- ✅ Good for pages that instantly render final state
+
+---
+
+#### **Decision Tree**
+
+```
+Does the page have a loading indicator?
+│
+├─ YES → Wait for loader to disappear (Priority 1)
+│         await expect(page.getByTestId('loader')).toBeHidden();
+│
+└─ NO  → Wait for one of the final states (Priority 2)
+          await page.waitForSelector('[data-testid="list"], [data-testid="empty"]');
+```
+
+**Important:** Use `waitForSelector` with multiple selectors for "either/or" scenarios, NOT `Promise.race()` with assertions.
+
+---
+
+### 📋 Quick Reference: Web-First vs Manual
+
+| ❌ Manual (DON'T DO THIS) | ✅ Web-First (DO THIS) |
+|---|---|
+| `expect(await page.getByTestId('x').isVisible()).toBe(true)` | `await expect(page.getByTestId('x')).toBeVisible()` |
+| `expect(await page.getByTestId('x').isVisible()).toBe(false)` | `await expect(page.getByTestId('x')).toBeHidden()` |
+| `const visible = await el.isVisible(); if (visible) {...}` | `await expect(el).toBeVisible();` |
+| `await page.waitForTimeout(2000); await el.click();` | `await expect(el).toBeVisible(); await el.click();` |
+
+---
+
+### 🚨 Common Mistakes to Avoid
+
+```typescript
+// ❌ MISTAKE 1: Checking before waiting
+const isVisible = await page.getByTestId('content').isVisible();
+expect(isVisible).toBe(true);
+
+// ✅ FIX: Use web-first assertion
+await expect(page.getByTestId('content')).toBeVisible();
+
+// ❌ MISTAKE 2: Silent error swallowing
+await expect(page.getByTestId('loading')).not.toBeVisible().catch(() => {});
+
+// ✅ FIX: Let it fail if state is wrong, or handle explicitly
+await expect(page.getByTestId('loading')).not.toBeVisible();
+
+// ❌ MISTAKE 3: Checking if loading then waiting
+const loading = await page.getByTestId('loader').isVisible();
+if (loading) {
+  await expect(page.getByTestId('loader')).not.toBeVisible();
+}
+
+// ✅ FIX: Just wait for content to appear
+await expect(page.getByTestId('content')).toBeVisible();
+```
+
+---
+
+## 🎯 #3 Rule: Use `data-testid` - Don't Struggle with CSS Selectors
 
 ### ⚠️ The Problem with CSS Selectors
 

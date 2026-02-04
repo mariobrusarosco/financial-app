@@ -28,13 +28,9 @@ export class LoginPage {
     const passwordInput = this.page.getByTestId('login-password-input');
     await passwordInput.fill(loginPassword);
 
-    // Wait for submit button to be enabled (form validation passes)
+    // Click submit button - Playwright auto-waits for it to be visible, enabled, and actionable
     const submitButton = this.page.getByTestId('login-submit-button');
-
-    // Force click even if disabled (Playwright can click disabled buttons with force: true)
-    // Or wait for it to be enabled
-    await this.page.waitForTimeout(1000); // Give form more time to validate
-    await submitButton.click({ force: true });
+    await submitButton.click();
 
     // Wait for navigation to dashboard
     await this.page.waitForURL(/dashboard/, { timeout: 10000 });
@@ -47,11 +43,9 @@ export class LoginPage {
     const passwordInput = this.page.getByTestId('login-password-input');
     await passwordInput.fill(password);
 
-    // Wait for form validation to complete
-    await this.page.waitForTimeout(1000);
-
+    // Click submit - Playwright auto-waits for button to be actionable
     const submitButton = this.page.getByTestId('login-submit-button');
-    await submitButton.click({ force: true });
+    await submitButton.click();
   }
 
   // Assertions helpers
