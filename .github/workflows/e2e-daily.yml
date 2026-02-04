@@ -1,0 +1,264 @@
+name: Daily E2E Tests
+
+on:
+  schedule:
+    # Run at 2 AM UTC every day (adjust based on your timezone)
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - smoke
+          - critical
+          - full
+
+env:
+  # Node and Yarn versions
+  NODE_VERSION: '22.17.0'
+
+  # Playwright configuration
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/pw-browsers
+
+  # Test environment
+  PLAYWRIGHT_BASE_URL: ${{ secrets.E2E_BASE_URL || 'https://better-call-buffet.mario.productions' }}
+  VITE_API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://api-better-call-buffet.mariobrusarosco.com/api/v1' }}
+
+  # Test credentials
+  E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL || 'user@example.com' }}
+  E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD || 'password123' }}
+
+jobs:
+  e2e-tests:
+    name: E2E Tests - Main Branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Run tests in parallel across different browsers
+        browser: [chromium]
+        # Add more browsers if needed: [chromium, firefox, webkit]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Always test main branch for daily runs
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@3.8.7 --activate
+
+      - name: 🔍 Get yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: 📂 Cache yarn dependencies
+        uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🎭 Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: 🎭 Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps ${{ matrix.browser }}
+
+      - name: 🎭 Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps ${{ matrix.browser }}
+
+      - name: 🔨 Build application
+        run: yarn build
+        env:
+          NODE_ENV: production
+
+      - name: 🧪 Run E2E Tests
+        id: test
+        run: |
+          # Determine which test suite to run
+          SUITE="${{ github.event.inputs.test_suite || 'smoke' }}"
+
+          case $SUITE in
+            smoke)
+              echo "Running smoke tests only..."
+              yarn test:e2e:smoke --project=${{ matrix.browser }}
+              ;;
+            critical)
+              echo "Running critical tests only..."
+              yarn test:e2e:critical --project=${{ matrix.browser }}
+              ;;
+            full|all)
+              echo "Running all E2E tests..."
+              yarn test:e2e --project=${{ matrix.browser }}
+              ;;
+            *)
+              echo "Running default smoke tests..."
+              yarn test:e2e:smoke --project=${{ matrix.browser }}
+              ;;
+          esac
+        env:
+          CI: true
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+      - name: 📸 Upload test screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots-${{ matrix.browser }}
+          path: test-results/**/*.png
+          retention-days: 7
+
+      - name: 🎬 Upload test videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-videos-${{ matrix.browser }}
+          path: test-results/**/*.webm
+          retention-days: 7
+
+      - name: 📈 Generate test report
+        if: always()
+        run: |
+          # Generate HTML report
+          yarn playwright show-report --host 0.0.0.0 --port 9323 &
+          sleep 5
+          # Kill the server after generating
+          kill %1 || true
+
+      - name: 📤 Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 14
+
+  notify:
+    name: Notify Results
+    needs: e2e-tests
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📊 Test Status Summary
+        run: |
+          if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
+            echo "✅ Daily E2E tests passed successfully!"
+            echo "STATUS=success" >> $GITHUB_ENV
+            echo "COLOR=28a745" >> $GITHUB_ENV
+            echo "EMOJI=✅" >> $GITHUB_ENV
+          else
+            echo "❌ Daily E2E tests failed!"
+            echo "STATUS=failure" >> $GITHUB_ENV
+            echo "COLOR=dc3545" >> $GITHUB_ENV
+            echo "EMOJI=❌" >> $GITHUB_ENV
+          fi
+
+      - name: 💬 Create GitHub Issue on Failure
+        if: needs.e2e-tests.result == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const date = new Date().toISOString().split('T')[0];
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // Check if an issue already exists for today
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'e2e-failure,automated',
+              state: 'open'
+            });
+
+            const todayIssue = issues.data.find(issue =>
+              issue.title.includes(date)
+            );
+
+            if (!todayIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `❌ E2E Tests Failed - ${date}`,
+                body: `## Daily E2E Test Failure Report
+
+            The daily E2E tests have failed on the main branch.
+
+            **Date:** ${date}
+            **Branch:** main
+            **Workflow Run:** [View Details](${runUrl})
+
+            ### Required Actions
+            - [ ] Review test failure logs
+            - [ ] Identify root cause
+            - [ ] Fix failing tests or application issues
+            - [ ] Re-run tests to confirm fix
+
+            ### Test Artifacts
+            - Test results and screenshots are available in the [workflow run artifacts](${runUrl})
+
+            cc: @mariobrusarosco`,
+                labels: ['e2e-failure', 'automated', 'high-priority']
+              });
+            }
+
+      # Optional: Add Slack/Discord/Email notifications
+      # Uncomment and configure based on your notification preferences
+
+      # - name: 📧 Send Slack Notification
+      #   if: always()
+      #   uses: slackapi/slack-github-action@v1
+      #   with:
+      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     payload: |
+      #       {
+      #         "text": "${{ env.EMOJI }} Daily E2E Tests: ${{ env.STATUS }}",
+      #         "blocks": [
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "mrkdwn",
+      #               "text": "*Daily E2E Test Results*\nStatus: `${{ env.STATUS }}`\nBranch: `main`\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+      #             }
+      #           }
+      #         ]
+      #       }
