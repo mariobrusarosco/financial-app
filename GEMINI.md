@@ -19,12 +19,11 @@ strictly forbidden.
 5 - **Context Awareness Adherence:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
 current codebase.
 6 - Planner Mode Adherence:
-
 - Breakdown the feature into Phases and provide a clear plan of action.
 - Breakdown Phases into small tasks and provide a clear plan of action.
 - Consider break tasks into subtasks.
 - Create a `.md` file for the plan. Store in the `/docs/plans` folder.
-- Fprmat
+- Format
 
 ```
 # Phase 1
@@ -96,6 +95,7 @@ The project adheres to a strict set of development conventions to maintain code 
 
 ### Coding Style
 
+- **File Imports**: Use '/@' prefix. Always use absolute paths.
 - **File Naming**: All files should be named using `kebab-case`.
 - **Type Imports**: Use the `type` keyword for all type imports.
 - **API Type Naming**: Follow the naming convention outlined in the `README.md` and `docs/decisions/014-coding-standards.md` for API-related types.

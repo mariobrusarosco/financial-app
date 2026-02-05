@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+### Core Mandates
+
+1 - **Strict Scope Adherence:** Do not fix unrelated bugs, refactor code, or change naming conventions outside the explicit scope of the user's request, even if you find errors. If you
+discover critical issues that block the requested task, report them to the user and ask for permission before proceeding
+2 - **Strict Scope Adherence:** Focus exclusively on the user's request. Do not fix unrelated bugs, refactor code, or change naming conventions unless explicitly asked. If a deviation
+adds significant value or is critical, ask for permission first.
+3 - **Think Before You Act Adherence:** DO NOT RUSH. Analyze the request, reason through the solution, and plan your steps. If a request is vague, ask for clarification. Only proceed with
+implementation when the path is clear and agreed upon.
+4 - **Verify Assumptions Adherence:** Never guess APIs or library functionality. Always read documentation or search for examples before writing code. "Sloppy solutions" based on assumptions are
+strictly forbidden.
+5 - **Context Awareness Adherence:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
+current codebase.
+
+
 ## Development Commands
 
 ### Core Commands
@@ -74,13 +88,23 @@ domain-name/
 └── index.ts          # Public exports
 ```
 
-### File Naming Conventions
+### Coding Style
 
-- Use **kebab-case** for all files
-- Components: `component-name.tsx`
-- Hooks: `use-hook-name.ts`
-- Types: `types-and-interfaces.ts`
-- Always import types with `type` keyword: `import type { MyType } from './types'`
+- **File Imports**: Use '/@' prefix. Always use absolute paths.
+- **File Naming**: All files should be named using `kebab-case`.
+- **Type Imports**: Always import types with `type` keyword: `import type { MyType } from './types'
+- **API Type Naming**: Follow the naming convention outlined in the `README.md` and `docs/decisions/014-coding-standards.md` for API-related types.
+- **Formatting**: The project uses Prettier for automatic code formatting.
+- **Hooks**: `use-hook-name.ts`
+- **Types**: `types-and-interfaces.ts`
+
+### Path Aliases (tsconfig.json)
+
+- `@/*` → `src/*`
+- `@domains/*` → `src/domains/*`
+- `@ui-system/*` → `src/domains/ui-system/*`
+- `@global/*` → `src/domains/global/*`
+
 
 ### API Type Naming Convention
 
@@ -103,12 +127,6 @@ For consistent API integration, follow this pattern:
 - `I_TransactionsResponse` - Transaction list from API
 - `I_TransactionsPayload` - Transaction list to API (bulk operations)
 
-### Path Aliases (tsconfig.json)
-
-- `@/*` → `src/*`
-- `@domains/*` → `src/domains/*`
-- `@ui-system/*` → `src/domains/ui-system/*`
-- `@global/*` → `src/domains/global/*`
 
 ### API Integration Pattern
 
