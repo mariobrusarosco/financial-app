@@ -163,29 +163,27 @@ export const Navigation = () => {
     <>
       <nav
         data-ui="app-navigation"
-        className="hidden md:flex md:flex-col md:justify-center md:items-center bg-foreground rounded-r-3xl font-sans
-        text-primary absolute left-0 top-8 h-full"
+        className="h-full grid place-content-center gap-6 bg-foreground p-3 font-sans
+        text-primary"
       >
-        <nav className="flex flex-col px-2 h-fit gap-6">
-          {navigationItems.map(item => {
-            const Icon = item.icon;
-            const isActive = isActiveRoute(item.href);
+        {navigationItems.map(item => {
+          const Icon = item.icon;
+          const isActive = isActiveRoute(item.href);
 
-            return (
-              <Link
-                key={item.href}
-                to={item.href}
-                title={item.label}
-                className={cn(
-                  'group flex items-center justify-center p-3 rounded-lg transition-colors',
-                  isActive ? 'bg-neutral-white/10' : 'hover:bg-neutral-white/10'
-                )}
-              >
-                <Icon className="h-5 w-5" />
-              </Link>
-            );
-          })}
-        </nav>
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              title={item.label}
+              className={cn(
+                'group flex items-center justify-center p-3 rounded-lg transition-colors',
+                isActive ? 'bg-neutral-white/10' : 'hover:bg-neutral-white/10'
+              )}
+            >
+              <Icon className="h-5 w-5" />
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="md:hidden">

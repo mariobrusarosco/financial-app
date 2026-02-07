@@ -63,7 +63,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="h-screen">
+      <body className="h-screen w-full">
         {children}
         <Scripts />
       </body>

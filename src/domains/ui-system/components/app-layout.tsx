@@ -13,11 +13,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const today = new Date();
 
   return (
-    <div data-testid="app" className="bg-background pl-14 pt-8 h-full flex relative">
+    <div data-testid="app" className="flex w-full h-full pt-8">
       <Navigation />
 
-      <main data-ui="app-container" className="flex-1 flex flex-col min-h-0">
-        <div className="flex justify-between items-end bg-section-background p-8">
+      <main data-ui="main-content" className="flex flex-col h-full py-6 px-8 bg-section-background">
+        <div className="flex justify-between items-end ">
           <div data-testid="user-greeting" className="flex flex-col items-start">
             <p className="text-xl font-light text-muted-foreground">Hello,</p>
             <p className="text uppercase text-primary">{user?.full_name || 'User'}</p>
@@ -32,6 +32,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
           <GlobalDateFilter />
         </div>
+
+        <hr className="border-b border-primary/20 w-full my-6" />
+
         <div className="flex-1 overflow-auto">{children}</div>
       </main>
     </div>
