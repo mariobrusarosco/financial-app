@@ -48,7 +48,7 @@ const CreateInvestment = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Investment Name:
                   </label>
                   <Input
@@ -76,7 +76,7 @@ const CreateInvestment = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Broker:
                   </label>
                   <Select
@@ -106,7 +106,7 @@ const CreateInvestment = () => {
           <form.Field name="description">
             {field => (
               <div className="space-y-2">
-                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                <label htmlFor={field.name} className="text-sm font-medium text-primary">
                   Description:
                 </label>
                 <Textarea

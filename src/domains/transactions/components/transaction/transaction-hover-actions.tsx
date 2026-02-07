@@ -48,7 +48,7 @@ export const TransactionHoverActions = ({
               handleSelection();
             }}
             onClick={e => e.stopPropagation()}
-            className="text-foreground focus:ring-foreground border-primary "
+            className="text-primary focus:ring-foreground border-primary "
           />
         </div>
       )}

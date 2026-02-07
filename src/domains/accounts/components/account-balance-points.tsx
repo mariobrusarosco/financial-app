@@ -145,13 +145,13 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
                   formatter={(value) => (
                     <div className="flex items-center justify-between gap-8">
                       <span className="text-muted-foreground">Balance</span>
-                      <span className="font-mono font-semibold text-foreground">
+                      <span className="font-mono font-semibold text-primary">
                         {formatCurrencyAmount(value as number, { locale: 'pt-BR', currency: 'BRL' })}
                       </span>
                     </div>
                   )}
                   labelFormatter={label => (
-                    <div className="font-medium text-foreground mb-1">{label}</div>
+                    <div className="font-medium text-primary mb-1">{label}</div>
                   )}
                 />
               }

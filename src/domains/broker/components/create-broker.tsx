@@ -38,7 +38,7 @@ const CreateBroker = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Broker Name:
                   </label>
                   <Input
@@ -61,7 +61,7 @@ const CreateBroker = () => {
             <form.Field name="logo">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Broker Logo URL:
                   </label>
                   <Input
@@ -81,7 +81,7 @@ const CreateBroker = () => {
           <form.Field name="description">
             {field => (
               <div className="space-y-2">
-                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                <label htmlFor={field.name} className="text-sm font-medium text-primary">
                   Description:
                 </label>
                 <Input
@@ -108,7 +108,7 @@ const CreateBroker = () => {
               {field => (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="color1" className="text-sm font-medium text-foreground">
+                    <label htmlFor="color1" className="text-sm font-medium text-primary">
                       Primary Color:
                     </label>
                     <Input
@@ -127,7 +127,7 @@ const CreateBroker = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="color2" className="text-sm font-medium text-foreground">
+                    <label htmlFor="color2" className="text-sm font-medium text-primary">
                       Secondary Color:
                     </label>
                     <Input

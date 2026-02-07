@@ -25,7 +25,7 @@ function SignupPage() {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
       <div className="mb-8 text-center">
         <img src="/wb.png" alt="Better Call Buffet" className="w-12 h-12 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-foreground">Better Call Buffet</h1>
+        <h1 className="text-3xl font-bold text-primary">Better Call Buffet</h1>
         <p className="text-muted-foreground mt-2">Start your financial journey today</p>
       </div>
 

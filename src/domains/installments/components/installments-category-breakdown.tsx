@@ -33,7 +33,7 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
   };
 
   return (
-    <div 
+    <div
       data-ui="installments-category-breakdown-section"
       className="bg-section-background rounded-3xl p-6"
     >
@@ -44,7 +44,7 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
             Distribution of outstanding debt by spending category.
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="flex-1 flex flex-col md:flex-row items-center gap-6">
           <div className="w-full md:w-1/2 h-[250px] relative">
             <ResponsiveContainer width="100%" height="100%">
@@ -81,11 +81,11 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
               {chartData.map((item, index) => (
                 <div key={item.name} className="flex items-center justify-between text-sm group hover:bg-muted/50 p-1.5 rounded-md transition-colors">
                   <div className="flex items-center gap-2 overflow-hidden">
-                    <div 
-                      className="w-3 h-3 rounded-full flex-shrink-0" 
+                    <div
+                      className="w-3 h-3 rounded-full flex-shrink-0"
                       style={{ backgroundColor: colors[index] }}
                     />
-                    <span className="truncate font-medium text-foreground/80 group-hover:text-foreground transition-colors">
+                    <span className="truncate font-medium text-primary/80 group-hover:text-primary transition-colors">
                       {item.name}
                     </span>
                   </div>

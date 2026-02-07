@@ -60,7 +60,7 @@ const CreateInvestmentMovement = ({ onAddMovement }: CreateInvestmentMovementPro
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Investment:
                   </label>
                   <Select
@@ -94,7 +94,7 @@ const CreateInvestmentMovement = ({ onAddMovement }: CreateInvestmentMovementPro
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Date:
                   </label>
                   <Input
@@ -118,7 +118,7 @@ const CreateInvestmentMovement = ({ onAddMovement }: CreateInvestmentMovementPro
             <form.Field name="movement_type">
               {field => (
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-foreground">Movement Type:</label>
+                  <label className="text-sm font-medium text-primary">Movement Type:</label>
                   <RadioGroup
                     value={field.state.value}
                     onValueChange={value => field.handleChange(value as 'deposit' | 'withdrawal')}
@@ -153,7 +153,7 @@ const CreateInvestmentMovement = ({ onAddMovement }: CreateInvestmentMovementPro
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Amount:
                   </label>
                   <Input
@@ -179,7 +179,7 @@ const CreateInvestmentMovement = ({ onAddMovement }: CreateInvestmentMovementPro
           <form.Field name="description">
             {field => (
               <div className="space-y-2">
-                <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                <label htmlFor={field.name} className="text-sm font-medium text-primary">
                   Description:
                 </label>
                 <Textarea

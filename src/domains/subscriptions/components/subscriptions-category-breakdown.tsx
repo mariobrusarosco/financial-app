@@ -58,19 +58,19 @@ export const SubscriptionsCategoryBreakdown = ({
               <div className="w-full md:w-1/2 h-[250px] relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                                    <Pie
-                                      data={data}
-                                      cx="50%"
-                                      cy="50%"
-                                      innerRadius={60}
-                                      outerRadius={80}
-                                      paddingAngle={2}
-                                      dataKey="amount"
-                                    >
-                                      {data.map((_entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
-                                      ))}
-                                    </Pie>                    <Tooltip content={<CustomTooltip />} />
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey="amount"
+                    >
+                      {data.map((_entry, index) => (
+                        <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
+                      ))}
+                    </Pie>                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
                 {/* Center Text for Total */}
@@ -98,7 +98,7 @@ export const SubscriptionsCategoryBreakdown = ({
                           className="w-3 h-3 rounded-full flex-shrink-0"
                           style={{ backgroundColor: colors[index] }}
                         />
-                        <span className="truncate font-medium text-foreground/80 group-hover:text-foreground transition-colors">
+                        <span className="truncate font-medium text-primary/80 group-hover:text-primary transition-colors">
                           {item.name}
                         </span>
                       </div>

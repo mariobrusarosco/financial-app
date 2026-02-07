@@ -193,7 +193,7 @@ export const Navigation = () => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="ml-2 text-lg font-thin font-sans text-foreground">
+            <span className="ml-2 text-lg font-thin font-sans text-primary">
               Better Call Buffet
             </span>
           </Link>

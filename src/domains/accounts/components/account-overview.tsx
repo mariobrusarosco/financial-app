@@ -40,7 +40,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     <div data-ui="account-overview" className="grid grid-cols-3 gap-4">
       <Surface size="md">
         <div className="flex items-center justify-between">
-          <p className="text-foreground text-sm">Balance</p>
+          <p className="text-primary text-sm">Balance</p>
           <Button
             variant="ghost"
             size="sm"
@@ -61,14 +61,14 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
       </Surface>
 
       {/* <Surface size="md" className="">
-          <p className="text-foreground text-sm">Earnings</p>
+          <p className="text-primary text-sm">Earnings</p>
           <Currency className="text-xl font-bold" value={150} autoColor />
         </Surface>
 
         <Surface size="md" className="hover:bg-primary">
-          <p className="text-foreground text-sm">Spending</p>
+          <p className="text-primary text-sm">Spending</p>
           <Currency
-            className="text-foreground text-xl font-bold"
+            className="text-primary text-xl font-bold"
             value={0}
             currency={account?.currency}
           />

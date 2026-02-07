@@ -58,7 +58,7 @@ function ReactAriaSelect<T extends object>({
       className={cn('group flex flex-col gap-1', className)}
     >
       {label && (
-        <Label className="text-sm font-medium text-foreground cursor-default">{label}</Label>
+        <Label className="text-sm font-medium text-primary cursor-default">{label}</Label>
       )}
 
       <Button

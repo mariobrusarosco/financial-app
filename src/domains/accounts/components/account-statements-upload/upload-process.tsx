@@ -122,7 +122,7 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
                         <Currency
                           value={parseFloat(
                             statement.closing_balance?.replace(/[^\d,-]/g, '').replace(',', '.') ||
-                              '0'
+                            '0'
                           )}
                           autoColor
                           variant="default"
@@ -141,17 +141,17 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
                 <div className="flex gap-1 justify-between items-center flex-wrap">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground">Period</p>
-                    <p className="text-lg font-bold text-foreground">
+                    <p className="text-lg font-bold text-primary">
                       {statement.raw_statement?.period}
                     </p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground">Opening Balance</p>
-                    <p className="text-lg font-bold text-foreground">{statement.opening_balance}</p>
+                    <p className="text-lg font-bold text-primary">{statement.opening_balance}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground">Closing Balance</p>
-                    <p className="text-lg font-bold text-foreground">{statement.closing_balance}</p>
+                    <p className="text-lg font-bold text-primary">{statement.closing_balance}</p>
                   </div>
                 </div>
               </Card>

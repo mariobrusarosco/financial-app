@@ -28,15 +28,14 @@ export const PageHeader = ({
       </div>
 
       {showAddButton && onAdd && (
-        <div className="flex items-center gap-2">
-          <span className="">{addButtonLabel}</span>
+        <div className="flex items-center gap-2 text-primary">
           <Button
             data-testid={`${title.toLowerCase()}-add-button`}
             className="rounded-md w-"
             variant="default"
             onClick={() => void onAdd()}
           >
-            new account
+            Add account
           </Button>
         </div>
       )}

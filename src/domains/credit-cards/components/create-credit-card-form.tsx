@@ -65,7 +65,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Card Name:
                   </label>
                   <Input
@@ -91,7 +91,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Account:
                   </label>
                   {accountsLoading ? (
@@ -130,7 +130,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             <form.Field name="brand">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Card Brand:
                   </label>
                   <Select
@@ -168,7 +168,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Last Four Digits:
                   </label>
                   <Input
@@ -196,7 +196,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Credit Limit:
                   </label>
                   <Input
@@ -220,7 +220,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
             <form.Field name="due_date">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Due Date (Day of Month):
                   </label>
                   <Select

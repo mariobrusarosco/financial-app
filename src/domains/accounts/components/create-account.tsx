@@ -63,7 +63,7 @@ const CreateAccount = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Account Name:
                   </label>
                   <Input
@@ -86,7 +86,7 @@ const CreateAccount = () => {
             <form.Field name="type">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Account Type:
                   </label>
                   <Select
@@ -116,7 +116,7 @@ const CreateAccount = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Initial Balance:
                   </label>
                   <Input
@@ -144,7 +144,7 @@ const CreateAccount = () => {
             <form.Field name="description">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Description:
                   </label>
                   <Input
@@ -164,7 +164,7 @@ const CreateAccount = () => {
             <form.Field name="broker_id">
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Broker:
                   </label>
                   <Select
@@ -195,7 +195,7 @@ const CreateAccount = () => {
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Currency:
                   </label>
                   <Select

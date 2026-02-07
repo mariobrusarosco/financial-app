@@ -137,7 +137,7 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
               ? 'text-red-600 dark:text-red-400'
               : 'text-teal-600 dark:text-teal-400';
           }
-          return 'text-foreground';
+          return 'text-primary';
       }
     }, [color, isNegative, showSign, numericValue, autoColor]);
 

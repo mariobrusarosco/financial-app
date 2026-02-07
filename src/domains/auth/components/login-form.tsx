@@ -67,7 +67,7 @@ export const LoginForm = () => {
           >
             {field => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-foreground">
+                <Label htmlFor={field.name} className="text-primary">
                   Email
                 </Label>
                 <Input
@@ -100,7 +100,7 @@ export const LoginForm = () => {
           >
             {field => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-foreground">
+                <Label htmlFor={field.name} className="text-primary">
                   Password
                 </Label>
                 <div className="relative">
@@ -134,7 +134,7 @@ export const LoginForm = () => {
                 />
                 <Label
                   htmlFor="rememberMe"
-                  className="text-sm font-normal cursor-pointer text-foreground"
+                  className="text-sm font-normal cursor-pointer text-primary"
                 >
                   Remember me
                 </Label>
@@ -143,8 +143,8 @@ export const LoginForm = () => {
           </form.Field>
 
           <div className="text-sm bg-muted/50 border border-border/50 p-4 rounded-lg">
-            <p className="font-medium mb-2 text-foreground">Demo Credentials:</p>
-            <div className="space-y-1 font-mono text-xs text-foreground/70">
+            <p className="font-medium mb-2 text-primary">Demo Credentials:</p>
+            <div className="space-y-1 font-mono text-xs text-primary/70">
               <p>Email: user@example.com</p>
               <p>Password: password123</p>
             </div>

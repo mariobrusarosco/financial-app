@@ -9,14 +9,7 @@ export const DashboardIndexScreen = () => {
         </div> */}
 
         <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
-        <UpcomingSubscriptions />
+
       </div>
     </div>
   );

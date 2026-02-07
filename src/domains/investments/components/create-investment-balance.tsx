@@ -55,7 +55,7 @@ const CreateInvestmentBalance = ({ onAddBalance }: CreateInvestmentBalanceProps)
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Investment:
                   </label>
                   <Select
@@ -89,7 +89,7 @@ const CreateInvestmentBalance = ({ onAddBalance }: CreateInvestmentBalanceProps)
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Date:
                   </label>
                   <Input
@@ -119,7 +119,7 @@ const CreateInvestmentBalance = ({ onAddBalance }: CreateInvestmentBalanceProps)
             >
               {field => (
                 <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-foreground">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
                     Balance Amount:
                   </label>
                   <Input

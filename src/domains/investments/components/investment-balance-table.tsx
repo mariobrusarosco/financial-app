@@ -129,11 +129,11 @@ export const InvestmentBalanceTable = ({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b">
-                <TableHead className="font-semibold text-foreground">Date</TableHead>
-                <TableHead className="font-semibold text-foreground">Movement</TableHead>
-                <TableHead className="font-semibold text-foreground text-right">Balance</TableHead>
-                <TableHead className="font-semibold text-foreground text-right">Diff</TableHead>
-                <TableHead className="font-semibold text-foreground text-right">%</TableHead>
+                <TableHead className="font-semibold text-primary">Date</TableHead>
+                <TableHead className="font-semibold text-primary">Movement</TableHead>
+                <TableHead className="font-semibold text-primary text-right">Balance</TableHead>
+                <TableHead className="font-semibold text-primary text-right">Diff</TableHead>
+                <TableHead className="font-semibold text-primary text-right">%</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -12,7 +12,7 @@ export const CreateAccountDrawer = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 h-full">
+    <div className="p-6 space-y-6 h-full text-primary">
       {/* Row 1: Title and Action Button */}
       <div className="flex justify-between items-center">
         <DrawerHeader

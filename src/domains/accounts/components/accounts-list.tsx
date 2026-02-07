@@ -50,16 +50,16 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           to="/accounts/$slug"
           params={{ slug: account.id }}
           style={{ backgroundColor: brokerprimaryColor }}
-          className="text-neutral-white rounded-lg p-2"
+          className="text-primary rounded-lg p-2"
         >
           <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
 
       <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
-        <p data-testid="account-card-balance" className="font-light text-neutral-white text-2xl">
+        <p data-testid="account-card-balance" className="font-light text-primary text-2xl">
           {isLoadingBalancePoints ? (
-            <Loader2 className="w-7 h-7 animate-spin text-neutral-white transform-origin-center" />
+            <Loader2 className="w-7 h-7 animate-spin text-primary transform-origin-center" />
           ) : (
             formatCurrencyAmount(balancePoint?.balance ?? 0)
           )}
@@ -114,11 +114,12 @@ const AccountsList = () => {
   console.log({ groupedByType });
 
   return (
-    <div data-testid="accounts-list" className="flex gap-6">
+    <div data-testid="accounts-list" className="flex pt-15 gap-10">
       {Object.entries(groupedByType).map(([type, accounts]) => (
         <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
           <h2 className="text-2xl font-light text-primary mb-4 uppercase">{type}</h2>
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl p-6">
+
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl">
             {accounts.map(account => (
               <li key={account.id}>
                 <AccountCard account={account} />
