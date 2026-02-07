@@ -16,7 +16,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     <div data-testid="app" className="flex w-full h-full pt-8">
       <Navigation />
 
-      <main data-ui="main-content" className="flex flex-col h-full py-6 px-8 bg-section-background">
+      <main data-ui="main-content" className="flex-1 flex flex-col h-full py-6 px-8 bg-section-background">
         <div className="flex justify-between items-end ">
           <div data-testid="user-greeting" className="flex flex-col items-start">
             <p className="text-xl font-light text-muted-foreground">Hello,</p>

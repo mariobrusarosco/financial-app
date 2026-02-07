@@ -19,6 +19,7 @@ strictly forbidden.
 5 - **Context Awareness Adherence:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
 current codebase.
 6 - Planner Mode Adherence:
+
 - Breakdown the feature into Phases and provide a clear plan of action.
 - Breakdown Phases into small tasks and provide a clear plan of action.
 - Consider break tasks into subtasks.
@@ -47,12 +48,33 @@ current codebase.
 
 ```
 
-- Once you finish a task, ask user to review your work.
-- Wait for user's confirmation before proceeding to the next task.
+### Implementation Mode
+
+- Once you finish a task or subtask, ask user to review your work.
+- Wait for user's confirmation before proceeding to the next task or subtask.
 - Be patient and don't rush into fixes and implementations.
 - Be ready to do fixes.
 - Once confirmed by the user, mark the current sub-task or task as done.
 - If you need to do a fix, mark the current sub-task or task as in progress.
+
+Example:
+
+```
+You don't have to ask permission to everyhing. let me explain:
+
+You: "Can I start task 15.4.4?"
+me: "Yes"
+You:
+'....
+working on the task...
+....'
+You: "Finisish 15.4.4. Take a look and if it's good, I'll start 15.4.5"
+Me: "it's all good, proceed"
+You:
+'....
+working on the task...
+....'
+```
 
 ### Key Technologies
 
