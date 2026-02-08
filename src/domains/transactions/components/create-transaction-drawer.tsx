@@ -84,7 +84,7 @@ export const CreateTransactionDrawer = () => {
                         <div className="flex-1">
                           <p className="font-medium text-sm truncate">{transaction.description}</p>
                           <p className="text-sm text-muted-foreground">
-                            ${transaction.amount?.toFixed(2)} • {transaction.type}
+                            ${transaction.amount?.toFixed(2)} • {transaction.movement_type}
                           </p>
                           {category && (
                             <p className="text-xs text-muted-foreground flex items-center gap-1">

@@ -26,13 +26,18 @@ import {
 import { TransactionDatePicker } from './transaction-date-picker';
 import { HierarchicalCategorySelector } from './hierarchical-category-selector';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
+import { TransactionAmountField } from './transaction/transaction-amount-field';
+
+import { Button } from '@/domains/ui-system/components/button';
+import { Calculator as CalculatorIcon } from 'lucide-react';
+import { Calculator } from '@/domains/ui-system/components/calculator';
 
 const transactionSchema = z
   .object({
     description: z.string().min(1, 'Description is required'),
     amount: z.number().refine(val => val !== 0, 'Amount must not be 0'),
     date: z.string().min(1, 'Date is required'),
-    type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
+    movement_type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
     category: z.string().optional(),
     account_id: z.string().optional(),
     credit_card_id: z.string().optional(),
@@ -80,7 +85,7 @@ export const TransactionForm = ({
       description: initialValues?.description || '',
       amount: initialValues?.amount ? Number(initialValues.amount) : 0,
       date: initialValues?.date || new Date().toISOString().split('T')[0],
-      type: (initialValues?.type || 'expense') as T_TransactionType,
+      movement_type: (initialValues?.movement_type || 'expense') as T_TransactionType,
       category: initialValues?.category || '',
       account_id: initialValues?.account_id || '',
       credit_card_id: initialValues?.credit_card_id || '',
@@ -94,7 +99,7 @@ export const TransactionForm = ({
         description: value.description,
         amount: Number(value.amount),
         date: value.date,
-        type: value.type,
+        movement_type: value.movement_type,
         category: value.category || '',
         account_id:
           transactionSource === 'account' && value.account_id ? value.account_id : undefined,
@@ -191,21 +196,7 @@ export const TransactionForm = ({
           }}
         >
           {field => (
-            <div className="space-y-2 w-[150px]">
-              <Label htmlFor={field.name}>Amount</Label>
-              <Input
-                id={field.name}
-                type="number"
-                step="0.01"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
-                className={isEditMode ? 'text-sm' : ''}
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
-              )}
-            </div>
+            <TransactionAmountField field={field} isEditMode={isEditMode} />
           )}
         </form.Field>
 
@@ -232,9 +223,9 @@ export const TransactionForm = ({
 
       <div className="flex gap-4">
         <form.Field
-          name="type"
+          name="movement_type"
           validators={{
-            onChange: transactionSchema.shape.type,
+            onChange: transactionSchema.shape.movement_type,
           }}
         >
           {field => (

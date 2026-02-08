@@ -11,7 +11,7 @@ export interface I_TransactionPayload {
   vendor_id?: string;
   is_paid: boolean;
   ignored: boolean;
-  type: T_TransactionType;
+  movement_type: T_TransactionType;
   category: string;
 }
 

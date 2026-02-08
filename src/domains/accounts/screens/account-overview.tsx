@@ -33,7 +33,7 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
     <div className="space-y-6">
       <div
         data-ui="account-overview-screen"
-        className="grid grid-cols-[300px_1fr] justify-between gap-12"
+        className="grid grid-cols-[400px_1fr] justify-between gap-12"
       >
         <AccountBalancePoints slug={slug} transactionsQuery={transactionsQuery} />
         <AccountTransactionsList

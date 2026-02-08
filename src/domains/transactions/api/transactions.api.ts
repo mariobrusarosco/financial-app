@@ -83,7 +83,7 @@ export const transformFormToBulkRequest = (
     date: new Date(transaction.date).toISOString(),
     amount: transaction.amount || 0,
     description: transaction.description,
-    movement_type: transaction.type,
+    movement_type: transaction.movement_type,
     category: transaction.category || undefined,
   }));
 };

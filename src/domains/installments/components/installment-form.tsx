@@ -18,8 +18,8 @@ import type { I_CreateInstallmentPlanRequest } from '../types/types-and-interfac
 import type { UseForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { Button } from '@/domains/ui-system/components/button';
-import { Calculator } from 'lucide-react';
-import { CompactCalculator } from './compact-calculator';
+import { Calculator as CalculatorIcon } from 'lucide-react';
+import { Calculator } from '@/domains/ui-system/components/calculator';
 
 interface InstallmentFormProps {
   form: UseForm<I_CreateInstallmentPlanRequest>;
@@ -109,13 +109,13 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
                   onClick={() => setShowCalculator(!showCalculator)}
                   type="button"
                 >
-                  <Calculator className="w-3 h-3 mr-1" />
+                  <CalculatorIcon className="w-3 h-3 mr-1" />
                   {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
                 </Button>
               </div>
               {showCalculator && (
                 <div className="absolute z-50 mt-1 shadow-lg">
-                  <CompactCalculator
+                  <Calculator
                     initialValue={field.state.value}
                     onApply={(val) => field.handleChange(val)}
                     onClose={() => setShowCalculator(false)}

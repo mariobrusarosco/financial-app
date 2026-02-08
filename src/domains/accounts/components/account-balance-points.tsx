@@ -1,5 +1,5 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { useMemo } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import {
@@ -24,7 +24,7 @@ interface Props {
 const chartConfig = {
   balance: {
     label: 'Balance',
-    color: 'hsl(var(--chart-1))',
+    color: 'var(--chart-2)',
   },
 } satisfies ChartConfig;
 
@@ -105,7 +105,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
           <p className="text-sm text-muted-foreground">{title}</p>
         </div>
         <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-          <AreaChart
+          <LineChart
             accessibilityLayer
             data={chartData}
             margin={{
@@ -115,14 +115,8 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
               bottom: 12,
             }}
           >
-            <defs>
-              <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-balance)" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="var(--color-balance)" stopOpacity={0.05} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
+              hide
               dataKey="date"
               tickLine={false}
               axisLine={false}
@@ -131,12 +125,9 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
               className="text-xs text-muted-foreground"
             />
             <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={value => formatCurrencyAmount(value, { locale: 'pt-BR', currency: 'BRL' })}
-              width={80}
-              className="text-xs text-muted-foreground"
+              hide
+              domain={['auto', 'auto']}
+              padding={{ top: 20, bottom: 20 }}
             />
             <ChartTooltip
               cursor={{ strokeDasharray: '3 3' }}
@@ -156,21 +147,20 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
                 />
               }
             />
-            <Area
+            <Line
               dataKey="balance"
-              type="monotone"
-              fill="url(#balanceGradient)"
+              type="stepAfter"
               stroke="var(--color-balance)"
               strokeWidth={2}
               dot={false}
               activeDot={{
                 r: 6,
                 fill: 'var(--color-balance)',
-                stroke: 'hsl(var(--background))',
+                stroke: 'var(--background)',
                 strokeWidth: 2,
               }}
             />
-          </AreaChart>
+          </LineChart>
         </ChartContainer>
       </div>
     </div>
