@@ -42,3 +42,29 @@ export const mockAccountBalancePoints = (
     return HttpResponse.json(response);
   });
 };
+
+/**
+ * Creates MSW handlers for Account Creation
+ */
+export const mockCreateAccount = (
+  response: I_Account | HttpResponse | undefined = undefined,
+  options: { delay?: boolean | number } = {}
+) => {
+  return http.post(`*${ACCOUNTS_ROUTES.LIST}`, async ({ request }) => {
+    if (options.delay) {
+      await delay(typeof options.delay === 'number' ? options.delay : 'infinite');
+    }
+
+    if (response instanceof Response) {
+      return response;
+    }
+
+    // Default behavior: echo back the body with a new ID
+    if (!response) {
+      const body = (await request.json()) as any;
+      return HttpResponse.json({ ...body, id: 'new-acc-id' }, { status: 201 });
+    }
+
+    return HttpResponse.json(response, { status: 201 });
+  });
+};
