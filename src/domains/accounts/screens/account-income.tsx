@@ -14,7 +14,7 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
   const { from, to } = Route.useSearch();
   const [params, setParams] = useState<I_AccountTransactionsParams>({
     page: 1,
-    per_page: 20,
+    per_page: 100,
     sort_by: 'date',
     sort_order: 'desc',
     movement_type: 'income',

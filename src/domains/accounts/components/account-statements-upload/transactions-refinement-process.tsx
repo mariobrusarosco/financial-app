@@ -60,7 +60,7 @@ export const TransactionsRefinementProcess = ({
         broker_id: transaction.broker_id,
         is_paid: transaction.is_paid,
         ignored: transaction.ignored ?? false,
-        type: transaction.movement_type,
+        movement_type: transaction.movement_type,
         category: transaction.category || 'General',
         is_deleted: transaction.is_deleted,
       }))

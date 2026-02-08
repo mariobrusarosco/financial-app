@@ -12,7 +12,7 @@ export interface I_TransactionPayload {
   is_paid: boolean;
   ignored: boolean;
   movement_type: T_TransactionType;
-  category: string;
+  category_id?: string | null; // Foreign key to user_categories
 }
 
 // Legacy alias for backward compatibility - will be removed
@@ -25,7 +25,7 @@ export interface I_TransactionsPayload {
   transactions: I_TransactionPayload[];
 }
 
-// Legacy bulk transaction types - will be removed
+// Bulk transaction request payload
 export interface I_BulkTransactionRequest {
   account_id?: string | null;
   credit_card_id?: string | null;
@@ -35,7 +35,7 @@ export interface I_BulkTransactionRequest {
   amount: number;
   description: string;
   movement_type: T_TransactionType;
-  category?: string;
+  category_id?: string | null; // Foreign key to user_categories
 }
 
 export interface I_BulkTransactionRequestPayload {

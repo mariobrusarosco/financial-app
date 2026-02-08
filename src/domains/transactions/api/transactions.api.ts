@@ -84,7 +84,7 @@ export const transformFormToBulkRequest = (
     amount: transaction.amount || 0,
     description: transaction.description,
     movement_type: transaction.movement_type,
-    category: transaction.category || undefined,
+    category_id: transaction.category_id || null,
   }));
 };
 

@@ -3,9 +3,12 @@ import { Badge } from '@/domains/ui-system/components/badge';
 import { TransactionIconBadge } from './transaction-icon-badge';
 import { TransactionAmount } from './transaction-amount';
 import { TransactionHoverActions } from './transaction-hover-actions';
-import { formatDateShort } from '@/domains/transactions/utils/transaction-formatting';
+import {
+  formatDateShort,
+  resolveCategoryDisplayName,
+} from '@/domains/transactions/utils/transaction-formatting';
 import type { TransactionItemCompactProps } from './types';
-import { Repeat } from 'lucide-react'; // Import Repeat icon
+import { Repeat } from 'lucide-react';
 
 export const TransactionItemCompact = ({
   transaction,
@@ -48,10 +51,11 @@ export const TransactionItemCompact = ({
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>
-            {transaction.category_tree?.name ||
-              transaction.category_name ||
-              transaction.category ||
-              'Uncategorized'}
+            {resolveCategoryDisplayName(
+              transaction.category_tree,
+              transaction.category_name,
+              transaction.category
+            )}
           </span>
           {transaction.subscription && <Repeat className="h-3 w-3" />}
         </div>

@@ -38,7 +38,7 @@ const transactionSchema = z
     amount: z.number().refine(val => val !== 0, 'Amount must not be 0'),
     date: z.string().min(1, 'Date is required'),
     movement_type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
-    category: z.string().optional(),
+    category_id: z.string().optional(), // Foreign key to user_categories
     account_id: z.string().optional(),
     credit_card_id: z.string().optional(),
     vendor_id: z.string().optional(),
@@ -66,7 +66,8 @@ export const TransactionForm = ({
 }: TransactionFormProps) => {
   const { data: accounts, isFetching: isFetchingAccounts } = useAccounts();
   const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards();
-  const { data: vendorsData, isFetching: isFetchingVendors } = useVendors();
+  // Fetch all vendors for selector (max allowed by API)
+  const { data: vendorsData, isFetching: isFetchingVendors } = useVendors({ per_page: 100 });
   const { data: subscriptionsData, isFetching: isFetchingSubscriptions } = useSubscriptions({
     is_active: true,
   });
@@ -86,7 +87,7 @@ export const TransactionForm = ({
       amount: initialValues?.amount ? Number(initialValues.amount) : 0,
       date: initialValues?.date || new Date().toISOString().split('T')[0],
       movement_type: (initialValues?.movement_type || 'expense') as T_TransactionType,
-      category: initialValues?.category || '',
+      category_id: initialValues?.category_id || '',
       account_id: initialValues?.account_id || '',
       credit_card_id: initialValues?.credit_card_id || '',
       vendor_id: initialValues?.vendor_id || '',
@@ -100,7 +101,7 @@ export const TransactionForm = ({
         amount: Number(value.amount),
         date: value.date,
         movement_type: value.movement_type,
-        category: value.category || '',
+        category_id: value.category_id || undefined,
         account_id:
           transactionSource === 'account' && value.account_id ? value.account_id : undefined,
         credit_card_id:
@@ -269,7 +270,7 @@ export const TransactionForm = ({
         </form.Field>
 
         <div className="flex gap-4">
-          <form.Field name="category">
+          <form.Field name="category_id">
             {field => (
               <div className="space-y-2">
                 <Label>Category</Label>

@@ -1,12 +1,14 @@
 import { Tag } from 'lucide-react';
 import type { TransactionCategoryProps } from './types';
+import { resolveCategoryDisplayName } from '@/domains/transactions/utils/transaction-formatting';
 
 export const TransactionCategory = ({
   categoryTree,
   categoryName,
   category,
 }: TransactionCategoryProps) => {
-  const displayName = categoryTree?.name || categoryName || category || 'Uncategorized';
+  // Priority: category_tree.name > categoryName > category (if not UUID) > 'Uncategorized'
+  const displayName = resolveCategoryDisplayName(categoryTree, categoryName, category);
   const hasParent = categoryTree?.parent;
 
   return (

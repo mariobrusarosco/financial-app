@@ -42,7 +42,8 @@ interface SubscriptionFormProps {
 }
 
 export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormProps) => {
-  const { data: vendorsData } = useVendors();
+  // Fetch all vendors for selector (max allowed by API)
+  const { data: vendorsData } = useVendors({ per_page: 100 });
   const { data: accountsData } = useAccounts();
   const { data: categoriesData } = useCategories();
 

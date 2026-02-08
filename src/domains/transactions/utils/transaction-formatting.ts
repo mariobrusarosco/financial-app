@@ -146,3 +146,54 @@ export const getPaymentStatusColor = (isPaid: boolean): string => {
 export const getPaymentStatusLabel = (isPaid: boolean): string => {
   return isPaid ? 'Paid' : 'Pending';
 };
+
+// Category display utilities
+
+/**
+ * Checks if a string is a UUID format.
+ * Old transactions may have category as a UUID (deprecated) instead of a name.
+ * We don't want to display UUIDs to users.
+ */
+export const isUUID = (value: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(value);
+};
+
+/**
+ * Gets a displayable category name, filtering out UUID values.
+ * Handles legacy data where `category` field might contain a UUID
+ * instead of a human-readable name.
+ *
+ * @param category - The category string (could be a name or UUID)
+ * @returns The category name if it's displayable, undefined otherwise
+ */
+export const getDisplayableCategoryName = (category?: string): string | undefined => {
+  if (!category) return undefined;
+  // If it's a UUID, don't display it
+  if (isUUID(category)) return undefined;
+  return category;
+};
+
+/**
+ * Resolves the display name for a transaction category.
+ * Handles the priority chain: category_tree.name > categoryName > category (if not UUID) > fallback
+ *
+ * @param categoryTree - The resolved category tree from the API
+ * @param categoryName - The category name field
+ * @param category - The legacy category field (may contain UUID or text)
+ * @param fallback - The fallback value if no category is found (default: 'Uncategorized')
+ * @returns The resolved display name
+ */
+export const resolveCategoryDisplayName = (
+  categoryTree?: { name: string } | null,
+  categoryName?: string | null,
+  category?: string,
+  fallback: string = 'Uncategorized'
+): string => {
+  return (
+    categoryTree?.name ||
+    categoryName ||
+    getDisplayableCategoryName(category) ||
+    fallback
+  );
+};

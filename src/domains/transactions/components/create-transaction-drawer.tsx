@@ -77,7 +77,7 @@ export const CreateTransactionDrawer = () => {
             ) : (
               <div className="space-y-3">
                 {pendingTransactions.map((transaction, index) => {
-                  const category = findCategoryById(transaction.category || '');
+                  const category = findCategoryById(transaction.category_id || '');
                   return (
                     <div key={index} className="p-3 border rounded-lg space-y-2">
                       <div className="flex justify-between items-start">

@@ -26,7 +26,8 @@ interface InstallmentFormProps {
 }
 
 export const InstallmentForm = ({ form }: InstallmentFormProps) => {
-  const { data: vendorsData } = useVendors();
+  // Fetch all vendors for selector (max allowed by API)
+  const { data: vendorsData } = useVendors({ per_page: 100 });
   const { data: categoriesData } = useCategories();
   const { data: creditCardsData } = useQuery({
     queryKey: ['credit_cards', 'all'],
