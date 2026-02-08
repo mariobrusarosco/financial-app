@@ -42,15 +42,19 @@ const user = createMockUser({ name: 'Custom Name' });
 
 ## Testing Patterns
 
-### Components
-Focus on user interactions and visible content.
+### Thick Component Tests (The Standard)
+Never settle for checking `isLoading`. Assert the data.
 
 ```typescript
-describe('UserProfile', () => {
-  it('displays user information', () => {
-    render(<UserProfile user={createMockUser()} />);
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-  });
+it('renders data from the server', async () => {
+  render(<UserList />);
+  
+  // 1. Wait for loading to finish
+  await waitFor(() => expect(screen.queryByText(/loading/i)).not.toBeInTheDocument());
+
+  // 2. ASSERT DATA (The 'Front' part of Frontend)
+  // If MSW returns { name: 'John Doe' }, verify it:
+  expect(screen.getByText('John Doe')).toBeInTheDocument();
 });
 ```
 

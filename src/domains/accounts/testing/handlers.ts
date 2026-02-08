@@ -7,6 +7,7 @@ import { mockActiveAccounts } from './index';
 export const defaultActiveAccounts = [
   createMockAccount({ id: 'acc-1', name: 'Checking Account', type: 'cash' }),
   createMockAccount({ id: 'acc-2', name: 'Savings Account', type: 'savings' }),
+  createMockAccount({ id: 'acc-3', name: 'Credit Card', type: 'credit' }),
 ];
 
 export const handlers = [

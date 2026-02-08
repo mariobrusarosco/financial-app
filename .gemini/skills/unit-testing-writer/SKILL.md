@@ -24,9 +24,10 @@ This skill specializes in writing robust, idiomatic unit tests for the Better Ca
 
 ## Rules & Conventions
 
+*   **Mandatory Data Verification**: A test is considered "hollow" and invalid if it only checks for loading/error states. You MUST verify that the specific strings and numbers provided by MSW handlers are rendered in the UI.
 *   **Co-location**: ALWAYS place the test file in the same directory as the source file.
 *   **Naming**: `[Filename].test.tsx` (for components) or `[Filename].test.ts` (for logic).
-*   **Mocking**: Use `vi.mock()` for external dependencies. **Do not** mock internal UI components (like `shadcn/ui` primitives) unless they cause test environment issues; prefer shallow rendering or integration testing for them.
+*   **Mocking**: Use `vi.mock()` for external dependencies. **Do not** mock internal UI components (like `shadcn/ui` primitives) unless they are physically impossible to test in jsdom; prefer finding a way to interact with them.
 *   **No Snapshots**: Avoid snapshot testing unless explicitly requested. Prefer explicit assertions (`toBeInTheDocument`, `toHaveValue`).
 
 ## Reference Material

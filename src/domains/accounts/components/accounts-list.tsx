@@ -133,7 +133,12 @@ const AccountsList = () => {
         <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
           <div className="flex gap-2 items-center mb-4">
             <AccountIcon type={type} />
-            <h2 className="text-xl font-light text-primary uppercase">{type}</h2>
+            <h2
+              className="text-xl font-light text-primary uppercase"
+              data-testid={`accounts-group-header-${type}`}
+            >
+              {type}
+            </h2>
           </div>
 
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-5 bg-section-background rounded-3xl">
