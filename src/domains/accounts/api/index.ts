@@ -4,7 +4,7 @@ import type {
   I_CreateAccountForm,
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
-import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+import { ACCOUNTS_ROUTES } from './backend-routes';
 
 // Define account statement types
 export interface I_AccountStatement {
@@ -57,7 +57,7 @@ export interface I_AccountStatementsResponse {
 
 const getAllAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>('/accounts');
+    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ROUTES.LIST);
     return response.data;
   } catch (error) {
     console.error('Error fetching all accounts:', error);
@@ -67,7 +67,7 @@ const getAllAccounts = async (): Promise<I_Account[]> => {
 
 const getAllActiveAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>('/accounts/active');
+    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ROUTES.LIST_ACTIVE);
     return response.data;
   } catch (error) {
     console.error('Error fetching active accounts:', error);
@@ -78,7 +78,7 @@ const getAllActiveAccounts = async (): Promise<I_Account[]> => {
 
 const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> => {
   try {
-    const response = await apiClient.post<I_Account>('/accounts', account);
+    const response = await apiClient.post<I_Account>(ACCOUNTS_ROUTES.LIST, account);
     return response.data;
   } catch (error) {
     console.error('Error creating account:', error);
@@ -88,7 +88,7 @@ const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> =
 
 const getAccount = async (id: string): Promise<I_Account> => {
   try {
-    const response = await apiClient.get<I_Account>(`/accounts/${id}`);
+    const response = await apiClient.get<I_Account>(ACCOUNTS_ROUTES.DETAIL(id));
     return response.data;
   } catch (error) {
     console.error('Error fetching account:', error);
@@ -98,7 +98,7 @@ const getAccount = async (id: string): Promise<I_Account> => {
 
 const deleteAccount = async (id: string): Promise<void> => {
   try {
-    await apiClient.delete<void>(`/accounts/${id}`);
+    await apiClient.delete<void>(ACCOUNTS_ROUTES.DELETE(id));
   } catch (error) {
     console.error('Error deleting account:', error);
     throw error;
@@ -107,7 +107,7 @@ const deleteAccount = async (id: string): Promise<void> => {
 
 const updateAccountBalance = async (id: string): Promise<void> => {
   try {
-    await apiClient.post<void>(`/accounts/${id}/update-balance`);
+    await apiClient.post<void>(ACCOUNTS_ROUTES.UPDATE_BALANCE(id));
   } catch (error) {
     console.error('Error updating account balance:', error);
     throw error;
@@ -120,7 +120,7 @@ const parseAccountStatement = async (
 ): Promise<I_ParsedAccountStatement> => {
   try {
     const response = await apiClient.post<I_ParsedAccountStatement>(
-      `/accounts/${accountId}/statements/parse-pdf`,
+      ACCOUNTS_ROUTES.PARSE_STATEMENTS(accountId),
       formData,
       {
         headers: {
@@ -140,7 +140,7 @@ const createAccountStatement = async (
 ): Promise<I_AccountStatement> => {
   try {
     const response = await apiClient.post<I_AccountStatement>(
-      `/accounts/${data.account_id}/statements`,
+      ACCOUNTS_ROUTES.STATEMENTS(data.account_id),
       data
     );
     return response.data;
@@ -153,7 +153,7 @@ const createAccountStatement = async (
 const getAccountStatements = async (accountId: string): Promise<I_AccountStatement[]> => {
   try {
     const response = await apiClient.get<I_AccountStatementsResponse>(
-      `/accounts/${accountId}/statements`
+      ACCOUNTS_ROUTES.STATEMENTS(accountId)
     );
     return response.data.data;
   } catch (error) {
@@ -169,7 +169,7 @@ const getAccountBalancePoints = async (
 ): Promise<I_BalancePoint[]> => {
   try {
     const response = await apiClient.get<I_BalancePoint[]>(
-      `/balance_points/${accountId}/timeline`,
+      ACCOUNTS_ROUTES.BALANCE_POINTS(accountId),
       {
         params: {
           start_date: startDate,

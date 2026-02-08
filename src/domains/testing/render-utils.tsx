@@ -1,6 +1,6 @@
 import { render as rtlRender } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { createRouter, RouterProvider, createRootRoute, createMemoryHistory } from '@tanstack/react-router';
 import { routeTree } from '../../routeTree.gen';
 import { ReactNode } from 'react';
 
@@ -14,20 +14,27 @@ export function render(ui: ReactNode, { route = '/' } = {}) {
     },
   });
 
-  // Basic router mock wrapper if needed, or just QueryClient
-  // For unit tests, we often just need the QueryClientProvider
-  // unless we are testing routing specifically.
-  
+  // Create a root route that renders the component
+  const rootRoute = createRootRoute({
+    component: () => <>{ui}</>,
+  });
+
+  // Create a new router instance for each test
+  const router = createRouter({
+    routeTree: rootRoute,
+    history: createMemoryHistory({ initialEntries: [route] }),
+  });
+
   const Wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 
   return {
     ...rtlRender(ui, { wrapper: Wrapper }),
-    // return the queryClient in case tests need to interact with it
     queryClient,
+    router,
   };
 }
 

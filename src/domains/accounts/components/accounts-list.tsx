@@ -84,7 +84,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
 const LoadingState = () => {
   return (
-    <div data-testid="accounts-loading" className="flex flex-col items-center justify-center gap-4 h-full">
+    <div data-testid="accounts-list-loading" className="flex flex-col items-center justify-center gap-4 h-full">
       <div className="p-6 rounded-3xl">
         <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
       </div>
@@ -94,7 +94,7 @@ const LoadingState = () => {
 
 const EmptyState = () => {
   return (
-    <div data-testid="accounts-empty" className="flex flex-col items-center justify-center gap-4 h-full">
+    <div data-testid="accounts-list-empty" className="flex flex-col items-center justify-center gap-4 h-full">
       <div className="p-6 bg-muted-foreground/10 rounded-3xl">
         <BrushCleaning className="h-15 w-15 text-muted-foreground stroke-1" />
       </div>
@@ -107,7 +107,7 @@ const ErrorState = ({ error }: { error: Error }) => {
   // TODO: move to Sentry
   console.error(error);
   return (
-    <div data-testid="accounts-error" className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
+    <div data-testid="accounts-list-error" className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
       <div className="p-6 bg-destructive/10 rounded-3xl">
         <XCircle className="h-15 w-15 text-destructive stroke-1" />
       </div>

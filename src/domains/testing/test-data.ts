@@ -13,6 +13,16 @@ export const createMockUser = (overrides = {}) => ({
 });
 
 /**
+ * Create mock broker data
+ */
+export const createMockBroker = (overrides = {}) => ({
+  id: 'broker-123',
+  name: 'Default Broker',
+  colors: ['#007bff', '#6c757d'],
+  ...overrides,
+});
+
+/**
  * Create mock account data
  */
 export const createMockAccount = (overrides = {}) => ({
@@ -20,7 +30,8 @@ export const createMockAccount = (overrides = {}) => ({
   name: 'Main Account',
   balance: 5000,
   currency: 'USD',
-  type: 'checking',
+  type: 'cash',
+  broker: createMockBroker(),
   ...overrides,
 });
 
