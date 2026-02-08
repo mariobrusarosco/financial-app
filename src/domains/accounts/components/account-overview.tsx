@@ -3,8 +3,7 @@ import { Surface } from '@/domains/global/components/surface';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Button } from '@/domains/ui-system/components/button';
 import { RefreshCw } from 'lucide-react';
-import { useAccountBalance } from '@/domains/accounts/hooks/use-account-balance';
-import { GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY, GET_ACCOUNT_QUERY_KEY } from '../api/keys';
+import { GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY } from '../api/keys';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
@@ -33,8 +32,6 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
   const balancePoint = useMemo(() => {
     return balancePoints?.at(-1);
   }, [balancePoints]);
-
-  console.log({ 'account?.currency': account?.currency });
 
   return (
     <div data-ui="account-overview" className="grid grid-cols-3 gap-4">

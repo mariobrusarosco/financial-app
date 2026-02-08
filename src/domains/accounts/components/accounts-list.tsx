@@ -1,13 +1,26 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
-import { BrushCleaning, ChevronRight, RefreshCcw, XCircle } from 'lucide-react';
-import { I_Account } from '@/domains/accounts/types/types-and-interfaces';
+import { BrushCleaning, ChevronRight, RefreshCcw, XCircle, Banknote, CreditCard, ChartBar, Loan } from 'lucide-react';
+import { I_Account, T_AccountType } from '@/domains/accounts/types/types-and-interfaces';
 import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 import { Badge } from '@/domains/ui-system/components/badge';
+import { cn } from '@/domains/ui-system/utils';
+
+
+const AccountIcon = ({ type }: { type: T_AccountType }) => {
+  switch (type) {
+    case 'cash':
+      return <Banknote className="h-7 w-7 text bg-teal-700/50 text-neutral-white rounded-md p-2" />;
+    case 'investment':
+      return <ChartBar className="h-7 w-7 text bg-blue-700/50 text-neutral-white rounded-md p-2" />;
+    default:
+      return <CreditCard className="h-7 w-7 text bg-red-700/50 text-neutral-white rounded-md p-2" />;
+  }
+};
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const { from, to } = Route.useSearch();
@@ -28,7 +41,7 @@ const AccountCard = ({ account }: { account: I_Account }) => {
     <div
       data-testid="account-card"
       data-account-id={account.id}
-      className="w-full flex flex-col gap-4 justify-between bg-card-background rounded-3xl"
+      className="w-full flex flex-col gap-1 justify-between bg-card-background rounded-3xl"
       data-ui="account-card"
     >
       <div className="flex items-start justify-between p-4">
@@ -40,7 +53,8 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           <Badge
             data-testid="account-card-broker"
             variant="outline"
-            className="bg-primary/20 text-primary border-none"
+            className="bg-primary/20 text-neutral-white text-xs py-1 px-3"
+            style={{ backgroundColor: brokerprimaryColor }}
           >
             {account.broker?.name}
           </Badge>
@@ -49,14 +63,13 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           data-testid="account-card-link"
           to="/accounts/$slug"
           params={{ slug: account.id }}
-          style={{ backgroundColor: brokerprimaryColor }}
-          className="text-primary rounded-lg p-2"
+          className="text-neutral-white rounded-lg p-2 bg-primary/50"
         >
           <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
 
-      <div className="rounded-b-3xl px-6 py-8" style={{ backgroundColor: brokerprimaryColor }}>
+      <div className="rounded-b-3xl px-6 py-4 bg-primary/10">
         <p data-testid="account-card-balance" className="font-light text-primary text-2xl">
           {isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-primary transform-origin-center" />
@@ -91,6 +104,8 @@ const EmptyState = () => {
 };
 
 const ErrorState = ({ error }: { error: Error }) => {
+  // TODO: move to Sentry
+  console.error(error);
   return (
     <div data-testid="accounts-error" className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
       <div className="p-6 bg-destructive/10 rounded-3xl">
@@ -111,15 +126,17 @@ const AccountsList = () => {
   if (!accounts || accounts.length === 0) return <EmptyState />;
 
   const groupedByType = Object.groupBy(accounts, ({ type }) => type);
-  console.log({ groupedByType });
 
   return (
     <div data-testid="accounts-list" className="flex pt-15 gap-10">
       {Object.entries(groupedByType).map(([type, accounts]) => (
         <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
-          <h2 className="text-2xl font-light text-primary mb-4 uppercase">{type}</h2>
+          <div className="flex gap-2 items-center mb-4">
+            <AccountIcon type={type} />
+            <h2 className="text-xl font-light text-primary uppercase">{type}</h2>
+          </div>
 
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-3 bg-section-background rounded-3xl">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-5 bg-section-background rounded-3xl">
             {accounts.map(account => (
               <li key={account.id}>
                 <AccountCard account={account} />

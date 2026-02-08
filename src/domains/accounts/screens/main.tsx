@@ -9,7 +9,7 @@ export const AccountMainScreen = () => {
   const { isLoading, error } = useGetAllActiveAccounts();
 
   return (
-    <div data-ui="accounts-main-screen" className="h-full grid gap-3">
+    <div data-ui="accounts-main-screen" className="py-6 pr-6">
       <PageHeader
         title="Accounts"
         icon={PiggyBank}
