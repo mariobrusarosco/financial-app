@@ -127,6 +127,7 @@ The project adheres to a strict set of development conventions to maintain code 
 
 - The project uses [Vitest](https://vitest.dev/) for unit and integration testing.
 - Test files are located alongside the files they are testing.
+- **Test Types**: Distinct separation between **Component Tests** (using MSW for network layer) and **Unit Tests** (pure logic/utils).
 
 ### Linting
 

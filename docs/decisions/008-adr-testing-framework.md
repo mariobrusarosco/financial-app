@@ -36,6 +36,17 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 3. **Documentation**: Less extensive documentation compared to Jest
 4. **Edge Cases**: Might have less coverage for edge cases that Jest has handled over years
 
+### Refined Strategy (2025 Update)
+
+We have further refined our testing strategy to distinctly categorize tests:
+
+1.  **Component Tests (The Standard):**
+    *   **Scope:** UI components, pages, layouts.
+    *   **Mocking:** **Mandatory MSW usage** for all network requests. We explicitly avoid mocking `fetch`, `axios`, or `react-query` hooks directly to ensure tests rely on behavior, not implementation.
+2.  **Unit Tests (The Logic):**
+    *   **Scope:** Utilities, helpers, complex pure-logic hooks.
+    *   **Mocking:** `vi.mock()` is permitted for non-network dependencies.
+
 ## Configuration Details
 
 ### Vitest Configuration
@@ -44,7 +55,7 @@ We will use Vitest as our primary testing framework, along with React Testing Li
 - Environment: jsdom for simulating browser environment
 - Coverage reporting enabled
 - Integration with TypeScript path aliases
-- Mocking capabilities for API calls
+- **MSW Integration:** configured in setup files to intercept requests during component tests.
 
 ### React Testing Library
 
