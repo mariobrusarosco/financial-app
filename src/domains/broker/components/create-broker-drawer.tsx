@@ -3,7 +3,7 @@ import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import useCreateBroker from '@/domains/broker/hooks/use-create-broker';
 import CreateBroker from './create-broker';
-import { Plus } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
 
 export const CreateBrokerDrawer = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ export const CreateBrokerDrawer = () => {
           icon={Plus}
         />
         <Button size="lg" form="broker-create-form" disabled={mutation.isPending}>
+          {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {mutation.isPending ? 'Creating...' : 'Create Broker'}
         </Button>
       </div>

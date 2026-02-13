@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Badge } from '@ui-system/components/badge';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Loader2 } from 'lucide-react';
 import { TransactionForm } from './transaction-form';
 import type { I_TransactionPayload } from '../types/types-and-interfaces';
 import { useCreateBulkTransactions } from '../hooks/use-create-bulk-transactions';
@@ -57,6 +57,7 @@ export const CreateTransactionDrawer = () => {
               variant="default"
               disabled={isSaving}
             >
+              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isSaving ? 'Saving...' : `Save All (${pendingTransactions.length})`}
             </Button>
           )}

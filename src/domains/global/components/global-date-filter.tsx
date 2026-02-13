@@ -7,7 +7,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import type { DateRange } from 'react-day-picker';
 import {
   format,
-  parseISO,
   startOfMonth,
   endOfMonth,
   isValid,
@@ -16,6 +15,7 @@ import {
   startOfYear,
   endOfYear,
   isSameDay,
+  parse,
 } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
 
@@ -96,8 +96,11 @@ export const GlobalDateFilter = () => {
   const dateRange = useMemo((): DateRange => {
     const defaultRange = getDefaultDateRange();
 
-    const fromDate = from ? parseISO(from) : defaultRange.from;
-    const toDate = to ? parseISO(to) : defaultRange.to;
+    // Use parse() instead of parseISO() to avoid timezone issues
+    // parseISO treats "2026-02-01" as UTC midnight, which shifts to previous day in local timezone
+    // parse() with 'yyyy-MM-dd' format creates a local date at midnight
+    const fromDate = from ? parse(from, 'yyyy-MM-dd', new Date()) : defaultRange.from;
+    const toDate = to ? parse(to, 'yyyy-MM-dd', new Date()) : defaultRange.to;
 
     return {
       from: fromDate && isValid(fromDate) ? fromDate : defaultRange.from,
