@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
 import { useLinkInstallmentTransaction, useInstallmentPlan } from '../hooks/use-installments';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
@@ -6,6 +6,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { DrawerFooter } from '@/domains/ui-system/components/drawer';
+import { Pagination } from '@/domains/ui-system/components/pagination';
 import { Loader2, Search, Link as LinkIcon, X, Check, ArrowLeft } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { useDebouncedValue } from '@tanstack/react-pacer';
@@ -75,6 +76,8 @@ const TransactionListContent = ({
   );
 };
 
+const PER_PAGE = 10;
+
 export const LinkPaymentToInstallmentDrawer = () => {
   const router = useRouter();
   const { planId, installmentId } = Route.useSearch();
@@ -85,6 +88,12 @@ export const LinkPaymentToInstallmentDrawer = () => {
   const [searchTerm, setSearchTerm] = useState(plan?.name || '');
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, { wait: 500 });
   const [selectedTransactionId, setSelectedTransactionId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset to page 1 when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchTerm]);
 
   const {
     data,
@@ -95,7 +104,8 @@ export const LinkPaymentToInstallmentDrawer = () => {
     is_paid: false,
     sort_by: 'date',
     sort_order: 'desc',
-    per_page: 20,
+    page: currentPage,
+    per_page: PER_PAGE,
   });
 
   const { mutate: linkTransaction, isPending: isLinking } = useLinkInstallmentTransaction();
@@ -138,6 +148,12 @@ export const LinkPaymentToInstallmentDrawer = () => {
   }
 
   const transactions = data?.data || [];
+  const meta = data?.meta;
+  const totalPages = meta ? Math.ceil(meta.total / PER_PAGE) : 1;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -217,6 +233,24 @@ export const LinkPaymentToInstallmentDrawer = () => {
             onSelect={setSelectedTransactionId}
           />
         </div>
+
+        {/* Pagination */}
+        {meta && totalPages > 1 && (
+          <div className="pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                Showing {transactions.length} of {meta.total} transactions
+              </span>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                hasNext={meta.has_next}
+                hasPrevious={meta.has_previous}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
