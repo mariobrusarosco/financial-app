@@ -35,7 +35,7 @@ export const PageHeader = ({
             variant="default"
             onClick={() => void onAdd()}
           >
-            Add account
+            {addButtonLabel}
           </Button>
         </div>
       )}

@@ -16,6 +16,7 @@ export const AccountMainScreen = () => {
         iconColor="bg-teal-700"
         onAdd={() => void openAccountCreate()}
         showAddButton={!isLoading && !error}
+        addButtonLabel="New account"
       />
 
       <AccountsList />

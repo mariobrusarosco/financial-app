@@ -8,6 +8,7 @@ const useCreateBroker = () => {
   const navigate = useNavigate();
 
   return useMutation({
+    mutationKey: ['create-broker'],
     mutationFn: brokerApi.createBroker,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: GET_ALL_BROKERS_QUERY_KEY });

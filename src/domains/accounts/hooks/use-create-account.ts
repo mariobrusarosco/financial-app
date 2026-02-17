@@ -12,6 +12,7 @@ export const useCreateAccount = () => {
   const navigate = useNavigate();
 
   return useMutation({
+    mutationKey: ['create-account'],
     mutationFn: (account: I_CreateAccountForm) => accountsApi.createAccount(account),
     onSuccess: newAccount => {
       toast.success('Account created successfully!', {
