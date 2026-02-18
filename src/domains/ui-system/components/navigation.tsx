@@ -163,7 +163,7 @@ export const Navigation = () => {
     <>
       <nav
         data-ui="app-navigation"
-        className="h-full grid place-content-center gap-6 bg-foreground p-3 font-sans
+        className="hidden  md:grid h-full place-content-center gap-6 bg-foreground p-3 font-sans
         text-primary"
       >
         {navigationItems.map(item => {
@@ -186,9 +186,8 @@ export const Navigation = () => {
         })}
       </nav>
 
-      <div className="md:hidden">
-        {/* Mobile menu button */}
-        <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-card border-b border-border">
+      <div className="md:hidden" data-testid="mobile-navigation">
+        <div className="fixed top-8 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-card border-b border-border">
           <Link to="/" className="flex items-center">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
@@ -212,7 +211,6 @@ export const Navigation = () => {
           </div>
         </div>
 
-        {/* Mobile menu overlay */}
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-30 md:hidden">
             <div

@@ -142,7 +142,7 @@ export const GlobalDateFilter = () => {
   }, [dateRange]);
 
   return (
-    <div data-ui="global-date-filter" className="flex items-end gap-6">
+    <div data-ui="global-date-filter" className="w-full flex items-end gap-6 my-4 md:my-0">
       <div className="flex flex-col gap-1">
         <span className="text-xs text-primary">{formatDateRange}</span>
 

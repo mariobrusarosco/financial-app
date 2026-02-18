@@ -5,6 +5,8 @@ import { Link, useLocation } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { cn } from '@/domains/ui-system/utils';
 import React from 'react';
+import { Button } from '@/domains/ui-system/components/button';
+import { ArrowLeft } from 'lucide-react';
 
 interface AccountOverviewProps {
   slug: string;
@@ -24,14 +26,12 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="flex gap-30 items-center flex-1" data-ui="account-heading">
-      <div className="flex flex-col">
-        <p className="text-sm text-muted-foreground">Bank Account</p>
-        <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
-      </div>
+    <div className="relative flex flex-col md:flex-row md:gap-30 py-4" data-ui="account-heading">
+      <p className="text-sm text-muted-foreground">Bank Account</p>
+      <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
 
-      <Tabs value={activeTab} className="ml-4">
-        <TabsList className="flex gap-3 bg-primary rounded-md p-1 h-fit">
+      <Tabs value={activeTab} className="mt-4 md:mt-0 md:ml-4 w-full">
+        <TabsList className="flex flex-row gap-3 bg-primary rounded-md p-1 h-fit">
           <Link to="/accounts/$slug" params={{ slug }} >
             <AccountHeadingTab
               value="overview"
@@ -74,6 +74,13 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
           </Link>
         </TabsList>
       </Tabs>
+
+
+      <Link to="/accounts" className='flex gap-1 items-center absolute top-4 right-0 md:relative'>
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        <span className="text">Back to Accounts</span>
+      </Link>
+
     </div>
   );
 };
@@ -88,12 +95,12 @@ interface AccountHeadingTabProps {
 const AccountHeadingTab = ({ value, label, icon, activeTab }: AccountHeadingTabProps) => {
   return (
     <TabsTrigger value={value} className={cn(
-      'text-xs px-2 py-2.5 rounded-md cursor-pointer text-neutral-white hover:bg-foreground hover:text-primary',
+      'md:flex text-xs px-2 py-2.5 rounded-md cursor-pointer text-neutral-white hover:bg-foreground hover:text-primary',
       activeTab === value && 'bg-neutral-white text-primary',
       activeTab !== value && 'text-neutral-white'
     )}>
       {icon}
-      {label}
+      <span className="hidden md:flex">{label}</span>
     </TabsTrigger>
   );
 };

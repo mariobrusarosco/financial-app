@@ -34,8 +34,11 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
   }, [balancePoints]);
 
   return (
-    <div data-ui="account-overview" className="grid grid-cols-3 gap-4">
-      <Surface size="md">
+    <div data-ui="account-overview" className="grid gap-4">
+      <div
+        className="flex flex-col gap-2 bg-neutral-white w-fit p-4 rounded-lg"
+        data-ui="account-overview-balance"
+      >
         <div className="flex items-center justify-between">
           <p className="text-primary text-sm">Balance</p>
           <Button
@@ -55,21 +58,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
           currency={account?.currency}
           autoColor
         />
-      </Surface>
-
-      {/* <Surface size="md" className="">
-          <p className="text-primary text-sm">Earnings</p>
-          <Currency className="text-xl font-bold" value={150} autoColor />
-        </Surface>
-
-        <Surface size="md" className="hover:bg-primary">
-          <p className="text-primary text-sm">Spending</p>
-          <Currency
-            className="text-primary text-xl font-bold"
-            value={0}
-            currency={account?.currency}
-          />
-        </Surface> */}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { Outlet, Link } from '@tanstack/react-router';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
-import { Button } from '@/domains/ui-system/components/button';
-import { ArrowLeft } from 'lucide-react';
+
 import AccountQuickActions from '@/domains/accounts/components/account-quick-actions';
 import AccountHeading from '@/domains/accounts/components/account-heading';
 import AccountOverview from '@/domains/accounts/components/account-overview';
@@ -32,16 +31,7 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
 
   return (
     <div className="space-y-6 md:pr-4 max-h-full overflow-y-auto" data-ui="account-layout">
-      <div className="flex items-center justify-between items-center">
-        <AccountHeading slug={slug} />
-
-        <Link to="/accounts">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Accounts
-          </Button>
-        </Link>
-      </div>
+      <AccountHeading slug={slug} />
 
       <div className="flex gap-4 justify-between items-start">
         <AccountOverview slug={slug} />

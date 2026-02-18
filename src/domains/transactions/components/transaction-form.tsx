@@ -31,6 +31,7 @@ import { TransactionAmountField } from './transaction/transaction-amount-field';
 import { Button } from '@/domains/ui-system/components/button';
 import { Calculator as CalculatorIcon } from 'lucide-react';
 import { Calculator } from '@/domains/ui-system/components/calculator';
+import { cn } from '@/domains/ui-system';
 
 const transactionSchema = z
   .object({
@@ -162,9 +163,9 @@ export const TransactionForm = ({
         e.stopPropagation();
         void form.handleSubmit();
       }}
-      className="space-y-6"
+      className="space-y-6 flex flex-col"
     >
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4">
         <form.Field
           name="description"
           validators={{
@@ -172,7 +173,7 @@ export const TransactionForm = ({
           }}
         >
           {field => (
-            <div className="space-y-2 max-w-[300px] flex-1">
+            <div className="space-y-2">
               <Label htmlFor={field.name}>Description</Label>
               <Textarea
                 id={field.name}
@@ -181,7 +182,7 @@ export const TransactionForm = ({
                 onChange={e => field.handleChange(e.target.value)}
                 placeholder="Enter transaction description"
                 rows={isEditMode ? 2 : 3}
-                className={isEditMode ? 'text-sm' : ''}
+                className={cn("min-h-[80px]", { 'text-sm': isEditMode })}
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
@@ -222,7 +223,7 @@ export const TransactionForm = ({
         </form.Field>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4">
         <form.Field
           name="movement_type"
           validators={{
@@ -323,7 +324,7 @@ export const TransactionForm = ({
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4">
         <div className="space-y-3 flex-1 max-w-[350px]">
           <Label>Payment Method</Label>
           {isEditMode ? (

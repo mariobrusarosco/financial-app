@@ -84,6 +84,8 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     apiDateRange.endDate
   );
 
+
+
   const chartData = useMemo(
     () => mapBalancePointsToChartData(balancePoints ?? []),
     [balancePoints]
@@ -93,76 +95,74 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     return <div className="flex items-center justify-center h-64 text-center">Loading...</div>;
   }
 
-  // Handle empty data
   if (!balancePoints || balancePoints.length === 0) {
     return <EmptyBalancePoints title={title} />;
   }
 
+
   return (
-    <div data-ui="account-balance-points">
-      <div className="mb-6 min-w-80">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-muted-foreground">{title}</p>
-        </div>
-        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-              top: 12,
-              bottom: 12,
-            }}
-          >
-            <XAxis
-              hide
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={value => value}
-              className="text-xs text-muted-foreground"
-            />
-            <YAxis
-              hide
-              domain={['auto', 'auto']}
-              padding={{ top: 20, bottom: 20 }}
-            />
-            <ChartTooltip
-              cursor={{ strokeDasharray: '3 3' }}
-              content={
-                <ChartTooltipContent
-                  formatter={(value) => (
-                    <div className="flex items-center justify-between gap-8">
-                      <span className="text-muted-foreground">Balance</span>
-                      <span className="font-mono font-semibold text-primary">
-                        {formatCurrencyAmount(value as number, { locale: 'pt-BR', currency: 'BRL' })}
-                      </span>
-                    </div>
-                  )}
-                  labelFormatter={label => (
-                    <div className="font-medium text-primary mb-1">{label}</div>
-                  )}
-                />
-              }
-            />
-            <Line
-              dataKey="balance"
-              type="stepAfter"
-              stroke="var(--color-balance)"
-              strokeWidth={2}
-              dot={false}
-              activeDot={{
-                r: 6,
-                fill: 'var(--color-balance)',
-                stroke: 'var(--background)',
-                strokeWidth: 2,
-              }}
-            />
-          </LineChart>
-        </ChartContainer>
+    <div data-ui="account-balance-points" className="mb-6 min-w-80">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-muted-foreground">{title}</p>
       </div>
+      <ChartContainer config={chartConfig} className="md:min-h-[300px] md:w-full">
+        <LineChart
+          accessibilityLayer
+          data={chartData}
+          margin={{
+            left: 12,
+            right: 12,
+            top: 12,
+            bottom: 12,
+          }}
+        >
+          <XAxis
+            hide
+            dataKey="date"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={value => value}
+            className="text-xs text-muted-foreground"
+          />
+          <YAxis
+            hide
+            domain={['auto', 'auto']}
+            padding={{ top: 20, bottom: 20 }}
+          />
+          <ChartTooltip
+            cursor={{ strokeDasharray: '3 3' }}
+            content={
+              <ChartTooltipContent
+                formatter={(value) => (
+                  <div className="flex items-center justify-between gap-8">
+                    <span className="text-muted-foreground">Balance</span>
+                    <span className="font-mono font-semibold text-primary">
+                      {formatCurrencyAmount(value as number, { locale: 'pt-BR', currency: 'BRL' })}
+                    </span>
+                  </div>
+                )}
+                labelFormatter={label => (
+                  <div className="font-medium text-primary mb-1">{label}</div>
+                )}
+              />
+            }
+          />
+          <Line
+            dataKey="balance"
+            type="stepAfter"
+            stroke="var(--color-balance)"
+            strokeWidth={2}
+            dot={false}
+            activeDot={{
+              r: 6,
+              fill: 'var(--color-balance)',
+              stroke: 'var(--background)',
+              strokeWidth: 2,
+            }}
+          />
+        </LineChart>
+      </ChartContainer>
     </div>
   );
 };

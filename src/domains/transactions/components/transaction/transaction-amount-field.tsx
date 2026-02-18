@@ -15,7 +15,7 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
     const [showCalculator, setShowCalculator] = useState(false);
 
     return (
-        <div className="space-y-2 w-[150px] relative">
+        <div className="space-y-2 relative">
             <Label htmlFor={field.name}>Amount</Label>
             <Input
                 id={field.name}
@@ -26,7 +26,7 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
                 onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
                 className={isEditMode ? 'text-sm' : ''}
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 absolute right-0 top-0">
                 <Button
                     variant="link"
                     size="sm"
@@ -39,7 +39,7 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
                 </Button>
             </div>
             {showCalculator && (
-                <div className="absolute z-50 mt-1 shadow-lg bg-white rounded-md border text-left">
+                <div className="absolute z-50 -mt-10 shadow-lg bg-white rounded-md border text-left">
                     <Calculator
                         initialValue={field.state.value}
                         onApply={(val) => {

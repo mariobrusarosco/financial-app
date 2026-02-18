@@ -128,7 +128,7 @@ const AccountsList = () => {
   const groupedByType = Object.groupBy(accounts, ({ type }) => type);
 
   return (
-    <div data-testid="accounts-list" className="flex pt-15 gap-10">
+    <div data-testid="accounts-list" className="flex flex-col pt-15 gap-10">
       {Object.entries(groupedByType).map(([type, accounts]) => (
         <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
           <div className="flex gap-2 items-center mb-4">

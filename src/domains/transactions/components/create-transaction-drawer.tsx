@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Badge } from '@ui-system/components/badge';
-import { Plus, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Loader2, Home, PiggyBank } from 'lucide-react';
 import { TransactionForm } from './transaction-form';
 import type { I_TransactionPayload } from '../types/types-and-interfaces';
 import { useCreateBulkTransactions } from '../hooks/use-create-bulk-transactions';
@@ -37,11 +37,11 @@ export const CreateTransactionDrawer = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 h-full">
-      <div className="flex justify-between items-center">
+    <div className="p-2 md:p-6 space-y-6 h-full" data-ui="create-transaction-drawer">
+      <div className="flex justify-between items-center sticky top-0 bg-background z-10">
         <DrawerHeader
           title="Create Transactions"
-          icon={Plus}
+          icon={PiggyBank}
         />
         {pendingTransactions.length > 0 && (
           <Badge variant="secondary">{pendingTransactions.length} pending</Badge>
@@ -64,56 +64,51 @@ export const CreateTransactionDrawer = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-6 h-full">
-          {/* Column 1 & 2: Form Content */}
-          <div className="col-span-2">
-            <TransactionForm onSubmit={handleAddTransaction} />
-          </div>
+      <div className="flex flex-col gap-6 h-full">
+        <TransactionForm onSubmit={handleAddTransaction} />
 
-          <div className="border-l pl-6">
-            <h3 className="text-lg font-semibold mb-4">Pending Transactions</h3>
-            {pendingTransactions.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No transactions added yet</p>
-            ) : (
-              <div className="space-y-3">
-                {pendingTransactions.map((transaction, index) => {
-                  const category = findCategoryById(transaction.category_id || '');
-                  return (
-                    <div key={index} className="p-3 border rounded-lg space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <p className="font-medium text-sm truncate">{transaction.description}</p>
-                          <p className="text-sm text-muted-foreground">
-                            ${transaction.amount?.toFixed(2)} • {transaction.movement_type}
+        <div className="border-l pl-6">
+          <h3 className="text-lg font-semibold mb-4">Pending Transactions</h3>
+          {pendingTransactions.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No transactions added yet</p>
+          ) : (
+            <div className="space-y-3">
+              {pendingTransactions.map((transaction, index) => {
+                const category = findCategoryById(transaction.category_id || '');
+                return (
+                  <div key={index} className="p-3 border rounded-lg space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm truncate">{transaction.description}</p>
+                        <p className="text-sm text-muted-foreground">
+                          ${transaction.amount?.toFixed(2)} • {transaction.movement_type}
+                        </p>
+                        {category && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <span>{category.icon}</span>
+                            {category.name}
                           </p>
-                          {category && (
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
-                              <span>{category.icon}</span>
-                              {category.name}
-                            </p>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            {typeof transaction.date === 'string'
-                              ? transaction.date
-                              : new Date(transaction.date).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRemoveTransaction(index)}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          {typeof transaction.date === 'string'
+                            ? transaction.date
+                            : new Date(transaction.date).toLocaleDateString()}
+                        </p>
                       </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleRemoveTransaction(index)}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
