@@ -37,38 +37,45 @@ export const CreateTransactionDrawer = () => {
   };
 
   return (
-    <div className="p-2 md:p-6 space-y-6 h-full" data-ui="create-transaction-drawer">
+    <div className="p-2 md:p-6 space-y-6 h-full overflow-y-auto" data-ui="create-transaction-drawer">
       <div className="flex justify-between items-center sticky top-0 bg-background z-10">
-        <DrawerHeader
-          title="Create Transactions"
-          icon={PiggyBank}
-        />
-        {pendingTransactions.length > 0 && (
-          <Badge variant="secondary">{pendingTransactions.length} pending</Badge>
-        )}
-        <div className="flex gap-2">
-          <Button size="lg" form="transaction-form">
-            Add Transaction
-          </Button>
+        <div className="flex flex-col gap-2">
+
+          <DrawerHeader
+            title="Create Transactions"
+            icon={PiggyBank}
+            description={pendingTransactions.length > 0 ? (
+              `${pendingTransactions.length} pending`
+            ) : undefined}
+          />
+
+        </div>
+
+        <div className="flex flex items-center gap-2">
+
           {pendingTransactions.length > 0 && (
             <Button
-              size="lg"
+              size="sm"
               onClick={handleSaveAllTransactions}
-              variant="default"
+              variant="outline"
               disabled={isSaving}
             >
               {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isSaving ? 'Saving...' : `Save All (${pendingTransactions.length})`}
             </Button>
           )}
+          <Button size="sm" form="transaction-form" variant="secondary">
+            Add
+          </Button>
         </div>
+
       </div>
 
       <div className="flex flex-col gap-6 h-full">
         <TransactionForm onSubmit={handleAddTransaction} />
 
-        <div className="border-l pl-6">
-          <h3 className="text-lg font-semibold mb-4">Pending Transactions</h3>
+        <div className="border-l p-4 sticky bottom-0 bg-white z-10 shadow-lg max-h-[250px] overflow-auto">
+          <h3 className="text-lg font-medium mb-2">Pending Transactions</h3>
           {pendingTransactions.length === 0 ? (
             <p className="text-muted-foreground text-sm">No transactions added yet</p>
           ) : (

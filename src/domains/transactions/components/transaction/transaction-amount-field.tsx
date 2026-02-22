@@ -23,7 +23,7 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
                 step="0.01"
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
+                onChange={(e) => field.handleChange(e.target.value)}
                 className={isEditMode ? 'text-sm' : ''}
             />
             <div className="flex items-center gap-2 absolute right-0 top-0">
@@ -41,9 +41,9 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
             {showCalculator && (
                 <div className="absolute z-50 -mt-10 shadow-lg bg-white rounded-md border text-left">
                     <Calculator
-                        initialValue={field.state.value}
+                        initialValue={field.state.value ? Number(field.state.value) : undefined}
                         onApply={(val) => {
-                            field.handleChange(val);
+                            field.handleChange(val.toString());
                             setShowCalculator(false);
                         }}
                         onClose={() => setShowCalculator(false)}
@@ -52,7 +52,11 @@ export const TransactionAmountField = ({ field, isEditMode }: TransactionAmountF
                 </div>
             )}
             {field.state.meta.errors.length > 0 && (
-                <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                <p className="text-sm text-destructive">
+                    {field.state.meta.errors.map((error: any) => (
+                        typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
+                    )).join(', ')}
+                </p>
             )}
         </div>
     );
