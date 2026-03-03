@@ -1,5 +1,5 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Line, LineChart, XAxis, YAxis } from 'recharts';
 import { useMemo } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import {
@@ -17,7 +17,7 @@ import { formatCurrencyAmount, formatDateMedium } from '@/domains/global/utils/f
 interface Props {
   title?: string;
   slug: string;
-  transactionsQuery: UseQueryResult<I_AccountTransactionsResponse, Error>;
+  // transactionsQuery: UseQueryResult<I_AccountTransactionsResponse, Error>;
 }
 
 // Chart configuration for shadcn/ui charts
@@ -84,8 +84,6 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     apiDateRange.endDate
   );
 
-
-
   const chartData = useMemo(
     () => mapBalancePointsToChartData(balancePoints ?? []),
     [balancePoints]
@@ -99,13 +97,9 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     return <EmptyBalancePoints title={title} />;
   }
 
-
   return (
-    <div data-ui="account-balance-points" className="mb-6 min-w-80">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-muted-foreground">{title}</p>
-      </div>
-      <ChartContainer config={chartConfig} className="md:min-h-[300px] md:w-full">
+    <div data-ui="account-balance-points" className="flex-1">
+      <ChartContainer config={chartConfig} className="bg-neutral-white/40 rounded-lg w-full h-full">
         <LineChart
           accessibilityLayer
           data={chartData}
@@ -122,19 +116,15 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={value => value}
+            tickFormatter={(value: string) => value}
             className="text-xs text-muted-foreground"
           />
-          <YAxis
-            hide
-            domain={['auto', 'auto']}
-            padding={{ top: 20, bottom: 20 }}
-          />
+          <YAxis hide domain={['auto', 'auto']} padding={{ top: 20, bottom: 20 }} />
           <ChartTooltip
             cursor={{ strokeDasharray: '3 3' }}
             content={
               <ChartTooltipContent
-                formatter={(value) => (
+                formatter={value => (
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-muted-foreground">Balance</span>
                     <span className="font-mono font-semibold text-primary">

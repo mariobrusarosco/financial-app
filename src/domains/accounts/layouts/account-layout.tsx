@@ -30,15 +30,9 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
   }
 
   return (
-    <div className="space-y-6 md:pr-4 max-h-full overflow-y-auto" data-ui="account-layout">
+    <div className="md:pr-4 max-h-full" data-ui="account-layout">
       <AccountHeading slug={slug} />
-
-      <div className="flex gap-4 justify-between items-start">
-        <AccountOverview slug={slug} />
-        <Separator orientation="vertical" className="h-full w-[1px] bg-border" />
-        <AccountQuickActions slug={slug} />
-      </div>
-
+      <AccountOverview slug={slug} />
       <Separator className="my-4" />
 
       <Outlet />

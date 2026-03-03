@@ -35,7 +35,7 @@ export const AccountExpensesScreen = ({ slug }: AccountExpensesScreenProps) => {
     <div className="space-y-6">
       <div
         data-ui="account-expenses-screen"
-        className="grid grid-cols-[300px_1fr] justify-between gap-12"
+        className="grid grid-cols-1 md:grid-cols-[300px_1fr] justify-between gap-12"
       >
         <AccountTransactionAnalyzer transactions={transactions} type="expense" />
         <AccountTransactionsList params={mergedParams} onParamsChange={setParams} query={query} />

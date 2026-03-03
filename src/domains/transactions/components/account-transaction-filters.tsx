@@ -68,7 +68,7 @@ export const AccountTransactionFilters = ({
   );
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="py-4">
       <div className="flex items-center justify-between">
         <CollapsibleTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center gap-2">
@@ -110,10 +110,12 @@ export const AccountTransactionFilters = ({
             <Label className="text-sm font-medium">Quick Filters</Label>
             <div className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="filter-income" 
+                <Checkbox
+                  id="filter-income"
                   checked={params.movement_type === 'income'}
-                  onCheckedChange={(checked) => updateParam('movement_type', checked ? 'income' : undefined)}
+                  onCheckedChange={checked =>
+                    updateParam('movement_type', checked ? 'income' : undefined)
+                  }
                 />
                 <label
                   htmlFor="filter-income"
@@ -123,10 +125,12 @@ export const AccountTransactionFilters = ({
                 </label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="filter-expense" 
+                <Checkbox
+                  id="filter-expense"
                   checked={params.movement_type === 'expense'}
-                  onCheckedChange={(checked) => updateParam('movement_type', checked ? 'expense' : undefined)}
+                  onCheckedChange={checked =>
+                    updateParam('movement_type', checked ? 'expense' : undefined)
+                  }
                 />
                 <label
                   htmlFor="filter-expense"

@@ -59,11 +59,11 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html>
+    <html className="bg-red-100">
       <head>
         <HeadContent />
       </head>
-      <body className="h-screen w-full">
+      <body className="">
         {children}
         <Scripts />
       </body>

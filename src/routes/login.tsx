@@ -25,9 +25,7 @@ function LoginPage() {
     <div data-ui="login-screen" className="min-h-screen grid grid-cols-2">
       <div className="grid place-content-center">
         <div className="flex items-center justify-center">
-          <h1 className="text-7xl max-w-md text-balance tracking-tigh font-sans font-light">
-            Better Call Buffet
-          </h1>
+          <h1 className="text-7xl max-w-md text-balance font-sans font-thin">Better Call Buffet</h1>
           <div className="spinner w-20 h-20 text-center rounded-full" data-ui="spinner">
             <div className="spinner1" />
           </div>

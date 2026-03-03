@@ -1,5 +1,4 @@
 import { useAccount } from '@/domains/accounts/hooks/use-account';
-import { Surface } from '@/domains/global/components/surface';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Button } from '@/domains/ui-system/components/button';
 import { RefreshCw } from 'lucide-react';
@@ -8,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
+import { AccountBalancePoints } from './account-balance-points';
 
 interface AccountOverviewProps {
   slug: string;
@@ -33,10 +33,16 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     return balancePoints?.at(-1);
   }, [balancePoints]);
 
+  const transactionsQuery = queryClient.getQueryData(
+    GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY(slug, from ?? '', to ?? '')
+  );
+
+  console.log({ transactionsQuery });
+
   return (
-    <div data-ui="account-overview" className="grid gap-4">
+    <div data-ui="account-overview" className="flex justify-between gap-4 pt-6">
       <div
-        className="flex flex-col gap-2 bg-neutral-white w-fit p-4 rounded-lg"
+        className="flex flex-col gap-2 bg-neutral-white w-fit p-2.5 md:p-4 rounded-lg h-fit"
         data-ui="account-overview-balance"
       >
         <div className="flex items-center justify-between">
@@ -52,13 +58,14 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
           </Button>
         </div>
         <Currency
-          className="text-xl font-bold"
-          variant="large"
+          variant="default"
           value={balancePoint?.balance}
           currency={account?.currency}
           autoColor
         />
       </div>
+
+      <AccountBalancePoints slug={slug} title="" />
     </div>
   );
 };

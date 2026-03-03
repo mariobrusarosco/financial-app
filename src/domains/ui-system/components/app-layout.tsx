@@ -13,11 +13,17 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const today = new Date();
 
   return (
-    <div data-testid="app" className="flex w-full h-full pt-8">
+    <div data-testid="app" className="overflow-hidden">
       <Navigation />
 
-      <main data-ui="main-content" className="flex-1 flex flex-col h-full pt-16 py-2 px-4 md:py-6 md:px-8 bg-section-background">
-        <div data-testid="layout-heading" className="mt-4 md:mt-0 flex gap-4 flex-wrap md:flex-col md:flex-row justify-between items-end">
+      <main
+        data-ui="main-content"
+        className="flex-1 flex flex-col h-full pt-16 py-2 px-4 md:py-6 md:px-8 bg-section-background"
+      >
+        <div
+          data-testid="layout-heading"
+          className="mt-4 md:mt-0 flex gap-4 flex-wrap md:flex-col md:flex-row justify-between items-end"
+        >
           <div data-testid="user-greeting" className="flex flex-col items-start">
             <p className="text-sm md:text-xl font-light text-muted-foreground">Hello,</p>
             <p className="text uppercase text-primary">{user?.full_name || 'User'}</p>
@@ -35,7 +41,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
         <hr className="border-b border-primary/20 w-full my-2 md:my-6" />
 
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="">{children}</div>
       </main>
     </div>
   );

@@ -7,6 +7,7 @@ import { cn } from '@/domains/ui-system/utils';
 import React from 'react';
 import { Button } from '@/domains/ui-system/components/button';
 import { ArrowLeft } from 'lucide-react';
+import AccountQuickActions from './account-quick-actions';
 
 interface AccountOverviewProps {
   slug: string;
@@ -26,61 +27,63 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="relative flex flex-col md:flex-row md:gap-30 py-4" data-ui="account-heading">
+    <div className="relative flex flex-col md:flex-row md:gap-30" data-ui="account-heading">
       <p className="text-sm text-muted-foreground">Bank Account</p>
       <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
 
-      <Tabs value={activeTab} className="mt-4 md:mt-0 md:ml-4 w-full">
-        <TabsList className="flex flex-row gap-3 bg-primary rounded-md p-1 h-fit">
-          <Link to="/accounts/$slug" params={{ slug }} >
-            <AccountHeadingTab
-              value="overview"
-              label="Overview"
-              icon={<TrendingUp className="h-4 w-4" />}
-              activeTab={activeTab}
-            />
-          </Link>
-          <Link to="/accounts/$slug/statements" params={{ slug }}>
-            <AccountHeadingTab
-              value="statements"
-              label="Statements"
-              icon={<FileText className="h-4 w-4" />}
-              activeTab={activeTab}
-            />
-          </Link>
-          <Link to="/accounts/$slug/expenses" params={{ slug }}>
-            <AccountHeadingTab
-              value="expenses"
-              label="Expenses"
-              icon={<TrendingUp className="h-4 w-4" />}
-              activeTab={activeTab}
-            />
-          </Link>
-          <Link to="/accounts/$slug/income" params={{ slug }}>
-            <AccountHeadingTab
-              value="income"
-              label="Income"
-              icon={<TrendingUp className="h-4 w-4" />}
-              activeTab={activeTab}
-            />
-          </Link>
-          <Link to="/accounts/$slug/credit-card" params={{ slug }}>
-            <AccountHeadingTab
-              value="credit-cards"
-              label="Credit Cards"
-              icon={<CreditCard className="h-4 w-4" />}
-              activeTab={activeTab}
-            />
-          </Link>
-        </TabsList>
-      </Tabs>
+      <div className="flex justify-between items-end ">
+        <Tabs value={activeTab} className="mt-4 md:mt-0 md:ml-4 w-full">
+          <TabsList className="flex flex-row gap-3 bg-primary rounded-md p-1 h-fit">
+            <Link to="/accounts/$slug" params={{ slug }}>
+              <AccountHeadingTab
+                value="overview"
+                label="Overview"
+                icon={<TrendingUp className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
+            <Link to="/accounts/$slug/statements" params={{ slug }}>
+              <AccountHeadingTab
+                value="statements"
+                label="Statements"
+                icon={<FileText className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
+            <Link to="/accounts/$slug/expenses" params={{ slug }}>
+              <AccountHeadingTab
+                value="expenses"
+                label="Expenses"
+                icon={<TrendingUp className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
+            <Link to="/accounts/$slug/income" params={{ slug }}>
+              <AccountHeadingTab
+                value="income"
+                label="Income"
+                icon={<TrendingUp className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
+            <Link to="/accounts/$slug/credit-card" params={{ slug }}>
+              <AccountHeadingTab
+                value="credit-cards"
+                label="Credit Cards"
+                icon={<CreditCard className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
+          </TabsList>
+        </Tabs>
 
+        <AccountQuickActions slug={slug} />
+      </div>
 
-      <Link to="/accounts" className='flex gap-1 items-center absolute top-4 right-0 md:relative'>
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        <span className="text">Back to Accounts</span>
+      <Link to="/accounts" className="flex gap-1 items-center absolute top-0 right-0 md:relative">
+        <ArrowLeft className="h-2 w-2 md:h-4 md:w-4 h-3 w-3" />
+        <span className="text-xs md:text-sm">Back to Accounts</span>
       </Link>
-
     </div>
   );
 };
@@ -94,11 +97,14 @@ interface AccountHeadingTabProps {
 
 const AccountHeadingTab = ({ value, label, icon, activeTab }: AccountHeadingTabProps) => {
   return (
-    <TabsTrigger value={value} className={cn(
-      'md:flex text-xs px-2 py-2.5 rounded-md cursor-pointer text-neutral-white hover:bg-foreground hover:text-primary',
-      activeTab === value && 'bg-neutral-white text-primary',
-      activeTab !== value && 'text-neutral-white'
-    )}>
+    <TabsTrigger
+      value={value}
+      className={cn(
+        'md:flex text-xs px-2 py-2.5 rounded-md cursor-pointer text-neutral-white hover:bg-foreground hover:text-primary',
+        activeTab === value && 'bg-neutral-white text-primary',
+        activeTab !== value && 'text-neutral-white'
+      )}
+    >
       {icon}
       <span className="hidden md:flex">{label}</span>
     </TabsTrigger>

@@ -17,6 +17,7 @@ import type {
   I_TransactionResponse,
   I_TransactionsResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
+import { CategoryManagerButton } from '@/domains/categories/components/category-manager-button';
 
 interface AccountTransactionsListProps {
   params: I_AccountTransactionsParams;
@@ -133,7 +134,7 @@ export const AccountTransactionsList = ({
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
   return (
-    <div data-ui="account-transactions-list" className="flex space-between">
+    <div data-ui="account-transactions-list" className="flex flex-col">
       <div className="flex items-start justify-between">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
@@ -152,27 +153,16 @@ export const AccountTransactionsList = ({
           </div>
         </div>
 
-        <div className="flex  flex-col items-center gap-2">
-          <Link to="." search={prev => ({ ...prev, drawer: 'category-manager' })}>
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Settings2 className="h-4 w-4 mr-2" />
-              Manage Categories
-            </Button>
-          </Link>
-
-          <Link to="." search={prev => ({ ...prev, drawer: 'transaction-create' })}>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Transaction
-            </Button>
-          </Link>
-        </div>
+        <CategoryManagerButton />
       </div>
 
       <AccountTransactionFilters params={params} onParamsChange={onParamsChange} />
 
       {selectedIds.size > 0 && (
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+        <div
+          data-ui="selected-transactions"
+          className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
+        >
           <div className="flex items-center gap-3">
             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               {selectedIds.size} selected
@@ -200,7 +190,7 @@ export const AccountTransactionsList = ({
         </div>
       )}
 
-      {/* <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
+      <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
         {transactions && transactions.length > 0 ? (
           <>
             <div className="flex items-center gap-3 p-2 border-b">
@@ -231,9 +221,7 @@ export const AccountTransactionsList = ({
                   transaction={transaction}
                   mode="default"
                   isSelected={selectedIds.has(transaction.id)}
-                  onSelectionChange={selected =>
-                    handleSelectTransaction(transaction.id, selected)
-                  }
+                  onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
                   showCheckbox={true}
                   onTriggerEditMode={handleEdit}
                   onDelete={handleDelete}
@@ -270,9 +258,9 @@ export const AccountTransactionsList = ({
             </p>
           </div>
         )}
-      </div> */}
+      </div>
 
-      {/* {meta && meta.total > meta.per_page && (
+      {meta && meta.total > meta.per_page && (
         <div
           data-ui="account-transactions-list-pagination"
           className="flex items-center justify-between p-3 bg-muted/50 rounded-lg sticky bottom-0 z-10 bg-neutral-white shadow-lg"
@@ -293,7 +281,7 @@ export const AccountTransactionsList = ({
             className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
           />
         </div>
-      )} */}
+      )}
     </div>
   );
 };

@@ -4,46 +4,28 @@ import { useForm } from '@tanstack/react-form';
 import { useLogin } from '../hooks/use-login';
 import { Input } from '@/domains/ui-system/components/input';
 import { Button } from '@/domains/ui-system/components/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
 import { Checkbox } from '@/domains/ui-system/components/checkbox';
 import { Label } from '@/domains/ui-system/components/label';
-import { Loader2 } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import type { I_LoginRequest } from '../types/auth.types';
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate: login, isPending } = useLogin();
 
-  const form = useForm<I_LoginRequest>({
+  const form = useForm({
     defaultValues: {
       email: '',
       password: '',
       rememberMe: false,
     },
-    onSubmit: async ({ value }) => {
-      login(value);
+    onSubmit: ({ value }) => {
+      login(value as I_LoginRequest);
     },
   });
 
   return (
-    <div
-      data-ui="login-form"
-      className="grid place-content-center"
-      style={{
-        backgroundImage: `
-        radial-gradient(at 100% -50%, #263a49 0px, transparent 60%),
-        radial-gradient(at 40% 10%, #c9c9c9 0px, transparent 40%),
-        radial-gradient(at 50% 1020%, #9e4963 0px, transparent 90%)
-      `,
-      }}
-    >
+    <div data-ui="login-form" className="grid place-content-center">
       <form
         data-testid="login-form"
         onSubmit={e => {
@@ -115,6 +97,16 @@ export const LoginForm = () => {
                     disabled={isPending}
                     autoComplete="current-password"
                   />
+                  <span
+                    className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeIcon className="w-4 h-4" />
+                    ) : (
+                      <EyeOffIcon className="w-4 h-4" />
+                    )}
+                  </span>
                 </div>
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
@@ -169,7 +161,7 @@ export const LoginForm = () => {
           </Button>
 
           <div className="text-sm text-center text-muted-foreground">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/signup" className="text-primary underline-offset-4 hover:underline">
               Sign up
             </Link>

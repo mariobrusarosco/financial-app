@@ -32,8 +32,10 @@ const transactionSchema = z
   .object({
     description: z.string().min(1, 'Description is required'),
     amount: z.preprocess(
-      (val) => (val === '' || val === null || val === undefined ? undefined : Number(val)),
-      z.number({ required_error: 'Amount is required' }).refine(val => val !== 0, 'Amount must not be 0')
+      val => (val === '' || val === null || val === undefined ? undefined : Number(val)),
+      z
+        .number({ required_error: 'Amount is required' })
+        .refine(val => val !== 0, 'Amount must not be 0')
     ),
     date: z.string().min(1, 'Date is required'),
     movement_type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
@@ -149,7 +151,7 @@ export const TransactionForm = ({
         e.stopPropagation();
         void form.handleSubmit();
       }}
-      className="space-y-6 flex flex-col"
+      className="flex flex-col gap-6"
     >
       <form.Field
         name="description"
@@ -167,19 +169,20 @@ export const TransactionForm = ({
               onChange={e => field.handleChange(e.target.value)}
               placeholder="Enter transaction description"
               rows={isEditMode ? 2 : 3}
-              className={cn("min-h-[80px]", { 'text-sm': isEditMode })}
+              className={cn('min-h-[80px]', { 'text-sm': isEditMode })}
             />
             {field.state.meta.errors.length > 0 && (
               <p className="text-sm text-destructive">
-                {field.state.meta.errors.map((error: any) => (
-                  typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
-                )).join(', ')}
+                {field.state.meta.errors
+                  .map((error: any) =>
+                    typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+                  )
+                  .join(', ')}
               </p>
             )}
           </div>
         )}
       </form.Field>
-
 
       <div className="flex gap-4">
         <form.Field
@@ -188,9 +191,7 @@ export const TransactionForm = ({
             onSubmit: transactionSchema.shape.amount,
           }}
         >
-          {field => (
-            <TransactionAmountField field={field} isEditMode={isEditMode} />
-          )}
+          {field => <TransactionAmountField field={field} isEditMode={isEditMode} />}
         </form.Field>
 
         <form.Field
@@ -208,9 +209,11 @@ export const TransactionForm = ({
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-sm text-destructive">
-                  {field.state.meta.errors.map((error: any) => (
-                    typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
-                  )).join(', ')}
+                  {field.state.meta.errors
+                    .map((error: any) =>
+                      typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+                    )
+                    .join(', ')}
                 </p>
               )}
             </div>
@@ -259,9 +262,11 @@ export const TransactionForm = ({
             </RadioGroup>
             {field.state.meta.errors.length > 0 && (
               <p className="text-sm text-destructive">
-                {field.state.meta.errors.map((error: any) => (
-                  typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
-                )).join(', ')}
+                {field.state.meta.errors
+                  .map((error: any) =>
+                    typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+                  )
+                  .join(', ')}
               </p>
             )}
           </div>
@@ -331,9 +336,7 @@ export const TransactionForm = ({
           </div>
         )}
         <div className="flex flex-col mb-2">
-          <Label htmlFor="credit-card-toggle">
-            Bank Account
-          </Label>
+          <Label htmlFor="credit-card-toggle">Bank Account</Label>
           <form.Field
             name="account_id"
             validators={{
@@ -343,15 +346,24 @@ export const TransactionForm = ({
             {field => (
               <div className="flex gap-2 justify-between flex-nowrap overflow-x-auto">
                 {accounts?.map(account => (
-                  <div className={cn('gap-2 px-4 py-4 border rounded-lg bg-gray-100', field.state.value === account.id && 'bg-primary text-primary-foreground')} key={account.id} onClick={() => field.handleChange(account.id)}>
+                  <div
+                    className={cn(
+                      'gap-2 px-4 py-4 border rounded-lg bg-gray-100',
+                      field.state.value === account.id && 'bg-primary text-primary-foreground'
+                    )}
+                    key={account.id}
+                    onClick={() => field.handleChange(account.id)}
+                  >
                     {account.name}
                   </div>
                 ))}
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">
-                    {field.state.meta.errors.map((error: any) => (
-                      typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
-                    )).join(', ')}
+                    {field.state.meta.errors
+                      .map((error: any) =>
+                        typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+                      )
+                      .join(', ')}
                   </p>
                 )}
               </div>
@@ -360,9 +372,7 @@ export const TransactionForm = ({
         </div>
 
         <div className="flex flex-col mb-2">
-          <Label htmlFor="credit-card-toggle">
-            Credit Card
-          </Label>
+          <Label htmlFor="credit-card-toggle">Credit Card</Label>
 
           <form.Field
             name="credit_card_id"
@@ -372,35 +382,39 @@ export const TransactionForm = ({
           >
             {field => (
               <div className="mt-6">
-                <div className='flex gap-2 justify-between flex-nowrap overflow-x-auto'>
+                <div className="flex gap-2 justify-between flex-nowrap overflow-x-auto">
                   {creditCards?.data?.map(creditCard => (
-                    <div className={cn('gap-2 px-4 py-4 border rounded-lg bg-gray-100', field.state.value === creditCard.id && 'bg-primary text-primary-foreground')} key={creditCard.id} onClick={() => field.handleChange(creditCard.id)}>
+                    <div
+                      className={cn(
+                        'gap-2 px-4 py-4 border rounded-lg bg-gray-100',
+                        field.state.value === creditCard.id && 'bg-primary text-primary-foreground'
+                      )}
+                      key={creditCard.id}
+                      onClick={() => field.handleChange(creditCard.id)}
+                    >
                       {creditCard.name} (*{creditCard.last_four_digits})
                     </div>
-                  ))
-                  }
+                  ))}
                   {creditCards?.data?.length === 0 && (
-                    <div className='mt-2 text-sm text-muted-foreground'>
-                      No credit cards
-                    </div>
+                    <div className="mt-2 text-sm text-muted-foreground">No credit cards</div>
                   )}
                 </div>
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">
-                    {field.state.meta.errors.map((error: any) => (
-                      typeof error === 'string' ? error : (error?.message || JSON.stringify(error))
-                    )).join(', ')}
+                    {field.state.meta.errors
+                      .map((error: any) =>
+                        typeof error === 'string' ? error : error?.message || JSON.stringify(error)
+                      )
+                      .join(', ')}
                   </p>
                 )}
               </div>
             )}
           </form.Field>
         </div>
-
       </div>
 
       <div className="flex  gap-6">
-
         <form.Field name="is_paid">
           {field => (
             <div className="space-y-2">
@@ -437,7 +451,6 @@ export const TransactionForm = ({
           )}
         </form.Field>
       </div>
-
-    </form >
+    </form>
   );
 };

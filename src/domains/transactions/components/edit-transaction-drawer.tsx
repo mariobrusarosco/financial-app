@@ -107,7 +107,7 @@ export const EditTransactionDrawer = () => {
 
   // Success state - render the edit form
   return (
-    <>
+    <div className="p-2 md:p-6 space-y-6 h-full overflow-y-auto" data-ui="edit-transaction-drawer">
       <div className="flex items-center justify-between">
         <DrawerHeader
           title="Edit Transaction"
@@ -127,7 +127,7 @@ export const EditTransactionDrawer = () => {
           </Button>
         </div>
       </div>
-      <div className="px-4 pb-4">
+      <div className="flex flex-col gap-6 h-full p-4">
         <TransactionForm
           initialValues={transaction}
           onSubmit={handleSave}
@@ -135,6 +135,6 @@ export const EditTransactionDrawer = () => {
           onCancel={handleClose}
         />
       </div>
-    </>
+    </div>
   );
 };

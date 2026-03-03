@@ -4,6 +4,7 @@ import { AccountBalancePoints } from '@/domains/accounts/components/account-bala
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
 import { Route } from '@/routes/(auth)/route';
+import { CategoryManagerButton } from '@/domains/categories/components/category-manager-button';
 
 interface AccountOverviewScreenProps {
   slug: string;
@@ -30,16 +31,12 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
   const transactionsQuery = useAccountTransactionsPaginated(slug, mergedParams, true);
 
   return (
-    <div
-      data-ui="account-overview-screen"
-      className="flex flex-col md:flex-row justify-between gap-12"
-    >
-      <AccountBalancePoints slug={slug} transactionsQuery={transactionsQuery} />
-      {/* <AccountTransactionsList
+    <div data-ui="account-overview-screen" className="">
+      <AccountTransactionsList
         params={mergedParams}
         onParamsChange={setParams}
         query={transactionsQuery}
-      /> */}
+      />
     </div>
   );
 };
