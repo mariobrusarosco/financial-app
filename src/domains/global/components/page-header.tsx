@@ -21,9 +21,9 @@ export const PageHeader = ({
   iconColor = 'bg-rose-700',
 }: PageHeaderProps) => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between" data-ui="page-header">
       <div className="flex items-center gap-4">
-        <Icon className={cn("text-neutral-white rounded-md p-2.5 h-10 w-10", iconColor)} />
+        <Icon className={cn('text-neutral-white rounded-md p-2.5 h-10 w-10', iconColor)} />
         <h1 className="text-4xl text-primary font-light tracking-tight">{title}</h1>
       </div>
 

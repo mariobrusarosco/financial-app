@@ -37,22 +37,19 @@ export const CreateTransactionDrawer = () => {
   };
 
   return (
-    <div className="p-2 md:p-6 space-y-6 h-full overflow-y-auto" data-ui="create-transaction-drawer">
+    <div className="space-y-6 h-full overflow-y-auto" data-ui="create-transaction-drawer">
       <div className="flex justify-between items-center sticky top-0 bg-background z-10">
         <div className="flex flex-col gap-2">
-
           <DrawerHeader
             title="Create Transactions"
             icon={PiggyBank}
-            description={pendingTransactions.length > 0 ? (
-              `${pendingTransactions.length} pending`
-            ) : undefined}
+            description={
+              pendingTransactions.length > 0 ? `${pendingTransactions.length} pending` : undefined
+            }
           />
-
         </div>
 
-        <div className="flex flex items-center gap-2">
-
+        <div className="flex flex items-center gap-2 pr-2">
           {pendingTransactions.length > 0 && (
             <Button
               size="sm"
@@ -68,13 +65,12 @@ export const CreateTransactionDrawer = () => {
             Add
           </Button>
         </div>
-
       </div>
 
-      <div className="flex flex-col gap-6 h-full">
+      <div className="flex flex-col md:flex-row gap-6 h-full">
         <TransactionForm onSubmit={handleAddTransaction} />
 
-        <div className="border-l p-4 sticky bottom-0 bg-white z-10 shadow-lg max-h-[250px] overflow-auto">
+        <div className="border-l p-4 sticky bottom-0 md:static bg-neutral-white z-10 shadow-lg max-h-[250px] overflow-auto">
           <h3 className="text-lg font-medium mb-2">Pending Transactions</h3>
           {pendingTransactions.length === 0 ? (
             <p className="text-muted-foreground text-sm">No transactions added yet</p>
@@ -121,4 +117,3 @@ export const CreateTransactionDrawer = () => {
     </div>
   );
 };
-

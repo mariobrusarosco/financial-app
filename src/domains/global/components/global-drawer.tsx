@@ -165,7 +165,7 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
 
   return (
     <Drawer open={true} onOpenChange={open => !open && handleClose()}>
-      <DrawerContent className="min-h-[80vh]">
+      <DrawerContent className="min-h-[95vh] md:min-h-[80vh]">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-full">

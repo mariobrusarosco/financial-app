@@ -13,7 +13,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const today = new Date();
 
   return (
-    <div data-testid="app" className="overflow-hidden">
+    <div data-testid="app" className="overflow-hidden h-screen md:flex">
       <Navigation />
 
       <main
@@ -41,7 +41,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
         <hr className="border-b border-primary/20 w-full my-2 md:my-6" />
 
-        <div className="">{children}</div>
+        <div className="md:flex-1 overflow-y-auto">{children}</div>
       </main>
     </div>
   );

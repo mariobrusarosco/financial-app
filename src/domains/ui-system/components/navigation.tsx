@@ -107,11 +107,7 @@ const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          data-testid="user-menu"
-          variant="ghost"
-          className="relative h-8 w-8 rounded-full"
-        >
+        <Button data-testid="user-menu" variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
           </Avatar>
@@ -163,7 +159,7 @@ export const Navigation = () => {
     <>
       <nav
         data-ui="app-navigation"
-        className="hidden  md:grid h-full place-content-center gap-6 bg-foreground p-3 font-sans
+        className="hidden md:grid h-full place-content-center gap-6 bg-foreground p-3 font-sans
         text-primary"
       >
         {navigationItems.map(item => {
