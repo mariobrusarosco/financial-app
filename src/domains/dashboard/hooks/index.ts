@@ -1,2 +1,1 @@
-// Custom React hooks for the dashboard domain
-export {};
+export * from './use-upcoming-subscriptions';
