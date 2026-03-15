@@ -22,11 +22,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       >
         <div
           data-testid="layout-heading"
-          className="mt-4 md:mt-0 flex gap-4 flex-wrap md:flex-col md:flex-row justify-between items-end"
+          className="mt-4 md:mt-6 flex gap-4 flex-wrap md:flex-col md:flex-row justify-between items-end"
         >
           <div data-testid="user-greeting" className="flex flex-col items-start">
             <p className="text-sm md:text-xl font-light text-muted-foreground">Hello,</p>
-            <p className="text uppercase text-primary">{user?.full_name || 'User'}</p>
+            <p className="text text-primary lg:text-3xl font-thin">{user?.full_name || 'User'}</p>
           </div>
 
           <div className="flex items-center gap-2 text-primary">

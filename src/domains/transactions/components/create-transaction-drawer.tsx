@@ -67,10 +67,10 @@ export const CreateTransactionDrawer = () => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6 h-full">
+      <div className="flex flex-col xl:flex-row gap-6 h-full">
         <TransactionForm onSubmit={handleAddTransaction} />
 
-        <div className="border-l p-4 sticky bottom-0 md:static bg-neutral-white z-10 shadow-lg max-h-[250px] overflow-auto">
+        <div className="border-l p-4 sticky bottom-0 xl:static bg-neutral-white z-10 shadow-lg max-h-[250px] overflow-auto">
           <h3 className="text-lg font-medium mb-2">Pending Transactions</h3>
           {pendingTransactions.length === 0 ? (
             <p className="text-muted-foreground text-sm">No transactions added yet</p>
