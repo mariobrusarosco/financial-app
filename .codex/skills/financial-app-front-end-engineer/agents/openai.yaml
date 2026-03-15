@@ -1,0 +1,4 @@
+interface:
+  display_name: "Financial App Front End Engineer"
+  short_description: "Create or update frontend UI for the financial-app project."
+  default_prompt: "Build frontend UI in React and TypeScript for the financial-app project."
