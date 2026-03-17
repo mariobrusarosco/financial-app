@@ -46,7 +46,7 @@ export const calculateNextMonthLiability = (plans: I_InstallmentPlan[]): number 
  * Calculates the total liability for the current calendar month.
  */
 export const calculateCurrentMonthLiability = (plans: I_InstallmentPlan[]): number => {
-  const currentMonth = new Date();
+  const currentMonth = startOfMonth(new Date());
   
   return plans.reduce((total, plan) => {
     if (plan.status === 'canceled' || plan.status === 'completed') return total;

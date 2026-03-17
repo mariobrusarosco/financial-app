@@ -1,9 +1,29 @@
 import { useInstallmentPlans } from '@/domains/installments/hooks/use-installment-plans';
-import type { I_InstallmentPlan } from '@/domains/installments/types/types-and-interfaces';
+import type {
+  I_Installment,
+  I_InstallmentPlan,
+} from '@/domains/installments/types/types-and-interfaces';
+import { addMonths, isSameMonth, parseISO, startOfMonth } from 'date-fns';
+
+const currentMonth = startOfMonth(new Date());
+const nextMonth = addMonths(currentMonth, 1);
+
+const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
+  const allOutstandingInstallments = plans.flatMap(plan =>
+    plan.installments
+      .filter(byOutstanding)
+      .filter(byCurrentMonth)
+      .sort(byAscDueDate)
+      .map(toInstallmentAndPlanName(plan))
+      .slice(0, MAX_INSTALLMENTS_TO_DISPLAY)
+  );
+
+  return allOutstandingInstallments;
+};
 
 export const useUpcomingInstallments = () => {
   const installmentPlansQuery = useInstallmentPlans({ status: 'active', per_page: 100 });
-  const installments = sortUpcomingInstallments(installmentPlansQuery.data.plans);
+  const installments = getUpcomingInstallments(installmentPlansQuery.data.plans);
 
   return {
     data: {
@@ -12,33 +32,29 @@ export const useUpcomingInstallments = () => {
     states: {
       isLoading: installmentPlansQuery.states.isLoading,
       isError: installmentPlansQuery.states.isError,
-      isEmpty:
-        !installmentPlansQuery.states.isLoading &&
-        !installmentPlansQuery.states.isError &&
-        installments.length === 0,
+      isEmpty: !installmentPlansQuery.states.isLoading && !installmentPlansQuery.states.isError,
+      // installments.length === 0,
     },
     handlers: {},
   };
 };
 
-const sortUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
-  return plans
-    .flatMap(plan =>
-      plan.installments
-        .filter(installment => installment.status !== 'linked')
-        .map(installment => ({
-          id: installment.id,
-          planName: plan.name,
-          dueDate: installment.due_date,
-          amount: installment.amount,
-          status: installment.status,
-          installmentNumber: installment.number,
-          installmentCount: plan.installment_count,
-        }))
-    )
-    .sort(
-      (firstInstallment, secondInstallment) =>
-        new Date(firstInstallment.dueDate).getTime() - new Date(secondInstallment.dueDate).getTime()
-    )
-    .slice(0, 5);
-};
+const byCurrentMonth = (installment: I_Installment) =>
+  isSameMonth(parseISO(installment.due_date), currentMonth);
+
+const byOutstanding = (installment: I_Installment) => installment.status !== 'linked';
+
+const toInstallmentAndPlanName = (plan: I_InstallmentPlan) => (installment: I_Installment) => ({
+  id: installment.id,
+  planName: plan.name,
+  dueDate: installment.due_date,
+  amount: installment.amount,
+  status: installment.status,
+  installmentNumber: installment.number,
+  installmentCount: plan.installment_count,
+});
+
+const byAscDueDate = (firstInstallment: I_Installment, secondInstallment: I_Installment) =>
+  new Date(firstInstallment.due_date).getTime() - new Date(secondInstallment.due_date).getTime();
+
+const MAX_INSTALLMENTS_TO_DISPLAY = 5;
