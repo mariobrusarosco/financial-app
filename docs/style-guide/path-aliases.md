@@ -28,6 +28,32 @@ Our project has the following path aliases configured in `tsconfig.json`:
 
 ## Using Path Aliases
 
+### Absolute Imports Only
+
+- Always use absolute imports with the configured path aliases for application code.
+- Do not use relative imports such as `./` or `../` when an alias-based import is possible.
+- Do not use barrel imports such as folder-level `index.ts` or `index.tsx` exports.
+- Prefer the most specific existing alias for the target path.
+- If an import can be written with a configured alias, it must not be written as a relative path.
+- Import from the actual implementation file, not from a folder export.
+
+Examples:
+
+```typescript
+import { useInstallmentPlans } from '@/domains/installments/hooks/use-installment-plans';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
+import type { I_InstallmentPlan } from '@/domains/installments/types/types-and-interfaces';
+```
+
+Avoid:
+
+```typescript
+import { useInstallmentPlans } from '../hooks/use-installment-plans';
+import { formatCurrencyAmount } from '../../global/utils/formatting';
+import type { I_InstallmentPlan } from '../types/types-and-interfaces';
+import { useUpcomingSubscriptions } from '@/domains/dashboard/hooks';
+```
+
 ### Importing from the Global Domain
 
 The global domain contains shared code used across the application.
@@ -100,24 +126,6 @@ domain-name/
 └── index.ts          # Public exports
 ```
 
-## Exporting Through Domain Indexes
-
-For clean imports, exports should go through the domain's index.ts file:
-
-```typescript
-// src/domains/investments/index.ts
-export { AccountCard } from './components/account-card';
-export { useAccountData } from './hooks/use-account-data';
-export type { AccountData } from './schemas/account.schema';
-```
-
-Then, consumers can import directly from the domain:
-
-```typescript
-import { AccountCard, useAccountData } from '@domains/investments';
-import type { AccountData } from '@domains/investments';
-```
-
 ## Troubleshooting Path Aliases
 
 ### Path Aliases Not Working
@@ -159,7 +167,8 @@ import type { AccountData } from '@domains/investments/schemas/account.schema';
 ## Best Practices
 
 1. **Use the most specific alias possible** - Prefer `@global/components/button` over `@domains/global/components/button`
-2. **Use domain index exports** - Export through the domain's index.ts for better API control
+2. **Import from implementation files** - Do not import from folder-level `index.ts` or `index.tsx` files
 3. **Always use the `type` keyword for type imports** - As per our coding standards
 4. **Keep path structure consistent** - Maintain the same structure across domains
-5. **Don't skip domains** - Import directly from a domain, not from other domains
+5. **Don't skip domains** - Import directly from a domain path, not from other domains
+6. **Avoid relative imports in application code** - Prefer alias-based imports consistently

@@ -146,12 +146,29 @@ const Icon = item.icon;
 
 - Default exports should match the filename
 - Always use named exports for utility functions and hooks
+- Always use absolute imports with the configured path aliases
+- Do not use relative imports for application code when an alias-based import is possible
+- Do not use barrel files such as `index.ts` or `index.tsx` for application imports; import from the implementation file directly
 - Group imports in the following order:
   1. React and framework imports
   2. Third-party libraries
   3. Internal domains (global, tools)
   4. Current domain imports
   5. Types (using the `type` keyword)
+
+### Code Taste
+
+- Prefer direct edits over new abstractions.
+- Prefer modifying the requested file over redistributing responsibilities across new files.
+- Do not create helper interfaces, helper types, or `satisfies` contracts unless they are already established in the local domain or are strictly required.
+- Do not create new hooks, utilities, wrappers, or files unless they are strictly required by the requested change.
+- Prefer obvious code over "cleaner" architecture.
+- Prefer local simplicity over speculative reusability.
+- When a user points to a specific file, assume the meaningful solution should remain in that file unless there is explicit approval to move it.
+- Do not solve a request by moving the "real" logic elsewhere unless that move is explicitly requested or required.
+- Method and helper names must reflect their real responsibility. If a function filters, reshapes, sorts, and limits data, do not name it as if it only sorts.
+- If a name and the business meaning diverge, fix the name or the logic. Do not leave misleading names in place just because the code works.
+- Treat optional abstractions as a cost, not as an automatic improvement.
 
 ### Component Structure
 
@@ -169,17 +186,6 @@ const Icon = item.icon;
    - Event-based communication
    - Shared state in global
    - Dedicated integration layer
-
-### Public API
-
-Each domain should expose a clear public API through its `index.ts` file:
-
-```typescript
-// domain/index.ts
-export { ComponentA, ComponentB } from './components';
-export { useFeatureX } from './hooks';
-export type { FeatureData } from './schemas/feature.schema';
-```
 
 ## State Management
 

@@ -12,7 +12,7 @@ Read the relevant project style-guide files before editing code. Prioritize this
 1. Read the most relevant guidance before editing:
    - `docs/style-guide/components-lifecycle.md` for component and UI-hook responsibilities
    - `docs/style-guide/tanstack-query.md` for data-fetching patterns
-   - `docs/decisions/014-coding-standards.md` and `AGENTS.md` for repo conventions
+   - `docs/decisions/014-coding-standards.md` and `AGENTS.md` for repo conventions and code taste
 2. Inspect the target file and its direct consumers before changing the implementation.
 3. Match the surrounding domain structure in `src/domains/<domain>/`.
 4. Prefer the smallest change that fully satisfies the style guide, even if that means updating consumers.
@@ -38,6 +38,15 @@ Read the relevant project style-guide files before editing code. Prioritize this
 - Use named exports for hooks and utilities.
 - Keep comments sparse and only when they add non-obvious context.
 
+## Import Discipline
+
+- Always use absolute imports with the configured repo path aliases.
+- Do not use relative imports such as `./` or `../` in application code when an alias-based import is possible.
+- Do not use barrel imports such as folder-level `index.ts` or `index.tsx` exports.
+- When editing a file, normalize any changed import to the absolute direct-file alias form.
+- Treat relative imports in touched application files as non-compliant unless the user explicitly asks otherwise.
+- Treat barrel imports in touched application files as non-compliant unless the user explicitly asks otherwise.
+
 ## Scope Discipline
 
 - Do not introduce new abstractions, helper types, helper hooks, files, or utilities unless the user explicitly asks for them or they are strictly required to complete the requested change.
@@ -45,10 +54,12 @@ Read the relevant project style-guide files before editing code. Prioritize this
 - When the user points to a specific file, keep the main solution in that file unless the user explicitly approves moving the main responsibility elsewhere.
 - Prefer adapting existing code over inventing new structure.
 - If you believe a new file, helper, interface, or abstraction would improve the code, pause and ask before adding it.
+- Do not create barrel files or expand existing barrel patterns unless the user explicitly asks for them.
 
 ## Decision Rule
 
 - If the task is to "make it compliant with the style guide" or "follow code taste", prefer the repo's preferred abstraction over the narrowest possible edit.
+- Treat the `Code Taste` section in `docs/decisions/014-coding-standards.md` as the authoritative source for tradeoff decisions in this repo.
 - If two interpretations are plausible, choose the one that better aligns with the style-guide documents and the consuming component's responsibilities.
 - If a change would require a broader architectural move beyond the local feature scope, pause and ask before proceeding.
 - Apply the style guide within the requested scope; do not create additional layers just to better match an ideal architecture.

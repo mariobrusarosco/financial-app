@@ -2,7 +2,7 @@ import { Badge } from '@/domains/ui-system/components/badge';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 import { CheckCircle2, AlertCircle, Repeat } from 'lucide-react';
 import { formatDateMedium, formatCurrencyAmount } from '@/domains/global/utils/formatting';
-import { useUpcomingSubscriptions } from '../hooks';
+import { useUpcomingSubscriptions } from '@/domains/dashboard/hooks/use-upcoming-subscriptions';
 
 const cardClassName = 'w-full md:w-[400px] min-h-[25rem] rounded-md bg-foreground p-6';
 const bodyClassName = 'flex min-h-[18rem] flex-1 flex-col justify-center';
@@ -21,7 +21,10 @@ const LoadingState = () => {
   return (
     <div data-test-id="upcoming-subscriptions-loading" className={listClassName}>
       {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="flex items-center justify-between rounded-sm bg-neutral-white/80 p-4">
+        <div
+          key={index}
+          className="flex items-center justify-between rounded-sm bg-neutral-white/80 p-4"
+        >
           <div className="flex flex-col gap-2">
             <Skeleton className="h-4 w-32 bg-muted-foreground/20" />
             <Skeleton className="h-3 w-40 bg-muted-foreground/20" />
@@ -35,7 +38,10 @@ const LoadingState = () => {
 
 const ErrorState = () => {
   return (
-    <div data-test-id="upcoming-subscriptions-error" className={`${bodyClassName} items-center text-center`}>
+    <div
+      data-test-id="upcoming-subscriptions-error"
+      className={`${bodyClassName} items-center text-center`}
+    >
       <div className="space-y-2">
         <p className="text-sm text-destructive">We couldn&apos;t load your subscriptions.</p>
         <p className="text-sm text-muted-foreground">Please try again in a moment.</p>
@@ -46,7 +52,10 @@ const ErrorState = () => {
 
 const EmptyState = () => {
   return (
-    <div data-test-id="upcoming-subscriptions-empty" className={`${bodyClassName} items-center text-center`}>
+    <div
+      data-test-id="upcoming-subscriptions-empty"
+      className={`${bodyClassName} items-center text-center`}
+    >
       <div className="space-y-2">
         <p className="text-sm text-primary">No active subscriptions in this period.</p>
         <p className="text-sm text-muted-foreground">When you add one, it will appear here.</p>
@@ -68,7 +77,7 @@ export const UpcomingSubscriptions = () => {
 
       {!states.isLoading && !states.isError && !states.isEmpty ? (
         <div className={listClassName}>
-          {data.subscriptions.map((subscription) => (
+          {data.subscriptions.map(subscription => (
             <div
               key={subscription.id}
               className="flex items-center justify-between rounded-sm bg-neutral-white/80 p-4"
@@ -87,7 +96,10 @@ export const UpcomingSubscriptions = () => {
                     Paid
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700">
+                  <Badge
+                    variant="outline"
+                    className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700"
+                  >
                     <AlertCircle className="h-3 w-3" />
                     Due
                   </Badge>
