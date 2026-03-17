@@ -62,7 +62,7 @@ Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for mor
 - **File Imports**: Use '/@' prefix. Always use absolute paths.
 - **File Naming**: All files should be named using `kebab-case`.
 - **Type Imports**: Always import types with `type` keyword: `import type { MyType } from './types'
-- **API Type Naming**: Follow the naming convention outlined in the `README.md` and `docs/decisions/014-coding-standards.md` for API-related types.
+- **API Type Naming**: Follow the naming convention outlined in the `README.md` and `docs/style-guide/coding-conventions.md` for API-related types.
 - **Formatting**: The project uses Prettier for automatic code formatting.
 - **Hooks**: `use-hook-name.ts`
 - **Types**: `types-and-interfaces.ts`
@@ -114,8 +114,7 @@ For consistent API integration, follow this pattern:
 - `src/router.tsx` - Router configuration
 - `src/routes/__root.tsx` - Root layout with providers
 - `src/domains/ui-system/` - Complete design system
-- `docs/decisions/` - Architecture Decision Records (ADRs)
-- `docs/decisions/coding-standards.md` - Detailed coding guidelines
+- `docs/style-guide/` - Coding guidance and code taste
 
 ### Testing Strategy
 

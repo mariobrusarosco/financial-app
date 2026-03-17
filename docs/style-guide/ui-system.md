@@ -36,7 +36,8 @@ Better Call Buffet uses a modern, component-based UI architecture built on:
 ### Related Documentation
 
 - [ADR: shadcn/ui Adoption](/docs/decisions/006-adr-shadcn-ui.md)
-- [Coding Standards](/docs/decisions/014-coding-standards.md)
+- [Coding Conventions](/docs/style-guide/coding-conventions.md)
+- [Code Taste](/docs/style-guide/code-taste.md)
 
 ## Component Library (shadcn/ui)
 
@@ -614,7 +615,8 @@ function Sidebar() {
 
 - [CLAUDE.md](/CLAUDE.md) - Project setup and architecture
 - [ADR: shadcn/ui Adoption](/docs/decisions/006-adr-shadcn-ui.md)
-- [Coding Standards](/docs/decisions/014-coding-standards.md)
+- [Coding Conventions](/docs/style-guide/coding-conventions.md)
+- [Code Taste](/docs/style-guide/code-taste.md)
 - [Drawer Implementation Guide](/docs/guides/drawer-implementation.md)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Lucide Icons](https://lucide.dev)
