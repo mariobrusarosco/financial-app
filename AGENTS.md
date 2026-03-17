@@ -2,7 +2,7 @@
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
-### Core Mandates
+## Core Mandates
 
 1 - **Strict Scope Adherence:** Do not fix unrelated bugs, refactor code, or change naming conventions outside the explicit scope of the user's request, even if you find errors. If you
 discover critical issues that block the requested task, report them to the user and ask for permission before proceeding
@@ -26,30 +26,17 @@ current codebase.
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check code formatting
 
-## Component and Hooks Creation
-
-Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for more information.
-
-### Domain-Based Architecture
+## Domain-Based Architecture
 
 The codebase uses domain-based architecture organized in `src/domains/`:
 
-#### Core Domains
-
-- `accounts/` - Bank account management and transactions
-- `credit-cards/` - Credit card management and invoices
-- `broker/` - Investment broker management
-- `transactions/` - Transaction processing and editing
-- `dashboard/` - Main dashboard views
-- `investments/` - Investment tracking (planned)
-
-#### System Domains
+## System Domains
 
 - `ui-system/` - All UI components, themes, and design system
 - `global/` - Shared utilities, types, and error handling
 - `testing/` - Test utilities and mock data
 
-### Domain Structure
+## Domain Structure
 
 Each domain follows this pattern:
 
@@ -64,7 +51,13 @@ domain-name/
 └── index.ts          # Public exports
 ```
 
-### Coding Style
+## Coding Style
+
+### Component and Hooks Creation
+
+Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for more information.
+
+### File Naming and Path Aliases
 
 - **File Imports**: Use '/@' prefix. Always use absolute paths.
 - **File Naming**: All files should be named using `kebab-case`.
@@ -74,7 +67,7 @@ domain-name/
 - **Hooks**: `use-hook-name.ts`
 - **Types**: `types-and-interfaces.ts`
 
-### Path Aliases (tsconfig.json)
+#### Aliases (tsconfig.json)
 
 - `@/*` → `src/*`
 - `@domains/*` → `src/domains/*`

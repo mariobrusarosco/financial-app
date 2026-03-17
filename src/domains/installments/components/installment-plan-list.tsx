@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { Calendar, Plus } from 'lucide-react';
 import type { I_InstallmentPlan, I_InstallmentPlansParams } from '../types/types-and-interfaces';
-import { useDeleteInstallmentPlan } from '../hooks/use-installments';
+import { useDeleteInstallmentPlan } from '@/domains/installments/hooks/use-delete-installment-plan';
 import { toast } from 'sonner';
 import { CardDescription } from '@/domains/ui-system/components/card';
 import { InstallmentPlanItem } from './installment-plan-item';

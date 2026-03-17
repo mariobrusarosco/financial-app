@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useInstallmentPlans } from '../hooks/use-installments';
+import { useInstallmentPlans } from '@/domains/installments/hooks/use-installment-plans';
 import { InstallmentPlanList } from '../components/installment-plan-list';
 import type { I_InstallmentPlansParams } from '../types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components/page-header';
@@ -17,8 +17,15 @@ export const InstallmentsMainScreen = () => {
     per_page: ITEMS_PER_PAGE,
   });
 
-  const { data: plansData, isLoading: isPlansLoading, isError: isPlansError, isPlaceholderData } = useInstallmentPlans(params);
+  const { data: installmentPlansData, states: installmentPlansStates } =
+    useInstallmentPlans(params);
   const { data: categories = [], isLoading: isCategoriesLoading } = useCategories();
+  const { plans, totalCount, page, perPage } = installmentPlansData;
+  const {
+    isLoading: isPlansLoading,
+    isError: isPlansError,
+    isPlaceholderData,
+  } = installmentPlansStates;
 
   const handleParamsChange = (
     newParams:
@@ -31,7 +38,6 @@ export const InstallmentsMainScreen = () => {
     });
   };
 
-  const plans = plansData?.data || [];
   const isLoading = isPlansLoading || isCategoriesLoading;
 
   return (
@@ -51,9 +57,9 @@ export const InstallmentsMainScreen = () => {
       >
         <InstallmentPlanList
           plans={plans}
-          totalCount={plansData?.meta?.total}
-          page={plansData?.meta?.page}
-          perPage={plansData?.meta?.per_page}
+          totalCount={totalCount}
+          page={page}
+          perPage={perPage}
           isLoading={isLoading}
           isError={isPlansError}
           isPlaceholderData={isPlaceholderData}

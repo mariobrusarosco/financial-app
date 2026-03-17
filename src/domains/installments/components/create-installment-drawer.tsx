@@ -3,7 +3,7 @@ import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Plus, Calendar, Loader2 } from 'lucide-react';
 import { InstallmentForm } from './installment-form';
-import { useCreateInstallmentPlan } from '../hooks/use-installments';
+import { useCreateInstallmentPlan } from '@/domains/installments/hooks/use-create-installment-plan';
 import * as dateFns from 'date-fns';
 import { Badge } from '@/domains/ui-system/components/badge';
 import { useForm } from '@tanstack/react-form';

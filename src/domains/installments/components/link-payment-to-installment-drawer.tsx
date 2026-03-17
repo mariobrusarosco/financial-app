@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useInstallmentPlan } from '@/domains/installments/hooks/use-installment-plan';
 import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
-import { useLinkInstallmentTransaction, useInstallmentPlan } from '../hooks/use-installments';
+import { useLinkInstallmentTransaction } from '@/domains/installments/hooks/use-link-installment-transaction';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import { DrawerFooter } from '@/domains/ui-system/components/drawer';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { Loader2, Search, Link as LinkIcon, X, Check, ArrowLeft } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
@@ -36,7 +36,7 @@ const ErrorState = () => (
 
 const EmptyState = ({ searchTerm }: { searchTerm: string }) => (
   <div className="text-center py-12 text-muted-foreground">
-    No paid transactions found matching "{searchTerm}".
+    No paid transactions found matching &quot;{searchTerm}&quot;.
   </div>
 );
 
@@ -82,8 +82,16 @@ export const LinkPaymentToInstallmentDrawer = () => {
   const router = useRouter();
   const { planId, installmentId } = Route.useSearch();
 
-  const { data: plan, isLoading: isPlanLoading, isError: isPlanError } = useInstallmentPlan(planId);
-  const installment = plan?.installments.find(i => i.id === installmentId);
+  const { data: installmentPlanData, states: installmentPlanStates } = useInstallmentPlan(
+    planId,
+    installmentId
+  );
+  const { plan, installment } = installmentPlanData;
+  const {
+    isLoading: isPlanLoading,
+    isError: isPlanError,
+    isEmpty: isPlanEmpty,
+  } = installmentPlanStates;
 
   const [searchTerm, setSearchTerm] = useState(plan?.name || '');
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, { wait: 500 });
@@ -136,7 +144,7 @@ export const LinkPaymentToInstallmentDrawer = () => {
     );
   }
 
-  if (isPlanError || !plan || !installment) {
+  if (isPlanError || isPlanEmpty) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-destructive p-4 text-center">
         <p>Failed to load installment details.</p>
