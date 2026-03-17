@@ -6,10 +6,8 @@ import appCss from '@/domains/ui-system/styles/app.css?url';
 import { ThemeProvider } from '@/domains/ui-system/components/theme-provider';
 import { Toaster } from '@/domains/ui-system/components/sonner';
 import { BetaBanner } from '@/domains/ui-system/components/beta-banner';
-import { initSentry } from '@/config/sentry';
 
 const queryClient = new QueryClient();
-initSentry();
 
 export const Route = createRootRoute({
   head: () => ({
