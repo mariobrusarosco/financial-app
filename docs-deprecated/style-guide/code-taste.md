@@ -4,8 +4,6 @@ This guide defines the practical coding taste for Better Call Buffet. It complem
 
 ## Core Taste
 
-- Prefer direct edits over new abstractions.
-- Prefer modifying the requested file over redistributing responsibilities across new files.
 - Do not create helper interfaces, helper types, or `satisfies` contracts unless they are already established in the local domain or are strictly required.
 - Do not create new hooks, utilities, wrappers, or files unless they are strictly required by the requested change.
 - Prefer obvious code over "cleaner" architecture.

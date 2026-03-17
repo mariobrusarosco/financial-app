@@ -20,35 +20,18 @@ Read the relevant project style-guide files before editing code. Prioritize this
 3. Match the surrounding domain structure in `src/domains/<domain>/`.
 4. Prefer the smallest change that fully satisfies the style guide, even if that means updating consumers.
 
-## Hook And Component Rules
+## Enforcement Behavior
 
-- Treat style-guide compliance as a behavioral and architectural requirement, not as cosmetic cleanup.
-- When a component consumes fetched or derived data, move UI shaping into a domain hook instead of leaving raw query adaptation in the `.tsx` file.
-- Prefer UI-oriented hooks that return exactly:
-  - `data`
-  - `states`
-  - `handlers`
-- Keep low-level data hooks small when they are only thin wrappers around API/query concerns.
-- If a low-level query hook is still useful, prefer keeping the main solution in the user-targeted file. Only introduce a separate UI-oriented hook if the user explicitly asks for it or the change cannot be completed cleanly within the existing file.
-- When refactoring for style-guide compliance, update the affected consumer components too when needed. Do not stop at the hook if the component still violates the style guide.
-- Do not leave sorting, filtering, pagination shaping, derived booleans, or query-state naming inside components when the style guide indicates that composition belongs in the hook.
-
-## Implementation Rules
-
-- Use absolute imports with the repo path aliases.
-- Keep files in the correct domain folder and preserve the domain-based architecture.
-- Use `kebab-case` filenames.
-- Use named exports for hooks and utilities.
-- Keep comments sparse and only when they add non-obvious context.
+- Enforce the style-guide documents as written. Do not reinterpret or replace them with generic preferences.
+- Treat style-guide compliance as behavioral and architectural, not cosmetic.
+- Keep the meaningful solution in the user-targeted file unless the user explicitly approves moving responsibility.
+- Update direct consumers when needed so the final result is truly compliant, not partially compliant.
 
 ## Import Discipline
 
-- Always use absolute imports with the configured repo path aliases.
-- Do not use relative imports such as `./` or `../` in application code when an alias-based import is possible.
-- Do not use barrel imports such as folder-level `index.ts` or `index.tsx` exports.
-- When editing a file, normalize any changed import to the absolute direct-file alias form.
-- Treat relative imports in touched application files as non-compliant unless the user explicitly asks otherwise.
-- Treat barrel imports in touched application files as non-compliant unless the user explicitly asks otherwise.
+- Apply `docs/style-guide/path-aliases.md` exactly.
+- Normalize changed imports to absolute direct-file alias form.
+- Treat relative and barrel imports in touched application files as non-compliant unless the user explicitly asks otherwise.
 
 ## Scope Discipline
 
@@ -63,7 +46,7 @@ Read the relevant project style-guide files before editing code. Prioritize this
 
 - If the task is to "make it compliant with the style guide" or "follow code taste", prefer the repo's preferred abstraction over the narrowest possible edit.
 - Treat `docs/style-guide/code-taste.md` as the authoritative source for tradeoff decisions in this repo.
-- If two interpretations are plausible, choose the one that better aligns with the style-guide documents and the consuming component's responsibilities.
+- If two interpretations are plausible, choose the one that better aligns with style-guide documents and code taste.
 - If a change would require a broader architectural move beyond the local feature scope, pause and ask before proceeding.
 - Apply the style guide within the requested scope; do not create additional layers just to better match an ideal architecture.
 - Do not optimize for "cleaner architecture" beyond the user's request.

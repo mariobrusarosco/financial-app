@@ -57,15 +57,15 @@ domain-name/
 
 Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for more information.
 
-### File Naming and Path Aliases
+### Canonical Sources
 
-- **File Imports**: Use '/@' prefix. Always use absolute paths.
-- **File Naming**: All files should be named using `kebab-case`.
-- **Type Imports**: Always import types with `type` keyword: `import type { MyType } from './types'
-- **API Type Naming**: Follow the naming convention outlined in the `README.md` and `docs/style-guide/coding-conventions.md` for API-related types.
-- **Formatting**: The project uses Prettier for automatic code formatting.
-- **Hooks**: `use-hook-name.ts`
-- **Types**: `types-and-interfaces.ts`
+To avoid duplicated rules across files, use these as the single sources of truth:
+
+- [Code Taste](docs/style-guide/code-taste.md) for tradeoff decisions
+- [Path Aliases](docs/style-guide/path-aliases.md) for import rules
+- [Coding Conventions](docs/style-guide/coding-conventions.md) for naming and API type conventions
+- [Domain Architecture](docs/style-guide/domain-architecture.md) for domain structure
+- [Component Lifecycle](docs/style-guide/components-lifecycle.md) for UI-hook responsibilities
 
 #### Aliases (tsconfig.json)
 
@@ -73,27 +73,6 @@ Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for mor
 - `@domains/*` → `src/domains/*`
 - `@ui-system/*` → `src/domains/ui-system/*`
 - `@global/*` → `src/domains/global/*`
-
-### API Type Naming Convention
-
-For consistent API integration, follow this pattern:
-
-**Single Resource:**
-
-- `I_[Resource]Response` - Data FROM backend (GET /resource/:id)
-- `I_[Resource]Payload` - Data TO backend (POST/PUT /resource)
-
-**Collections:**
-
-- `I_[Resources]Response` - Collection FROM backend (GET /resources)
-- `I_[Resources]Payload` - Collection TO backend (bulk operations)
-
-**Examples:**
-
-- `I_TransactionResponse` - Single transaction from API
-- `I_TransactionPayload` - Single transaction to API
-- `I_TransactionsResponse` - Transaction list from API
-- `I_TransactionsPayload` - Transaction list to API (bulk operations)
 
 ### API Integration Pattern
 
