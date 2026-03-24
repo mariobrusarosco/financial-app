@@ -41,12 +41,4 @@ const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
 };
 ```
 
-## File Layout
-
-- Place local `type` and `interface` declarations at the bottom of the file unless there is a strong reason to keep them near usage.
-
-## Scope
-
-- Do not introduce structure just because it looks more reusable or more elegant.
-- If the requested change can be completed by adapting existing code, prefer that over creating new layers.
-- Keep the visible solution close to where the user expects to find it.
+## Query Param Handling And Validation
