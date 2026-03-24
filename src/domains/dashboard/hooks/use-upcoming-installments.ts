@@ -3,13 +3,12 @@ import type {
   I_Installment,
   I_InstallmentPlan,
 } from '@/domains/installments/types/types-and-interfaces';
-import { addMonths, isSameMonth, parseISO, startOfMonth } from 'date-fns';
+import { isSameMonth, parseISO, startOfMonth } from 'date-fns';
 
 const currentMonth = startOfMonth(new Date());
-const nextMonth = addMonths(currentMonth, 1);
 
 const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
-  const allOutstandingInstallments = plans.flatMap(plan =>
+  return plans.flatMap(plan =>
     plan.installments
       .filter(byOutstanding)
       .filter(byCurrentMonth)
@@ -17,8 +16,6 @@ const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
       .map(toInstallmentAndPlanName(plan))
       .slice(0, MAX_INSTALLMENTS_TO_DISPLAY)
   );
-
-  return allOutstandingInstallments;
 };
 
 export const useUpcomingInstallments = () => {
@@ -32,8 +29,10 @@ export const useUpcomingInstallments = () => {
     states: {
       isLoading: installmentPlansQuery.states.isLoading,
       isError: installmentPlansQuery.states.isError,
-      isEmpty: !installmentPlansQuery.states.isLoading && !installmentPlansQuery.states.isError,
-      // installments.length === 0,
+      isEmpty:
+        !installmentPlansQuery.states.isLoading &&
+        !installmentPlansQuery.states.isError &&
+        installments?.length === 0,
     },
     handlers: {},
   };

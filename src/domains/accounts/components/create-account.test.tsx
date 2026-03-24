@@ -1,4 +1,3 @@
-```typescript
 import { render, screen, waitFor } from '@/domains/testing/render-utils';
 import { server } from '@/domains/testing/msw/server';
 import { http, HttpResponse } from 'msw';

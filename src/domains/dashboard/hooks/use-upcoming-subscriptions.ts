@@ -19,7 +19,8 @@ export const useUpcomingSubscriptions = () => {
     states: {
       isLoading: subscriptionsQuery.isLoading,
       isError: subscriptionsQuery.isError,
-      isEmpty: !subscriptionsQuery.isLoading && !subscriptionsQuery.isError && subscriptions.length === 0,
+      isEmpty:
+        !subscriptionsQuery.isLoading && !subscriptionsQuery.isError && subscriptions.length === 0,
     },
     handlers: {},
   };

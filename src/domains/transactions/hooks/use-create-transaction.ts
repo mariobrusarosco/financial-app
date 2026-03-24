@@ -12,7 +12,7 @@ const transactionsApi = {
     return {
       id: Math.random().toString(36).substr(2, 9),
       ...transaction,
-      amount: transaction.amount.toString(),
+      amount: String(transaction.amount ?? 0),
       is_deleted: false,
     };
   },
@@ -51,6 +51,7 @@ export const useCreateTransaction = () => {
       });
 
       // Close drawer
+      // @ts-ignore
       void navigate({ search: {} });
     },
     onError: error => {

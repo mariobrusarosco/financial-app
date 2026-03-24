@@ -98,7 +98,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
   }
 
   return (
-    <div data-ui="account-balance-points" className="flex-1">
+    <div data-ui="account-balance-points" className="flex-1 min-w-0 overflow-hidden max-h-[280px]">
       <ChartContainer config={chartConfig} className="bg-neutral-white/40 rounded-lg w-full h-full">
         <LineChart
           accessibilityLayer

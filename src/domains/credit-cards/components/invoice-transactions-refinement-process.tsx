@@ -105,7 +105,6 @@ export const InvoiceTransactionsRefinementProcess = ({
               mode="compact"
               className="border rounded-lg"
               onIgnoreTransaction={handleTransactionIgnored}
-              isIgnored={isIgnored}
               onSelectTransaction={toggleTransaction}
               isSelected={isSelected}
               onTriggerEditMode={triggerEditMode}

@@ -17,12 +17,9 @@ export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHead
       : 'upload';
 
   return (
-    <div className="flex items-center justify-between mb-6">
+    <div className="flex items-center justify-between mb-6" data-ui="account-statements-heading">
       <div>
-        <h1 className="text-2xl font-bold">Account Statements</h1>
-        <p className="text-muted-foreground">
-          Manage your account statements and transaction history
-        </p>
+        <h1 className="text-3xl font-thin">Account Statements</h1>
       </div>
 
       <div className="flex items-center gap-2">

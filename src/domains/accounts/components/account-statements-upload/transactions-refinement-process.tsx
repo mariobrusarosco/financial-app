@@ -122,7 +122,6 @@ export const TransactionsRefinementProcess = ({
               mode="compact"
               className="border rounded-lg"
               onIgnoreTransaction={handleTransactionIgnored}
-              isIgnored={isIgnored}
               onSelectTransaction={toogleTransaction}
               isSelected={isSelected}
               onTriggerEditMode={triggerEditMode}

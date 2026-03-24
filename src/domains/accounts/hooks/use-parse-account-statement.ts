@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import * as Sentry from '@sentry/react';
 import { accountsApi, I_ParsedAccountStatement } from '@/domains/accounts/api';
 import * as React from 'react';
 import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 import { GET_UPLOADED_STATEMENT_QUERY_KEY } from '../api/keys';
+import { captureHandledError } from '@/config/observability';
 
 export const useParseAccountStatement = (accountId: string) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -11,7 +13,20 @@ export const useParseAccountStatement = (accountId: string) => {
 
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      return accountsApi.parseAccountStatement(formData, accountId);
+      return Sentry.startSpan(
+        {
+          name: 'account-statement.upload-parse',
+          op: 'file.process',
+          forceTransaction: true,
+          attributes: {
+            'app.domain': 'accounts',
+            'file.type': selectedFile?.type ?? 'application/pdf',
+            'file.size_bytes': selectedFile?.size ?? 0,
+            'account.has_id': Boolean(accountId),
+          },
+        },
+        () => accountsApi.parseAccountStatement(formData, accountId)
+      );
     },
     onSuccess: (data: I_ParsedAccountStatement) => {
       // Store in React Query cache
@@ -22,6 +37,14 @@ export const useParseAccountStatement = (accountId: string) => {
     onError: error => {
       handleErrorWithToast(error, {
         userMessage: 'Failed to parse account statement. Please check the file and try again.',
+      });
+      captureHandledError(error, {
+        domain: 'accounts',
+        operation: 'parse-account-statement',
+        context: {
+          hasFile: Boolean(selectedFile),
+          hasAccountId: Boolean(accountId),
+        },
       });
 
       // Clear cache on error

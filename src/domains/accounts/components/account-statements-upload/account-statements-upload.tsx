@@ -16,11 +16,11 @@ export const AccountStatementsUpload = ({ accountId }: AccountStatementsUploadPr
   });
 
   return (
-    <Surface className="flex-1" data-ui="account-statements-upload">
+    <div className="flex-1" data-ui="account-statements-upload">
       <div className="space-y-4">
         <UploadProcess accountId={accountId} />
         {statement && <TransactionsRefinementProcess statement={statement} />}
       </div>
-    </Surface>
+    </div>
   );
 };

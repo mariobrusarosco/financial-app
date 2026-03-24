@@ -4,6 +4,7 @@ import type {
   I_CreateAccountForm,
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { ACCOUNTS_ROUTES } from './backend-routes';
 
 // Define account statement types

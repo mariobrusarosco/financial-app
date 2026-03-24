@@ -13,11 +13,9 @@ export const useDeleteAccount = (onDeleteSuccess?: Function) => {
       onDeleteSuccess?.();
     },
     onError: error => {
-      const errorInfo = handleErrorWithToast(error, {
+      handleErrorWithToast(error, {
         userMessage: AccountErrorMessages.ACCOUNT_DELETION_FAILED,
       });
-
-      // TODO LOG ERROR ON SENTRY
     },
   });
 };

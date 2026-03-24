@@ -39,7 +39,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <GlobalDateFilter />
         </div>
 
-        <hr className="border-b border-primary/20 w-full my-2 md:my-6" />
+        <hr className="border-b border-primary/20 w-full my-3" />
 
         <div className="md:flex-1 overflow-y-auto">{children}</div>
       </main>

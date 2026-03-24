@@ -18,7 +18,7 @@ export const useLogin = () => {
 
       queryClient.setQueryData(GET_CURRENT_USER_QUERY_KEY(), data.user);
 
-      toast.success(`Welcome back, ${data.user.full_name}!`);
+      toast.success(`Welcome back, ${data.user.name}!`);
 
       void navigate({ to: '/dashboard' });
     },
