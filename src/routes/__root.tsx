@@ -13,6 +13,13 @@ import { clearObservabilityUser, setObservabilityUser } from '@/config/observabi
 
 const queryClient = new QueryClient();
 
+interface T_RootErrorFallbackProps {
+  componentStack: string;
+  error: unknown;
+  eventId: string;
+  resetError: () => void;
+}
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -81,7 +88,15 @@ export function AppContent() {
           path: window.location.pathname,
         });
       }}
-      fallback={() => <RootErrorFallback />}
+      onError={(error, componentStack, eventId) => {
+        if (import.meta.env.DEV) {
+          console.error('Root render error:', error, {
+            componentStack,
+            eventId,
+          });
+        }
+      }}
+      fallback={fallbackProps => <RootErrorFallback {...fallbackProps} />}
     >
       <BetaBanner />
       <Outlet />
@@ -105,7 +120,10 @@ function ObservabilityUserSync() {
   return null;
 }
 
-function RootErrorFallback() {
+function RootErrorFallback({ error, componentStack, eventId }: T_RootErrorFallbackProps) {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const shouldShowDebugDetails = import.meta.env.DEV;
+
   return (
     <div
       data-testid="root-error-fallback"
@@ -115,6 +133,14 @@ function RootErrorFallback() {
       <p className="max-w-md text-sm text-muted-foreground">
         We hit an unexpected error while rendering this page. Reload to try again.
       </p>
+      {shouldShowDebugDetails && (
+        <details className="max-w-3xl rounded-md border bg-muted/40 p-4 text-left text-xs">
+          <summary className="cursor-pointer font-medium">Development error details</summary>
+          <pre className="mt-3 overflow-auto whitespace-pre-wrap break-words">
+            {`message: ${errorMessage}\n\neventId: ${eventId}\n\ncomponentStack:\n${componentStack}`}
+          </pre>
+        </details>
+      )}
       <button
         type="button"
         onClick={() => window.location.reload()}

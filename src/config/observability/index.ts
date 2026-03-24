@@ -57,10 +57,16 @@ const DEFAULT_TRACE_SAMPLE_RATE = 0.1;
 let isInitialized = false;
 
 const getIsTestMode = () => import.meta.env.MODE === 'test';
+const getIsLocalDevelopment = () => import.meta.env.DEV;
 
 const getIsObservabilityEnabled = () => {
   const isExplicitlyDisabled = import.meta.env.VITE_SENTRY_ENABLED === 'false';
-  return Boolean(import.meta.env.VITE_SENTRY_DSN) && !isExplicitlyDisabled && !getIsTestMode();
+  return (
+    Boolean(import.meta.env.VITE_SENTRY_DSN) &&
+    !isExplicitlyDisabled &&
+    !getIsTestMode() &&
+    !getIsLocalDevelopment()
+  );
 };
 
 const stripSearchFromUrl = (url: string) => {

@@ -49,7 +49,7 @@ VITE_API_BASE_URL=http://localhost:8000/api/v1
 
 VITE_SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
 VITE_SENTRY_ENVIRONMENT=development
-VITE_SENTRY_ENABLED=true
+VITE_SENTRY_ENABLED=false
 
 SENTRY_AUTH_TOKEN=...
 SENTRY_ORG=your-org
@@ -82,6 +82,7 @@ Current defaults:
 - replay session sample rate: `0`
 - replay on error sample rate: `1.0`
 - production trace sample rate: `0.1`
+- local Vite dev sessions do not send events to Sentry
 
 Never sent by default:
 
@@ -121,10 +122,15 @@ SENTRY_RELEASE=$COMMIT_SHA
 - start the app
 - confirm no Sentry network traffic is sent
 
+Local development note:
+
+- the browser SDK is disabled during local Vite development, even if a DSN is present
+- use the local console and the development error details shown by the root fallback to debug render crashes
+
 ### 2. Verify runtime reporting
 
 - set a valid `VITE_SENTRY_DSN`
-- run the app locally
+- run a deployed preview, staging, or production-like build with `VITE_SENTRY_ENABLED=true`
 - temporarily throw inside a routed component
 - confirm:
   - the root fallback renders
