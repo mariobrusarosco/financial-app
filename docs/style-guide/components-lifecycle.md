@@ -24,11 +24,18 @@ This hook should be the composition layer between domain hooks and the component
 - deriving view-specific state
 - exposing a stable UI contract
 
+This document is the source of truth for the UI-facing hook contract in this repo. Implementation files are examples of the contract, not the authority that defines it.
+
 The preferred contract is:
 
 - `data`
 - `states`
 - `handlers`
+
+Canonical code references:
+
+- `src/domains/dashboard/hooks/use-upcoming-subscriptions.ts`
+- `src/domains/dashboard/hooks/use-upcoming-installments.ts`
 
 This means the component should not be responsible for:
 

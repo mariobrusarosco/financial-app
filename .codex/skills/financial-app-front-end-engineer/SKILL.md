@@ -33,7 +33,9 @@ Read the relevant project style-guide files before editing code. Prioritize this
 - Treat style-guide compliance as behavioral and architectural, not cosmetic.
 - Keep the meaningful solution in the user-targeted file unless the user explicitly approves moving responsibility.
 - Update direct consumers when needed so the final result is truly compliant, not partially compliant.
+- Treat `docs/style-guide/components-lifecycle.md` as the source of truth for the UI-facing hook contract (`data`, `states`, `handlers`). Treat hook files as examples of that rule, not as the rule itself.
 - When a transformation pipeline contains business rules, follow the declarative pipeline pattern in `docs/style-guide/code-taste.md`: prefer named local predicates, mappers, comparators, and constants so the main flow reads as named decisions instead of anonymous callbacks.
+- Use `src/domains/dashboard/hooks/use-upcoming-installments.ts` as the canonical local reference for that pattern in this repo.
 
 ## Import Discipline
 

@@ -4,6 +4,7 @@ import { authApi } from '../api';
 import { AuthStorage } from '../utils/auth-storage';
 import { TokenManager } from '../utils/token-manager';
 import { toast } from 'sonner';
+import { clearObservabilityUser } from '@/config/observability';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
@@ -16,6 +17,7 @@ export const useLogout = () => {
       TokenManager.clearTokenRefreshTimer();
 
       queryClient.clear();
+      clearObservabilityUser();
 
       toast.success('You have been logged out successfully');
 
@@ -25,6 +27,7 @@ export const useLogout = () => {
       AuthStorage.clearAuth();
       TokenManager.clearTokenRefreshTimer();
       queryClient.clear();
+      clearObservabilityUser();
 
       void navigate({ to: '/login' });
     },

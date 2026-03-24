@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ApiError, NetworkError } from '@/domains/global/utils/error-handler';
 import { AuthStorage } from '@/domains/auth/utils/auth-storage';
+import { captureHandledError } from '@/config/observability';
 
 // Define the base URL for the API. This can be an environment variable.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
@@ -48,6 +49,14 @@ const refreshAuthToken = async (): Promise<string | null> => {
 
     return access_token;
   } catch (error) {
+    captureHandledError(error, {
+      domain: 'auth',
+      operation: 'refresh-auth-token',
+      forceCapture: true,
+      context: {
+        hasRefreshToken: Boolean(AuthStorage.getRefreshToken()),
+      },
+    });
     AuthStorage.clearAuth();
     throw error;
   }
