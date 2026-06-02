@@ -24,18 +24,10 @@ This hook should be the composition layer between domain hooks and the component
 - deriving view-specific state
 - exposing a stable UI contract
 
-This document is the source of truth for the UI-facing hook contract in this repo. Implementation files are examples of the contract, not the authority that defines it.
+The mandatory contract is:
 
-The preferred contract is:
-
-- `data`
-- `states`
-- `handlers`
-
-Canonical code references:
-
-- `src/domains/dashboard/hooks/use-upcoming-subscriptions.ts`
-- `src/domains/dashboard/hooks/use-upcoming-installments.ts`
+- `query`
+- `actions`
 
 This means the component should not be responsible for:
 
@@ -44,68 +36,81 @@ This means the component should not be responsible for:
 - naming UI booleans from raw query output
 - composing handlers from multiple hooks
 
-Instead, the hook should adapt the data into something the component can render directly.
+* Avoid pushing data orchestration into the component
+* Prefer composing the data in a UI-oriented hook and keeping the component focused on rendering:
 
-## Example
-
-Avoid pushing data orchestration into the component:
+## Creating a UI-oriented hook
 
 ```tsx
-export const UpcomingSubscriptions = () => {
-  const { data, isLoading, isError } = useSubscriptions({ is_active: true });
-
-  if (isLoading) return <UpcomingSubscriptionsSkeleton />;
-  if (isError) return <UpcomingSubscriptionsError />;
-
-  const subscriptions = data?.data ?? [];
-  const upcomingSubscriptions = [...subscriptions]
-    .sort((a, b) => new Date(a.next_due_date).getTime() - new Date(b.next_due_date).getTime())
-    .slice(0, 5);
-
-  if (upcomingSubscriptions.length === 0) {
-    return <UpcomingSubscriptionsEmpty />;
-  }
-
-  return <UpcomingSubscriptionsContent subscriptions={upcomingSubscriptions} />;
-};
+<resourceName>: {
+	query,
+	actions: {
+		refetch<ResourceName>: query.refetch,
+	},
+},
+<resourceName>: {
+	...
+}
 ```
 
-Prefer composing the data in a UI-oriented hook and keeping the component focused on rendering:
+```tsx
+export const useLeagues = () => {
+  const queryClient = useQueryClient();
 
-```ts
-export const useUpcomingSubscriptions = () => {
-  const subscriptionsQuery = useSubscriptions({ is_active: true });
+  const leaguesQuery = useQuery({
+    queryKey: leaguesQueryKey(),
+    queryFn: getLeagues,
+  });
 
-  const subscriptions = subscriptionsQuery.data?.data ?? [];
-  const upcomingSubscriptions = [...subscriptions]
-    .sort((a, b) => new Date(a.next_due_date).getTime() - new Date(b.next_due_date).getTime())
-    .slice(0, 5);
+  const createLeagueMutation = useMutation({
+    mutationFn: createLeague,
+    onSuccess: () => {
+      alert('League created successfully');
+      queryClient.invalidateQueries({ queryKey: ['leagues'] });
+    },
+    onError: () => {
+      alert('Failed to create league');
+    },
+  });
 
   return {
-    data: {
-      subscriptions: upcomingSubscriptions,
+    leagues: {
+      query: leaguesQuery,
+      actions: {
+        refetch: leaguesQuery.refetch,
+      },
     },
-    states: {
-      isLoading: subscriptionsQuery.isLoading,
-      isError: subscriptionsQuery.isError,
-      isEmpty: !subscriptionsQuery.isLoading && !subscriptionsQuery.isError && upcomingSubscriptions.length === 0,
+    league: {
+      mutation: createLeagueMutation,
     },
-    handlers: {},
   };
 };
 ```
 
+## Using a Hook with the UI-friendly contract
+
 ```tsx
-export const UpcomingSubscriptions = () => {
-  const { data, states } = useUpcomingSubscriptions();
+export const Leagues = () => {
+  const { query, actions } = useLeagues();
 
-  if (states.isLoading) return <UpcomingSubscriptionsSkeleton />;
-  if (states.isError) return <UpcomingSubscriptionsError />;
-  if (states.isEmpty) return <UpcomingSubscriptionsEmpty />;
+  if (query.isLoading) return <LeaguesSkeleton />;
+  if (query.isError) return <LeaguesError />;
+  if (nationalLeagues.length === 0 && internationalLeagues.length === 0) {
+    return <LeaguesEmpty />;
+  }
 
-  return <UpcomingSubscriptionsContent subscriptions={data.subscriptions} />;
+  // Content Ready
+  const nationalLeagues = [...(query.data ?? [])].filter(l => l.type === 'national');
+
+  const internationalLeagues = [...(query.data ?? [])].filter(l => l.type === 'international');
+
+  return (
+    <LeaguesContent nationalLeagues={nationalLeagues} internationalLeagues={internationalLeagues} />
+  );
 };
 ```
+
+## Lifecycle States
 
 1. _Loading_:
    A Skeleton is used while the data of the component is not loaded yet.

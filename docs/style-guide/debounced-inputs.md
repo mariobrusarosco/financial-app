@@ -34,8 +34,3 @@ const { draftValue: searchDraft, setDraftValue: setSearchDraft } = useDebouncedC
 
 <Input value={searchDraft} onChange={event => setSearchDraft(event.target.value)} />;
 ```
-
-## Canonical Local References
-
-- `src/domains/transactions/components/account-transaction-filters.tsx`
-- `src/domains/subscriptions/components/link-payment-drawer.tsx`

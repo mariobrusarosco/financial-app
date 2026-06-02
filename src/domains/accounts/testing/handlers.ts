@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { createMockAccount } from '@/domains/testing/test-data';
-import { ACCOUNTS_ROUTES } from '../api/backend-routes';
+import { ACCOUNTS_ENDPOINTS } from '../api/backend-routes';
 import { mockActiveAccounts } from './index';
 
 // Define the default active accounts for the happy path
@@ -15,19 +15,19 @@ export const handlers = [
   mockActiveAccounts(defaultActiveAccounts),
 
   // Account Detail
-  http.get(`*${ACCOUNTS_ROUTES.DETAIL(':id')}`, ({ params }) => {
+  http.get(`*${ACCOUNTS_ENDPOINTS.DETAIL(':id')}`, ({ params }) => {
     const { id } = params;
     return HttpResponse.json(createMockAccount({ id: id as string, name: `Account ${id}` }));
   }),
 
   // Account Creation
-  http.post(`*${ACCOUNTS_ROUTES.LIST}`, async ({ request }) => {
+  http.post(`*${ACCOUNTS_ENDPOINTS.LIST}`, async ({ request }) => {
     const body = (await request.json()) as any;
     return HttpResponse.json(createMockAccount({ ...body, id: 'new-acc-id' }), { status: 201 });
   }),
 
   // Account Statements
-  http.get(`*${ACCOUNTS_ROUTES.STATEMENTS(':id')}`, ({ params }) => {
+  http.get(`*${ACCOUNTS_ENDPOINTS.STATEMENTS(':id')}`, ({ params }) => {
     return HttpResponse.json({
       data: [
         {
@@ -46,7 +46,7 @@ export const handlers = [
   }),
 
   // Balance Points
-  http.get(`*${ACCOUNTS_ROUTES.BALANCE_POINTS(':id')}`, ({ params }) => {
+  http.get(`*${ACCOUNTS_ENDPOINTS.BALANCE_POINTS(':id')}`, ({ params }) => {
     const { id } = params;
     return HttpResponse.json([
       {

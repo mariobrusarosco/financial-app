@@ -16,6 +16,25 @@ This guide defines the practical coding taste for Better Call Buffet. It complem
 - Do not solve a request by moving the "real" logic elsewhere unless that move is explicitly requested or required.
 - Treat optional abstractions as a cost, not as an automatic improvement.
 
+## Scope
+
+- Do not introduce structure just because it looks more reusable or more elegant.
+- If the requested change can be completed by adapting existing code, prefer that over creating new layers.
+- Keep the visible solution close to where the user expects to find it.
+
+## Custom Hooks & Data Orchestration
+
+- Creating custom domain hooks (e.g., the `useUpcomingMatches` example in the lifecycle guide) to orchestrate raw server-state queries into derived UI state is **strictly required**.
+- These composition hooks exist to enforce the strict `{ query, actions }` contract defined in [components-lifecycle.md](./components-lifecycle.md) and keep complex orchestration out of `.tsx` components.
+
+## Query Param Handling And Validation
+
+Refer to `docs/style-guide/query-param-handling-and-validation.md`
+
+## Debounced Inputs
+
+Refer to `docs/style-guide/debounced-inputs.md`
+
 ## Naming
 
 - Method and helper names must reflect their real responsibility.
@@ -40,11 +59,3 @@ const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
     .slice(0, MAX_INSTALLMENTS_TO_DISPLAY);
 };
 ```
-
-## Query Param Handling And Validation
-
-Refer to `docs/style-guide/query-param-handling-and-validation.md`
-
-## Debounced Inputs
-
-Refer to `docs/style-guide/debounced-inputs.md`

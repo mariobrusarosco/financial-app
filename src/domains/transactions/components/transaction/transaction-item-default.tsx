@@ -4,8 +4,9 @@ import { TransactionIconBadge } from './transaction-icon-badge';
 import { TransactionInfo } from './transaction-info';
 import { TransactionAmount } from './transaction-amount';
 import { TransactionCategory } from './transaction-category';
-import { Edit, Trash2, EyeOff } from 'lucide-react';
+import { Edit, Trash2, EyeOff, PiggyBankIcon, CreditCardIcon } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
+import { TransactionDate } from './transaction-date';
 
 // Default mode layout props
 export interface TransactionItemDefaultProps {
@@ -52,28 +53,60 @@ export const TransactionItemDefault = ({
           isPending && 'cursor-wait'
         )}
       >
-        <TransactionInfo
-          description={transaction.description}
-          date={transaction.date}
-          subscription={transaction.subscription}
-          installment_info={transaction.installment_info}
-          dateFormat="medium"
-        />
-
-        <div className="w-full max-w-[120px]">
-          <TransactionAmount
-            amount={transaction.amount}
-            movementType={transaction.movement_type}
-            size="compact"
-          />
-
+        <div className="w-full max-w-[200px]">
+          <TransactionInfo description={transaction.description} />
           <TransactionCategory
             categoryTree={transaction.category_tree}
             categoryName={transaction.category_name}
             category={transaction.category}
           />
         </div>
+
+        <div className="w-full max-w-[120px] ">
+          <TransactionAmount
+            amount={transaction.amount}
+            movementType={transaction.movement_type}
+            size="compact"
+          />
+          <TransactionDate date={transaction.date} dateFormat="medium" />
+        </div>
+
+        <div className="w-full max-w-[100px] flex flex-col justify-between">
+          {transaction.credit_card_id && (
+            <div className="flex items-center gap-1 max-w-[100px]">
+              <CreditCardIcon className="h-4 w-4 text-sea-blue" />
+              <span className="flex-1 truncate text-sm">{transaction.credit_card_name}</span>
+            </div>
+          )}
+          {transaction.account_id && (
+            <div className="flex items-center gap-1 max-w-[100px]">
+              <PiggyBankIcon className="h-4 w-4 fill-sea-blue" />
+              <span className="flex-1 truncate text-sm">{transaction.account_name}</span>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* 
+        {installment_info && (
+          <div
+            variant="outline"
+            className="flex items-center gap-1 border-gray-200 bg-gray-50 text-sea-blue"
+          >
+            <Calendar className="h-3 w-3" />
+            {installment_info.number}/{installment_info.total}
+          </div>
+        )} */}
+
+      {/* {subscription && (
+        <div
+          variant="outline"
+          className="flex items-center gap-1 border-blue-200 bg-blue-50 text-blue-700"
+        >
+          <Repeat className="h-3 w-3" />
+          Recurring
+        </div>
+      )} */}
 
       {transaction.ignored && (
         <div className="py-1 px-2 text-xs text-neutral-white bg-red-400 rounded-sm ">ignored</div>

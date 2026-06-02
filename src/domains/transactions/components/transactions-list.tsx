@@ -16,7 +16,10 @@ import {
   Settings2,
   ArrowRightLeft,
 } from 'lucide-react';
-import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+import type {
+  I_TransactionResponse,
+  I_AccountTransactionsParams,
+} from '@/domains/transactions/types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components';
 import { useUpdateTransaction } from '@/domains/transactions/hooks/use-update-transaction';
 import { useQueryClient } from '@tanstack/react-query';
@@ -31,16 +34,11 @@ interface TransactionsListProps {
     has_next: boolean;
     has_previous: boolean;
   };
-  isPlaceholderData: boolean;
-  onPageChange: (page: number) => void;
+  onParamsChange: (params: I_AccountTransactionsParams) => void;
 }
 
-export const TransactionsList = ({
-  transactions,
-  meta,
-  isPlaceholderData,
-  onPageChange,
-}: TransactionsListProps) => {
+export const TransactionsList = ({ transactions, meta, onParamsChange }: TransactionsListProps) => {
+  // Hooks
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
@@ -54,17 +52,16 @@ export const TransactionsList = ({
   });
   const navigate = useNavigate();
 
-  const handleEdit = (transaction: I_TransactionResponse) => {
-    void navigate({
-      search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }),
-    });
-  };
-
+  // Derived state
   const handleToggleIgnoreTransaction = (id: string, currIgnoreValue: boolean) => {
     updateTransaction({ id, updates: { ignored: !currIgnoreValue } });
   };
-
-  // Selection handlers
+  const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
+  const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
+  // Hanlders and callbacks
+  const handlePageChange = (newPage: number) => {
+    onParamsChange({ page: newPage });
+  };
   const handleSelectTransaction = (transactionId: string, selected: boolean) => {
     setSelectedIds(prev => {
       const newSet = new Set(prev);
@@ -76,7 +73,6 @@ export const TransactionsList = ({
       return newSet;
     });
   };
-
   const handleSelectAll = () => {
     if (selectedIds.size === transactions.length) {
       setSelectedIds(new Set());
@@ -105,11 +101,8 @@ export const TransactionsList = ({
     }
   };
 
-  const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
-  const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
-
   return (
-    <div data-ui="transactions-main-screen" className="rounded-3xl">
+    <div data-ui="transactions-main-list" className="rounded-3xl flex flex-col gap-2 flex-1">
       {/* <div className="flex items-center justify-between gap-2">
         <button
           onClick={handleSelectAll}
@@ -147,15 +140,15 @@ export const TransactionsList = ({
             <span className="text-sm text-sea-blue">
               Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
               {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total}
-              {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
+              {/* {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>} */}
             </span>
           </div>
           <Pagination
             currentPage={meta.page}
             totalPages={Math.ceil(meta.total / meta.per_page)}
-            hasNext={meta.has_next && !isPlaceholderData}
-            hasPrevious={meta.has_previous && !isPlaceholderData}
-            onPageChange={onPageChange}
+            hasNext={meta.has_next}
+            hasPrevious={meta.has_previous}
+            onPageChange={handlePageChange}
           />
         </div>
       )}
@@ -193,7 +186,7 @@ export const TransactionsList = ({
         </div>
       )}
 
-      <div className="max-w-[650px] overflow-hidden gap-1 grid">
+      <div className="max-w-[650px] overflow-hidden gap-1 flex-1">
         {transactions.map(transaction => (
           <UnifiedTransactionItem
             key={transaction.id}

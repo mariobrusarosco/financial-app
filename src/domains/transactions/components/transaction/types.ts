@@ -10,21 +10,6 @@ export interface TransactionIconBadgeProps {
   size?: 'sm' | 'xs';
 }
 
-// Transaction info props
-export interface TransactionInfoProps {
-  description: string;
-  date: string;
-  ignored?: boolean;
-  subscription?: {
-    name: string;
-  } | null;
-  installment_info?: {
-    number: number;
-    total: number;
-  } | null;
-  dateFormat?: 'short' | 'medium' | 'long';
-}
-
 // Amount props
 export interface TransactionAmountProps {
   amount: number;

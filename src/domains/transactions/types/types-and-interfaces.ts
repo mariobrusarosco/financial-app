@@ -62,8 +62,10 @@ export interface I_BulkTransactionResponse {
 export interface I_TransactionResponse {
   id: string;
   account_id: string | null; // null for credit card transactions
+  account_name?: string | null;
   broker_id: string;
   credit_card_id?: string;
+  credit_card_name?: string | null;
   vendor_id?: string;
   is_deleted: boolean;
   is_paid: boolean;

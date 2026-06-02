@@ -5,7 +5,7 @@ import type {
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
-import { ACCOUNTS_ROUTES } from './backend-routes';
+import { ACCOUNTS_ENDPOINTS } from './backend-routes';
 
 // Define account statement types
 export interface I_AccountStatement {
@@ -58,7 +58,7 @@ export interface I_AccountStatementsResponse {
 
 const getAllAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ROUTES.LIST);
+    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ENDPOINTS.LIST);
     return response.data;
   } catch (error) {
     console.error('Error fetching all accounts:', error);
@@ -68,7 +68,7 @@ const getAllAccounts = async (): Promise<I_Account[]> => {
 
 const getAllActiveAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ROUTES.LIST_ACTIVE);
+    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ENDPOINTS.LIST_ACTIVE);
     return response.data;
   } catch (error) {
     console.error('Error fetching active accounts:', error);
@@ -79,7 +79,7 @@ const getAllActiveAccounts = async (): Promise<I_Account[]> => {
 
 const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> => {
   try {
-    const response = await apiClient.post<I_Account>(ACCOUNTS_ROUTES.LIST, account);
+    const response = await apiClient.post<I_Account>(ACCOUNTS_ENDPOINTS.LIST, account);
     return response.data;
   } catch (error) {
     console.error('Error creating account:', error);
@@ -89,7 +89,7 @@ const createAccount = async (account: I_CreateAccountForm): Promise<I_Account> =
 
 const getAccount = async (id: string): Promise<I_Account> => {
   try {
-    const response = await apiClient.get<I_Account>(ACCOUNTS_ROUTES.DETAIL(id));
+    const response = await apiClient.get<I_Account>(ACCOUNTS_ENDPOINTS.DETAIL(id));
     return response.data;
   } catch (error) {
     console.error('Error fetching account:', error);
@@ -99,7 +99,7 @@ const getAccount = async (id: string): Promise<I_Account> => {
 
 const deleteAccount = async (id: string): Promise<void> => {
   try {
-    await apiClient.delete<void>(ACCOUNTS_ROUTES.DELETE(id));
+    await apiClient.delete<void>(ACCOUNTS_ENDPOINTS.DELETE(id));
   } catch (error) {
     console.error('Error deleting account:', error);
     throw error;
@@ -108,7 +108,7 @@ const deleteAccount = async (id: string): Promise<void> => {
 
 const updateAccountBalance = async (id: string): Promise<void> => {
   try {
-    await apiClient.post<void>(ACCOUNTS_ROUTES.UPDATE_BALANCE(id));
+    await apiClient.post<void>(ACCOUNTS_ENDPOINTS.UPDATE_BALANCE(id));
   } catch (error) {
     console.error('Error updating account balance:', error);
     throw error;
@@ -121,7 +121,7 @@ const parseAccountStatement = async (
 ): Promise<I_ParsedAccountStatement> => {
   try {
     const response = await apiClient.post<I_ParsedAccountStatement>(
-      ACCOUNTS_ROUTES.PARSE_STATEMENTS(accountId),
+      ACCOUNTS_ENDPOINTS.PARSE_STATEMENTS(accountId),
       formData,
       {
         headers: {
@@ -141,7 +141,7 @@ const createAccountStatement = async (
 ): Promise<I_AccountStatement> => {
   try {
     const response = await apiClient.post<I_AccountStatement>(
-      ACCOUNTS_ROUTES.STATEMENTS(data.account_id),
+      ACCOUNTS_ENDPOINTS.STATEMENTS(data.account_id),
       data
     );
     return response.data;
@@ -154,7 +154,7 @@ const createAccountStatement = async (
 const getAccountStatements = async (accountId: string): Promise<I_AccountStatement[]> => {
   try {
     const response = await apiClient.get<I_AccountStatementsResponse>(
-      ACCOUNTS_ROUTES.STATEMENTS(accountId)
+      ACCOUNTS_ENDPOINTS.STATEMENTS(accountId)
     );
     return response.data.data;
   } catch (error) {
@@ -170,7 +170,7 @@ const getAccountBalancePoints = async (
 ): Promise<I_BalancePoint[]> => {
   try {
     const response = await apiClient.get<I_BalancePoint[]>(
-      ACCOUNTS_ROUTES.BALANCE_POINTS(accountId),
+      ACCOUNTS_ENDPOINTS.BALANCE_POINTS(accountId),
       {
         params: {
           start_date: startDate,

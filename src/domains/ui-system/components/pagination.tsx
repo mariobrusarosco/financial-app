@@ -1,4 +1,4 @@
-import { Button } from '@/domains/ui-system/components/button';
+import { cn } from '@/domains/ui-system/utils';
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
 interface PaginationProps {
@@ -72,9 +72,17 @@ export const Pagination = ({
             <button
               key={page}
               onClick={() => onPageChange(page as number)}
-              className="grid bg-neutral-grey/10 hover:bg-sea-blue group w-7 h-7 place-items-center rounded-md transition-colors"
+              className={cn(
+                'grid bg-neutral-grey/10 hover:bg-sea-blue group w-7 h-7 place-items-center rounded-md transition-colors',
+                page === currentPage && 'bg-sea-blue'
+              )}
             >
-              <span className="text-sea-blue group-hover:text-neutral-white transition-colors">
+              <span
+                className={cn(
+                  'text-sea-blue group-hover:text-neutral-white transition-colors',
+                  page === currentPage && 'text-neutral-white'
+                )}
+              >
                 {page}
               </span>
             </button>

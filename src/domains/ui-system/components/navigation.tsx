@@ -34,119 +34,6 @@ import { Avatar, AvatarFallback } from '@/domains/ui-system/components/avatar';
 import { useAuth } from '@/domains/auth/hooks/use-auth';
 import { useLogout } from '@/domains/auth/hooks/use-logout';
 
-interface NavigationItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const navigationItems: NavigationItem[] = [
-  {
-    label: 'Home',
-    href: '/dashboard',
-    icon: House,
-  },
-  {
-    label: 'Accounts',
-    href: '/accounts',
-    icon: PiggyBank,
-  },
-  {
-    label: 'Transactions',
-    href: '/transactions',
-    icon: Receipt,
-  },
-  {
-    label: 'Cashflow',
-    href: '/cashflow',
-    icon: BarChart3,
-  },
-  {
-    label: 'Brokers',
-    href: '/brokers',
-    icon: Building2,
-  },
-  {
-    label: 'Investments',
-    href: '/investments',
-    icon: TrendingUp,
-  },
-  {
-    label: 'Subscriptions',
-    href: '/subscriptions',
-    icon: Repeat,
-  },
-  {
-    label: 'Installments',
-    href: '/installments',
-    icon: Calendar,
-  },
-  {
-    label: 'Settings',
-    href: '/settings',
-    icon: User,
-  },
-];
-
-const UserMenu = () => {
-  const { user } = useAuth();
-  const { mutate: logout, isPending: isLoggingOut } = useLogout();
-
-  if (!user) return null;
-
-  const getInitials = (name: string) => {
-    if (!name) return 'U';
-    return name
-      .split(' ')
-      .map(part => part.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button data-testid="user-menu" variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-destructive focus:text-destructive"
-          onClick={() => logout()}
-          disabled={isLoggingOut}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{isLoggingOut ? 'Logging out...' : 'Log out'}</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
 export const Navigation = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -252,5 +139,93 @@ export const Navigation = () => {
         )}
       </div>
     </>
+  );
+};
+
+interface NavigationItem {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const navigationItems: NavigationItem[] = [
+  {
+    label: 'Home',
+    href: '/dashboard',
+    icon: House,
+  },
+  {
+    label: 'Accounts',
+    href: '/accounts',
+    icon: PiggyBank,
+  },
+  {
+    label: 'Transactions',
+    href: '/transactions',
+    icon: Receipt,
+  },
+  {
+    label: 'Settings',
+    href: '/settings',
+    icon: User,
+  },
+];
+
+const UserMenu = () => {
+  const { user } = useAuth();
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
+  if (!user) return null;
+
+  const getInitials = (name: string) => {
+    if (!name) return 'U';
+    return name
+      .split(' ')
+      .map(part => part.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button data-testid="user-menu" variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/settings" className="flex items-center">
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/settings" className="flex items-center">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-destructive focus:text-destructive"
+          onClick={() => logout()}
+          disabled={isLoggingOut}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>{isLoggingOut ? 'Logging out...' : 'Log out'}</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

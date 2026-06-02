@@ -1,5 +1,5 @@
 import { http, HttpResponse, delay } from 'msw';
-import { ACCOUNTS_ROUTES } from '../api/backend-routes';
+import { ACCOUNTS_ENDPOINTS } from '../api/backend-routes';
 import { I_Account, I_BalancePoint } from '../types/types-and-interfaces';
 
 /**
@@ -9,7 +9,7 @@ export const mockActiveAccounts = (
   response: I_Account[] | HttpResponse = [],
   options: { delay?: boolean | number } = {}
 ) => {
-  return http.get(`*${ACCOUNTS_ROUTES.LIST_ACTIVE}`, async () => {
+  return http.get(`*${ACCOUNTS_ENDPOINTS.LIST_ACTIVE}`, async () => {
     if (options.delay) {
       await delay(typeof options.delay === 'number' ? options.delay : 'infinite');
     }
@@ -30,7 +30,7 @@ export const mockAccountBalancePoints = (
   response: I_BalancePoint[] | HttpResponse = [],
   options: { delay?: boolean | number } = {}
 ) => {
-  return http.get(`*${ACCOUNTS_ROUTES.BALANCE_POINTS(accountId)}`, async () => {
+  return http.get(`*${ACCOUNTS_ENDPOINTS.BALANCE_POINTS(accountId)}`, async () => {
     if (options.delay) {
       await delay(typeof options.delay === 'number' ? options.delay : 'infinite');
     }
@@ -50,7 +50,7 @@ export const mockCreateAccount = (
   response: I_Account | HttpResponse | undefined = undefined,
   options: { delay?: boolean | number } = {}
 ) => {
-  return http.post(`*${ACCOUNTS_ROUTES.LIST}`, async ({ request }) => {
+  return http.post(`*${ACCOUNTS_ENDPOINTS.LIST}`, async ({ request }) => {
     if (options.delay) {
       await delay(typeof options.delay === 'number' ? options.delay : 'infinite');
     }

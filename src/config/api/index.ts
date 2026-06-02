@@ -8,13 +8,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 
 // Track refresh state to prevent multiple simultaneous refresh attempts
 let isRefreshing = false;
-let failedQueue: {
+let pendingRefreshRequests: {
   resolve: (value?: any) => void;
   reject: (error?: any) => void;
 }[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(({ resolve, reject }) => {
+const resolvePendingRefreshRequests = (error: any, token: string | null = null) => {
+  pendingRefreshRequests.forEach(({ resolve, reject }) => {
     if (error) {
       reject(error);
     } else {
@@ -22,7 +22,7 @@ const processQueue = (error: any, token: string | null = null) => {
     }
   });
 
-  failedQueue = [];
+  pendingRefreshRequests = [];
 };
 
 const refreshAuthToken = async (): Promise<string | null> => {
@@ -96,7 +96,7 @@ apiClient.interceptors.response.use(
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
+          pendingRefreshRequests.push({ resolve, reject });
         })
           .then(token => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -112,14 +112,14 @@ apiClient.interceptors.response.use(
 
       try {
         const newToken = await refreshAuthToken();
-        processQueue(null, newToken);
+        resolvePendingRefreshRequests(null, newToken);
 
         if (newToken) {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return apiClient(originalRequest);
         }
       } catch (refreshError) {
-        processQueue(refreshError, null);
+        resolvePendingRefreshRequests(refreshError, null);
         AuthStorage.clearAuth();
         window.location.href = '/login';
         return Promise.reject(new ApiError('Session expired. Please login again.', 401));

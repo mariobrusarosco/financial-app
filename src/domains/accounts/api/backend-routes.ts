@@ -1,4 +1,4 @@
-export const ACCOUNTS_ROUTES = {
+export const ACCOUNTS_ENDPOINTS = {
   LIST: '/accounts',
   LIST_ACTIVE: '/accounts/active',
   DETAIL: (id: string) => `/accounts/${id}`,

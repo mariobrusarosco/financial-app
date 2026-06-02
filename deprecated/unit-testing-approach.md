@@ -231,6 +231,6 @@ it('shows error state', async () => {
 
 ### Best Practices
 
-- **Don't hardcode URLs** in tests. Use `ACCOUNTS_ROUTES.LIST`.
+- **Don't hardcode URLs** in tests. Use `ACCOUNTS_ENDPOINTS.LIST`.
 - **Don't mock global state** (like `useGlobalUIState`) unless strictly necessary. Test the real integration (e.g., changes in Router state).
 - **Use `findBy*`** for anything that depends on async data fetching.
