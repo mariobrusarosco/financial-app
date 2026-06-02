@@ -2,7 +2,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/domains/ui-system/components/tabs';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Trash2, TrendingUp } from 'lucide-react';
 import CreateInvestmentMovement from './create-investment-movement';
 import CreateInvestmentBalance from './create-investment-balance';
@@ -65,15 +64,10 @@ export const CreateInvestmentDataDrawer = () => {
   return (
     <div className="p-6 space-y-6 h-full">
       <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Add Investment Data"
-          icon={TrendingUp}
-        />
+        <DrawerHeader title="Add Investment Data" icon={TrendingUp} />
         {(pendingMovements.length > 0 || pendingBalances.length > 0) && (
-            <Badge variant="secondary">
-              {pendingMovements.length + pendingBalances.length} pending
-            </Badge>
-          )}
+          <div variant="secondary">{pendingMovements.length + pendingBalances.length} pending</div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto">

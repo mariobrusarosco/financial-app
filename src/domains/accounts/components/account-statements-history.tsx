@@ -1,4 +1,3 @@
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Currency } from '@/domains/ui-system/components/currency';
 import {
   CardContent,
@@ -48,7 +47,7 @@ export const AccountStatementsHistory = ({ accountId }: AccountStatementsHistory
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary">Upload</Badge>
+                    <div variant="secondary">Upload</div>
                     <Button variant="outline" size="sm">
                       <Download className="h-3 w-3" />
                     </Button>

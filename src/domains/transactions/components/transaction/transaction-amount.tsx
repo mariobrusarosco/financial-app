@@ -8,14 +8,13 @@ import type { TransactionAmountProps } from './types';
 export const TransactionAmount = ({
   amount,
   movementType,
-  ignored,
   size = 'large',
 }: TransactionAmountProps) => {
   const currency = formatCurrencyWithSign(amount, movementType);
   const currencyClasses = getCurrencyClasses(movementType, size);
 
   return (
-    <p className={cn(currencyClasses, 'text-sm ml-2', ignored && 'opacity-50')}>
+    <p className={cn(currencyClasses, 'text-md truncate')}>
       {currency.sign}
       {currency.amount}
     </p>

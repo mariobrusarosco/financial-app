@@ -1,4 +1,3 @@
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Card,
@@ -144,9 +143,9 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
                       <h3 className="font-semibold text-lg">{investment.investment.name}</h3>
-                      <Badge variant="outline" className="text-xs">
+                      <div variant="outline" className="text-xs">
                         Investment
-                      </Badge>
+                      </div>
                     </div>
                     {investment.investment.description && (
                       <p className="text-sm text-muted-foreground">

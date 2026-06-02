@@ -11,7 +11,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
 import { Separator } from '@/domains/ui-system/components/separator';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { useExportData } from '@/domains/data-transfer/hooks/use-export-data';
 import { useDownloadExport } from '@/domains/data-transfer/hooks/use-download-export';
 import { useImportData } from '@/domains/data-transfer/hooks/use-import-data';
@@ -148,9 +147,7 @@ export const DataTransferCard = () => {
           <Download className="h-5 w-5" />
           Data Transfer
         </CardTitle>
-        <CardDescription>
-          Export your financial data or import data from a CSV file
-        </CardDescription>
+        <CardDescription>Export your financial data or import data from a CSV file</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Export Section */}
@@ -230,9 +227,9 @@ export const DataTransferCard = () => {
             />
             {selectedFile && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Badge variant="secondary">
+                <div variant="secondary">
                   {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
-                </Badge>
+                </div>
               </div>
             )}
           </div>

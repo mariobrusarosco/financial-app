@@ -1,5 +1,4 @@
 import { AlertCircle, AlertTriangle, Receipt } from 'lucide-react';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 import { formatCurrencyAmount, formatDateMedium } from '@/domains/global/utils/formatting';
 import { useUpcomingInstallments } from '@/domains/dashboard/hooks/use-upcoming-installments';
@@ -68,18 +67,18 @@ const EmptyState = () => {
 const InstallmentStatusBadge = ({ status }: { status: T_InstallmentStatus }) => {
   if (status === 'overdue') {
     return (
-      <Badge variant="outline" className="gap-1 bg-red-50 px-2 py-0.5 text-red-700">
+      <div variant="outline" className="gap-1 bg-red-50 px-2 py-0.5 text-red-700">
         <AlertTriangle className="h-3 w-3" />
         Overdue
-      </Badge>
+      </div>
     );
   }
 
   return (
-    <Badge variant="outline" className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700">
+    <div variant="outline" className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700">
       <AlertCircle className="h-3 w-3" />
       Due
-    </Badge>
+    </div>
   );
 };
 

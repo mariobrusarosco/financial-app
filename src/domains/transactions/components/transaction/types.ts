@@ -1,33 +1,7 @@
-import type { I_TransactionResponse, T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
-
-// Main transaction item props
-export interface TransactionItemProps {
-  transaction: I_TransactionResponse;
-  mode: 'compact' | 'default';
-  onDelete?: (transaction: I_TransactionResponse) => void;
-  onIgnoreTransaction?: (id: string) => void | null;
-  onSave?: (updates: Partial<I_TransactionResponse>) => void;
-  onCancel?: () => void;
-  onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
-  isEditing?: boolean;
-  isSelected: boolean;
-  onSelectTransaction?: (id: string) => void;
-  onSelectionChange?: (selected: boolean) => void;
-  showCheckbox?: boolean;
-  className?: string;
-}
-
-// Hover actions props
-export interface TransactionHoverActionsProps {
-  transaction: I_TransactionResponse;
-  isSelected: boolean;
-  showCheckbox: boolean;
-  onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
-  onDelete?: (transaction: I_TransactionResponse) => void;
-  onIgnoreTransaction?: (id: string) => void | null;
-  onSelectionChange?: (selected: boolean) => void;
-  onSelectTransaction?: (id: string) => void;
-}
+import type {
+  I_TransactionResponse,
+  T_TransactionType,
+} from '@/domains/transactions/types/types-and-interfaces';
 
 // Icon badge props
 export interface TransactionIconBadgeProps {
@@ -69,19 +43,6 @@ export interface TransactionCategoryProps {
   };
   categoryName?: string;
   category?: string;
-}
-
-// Default mode layout props
-export interface TransactionItemDefaultProps {
-  transaction: I_TransactionResponse;
-  isSelected: boolean;
-  showCheckbox: boolean;
-  onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
-  onDelete?: (transaction: I_TransactionResponse) => void;
-  onIgnoreTransaction?: (id: string) => void | null;
-  onSelectionChange?: (selected: boolean) => void;
-  onSelectTransaction?: (id: string) => void;
-  className?: string;
 }
 
 // Compact mode layout props

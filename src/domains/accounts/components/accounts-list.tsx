@@ -1,15 +1,22 @@
 import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
-import { BrushCleaning, ChevronRight, RefreshCcw, XCircle, Banknote, CreditCard, ChartBar, Loan } from 'lucide-react';
+import {
+  BrushCleaning,
+  ChevronRight,
+  RefreshCcw,
+  XCircle,
+  Banknote,
+  CreditCard,
+  ChartBar,
+  Loan,
+} from 'lucide-react';
 import { I_Account, T_AccountType } from '@/domains/accounts/types/types-and-interfaces';
 import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { cn } from '@/domains/ui-system/utils';
-
 
 const AccountIcon = ({ type }: { type: T_AccountType }) => {
   switch (type) {
@@ -18,7 +25,9 @@ const AccountIcon = ({ type }: { type: T_AccountType }) => {
     case 'investment':
       return <ChartBar className="h-7 w-7 text bg-blue-700/50 text-neutral-white rounded-md p-2" />;
     default:
-      return <CreditCard className="h-7 w-7 text bg-red-700/50 text-neutral-white rounded-md p-2" />;
+      return (
+        <CreditCard className="h-7 w-7 text bg-red-700/50 text-neutral-white rounded-md p-2" />
+      );
   }
 };
 
@@ -50,14 +59,14 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           <h3 data-testid="account-card-name" className="truncate text-ellipsis whitespace-nowrap">
             {account.name}
           </h3>
-          <Badge
+          <div
             data-testid="account-card-broker"
             variant="outline"
             className="bg-primary/20 text-neutral-white text-xs py-1 px-3"
             style={{ backgroundColor: brokerprimaryColor }}
           >
             {account.broker?.name}
-          </Badge>
+          </div>
         </div>
         <Link
           data-testid="account-card-link"
@@ -84,7 +93,10 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
 const LoadingState = () => {
   return (
-    <div data-testid="accounts-list-loading" className="flex flex-col items-center justify-center gap-4 h-full">
+    <div
+      data-testid="accounts-list-loading"
+      className="flex flex-col items-center justify-center gap-4 h-full"
+    >
       <div className="p-6 rounded-3xl">
         <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
       </div>
@@ -94,7 +106,10 @@ const LoadingState = () => {
 
 const EmptyState = () => {
   return (
-    <div data-testid="accounts-list-empty" className="flex flex-col items-center justify-center gap-4 h-full">
+    <div
+      data-testid="accounts-list-empty"
+      className="flex flex-col items-center justify-center gap-4 h-full"
+    >
       <div className="p-6 bg-muted-foreground/10 rounded-3xl">
         <BrushCleaning className="h-15 w-15 text-muted-foreground stroke-1" />
       </div>
@@ -107,7 +122,10 @@ const ErrorState = ({ error }: { error: Error }) => {
   // TODO: move to Sentry
   console.error(error);
   return (
-    <div data-testid="accounts-list-error" className="flex flex-col items-center justify-center gap-4 flex-1 h-full">
+    <div
+      data-testid="accounts-list-error"
+      className="flex flex-col items-center justify-center gap-4 flex-1 h-full"
+    >
       <div className="p-6 bg-destructive/10 rounded-3xl">
         <XCircle className="h-15 w-15 text-destructive stroke-1" />
       </div>

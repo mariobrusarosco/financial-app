@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from '@/domains/ui-system/components/card';
 import { Separator } from '@/domains/ui-system/components/separator';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { ModeToggle } from '@/domains/ui-system/components/mode-toggle';
 
 export const PreferencesCard = () => {
@@ -31,7 +30,7 @@ export const PreferencesCard = () => {
               <h3 className="text-sm font-medium">Notifications</h3>
               <p className="text-sm text-muted-foreground">Manage how you receive notifications</p>
             </div>
-            <Badge variant="outline">Enabled</Badge>
+            <div variant="outline">Enabled</div>
           </div>
         </div>
       </CardContent>

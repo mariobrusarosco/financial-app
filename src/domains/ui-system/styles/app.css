@@ -1,19 +1,21 @@
-@import '@fontsource/montserrat/100.css';
-@import '@fontsource/montserrat/300.css';
-@import '@fontsource/montserrat/400.css';
-@import '@fontsource/montserrat/500.css';
-@import '@fontsource/montserrat/700.css';
+@import '@fontsource/barlow-condensed/200.css';
+@import '@fontsource/barlow-condensed/400.css';
+@import '@fontsource/barlow-condensed/600.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+
+  --color-sea-blue: var(--sea-blue);
+  --color-neutral-grey: var(--neutral-grey);
+  --color-neutral-white: var(--neutral-white);
+  --color-transactions: var(--transactions);
+
   --color-card-background: var(--neutral-white);
   --color-section-background: var(--section-background);
-  --color-neutral-white: var(--neutral-white);
-
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -53,6 +55,11 @@
 }
 
 :root {
+  --transactions: #c70036;
+  --neutral-white: #fdfcfc;
+  --sea-blue: #01304a;
+  --neutral-grey: #525252;
+
   --radius: 0.65rem;
   --background: #fafafa;
   --section-background: #f6f7ed;
@@ -60,7 +67,6 @@
   --primary: #263a49;
   --foreground: #ebece1;
   --secondary: #2a6c89;
-
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
@@ -98,6 +104,11 @@
 }
 
 .dark {
+  --sea-blue: #01304a;
+  --neutral-grey: #525252;
+  --neutral-white: #fdfcfc;
+  --transactions: #c70036;
+
   --background: oklch(0.24 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);

@@ -5,13 +5,11 @@ import {
   formatDateMedium,
 } from '@/domains/transactions/utils/transaction-formatting';
 import type { TransactionInfoProps } from './types';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Repeat, Calendar } from 'lucide-react';
 
 export const TransactionInfo = ({
   description,
   date,
-  ignored,
   subscription,
   installment_info,
   dateFormat = 'medium',
@@ -29,23 +27,29 @@ export const TransactionInfo = ({
   };
 
   return (
-    <div className="md:w-full md:max-w-[450px] flex flex-col">
+    <div className="w-full max-w-[200px] flex flex-col gap-1">
       <div className="flex items-center gap-2">
-        <p className={cn('leading-tight text-primary', ignored && 'opacity-50')}>{description}</p>
+        <p className={cn('leading-tight text-xl truncate')}>{description}</p>
         {subscription && (
-          <Badge variant="outline" className="flex items-center gap-1 border-blue-200 bg-blue-50 text-blue-700">
+          <div
+            variant="outline"
+            className="flex items-center gap-1 border-blue-200 bg-blue-50 text-blue-700"
+          >
             <Repeat className="h-3 w-3" />
             Recurring
-          </Badge>
+          </div>
         )}
         {installment_info && (
-          <Badge variant="outline" className="flex items-center gap-1 border-gray-200 bg-gray-50 text-gray-700">
+          <div
+            variant="outline"
+            className="flex items-center gap-1 border-gray-200 bg-gray-50 text-sea-blue"
+          >
             <Calendar className="h-3 w-3" />
             {installment_info.number}/{installment_info.total}
-          </Badge>
+          </div>
         )}
       </div>
-      <p className="text-xs text-muted-foreground">{formatDate()}</p>
+      <p className="text-sm text-neutral-grey/50  truncate">{formatDate()}</p>
     </div>
   );
 };

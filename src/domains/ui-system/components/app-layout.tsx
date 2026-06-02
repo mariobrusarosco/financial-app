@@ -25,8 +25,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="mt-4 md:mt-6 flex gap-4 flex-wrap md:flex-col md:flex-row justify-between items-end"
         >
           <div data-testid="user-greeting" className="flex flex-col items-start">
-            <p className="text-sm md:text-xl font-light text-muted-foreground">Hello,</p>
-            <p className="text text-primary lg:text-3xl font-thin">{user?.full_name || 'User'}</p>
+            <p className="font-bold text-base text-muted-foreground">Hello,</p>
+            <p className="text-primary text-3xl font-light uppercase">
+              {user?.full_name || 'User'}
+            </p>
           </div>
 
           <div className="flex items-center gap-2 text-primary">
@@ -36,7 +38,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             <span className="text-xs">{format(today, 'yyyy')}</span>
           </div>
 
-          <GlobalDateFilter />
+          {/* <GlobalDateFilter /> */}
         </div>
 
         <hr className="border-b border-primary/20 w-full my-3" />

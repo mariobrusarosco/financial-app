@@ -5,7 +5,6 @@ import { Plus, Calendar, Loader2 } from 'lucide-react';
 import { InstallmentForm } from './installment-form';
 import { useCreateInstallmentPlan } from '@/domains/installments/hooks/use-create-installment-plan';
 import * as dateFns from 'date-fns';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
@@ -62,10 +61,10 @@ export const CreateInstallmentDrawer = () => {
       });
     },
   });
-  
+
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={e => {
         e.preventDefault();
         e.stopPropagation();
         void form.handleSubmit();
@@ -73,10 +72,7 @@ export const CreateInstallmentDrawer = () => {
       className="p-6 space-y-6 h-full flex flex-col"
     >
       <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Create Installment Plan"
-          icon={Plus}
-        />
+        <DrawerHeader title="Create Installment Plan" icon={Plus} />
         <div className="flex gap-2">
           <Button type="submit" size="lg" disabled={isSaving}>
             {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -93,11 +89,11 @@ export const CreateInstallmentDrawer = () => {
             </p>
             <InstallmentForm form={form} />
           </div>
-          
+
           <div className="col-span-1 border-l pl-8 space-y-6">
             <form.Subscribe
-              selector={(state) => state.values}
-              children={(formValues) => {
+              selector={state => state.values}
+              children={formValues => {
                 const installmentsPreview = useMemo(() => {
                   const { total_amount, installment_count, start_date } = formValues;
                   if (total_amount <= 0 || installment_count <= 0 || !start_date) {
@@ -118,7 +114,7 @@ export const CreateInstallmentDrawer = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Generated schedule based on your input.
                     </p>
-                    
+
                     {installmentsPreview.length > 0 ? (
                       <div className="space-y-3">
                         <div className="p-4 bg-primary/5 rounded-xl border border-primary/10 space-y-2">
@@ -130,7 +126,9 @@ export const CreateInstallmentDrawer = () => {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Total:</span>
-                            <span className="font-semibold">${formValues.total_amount?.toFixed(2)}</span>
+                            <span className="font-semibold">
+                              ${formValues.total_amount?.toFixed(2)}
+                            </span>
                           </div>
                         </div>
 
@@ -139,12 +137,18 @@ export const CreateInstallmentDrawer = () => {
                             Installment Timeline
                           </p>
                           <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2 scrollbar-thin">
-                            {installmentsPreview.map((item) => (
-                              <div key={item.number} className="flex items-center justify-between p-3 border rounded-lg text-sm bg-card">
+                            {installmentsPreview.map(item => (
+                              <div
+                                key={item.number}
+                                className="flex items-center justify-between p-3 border rounded-lg text-sm bg-card"
+                              >
                                 <div className="flex items-center gap-3">
-                                  <Badge variant="outline" className="h-6 w-6 rounded-full p-0 flex items-center justify-center">
+                                  <div
+                                    variant="outline"
+                                    className="h-6 w-6 rounded-full p-0 flex items-center justify-center"
+                                  >
                                     {item.number}
-                                  </Badge>
+                                  </div>
                                   <div className="flex flex-col">
                                     <span className="font-medium text-xs">
                                       {dateFns.format(item.date, 'MMM dd, yyyy')}
@@ -162,7 +166,9 @@ export const CreateInstallmentDrawer = () => {
                     ) : (
                       <div className="h-64 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
                         <Calendar className="h-8 w-8 mb-2 opacity-20" />
-                        <p className="text-xs">Fill out the amount and number of installments to see the preview.</p>
+                        <p className="text-xs">
+                          Fill out the amount and number of installments to see the preview.
+                        </p>
                       </div>
                     )}
                   </div>

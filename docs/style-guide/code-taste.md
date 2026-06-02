@@ -42,3 +42,9 @@ const getUpcomingInstallments = (plans: I_InstallmentPlan[]) => {
 ```
 
 ## Query Param Handling And Validation
+
+Refer to `docs/style-guide/query-param-handling-and-validation.md`
+
+## Debounced Inputs
+
+Refer to `docs/style-guide/debounced-inputs.md`

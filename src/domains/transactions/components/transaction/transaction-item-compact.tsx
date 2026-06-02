@@ -1,5 +1,4 @@
 import { cn } from '@/domains/ui-system/utils';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { TransactionIconBadge } from './transaction-icon-badge';
 import { TransactionAmount } from './transaction-amount';
 import { TransactionHoverActions } from './transaction-hover-actions';
@@ -62,12 +61,12 @@ export const TransactionItemCompact = ({
       </div>
 
       {transaction.ignored && (
-        <Badge
+        <div
           variant="outline"
           className="text-xs bg-orange-50 text-orange-700 border-orange-200 flex-shrink-0"
         >
           Ignored
-        </Badge>
+        </div>
       )}
 
       <div className="text-right flex-shrink-0">

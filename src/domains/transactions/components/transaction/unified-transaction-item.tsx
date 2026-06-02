@@ -4,66 +4,69 @@ import { TransactionItemCompact } from './transaction-item-compact';
 import type { TransactionItemProps } from './types';
 import type { I_TransactionPayload, I_TransactionResponse } from '../types/types-and-interfaces';
 
+// Main transaction item props
+export interface TransactionItemProps {
+  transaction: I_TransactionResponse;
+  isPending?: boolean;
+  onIgnoreTransaction?: (id: string, currentIgnoreValue: boolean) => void | null;
+  // mode: 'compact' | 'default';
+  // onDelete?: (transaction: I_TransactionResponse) => void;
+  // onSave?: (updates: Partial<I_TransactionResponse>) => void;
+  // onCancel?: () => void;
+  // onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
+  // isEditing?: boolean;
+  // isSelected: boolean;
+  // onSelectTransaction?: (id: string) => void;
+  // onSelectionChange?: (selected: boolean) => void;
+  // showCheckbox?: boolean;
+  // className?: string;
+}
 
 export const UnifiedTransactionItem = ({
   transaction,
-  mode,
-  onDelete,
-  onTriggerEditMode,
+  isPending,
   onIgnoreTransaction,
-  onSave,
-  onCancel,
-  isEditing = false,
-  isSelected = false,
-  onSelectTransaction,
-  onSelectionChange,
-  showCheckbox = false,
-  className,
+  // mode,
+  // onDelete,
+  // onTriggerEditMode,
+  // onIgnoreTransaction,
+  // onSave,
+  // onCancel,
+  // isEditing = false,
+  // isSelected = false,
+  // onSelectTransaction,
+  // onSelectionChange,
+  // className,
 }: TransactionItemProps) => {
-  // Handle edit mode for both layouts
-  if (isEditing) {
-    return (
-      <div className="rounded-lg p-4 bg-white border shadow-sm">
-        <TransactionForm
-          initialValues={transaction} // transaction is I_TransactionResponse, which TransactionForm can handle
-          isEditMode={true}
-          // The onSave prop expects Partial<I_TransactionResponse>, TransactionForm onSubmit returns I_TransactionPayload.
-          // I_TransactionPayload is largely compatible with the update structure,
-          // but we cast it to Partial<I_TransactionResponse> to satisfy the prop type.
-          onSubmit={(values: I_TransactionPayload) => onSave?.(values as Partial<I_TransactionResponse>)}
-          onCancel={onCancel}
-        />
-      </div>
-    );
-  }
+  // // Handle edit mode for both layouts
+  // if (isEditing) {
+  //   return (
+  //     <div className="rounded-lg p-4 bg-white border shadow-sm">
+  //       <TransactionForm
+  //         initialValues={transaction} // transaction is I_TransactionResponse, which TransactionForm can handle
+  //         isEditMode={true}
+  //         // The onSave prop expects Partial<I_TransactionResponse>, TransactionForm onSubmit returns I_TransactionPayload.
+  //         // I_TransactionPayload is largely compatible with the update structure,
+  //         // but we cast it to Partial<I_TransactionResponse> to satisfy the prop type.
+  //         onSubmit={(values: I_TransactionPayload) =>
+  //           onSave?.(values as Partial<I_TransactionResponse>)
+  //         }
+  //         onCancel={onCancel}
+  //       />
+  //     </div>
+  //   );
+  // }
 
-  // Render compact mode
-  if (mode === 'compact') {
-    return (
-      <TransactionItemCompact
-        transaction={transaction}
-        isSelected={isSelected}
-        onTriggerEditMode={onTriggerEditMode || (() => {})}
-        onDelete={onDelete}
-        onIgnoreTransaction={onIgnoreTransaction}
-        onSelectionChange={onSelectionChange}
-        onSelectTransaction={onSelectTransaction}
-      />
-    );
-  }
-
-  // Render default mode
   return (
     <TransactionItemDefault
       transaction={transaction}
-      isSelected={isSelected}
-      showCheckbox={showCheckbox}
-      onTriggerEditMode={onTriggerEditMode}
-      onDelete={onDelete}
       onIgnoreTransaction={onIgnoreTransaction}
-      onSelectionChange={onSelectionChange}
-      onSelectTransaction={onSelectTransaction}
-      className={className}
+      isPending={isPending}
+      // isSelected={isSelected}
+      // onTriggerEditMode={onTriggerEditMode}
+      // onDelete={onDelete}
+      // onSelectionChange={onSelectionChange}
+      // onSelectTransaction={onSelectTransaction}
     />
   );
 };

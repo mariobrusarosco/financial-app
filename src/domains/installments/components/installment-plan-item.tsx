@@ -4,7 +4,6 @@ import { Button } from '@/domains/ui-system/components/button';
 import { Pencil, Trash2, Calendar, ChevronDown, ChevronUp, CreditCard } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { useNavigate } from '@tanstack/react-router';
 
 interface InstallmentPlanItemProps {
@@ -96,7 +95,7 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
           </div>
         </div>
         <div className="flex items-center gap-2 self-start pt-1">
-          <Badge
+          <div
             variant="outline"
             className={cn(
               'capitalize',
@@ -108,7 +107,7 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
             )}
           >
             {plan.status}
-          </Badge>
+          </div>
           <Button
             variant="outline"
             size="icon"
@@ -166,7 +165,7 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
                       })}
                     </span>
                   </div>
-                  <Badge
+                  <div
                     variant="outline"
                     className={cn(
                       'text-[10px] py-0 h-4 px-1.5',
@@ -178,7 +177,7 @@ export const InstallmentPlanItem = ({ plan, onEdit, onDelete }: InstallmentPlanI
                     )}
                   >
                     {installment.status}
-                  </Badge>
+                  </div>
                 </div>
               ))}
             </div>

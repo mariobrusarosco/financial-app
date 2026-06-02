@@ -6,7 +6,11 @@ import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 import { toast } from 'sonner';
 import { GET_ACCOUNT_TRANSACTIONS_PAGINATED_QUERY_KEY } from '../api/keys';
 
-export const useUpdateTransaction = (onUpdateSuccess?: () => void) => {
+export const useUpdateTransaction = ({
+  onSuccess: onUpdateSuccess,
+}: {
+  onSuccess?: (data: I_TransactionResponse) => void;
+}) => {
   const queryClient = useQueryClient();
   const params = useParams({ strict: false });
   const accountIdFromUrl = (params as any).slug;
@@ -15,34 +19,8 @@ export const useUpdateTransaction = (onUpdateSuccess?: () => void) => {
     mutationFn: ({ id, updates }: { id: string; updates: Partial<I_TransactionResponse> }) =>
       updateTransaction(id, updates),
     onSuccess: data => {
-      // Use account ID from URL (for credit card transactions on account pages)
-      // or from transaction data (for direct account transactions)
-      const accountId = accountIdFromUrl || data.account_id;
-
-      onUpdateSuccess?.();
+      onUpdateSuccess?.(data);
       toast.success('Transaction updated successfully');
-
-      if (accountId) {
-        // Partial key invalidation - invalidates ALL variations (pages, filters, etc.)
-        void queryClient.invalidateQueries({
-          queryKey: GET_ACCOUNT_TRANSACTIONS_PAGINATED_QUERY_KEY(accountId),
-        });
-
-        // Invalidate account details (balance changes)
-        void queryClient.invalidateQueries({
-          queryKey: ['accounts', 'account', accountId],
-        });
-
-        // Invalidate balance timeline (transaction amounts/dates affect balance history)
-        void queryClient.invalidateQueries({
-          queryKey: ['balance-points', accountId],
-        });
-      }
-
-      // Invalidate active accounts list (may show balances in sidebar/dropdown)
-      void queryClient.invalidateQueries({
-        queryKey: ['accounts', 'active'],
-      });
     },
     onError: error => {
       handleErrorWithToast(error, {

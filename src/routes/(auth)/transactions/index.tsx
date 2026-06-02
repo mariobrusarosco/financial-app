@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { TransactionsMainScreen } from '@/domains/transactions/screens/main';
 
 const transactionsSearchSchema = z.object({
-  sort_by: z.enum(['date', 'amount', 'created_at', 'category']).optional(),
+  sort_by: z.enum(['date', 'amount', 'created_at', 'category', 'page', 'pageSize']).optional(),
   sort_order: z.enum(['asc', 'desc']).optional(),
 });
 

@@ -12,7 +12,6 @@ import {
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Card } from '@/domains/ui-system/components/card';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Edit, Trash2, Save, X } from 'lucide-react';
 
 interface EditableTransactionsTableProps {
@@ -64,9 +63,9 @@ export const EditableTransactionsTable = ({
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Editable Transactions</h2>
           {selectedTransactions.size > 0 && (
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <div variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               {selectedTransactions.size} selected
-            </Badge>
+            </div>
           )}
         </div>
 
@@ -199,7 +198,7 @@ export const EditableTransactionsTable = ({
                     </TableCell>
                     <TableCell className="font-medium">{transaction.description}</TableCell>
                     <TableCell>
-                      <Badge
+                      <div
                         variant={transaction.is_paid ? 'default' : 'destructive'}
                         className={
                           transaction.is_paid
@@ -208,7 +207,7 @@ export const EditableTransactionsTable = ({
                         }
                       >
                         {transaction.is_paid ? 'Paid' : 'Pending'}
-                      </Badge>
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="font-semibold tabular-nums text-gray-900">

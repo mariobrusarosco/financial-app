@@ -1,12 +1,14 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAllTransactionsWithPagination } from '@/domains/transactions/hooks/use-all-transactions';
 import { TransactionsErrorState } from '@/domains/transactions/components/transactions-error-state';
-import { TransactionsLoadingState } from '@/domains/transactions/components/transactions-loading-state';
 import { TransactionsEmptyState } from '@/domains/transactions/components/transactions-empty-state';
 import { TransactionsList } from '@/domains/transactions/components/transactions-list';
 import { AccountTransactionFilters } from '@/domains/transactions/components/account-transaction-filters';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
 import { Route } from '@/routes/(auth)/transactions/index';
+import { PageHeader } from '@/domains/global/components';
+import { ArrowRightLeft, RefreshCcw } from 'lucide-react';
+import { cn } from '@/domains/ui-system/utils';
 
 const ITEMS_PER_PAGE = 20;
 const DEFAULT_SORT_BY: NonNullable<I_AccountTransactionsParams['sort_by']> = 'date';
@@ -36,7 +38,7 @@ export const TransactionsMainScreen = () => {
     [params, from, to, resolvedSortBy, resolvedSortOrder]
   );
 
-  const { data, isLoading, error, isPlaceholderData } = useAllTransactionsWithPagination(
+  const { data, isFetching, error, isPlaceholderData } = useAllTransactionsWithPagination(
     mergedParams.page,
     mergedParams.per_page,
     mergedParams
@@ -68,16 +70,33 @@ export const TransactionsMainScreen = () => {
     });
   };
 
+  console.log({ isFetching });
+
   return (
-    <div data-ui="transactions-main-screen" className="flex flex-col h-full gap-4">
-      <AccountTransactionFilters params={mergedParams} onParamsChange={handleParamsChange} />
+    <div data-ui="transactions-main-screen" className="flex flex-col h-full">
+      <div className="flex items-center gap-2  items-start pb-3">
+        <ArrowRightLeft className="bg-transactions text-neutral-white rounded-md p-2.5 h-10 w-10" />
+
+        <div className="flex flex-col gap-2">
+          <h1 className="text-5xl text-primary tracking-tight leading-[0.7]">Transactions</h1>
+          <p className="text-sm text-primary tracking-tight">Found {meta?.total} transactions</p>
+        </div>
+      </div>
+
+      {/* <AccountTransactionFilters params={mergedParams} onParamsChange={handleParamsChange} /> */}
+
+      {isFetching && !error && (
+        <div className="flex flex-col items-center justify-center gap-4 flex-1">
+          <div className="p-6 rounded-3xl">
+            <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
+          </div>
+        </div>
+      )}
 
       {error ? (
         <TransactionsErrorState />
-      ) : isLoading && !isPlaceholderData ? (
-        <TransactionsLoadingState />
       ) : transactions.length === 0 &&
-        !isLoading &&
+        !isFetching &&
         !isPlaceholderData &&
         !Object.keys(params).some(
           k => k !== 'page' && k !== 'per_page' && k !== 'sort_by' && k !== 'sort_order'

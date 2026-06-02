@@ -12,16 +12,18 @@ export const TransactionCategory = ({
   const hasParent = categoryTree?.parent;
 
   return (
-    <div className="flex gap-1 items-center ml-3">
+    <div className="flex gap-1 items-center w-full">
       <Tag className="h-3 w-3" />
-      <span className="text-xs text-muted-foreground">{displayName}</span>
 
-      {hasParent && (
-        <div className="text-xs text-muted-foreground flex items-center gap-1">
-          <p className="">(sub)</p>
-          <p className="">{categoryTree.parent.name}</p>
-        </div>
-      )}
+      <div className="flex gap-1 w-full">
+        <span className="text-sm text-muted-foreground truncate">{displayName}</span>
+        {hasParent && (
+          <div className="text-sm text-muted-foreground flex items-center gap-1 truncate">
+            <p className="truncate">(sub)</p>
+            <p className="truncate">{categoryTree.parent.name}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

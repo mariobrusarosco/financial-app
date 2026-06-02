@@ -1,4 +1,3 @@
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Table,
@@ -88,7 +87,7 @@ export const InvestmentBalanceTable = ({
     const isDeposit = numericAmount > 0;
 
     return (
-      <Badge
+      <div
         variant="outline"
         className={cn(
           'font-medium',
@@ -98,7 +97,7 @@ export const InvestmentBalanceTable = ({
         )}
       >
         {isDeposit ? 'Deposit' : 'Withdrawal'}
-      </Badge>
+      </div>
     );
   };
 

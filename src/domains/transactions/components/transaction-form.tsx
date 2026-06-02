@@ -1,8 +1,12 @@
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
-import { useMemo } from 'react';
-import type { I_TransactionPayload, T_TransactionType } from '../types/types-and-interfaces';
+import { useMemo, useState } from 'react';
+import type {
+  I_CreateTransactionForm,
+  I_TransactionPayload,
+  T_TransactionType,
+} from '../types/types-and-interfaces';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useVendors } from '@/domains/vendors/hooks';
@@ -20,7 +24,10 @@ import {
 import { TransactionDatePicker } from './transaction-date-picker';
 import { HierarchicalCategorySelector } from './hierarchical-category-selector';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
-import { TransactionAmountField } from './transaction/transaction-amount-field';
+import { Button } from '@/domains/ui-system/components/button';
+import { Input } from '@/domains/ui-system/components/input';
+import { Calculator as CalculatorIcon } from 'lucide-react';
+import { Calculator } from '@/domains/ui-system/components/calculator';
 import { cn } from '@/domains/ui-system';
 
 const MOVEMENT_TYPE_OPTIONS: { value: T_TransactionType; label: string }[] = [
@@ -52,11 +59,15 @@ const transactionSchema = z
   .refine(data => data.account_id || data.credit_card_id, {
     message: 'Either Account or Credit Card must be selected',
     path: ['account_id'],
+  })
+  .refine(data => !(data.account_id && data.credit_card_id), {
+    message: 'Choose either Bank Account or Credit Card',
+    path: ['credit_card_id'],
   });
 
 interface TransactionFormProps {
-  initialValues?: Partial<I_TransactionPayload> & { id?: string };
-  onSubmit: (values: I_TransactionPayload) => void;
+  initialValues?: Partial<I_TransactionPayload> & { id?: string; subscription_id?: string };
+  onSubmit: (values: I_CreateTransactionForm) => void;
   isEditMode?: boolean;
   onCancel?: () => void;
 }
@@ -88,6 +99,7 @@ export const TransactionForm = ({
   const availableSubscriptions = useMemo(() => subscriptionsData?.data || [], [subscriptionsData]);
   const accountList = accounts || [];
   const creditCardList = creditCards?.data || [];
+  const paymentMethodDefaults = getPaymentMethodDefaults(initialValues, isEditMode);
 
   const form = useForm({
     validatorAdapter: zodValidator,
@@ -95,39 +107,40 @@ export const TransactionForm = ({
       description: initialValues?.description || '',
       amount: initialValues?.amount ? String(initialValues.amount) : '',
       date: initialValues?.date || new Date().toISOString().split('T')[0],
-      movement_type: (initialValues?.movement_type || 'expense') as T_TransactionType,
+      movement_type: initialValues?.movement_type || 'expense',
       category_id: initialValues?.category_id || '',
-      account_id: initialValues?.account_id || '',
-      credit_card_id: initialValues?.credit_card_id || '',
+      account_id: paymentMethodDefaults.account_id,
+      credit_card_id: paymentMethodDefaults.credit_card_id,
       vendor_id: initialValues?.vendor_id || '',
       subscription_id: initialValues?.subscription_id || '',
       is_paid: initialValues?.is_paid ?? false,
       ignored: initialValues?.ignored ?? false,
     },
-    onSubmit: async ({ value }) => {
-      const submissionData: I_TransactionPayload = {
+    onSubmit: ({ value }) => {
+      const paymentMethod = getSubmissionPaymentMethod(value);
+      const submissionData: I_CreateTransactionForm = {
         description: value.description,
         amount: Number(value.amount),
         date: value.date,
         movement_type: value.movement_type,
         category_id: value.category_id || undefined,
-        account_id: value.account_id ? value.account_id : undefined,
-        credit_card_id: value.credit_card_id ? value.credit_card_id : undefined,
+        account_id: paymentMethod.account_id,
+        credit_card_id: paymentMethod.credit_card_id,
         vendor_id: value.vendor_id || undefined,
         is_paid: value.is_paid,
         ignored: value.ignored,
       };
 
       if (value.subscription_id) {
-        (submissionData as any).subscription_id = value.subscription_id;
+        submissionData.subscription_id = value.subscription_id;
       }
 
       const broker_id =
-        creditCards?.data?.find(c => c.id === value.credit_card_id)?.broker_id ||
-        accounts?.find(a => a.id === value.account_id)?.broker?.id;
+        creditCards?.data?.find(c => c.id === paymentMethod.credit_card_id)?.broker_id ||
+        accounts?.find(a => a.id === paymentMethod.account_id)?.broker?.id;
 
       if (broker_id) {
-        (submissionData as any).broker_id = broker_id;
+        submissionData.broker_id = broker_id;
       }
 
       onSubmit(submissionData);
@@ -144,7 +157,7 @@ export const TransactionForm = ({
   }
 
   const accountDisplayName = getAccountDisplayName(initialValues, accountList, creditCardList);
-  const paymentMethodLabel = initialValues?.credit_card_id ? 'Credit Card' : 'Account';
+  const paymentMethodLabel = initialValues?.credit_card_id ? 'Credit Card' : 'Bank Account';
 
   return (
     <form
@@ -179,7 +192,7 @@ export const TransactionForm = ({
       </div>
 
       {isEditMode && (
-        <PaymentMethodLockInfo
+        <PaymentMethodInfo
           paymentMethodLabel={paymentMethodLabel}
           accountDisplayName={accountDisplayName}
         />
@@ -226,16 +239,59 @@ const DescriptionField = ({
   </form.Field>
 );
 
-const AmountField = ({ form, isEditMode }: { form: TransactionFormApi; isEditMode: boolean }) => (
-  <form.Field
-    name="amount"
-    validators={{
-      onSubmit: transactionSchema.shape.amount,
-    }}
-  >
-    {field => <TransactionAmountField field={field} isEditMode={isEditMode} />}
-  </form.Field>
-);
+const AmountField = ({ form, isEditMode }: { form: TransactionFormApi; isEditMode: boolean }) => {
+  const [showCalculator, setShowCalculator] = useState(false);
+
+  return (
+    <form.Field
+      name="amount"
+      validators={{
+        onSubmit: transactionSchema.shape.amount,
+      }}
+    >
+      {field => (
+        <div className="space-y-2 relative">
+          <Label htmlFor={field.name}>Amount</Label>
+          <Input
+            id={field.name}
+            type="number"
+            step="0.01"
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={e => field.handleChange(e.target.value)}
+            className={isEditMode ? 'text-sm' : ''}
+          />
+          <div className="flex items-center gap-2 absolute right-0 top-0">
+            <Button
+              variant="link"
+              size="sm"
+              className="p-0 h-auto text-xs text-muted-foreground"
+              onClick={() => setShowCalculator(!showCalculator)}
+              type="button"
+            >
+              <CalculatorIcon className="w-3 h-3 mr-1" />
+              {showCalculator ? 'Hide' : 'Calc'}
+            </Button>
+          </div>
+          {showCalculator && (
+            <div className="absolute z-50 -mt-10 shadow-lg bg-white rounded-md border text-left">
+              <Calculator
+                initialValue={field.state.value ? Number(field.state.value) : undefined}
+                onApply={value => {
+                  field.handleChange(value.toString());
+                  setShowCalculator(false);
+                }}
+                onClose={() => setShowCalculator(false)}
+                className="w-[280px]"
+              />
+            </div>
+          )}
+          <FieldErrors errors={field.state.meta.errors} />
+        </div>
+      )}
+    </form.Field>
+  );
+};
 
 const DateField = ({ form }: { form: TransactionFormApi }) => (
   <form.Field
@@ -364,7 +420,7 @@ const VendorField = ({
   </form.Field>
 );
 
-const PaymentMethodLockInfo = ({
+const PaymentMethodInfo = ({
   paymentMethodLabel,
   accountDisplayName,
 }: {
@@ -372,9 +428,8 @@ const PaymentMethodLockInfo = ({
   accountDisplayName: string;
 }) => (
   <div className="flex items-center gap-1 p-2 bg-gray-100 border border-gray-300 rounded text-sm text-gray-600 h-10">
-    <span className="font-medium">{paymentMethodLabel}:</span>
+    <span className="font-medium">Current {paymentMethodLabel}:</span>
     <span>{accountDisplayName}</span>
-    <span className="text-xs text-gray-500">(locked)</span>
   </div>
 );
 
@@ -531,4 +586,48 @@ const getAccountDisplayName = (
 
   const account = accounts.find(a => a.id === initialValues?.account_id);
   return account?.name || 'Account';
+};
+
+const getPaymentMethodDefaults = (
+  initialValues: Partial<I_TransactionPayload> | undefined,
+  isEditMode: boolean
+) => {
+  if (initialValues?.credit_card_id) {
+    return {
+      account_id: '',
+      credit_card_id: initialValues.credit_card_id,
+    };
+  }
+
+  return {
+    account_id: initialValues?.account_id || '',
+    credit_card_id: isEditMode ? '' : initialValues?.credit_card_id || '',
+  };
+};
+
+const getSubmissionPaymentMethod = ({
+  account_id,
+  credit_card_id,
+}: {
+  account_id?: string;
+  credit_card_id?: string;
+}) => {
+  if (credit_card_id) {
+    return {
+      account_id: undefined,
+      credit_card_id,
+    };
+  }
+
+  if (account_id) {
+    return {
+      account_id,
+      credit_card_id: undefined,
+    };
+  }
+
+  return {
+    account_id: undefined,
+    credit_card_id: undefined,
+  };
 };

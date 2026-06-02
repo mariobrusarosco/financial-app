@@ -7,7 +7,6 @@ interface PaginationProps {
   hasNext: boolean;
   hasPrevious: boolean;
   onPageChange: (page: number) => void;
-  className?: string;
 }
 
 export const Pagination = ({
@@ -16,7 +15,6 @@ export const Pagination = ({
   hasNext,
   hasPrevious,
   onPageChange,
-  className = '',
 }: PaginationProps) => {
   const getPageNumbers = () => {
     const delta = 2;
@@ -55,48 +53,42 @@ export const Pagination = ({
   const pageNumbers = getPageNumbers();
 
   return (
-    <nav className={`flex items-center justify-center space-x-1 ${className}`}>
-      <Button
-        variant="outline"
-        size="sm"
+    <nav className="flex gap-2">
+      <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPrevious}
-        className="flex items-center gap-1"
+        className="grid bg-neutral-grey/10 hover:bg-sea-blue group  w-7 h-7 place-items-center rounded-md transition-colors"
       >
-        <ChevronLeft className="h-4 w-4" />
-        Previous
-      </Button>
+        <ChevronLeft className="h-4 w-4 text-sea-blue group-hover:text-neutral-white transition-colors" />
+      </button>
 
       <div className="flex items-center space-x-1">
         {pageNumbers.map((page, index) =>
           page === '...' ? (
             <div key={`dots-${index}`} className="px-2">
-              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+              <MoreHorizontal className="h-4 w-4" />
             </div>
           ) : (
-            <Button
+            <button
               key={page}
-              variant={currentPage === page ? 'default' : 'outline'}
-              size="sm"
               onClick={() => onPageChange(page as number)}
-              className="min-w-[32px]"
+              className="grid bg-neutral-grey/10 hover:bg-sea-blue group w-7 h-7 place-items-center rounded-md transition-colors"
             >
-              {page}
-            </Button>
+              <span className="text-sea-blue group-hover:text-neutral-white transition-colors">
+                {page}
+              </span>
+            </button>
           )
         )}
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
+      <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNext}
-        className="flex items-center gap-1"
+        className="grid bg-neutral-grey/10 hover:bg-sea-blue group  w-7 h-7 place-items-center rounded-md transition-colors"
       >
-        Next
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+        <ChevronRight className="h-4 w-4 text-sea-blue text-sea-blue group-hover:text-neutral-white transition-colors" />
+      </button>
     </nav>
   );
 };

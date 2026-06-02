@@ -338,10 +338,10 @@ function AccountMetricCard({ account }) {
           <Text>{account.name}</Text>
           <Metric>{formatCurrency(account.currentBalance)}</Metric>
         </div>
-        <Badge size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
+        <div size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
           {account.change > 0 ? '+' : ''}
           {formatPercentage(account.change)}
-        </Badge>
+        </div>
       </Flex>
 
       {/* Mini trend chart */}

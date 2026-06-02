@@ -1,4 +1,3 @@
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 import { CheckCircle2, AlertCircle, Repeat } from 'lucide-react';
 import { formatDateMedium, formatCurrencyAmount } from '@/domains/global/utils/formatting';
@@ -91,18 +90,18 @@ export const UpcomingSubscriptions = () => {
               </div>
               <div className="flex items-center gap-2">
                 {subscription.is_paid_this_cycle ? (
-                  <Badge variant="outline" className="gap-1 bg-green-50 px-2 py-0.5 text-green-700">
+                  <div variant="outline" className="gap-1 bg-green-50 px-2 py-0.5 text-green-700">
                     <CheckCircle2 className="h-3 w-3" />
                     Paid
-                  </Badge>
+                  </div>
                 ) : (
-                  <Badge
+                  <div
                     variant="outline"
                     className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700"
                   >
                     <AlertCircle className="h-3 w-3" />
                     Due
-                  </Badge>
+                  </div>
                 )}
               </div>
             </div>

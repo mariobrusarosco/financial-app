@@ -4,7 +4,6 @@ import { Button } from '@ui-system/components/button';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { Edit, Loader2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { INSTALLMENTS_QUERY_KEYS } from '@/domains/installments/api/keys';
@@ -153,7 +152,7 @@ export const EditInstallmentPlanDrawer = () => {
                   </span>
                   <span>{format(parseISO(installment.due_date), 'MMM dd, yyyy')}</span>
                 </div>
-                <Badge
+                <div
                   variant="outline"
                   className={cn(
                     'capitalize text-xs py-0.5 px-2',
@@ -161,7 +160,7 @@ export const EditInstallmentPlanDrawer = () => {
                   )}
                 >
                   {installment.status}
-                </Badge>
+                </div>
               </div>
             ))}
           </div>

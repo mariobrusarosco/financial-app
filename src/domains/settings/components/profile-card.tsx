@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from '@/domains/ui-system/components/card';
 import { Separator } from '@/domains/ui-system/components/separator';
-import { Badge } from '@/domains/ui-system/components/badge';
 
 interface ProfileCardProps {
   user: {
@@ -41,7 +40,7 @@ export const ProfileCard = ({ user }: ProfileCardProps) => {
             <Separator />
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">Status</span>
-              <Badge variant="secondary">Active</Badge>
+              <div variant="secondary">Active</div>
             </div>
           </div>
         )}

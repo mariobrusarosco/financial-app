@@ -7,7 +7,6 @@ import {
 } from '@/domains/ui-system/components/card';
 import { Download, FileText, Text, Upload, Calendar, DollarSign, CreditCard } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { useCreditCardInvoices } from '@/domains/credit-cards/hooks/user-credit-card-invoices';
 import { Surface } from '@/domains/global/components/surface';
@@ -74,9 +73,9 @@ const CreditCardInvoiceList = ({ creditCardId }: CreditCardInvoiceListProps) => 
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={invoice.is_paid ? 'secondary' : 'destructive'}>
+                    <div variant={invoice.is_paid ? 'secondary' : 'destructive'}>
                       {invoice.is_paid ? 'Paid' : 'Unpaid'}
-                    </Badge>
+                    </div>
                     <Button variant="outline" size="sm">
                       <Download className="h-3 w-3" />
                     </Button>

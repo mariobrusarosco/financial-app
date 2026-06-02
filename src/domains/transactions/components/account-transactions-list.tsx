@@ -3,7 +3,6 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import {
@@ -164,9 +163,9 @@ export const AccountTransactionsList = ({
           className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
         >
           <div className="flex items-center gap-3">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <div variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               {selectedIds.size} selected
-            </Badge>
+            </div>
             <span className="text-sm text-muted-foreground">
               {selectedIds.size === 1 ? 'transaction' : 'transactions'} selected
             </span>

@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Route } from '@/routes/(auth)/route';
-import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { Button } from '@/domains/ui-system/components/button';
-import { Badge } from '@/domains/ui-system/components/badge';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import {
@@ -20,8 +17,10 @@ import {
   ArrowRightLeft,
 } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
-import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { PageHeader } from '@/domains/global/components';
+import { useUpdateTransaction } from '@/domains/transactions/hooks/use-update-transaction';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_ALL_TRANSACTIONS_QUERY_KEY } from '@/domains/transactions/api/keys';
 
 interface TransactionsListProps {
   transactions: I_TransactionResponse[];
@@ -42,16 +41,27 @@ export const TransactionsList = ({
   isPlaceholderData,
   onPageChange,
 }: TransactionsListProps) => {
+  const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
+  const { mutate: updateTransaction, isPending: isUpdatingTransaction } = useUpdateTransaction({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: GET_ALL_TRANSACTIONS_QUERY_KEY(),
+      });
+    },
+  });
   const navigate = useNavigate();
-  const { drawer } = Route.useSearch();
 
   const handleEdit = (transaction: I_TransactionResponse) => {
-    navigate({
+    void navigate({
       search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }),
     });
+  };
+
+  const handleToggleIgnoreTransaction = (id: string, currIgnoreValue: boolean) => {
+    updateTransaction({ id, updates: { ignored: !currIgnoreValue } });
   };
 
   // Selection handlers
@@ -99,20 +109,8 @@ export const TransactionsList = ({
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
   return (
-    <div data-ui="transactions-main-screen" className="py-4 rounded-3xl">
-      <PageHeader title="Transaction History" icon={ArrowRightLeft} showAddButton={false} />
-      <span className="text-xs text-muted-foreground">
-        Found {transactions.length} transactions
-      </span>
-
-      <div className="flex mt-4 mb-2 items-center justify-between gap-2">
-        <Link search={{ drawer: 'category-manager' }}>
-          <Button variant="outline" size="sm" className="w-full justify-start">
-            <Settings2 className="h-4 w-4 mr-2" />
-            Manage Categories
-          </Button>
-        </Link>
-
+    <div data-ui="transactions-main-screen" className="rounded-3xl">
+      {/* <div className="flex items-center justify-between gap-2">
         <button
           onClick={handleSelectAll}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors my-4"
@@ -134,15 +132,21 @@ export const TransactionsList = ({
             <Plus className="h-4 w-4" />
           </Button>
         </Link>
-      </div>
+      </div> */}
 
-      {/* Pagination - At the top */}
+      {/* <Link search={{ drawer: 'category-manager' }}>
+        <Button variant="outline" size="sm" className="w-full justify-start">
+          <Settings2 className="h-4 w-4 mr-2" />
+          Manage Categories
+        </Button>
+      </Link> */}
+
       {meta && meta.total > meta.per_page && (
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+        <div className="flex gap-2 pb-3">
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-sea-blue">
               Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
-              {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total} transactions
+              {Math.min(meta.page * meta.per_page, meta.total)} of {meta.total}
               {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
             </span>
           </div>
@@ -152,7 +156,6 @@ export const TransactionsList = ({
             hasNext={meta.has_next && !isPlaceholderData}
             hasPrevious={meta.has_previous && !isPlaceholderData}
             onPageChange={onPageChange}
-            className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
           />
         </div>
       )}
@@ -164,9 +167,9 @@ export const TransactionsList = ({
           className="flex items-center justify-between p-3 my bg-muted/50 rounded-lg border"
         >
           <div className="flex items-center gap-3">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <div variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               {selectedIds.size} selected
-            </Badge>
+            </div>
             <span className="text-sm text-muted-foreground">
               {selectedIds.size === 1 ? 'transaction' : 'transactions'} selected
             </span>
@@ -190,20 +193,23 @@ export const TransactionsList = ({
         </div>
       )}
 
-      {transactions.map(transaction => (
-        <UnifiedTransactionItem
-          key={transaction.id}
-          transaction={transaction}
-          mode="default"
-          onTriggerEditMode={() => handleEdit(transaction)}
-          isSelected={selectedIds.has(transaction.id)}
-          onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-          showCheckbox={true}
-          onDelete={handleDelete}
-        />
-      ))}
-
-      {drawer === 'transaction-edit' && <GlobalDrawer drawerType={drawer} />}
+      <div className="max-w-[650px] overflow-hidden gap-1 grid">
+        {transactions.map(transaction => (
+          <UnifiedTransactionItem
+            key={transaction.id}
+            transaction={transaction}
+            isPending={isUpdatingTransaction}
+            onIgnoreTransaction={() =>
+              handleToggleIgnoreTransaction(transaction.id, transaction.ignored)
+            }
+            // mode="default"
+            // onTriggerEditMode={() => handleEdit(transaction)}
+            // isSelected={selectedIds.has(transaction.id)}
+            // onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
+            // onDelete={handleDelete}
+          />
+        ))}
+      </div>
     </div>
   );
 };

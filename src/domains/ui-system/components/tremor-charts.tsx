@@ -129,9 +129,9 @@ function SpendingBreakdownChart() {
             <Text className="truncate">{item.category}</Text>
             <div className="flex items-center space-x-2">
               <Text>{formatCurrency(item.amount)}</Text>
-              <Badge size="xs" color="gray">
+              <div size="xs" color="gray">
                 {formatPercentage(item.percentage)}
-              </Badge>
+              </div>
             </div>
           </div>
         ))}
@@ -170,10 +170,10 @@ function AccountPerformanceCards() {
               <Text>{account.account}</Text>
               <Metric className="truncate">{formatCurrency(account.balance)}</Metric>
             </div>
-            <Badge size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
+            <div size="xs" color={account.changeType === 'increase' ? 'emerald' : 'red'}>
               {account.change > 0 ? '+' : ''}
               {formatPercentage(account.change)}
-            </Badge>
+            </div>
           </Flex>
           <Flex className="mt-4 space-x-2">
             <Text className="truncate">Performance</Text>

@@ -1,14 +1,14 @@
 import { useState } from 'react';
+import { useDebouncedValue } from '@tanstack/react-pacer';
 import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
-import { useLinkPayment } from '../hooks';
 import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 import { DrawerFooter, DrawerClose } from '@/domains/ui-system/components/drawer';
 import { Loader2, Search, Link as LinkIcon, X, Check } from 'lucide-react';
-import { useDebouncedValue } from '@tanstack/react-pacer';
-import type { I_Subscription } from '../types/types-and-interfaces';
+import { useLinkPayment } from '@/domains/subscriptions/hooks/index';
+import type { I_Subscription } from '@/domains/subscriptions/types/types-and-interfaces';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 
 interface LinkPaymentDrawerProps {
@@ -37,7 +37,7 @@ const ErrorState = () => (
 
 const EmptyState = ({ searchTerm }: { searchTerm: string }) => (
   <div className="text-center py-12 text-muted-foreground">
-    No paid transactions found matching "{searchTerm}".
+    No paid transactions found matching &quot;{searchTerm}&quot;.
   </div>
 );
 
@@ -79,7 +79,6 @@ const TransactionListContent = ({
 
 export const LinkPaymentDrawer = ({ subscription, onClose }: LinkPaymentDrawerProps) => {
   const [searchTerm, setSearchTerm] = useState(subscription.name);
-  // Destructure because useDebouncedValue returns [debouncedValue, debouncer]
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, { wait: 500 });
   const [selectedTransactionId, setSelectedTransactionId] = useState<string | null>(null);
 
