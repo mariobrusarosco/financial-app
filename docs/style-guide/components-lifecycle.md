@@ -48,9 +48,6 @@ This means the component should not be responsible for:
 		refetch<ResourceName>: query.refetch,
 	},
 },
-<resourceName>: {
-	...
-}
 ```
 
 ```tsx
@@ -89,26 +86,100 @@ export const useLeagues = () => {
 
 ## Using a Hook with the UI-friendly contract
 
+The hook return should expose the query only through the resource contract:
+
 ```tsx
-export const Leagues = () => {
-  const { query, actions } = useLeagues();
+const {
+  accounts: { query, actions },
+} = useAccounts();
+```
 
-  if (query.isLoading) return <LeaguesSkeleton />;
-  if (query.isError) return <LeaguesError />;
-  if (nationalLeagues.length === 0 && internationalLeagues.length === 0) {
-    return <LeaguesEmpty />;
-  }
+Do not expose the same query twice by spreading query fields at the hook root:
 
-  // Content Ready
-  const nationalLeagues = [...(query.data ?? [])].filter(l => l.type === 'national');
-
-  const internationalLeagues = [...(query.data ?? [])].filter(l => l.type === 'international');
-
-  return (
-    <LeaguesContent nationalLeagues={nationalLeagues} internationalLeagues={internationalLeagues} />
-  );
+```tsx
+// Bad
+return {
+  ...accountsQuery,
+  accounts: {
+    query: accountsQuery,
+    actions: {
+      refetchAccounts: accountsQuery.refetch,
+    },
+  },
 };
 ```
+
+```tsx
+// Good
+return {
+  accounts: {
+    query: accountsQuery,
+    actions: {
+      refetchAccounts: accountsQuery.refetch,
+    },
+  },
+};
+```
+
+## Data Transformation For UI
+
+Data returned by hooks often needs to be shaped for UI/UX: grouped, sorted, mapped to select options, or adapted into card data. Follow this order:
+
+1. **Prefer API filters when the transformation changes which records are fetched.**
+
+```tsx
+const {
+  accounts: { query },
+} = useAccounts({
+  params: { is_active: true, type: 'investment' },
+});
+```
+
+Use API params for filtering, pagination, search, date ranges, ownership, status, and other constraints that affect dataset size or query semantics.
+
+2. **Use named domain selectors for local UI projections.**
+
+```ts
+groupAccountsByType(accounts);
+sortAccountsByName(accounts);
+toAccountSelectOptions(accounts);
+```
+
+Selectors should be named by the UI or domain meaning they provide. Avoid anonymous `filter`, `sort`, `map`, `reduce`, and grouping pipelines inside component markup.
+
+3. **Use React Query `select` when a consumer wants `query.data` in a specific UI shape.**
+
+```tsx
+const {
+  accounts: { query },
+} = useAccounts({
+  params: { is_active: true },
+  select: groupAccountsByType,
+});
+```
+
+`select` keeps the server cache tied to the query while letting each consumer receive the shape it needs. Another consumer can use the same account query with a different selector:
+
+```tsx
+const {
+  accounts: { query },
+} = useAccounts({
+  params: { is_active: true },
+  select: toAccountSelectOptions,
+});
+```
+
+This keeps transformations opt-in instead of forcing every `useAccounts` consumer to receive every possible UI projection.
+
+4. **Compose selectors when a UI needs multiple meaningful transformations.**
+
+```ts
+const activeAccounts = filterActiveAccounts(accounts);
+const groupedAccounts = groupAccountsByType(activeAccounts);
+const sortedGroups = sortAccountGroupsByPriority(groupedAccounts);
+```
+
+Each step should express business or UI meaning. If a step cannot be named clearly, the transformation is probably not understood well enough yet.
 
 ## Lifecycle States
 

@@ -24,8 +24,10 @@ export const VendorsMainScreen = () => {
     [params, from, to]
   );
 
-  const { data, isLoading, isError, isPlaceholderData } = useVendors(mergedParams);
+  const { data, isLoading, isError, isPlaceholderData, isFetching, isRefetching, isPending } =
+    useVendors(mergedParams);
 
+  console.log({ isFetching, isRefetching, isPending, isLoading });
   const handleParamsChange = (
     newParams: I_VendorsParams | ((prev: I_VendorsParams) => I_VendorsParams)
   ) => {
@@ -39,7 +41,7 @@ export const VendorsMainScreen = () => {
     <VendorList
       vendors={data?.data || []}
       meta={data?.meta}
-      isLoading={isLoading}
+      isLoading={isFetching}
       isError={isError}
       isPlaceholderData={isPlaceholderData}
       params={mergedParams}

@@ -30,6 +30,8 @@ import { Route as authAccountsCreateIndexRouteImport } from './routes/(auth)/acc
 import { Route as authAccountsSlugIndexRouteImport } from './routes/(auth)/accounts/$slug/index'
 import { Route as authAccountsSlugStatementsRouteRouteImport } from './routes/(auth)/accounts/$slug/statements/route'
 import { Route as authAccountsSlugStatementsIndexRouteImport } from './routes/(auth)/accounts/$slug/statements/index'
+import { Route as authAccountsSlugSetttingsIndexRouteImport } from './routes/(auth)/accounts/$slug/setttings/index'
+import { Route as authAccountsSlugSettingsIndexRouteImport } from './routes/(auth)/accounts/$slug/settings/index'
 import { Route as authAccountsSlugIncomeIndexRouteImport } from './routes/(auth)/accounts/$slug/income/index'
 import { Route as authAccountsSlugExpensesIndexRouteImport } from './routes/(auth)/accounts/$slug/expenses/index'
 import { Route as authAccountsSlugCreditCardIndexRouteImport } from './routes/(auth)/accounts/$slug/credit-card/index'
@@ -145,6 +147,18 @@ const authAccountsSlugStatementsIndexRoute =
     path: '/',
     getParentRoute: () => authAccountsSlugStatementsRouteRoute,
   } as any)
+const authAccountsSlugSetttingsIndexRoute =
+  authAccountsSlugSetttingsIndexRouteImport.update({
+    id: '/setttings/',
+    path: '/setttings/',
+    getParentRoute: () => authAccountsSlugRouteRoute,
+  } as any)
+const authAccountsSlugSettingsIndexRoute =
+  authAccountsSlugSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => authAccountsSlugRouteRoute,
+  } as any)
 const authAccountsSlugIncomeIndexRoute =
   authAccountsSlugIncomeIndexRouteImport.update({
     id: '/income/',
@@ -219,6 +233,8 @@ export interface FileRoutesByFullPath {
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/expenses': typeof authAccountsSlugExpensesIndexRoute
   '/accounts/$slug/income': typeof authAccountsSlugIncomeIndexRoute
+  '/accounts/$slug/settings': typeof authAccountsSlugSettingsIndexRoute
+  '/accounts/$slug/setttings': typeof authAccountsSlugSetttingsIndexRoute
   '/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   '/accounts/$slug/credit-card/$creditCardId/transactions': typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
@@ -247,6 +263,8 @@ export interface FileRoutesByTo {
   '/accounts/$slug/credit-card': typeof authAccountsSlugCreditCardIndexRoute
   '/accounts/$slug/expenses': typeof authAccountsSlugExpensesIndexRoute
   '/accounts/$slug/income': typeof authAccountsSlugIncomeIndexRoute
+  '/accounts/$slug/settings': typeof authAccountsSlugSettingsIndexRoute
+  '/accounts/$slug/setttings': typeof authAccountsSlugSetttingsIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsIndexRoute
   '/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   '/accounts/$slug/credit-card/$creditCardId/transactions': typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
@@ -279,6 +297,8 @@ export interface FileRoutesById {
   '/(auth)/accounts/$slug/credit-card/': typeof authAccountsSlugCreditCardIndexRoute
   '/(auth)/accounts/$slug/expenses/': typeof authAccountsSlugExpensesIndexRoute
   '/(auth)/accounts/$slug/income/': typeof authAccountsSlugIncomeIndexRoute
+  '/(auth)/accounts/$slug/settings/': typeof authAccountsSlugSettingsIndexRoute
+  '/(auth)/accounts/$slug/setttings/': typeof authAccountsSlugSetttingsIndexRoute
   '/(auth)/accounts/$slug/statements/': typeof authAccountsSlugStatementsIndexRoute
   '/(auth)/accounts/$slug/credit-card/$creditCardId/invoices': typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   '/(auth)/accounts/$slug/credit-card/$creditCardId/transactions': typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
@@ -311,6 +331,8 @@ export interface FileRouteTypes {
     | '/accounts/$slug/credit-card'
     | '/accounts/$slug/expenses'
     | '/accounts/$slug/income'
+    | '/accounts/$slug/settings'
+    | '/accounts/$slug/setttings'
     | '/accounts/$slug/statements/'
     | '/accounts/$slug/credit-card/$creditCardId/invoices'
     | '/accounts/$slug/credit-card/$creditCardId/transactions'
@@ -339,6 +361,8 @@ export interface FileRouteTypes {
     | '/accounts/$slug/credit-card'
     | '/accounts/$slug/expenses'
     | '/accounts/$slug/income'
+    | '/accounts/$slug/settings'
+    | '/accounts/$slug/setttings'
     | '/accounts/$slug/statements'
     | '/accounts/$slug/credit-card/$creditCardId/invoices'
     | '/accounts/$slug/credit-card/$creditCardId/transactions'
@@ -370,6 +394,8 @@ export interface FileRouteTypes {
     | '/(auth)/accounts/$slug/credit-card/'
     | '/(auth)/accounts/$slug/expenses/'
     | '/(auth)/accounts/$slug/income/'
+    | '/(auth)/accounts/$slug/settings/'
+    | '/(auth)/accounts/$slug/setttings/'
     | '/(auth)/accounts/$slug/statements/'
     | '/(auth)/accounts/$slug/credit-card/$creditCardId/invoices'
     | '/(auth)/accounts/$slug/credit-card/$creditCardId/transactions'
@@ -532,6 +558,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAccountsSlugStatementsIndexRouteImport
       parentRoute: typeof authAccountsSlugStatementsRouteRoute
     }
+    '/(auth)/accounts/$slug/setttings/': {
+      id: '/(auth)/accounts/$slug/setttings/'
+      path: '/setttings'
+      fullPath: '/accounts/$slug/setttings'
+      preLoaderRoute: typeof authAccountsSlugSetttingsIndexRouteImport
+      parentRoute: typeof authAccountsSlugRouteRoute
+    }
+    '/(auth)/accounts/$slug/settings/': {
+      id: '/(auth)/accounts/$slug/settings/'
+      path: '/settings'
+      fullPath: '/accounts/$slug/settings'
+      preLoaderRoute: typeof authAccountsSlugSettingsIndexRouteImport
+      parentRoute: typeof authAccountsSlugRouteRoute
+    }
     '/(auth)/accounts/$slug/income/': {
       id: '/(auth)/accounts/$slug/income/'
       path: '/income'
@@ -617,6 +657,8 @@ interface authAccountsSlugRouteRouteChildren {
   authAccountsSlugCreditCardIndexRoute: typeof authAccountsSlugCreditCardIndexRoute
   authAccountsSlugExpensesIndexRoute: typeof authAccountsSlugExpensesIndexRoute
   authAccountsSlugIncomeIndexRoute: typeof authAccountsSlugIncomeIndexRoute
+  authAccountsSlugSettingsIndexRoute: typeof authAccountsSlugSettingsIndexRoute
+  authAccountsSlugSetttingsIndexRoute: typeof authAccountsSlugSetttingsIndexRoute
   authAccountsSlugCreditCardCreditCardIdInvoicesRoute: typeof authAccountsSlugCreditCardCreditCardIdInvoicesRoute
   authAccountsSlugCreditCardCreditCardIdTransactionsRoute: typeof authAccountsSlugCreditCardCreditCardIdTransactionsRoute
   authAccountsSlugCreditCardCreditCardIdIndexRoute: typeof authAccountsSlugCreditCardCreditCardIdIndexRoute
@@ -629,6 +671,8 @@ const authAccountsSlugRouteRouteChildren: authAccountsSlugRouteRouteChildren = {
   authAccountsSlugCreditCardIndexRoute: authAccountsSlugCreditCardIndexRoute,
   authAccountsSlugExpensesIndexRoute: authAccountsSlugExpensesIndexRoute,
   authAccountsSlugIncomeIndexRoute: authAccountsSlugIncomeIndexRoute,
+  authAccountsSlugSettingsIndexRoute: authAccountsSlugSettingsIndexRoute,
+  authAccountsSlugSetttingsIndexRoute: authAccountsSlugSetttingsIndexRoute,
   authAccountsSlugCreditCardCreditCardIdInvoicesRoute:
     authAccountsSlugCreditCardCreditCardIdInvoicesRoute,
   authAccountsSlugCreditCardCreditCardIdTransactionsRoute:

@@ -9,7 +9,7 @@ export const mockActiveAccounts = (
   response: I_Account[] | HttpResponse = [],
   options: { delay?: boolean | number } = {}
 ) => {
-  return http.get(`*${ACCOUNTS_ENDPOINTS.LIST_ACTIVE}`, async () => {
+  return http.get(`*${ACCOUNTS_ENDPOINTS.LIST}`, async () => {
     if (options.delay) {
       await delay(typeof options.delay === 'number' ? options.delay : 'infinite');
     }

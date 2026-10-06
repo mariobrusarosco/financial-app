@@ -24,8 +24,10 @@ This guide defines the practical coding taste for Better Call Buffet. It complem
 
 ## Custom Hooks & Data Orchestration
 
-- Creating custom domain hooks (e.g., the `useUpcomingMatches` example in the lifecycle guide) to orchestrate raw server-state queries into derived UI state is **strictly required**.
-- These composition hooks exist to enforce the strict `{ query, actions }` contract defined in [components-lifecycle.md](./components-lifecycle.md) and keep complex orchestration out of `.tsx` components.
+- Domain hooks must enforce the strict `{ query, actions }` contract defined in [components-lifecycle.md](./components-lifecycle.md).
+- Do not create a new hook only because one consumer needs grouped, sorted, filtered, or mapped query data. Prefer named domain selectors and React Query `select` for opt-in data projections.
+- Create an additional composition hook only when the consumer needs orchestration beyond data projection, such as composing multiple hooks, multiple actions, route state, mutations, or cross-resource UI state.
+- For query data transformation, follow [Components Lifecycle > Data Transformation For UI](./components-lifecycle.md#data-transformation-for-ui). Prefer API filters for dataset constraints, named domain selectors for local projections, and React Query `select` when a consumer needs `query.data` in a specific UI shape.
 
 ## Query Param Handling And Validation
 

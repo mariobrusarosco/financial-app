@@ -1,4 +1,4 @@
-import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
+import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
 import { TrendingUp, MoreVertical } from 'lucide-react';
 import {
@@ -100,14 +100,14 @@ const ErrorState = ({ error }: { error: Error }) => {
 };
 
 export const InvestmentAccountsList = () => {
-  const { data: allAccounts, isLoading, error } = useGetAllActiveAccounts();
+  const {
+    accounts: { query },
+  } = useAccounts({ is_active: true, type: 'investment' });
   const { openAccountCreate } = useGlobalUIState();
+  const investmentAccounts = query.data?.accounts ?? [];
 
-  // Filter accounts to show only investment type
-  const investmentAccounts = allAccounts?.filter(account => account.type === 'investment') || [];
-
-  if (isLoading) return <LoadingState />;
-  if (error) return <ErrorState error={error} />;
+  if (query.isLoading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} />;
 
   return (
     <Card>

@@ -10,15 +10,15 @@ export interface TransactionItemProps {
   isPending?: boolean;
   onIgnoreTransaction?: (id: string, currentIgnoreValue: boolean) => void | null;
   // mode: 'compact' | 'default';
-  // onDelete?: (transaction: I_TransactionResponse) => void;
+  onDelete?: (transaction: I_TransactionResponse) => void;
   // onSave?: (updates: Partial<I_TransactionResponse>) => void;
   // onCancel?: () => void;
   // onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
   // isEditing?: boolean;
-  // isSelected: boolean;
+  isSelected?: boolean;
   // onSelectTransaction?: (id: string) => void;
-  // onSelectionChange?: (selected: boolean) => void;
-  // showCheckbox?: boolean;
+  onSelectionChange?: (selected: boolean) => void;
+  showCheckbox?: boolean;
   // className?: string;
 }
 
@@ -27,15 +27,15 @@ export const UnifiedTransactionItem = ({
   isPending,
   onIgnoreTransaction,
   // mode,
-  // onDelete,
+  onDelete,
   // onTriggerEditMode,
-  // onIgnoreTransaction,
   // onSave,
   // onCancel,
   // isEditing = false,
-  // isSelected = false,
+  isSelected = false,
   // onSelectTransaction,
-  // onSelectionChange,
+  onSelectionChange,
+  showCheckbox = false,
   // className,
 }: TransactionItemProps) => {
   // // Handle edit mode for both layouts
@@ -62,10 +62,11 @@ export const UnifiedTransactionItem = ({
       transaction={transaction}
       onIgnoreTransaction={onIgnoreTransaction}
       isPending={isPending}
-      // isSelected={isSelected}
+      isSelected={isSelected}
+      showCheckbox={showCheckbox}
       // onTriggerEditMode={onTriggerEditMode}
-      // onDelete={onDelete}
-      // onSelectionChange={onSelectionChange}
+      onDelete={onDelete}
+      onSelectionChange={onSelectionChange}
       // onSelectTransaction={onSelectTransaction}
     />
   );

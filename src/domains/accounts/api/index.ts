@@ -1,6 +1,7 @@
 import { apiClient } from '@/config/api';
 import type {
   I_Account,
+  I_AccountsParams,
   I_CreateAccountForm,
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
@@ -56,20 +57,21 @@ export interface I_AccountStatementsResponse {
   };
 }
 
-const getAllAccounts = async (): Promise<I_Account[]> => {
+const getAccounts = async (params?: I_AccountsParams): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ENDPOINTS.LIST);
+    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ENDPOINTS.LIST, { params });
     return response.data;
   } catch (error) {
-    console.error('Error fetching all accounts:', error);
+    console.error('Error fetching accounts:', error);
     throw error;
   }
 };
 
+const getAllAccounts = async (): Promise<I_Account[]> => getAccounts();
+
 const getAllActiveAccounts = async (): Promise<I_Account[]> => {
   try {
-    const response = await apiClient.get<I_Account[]>(ACCOUNTS_ENDPOINTS.LIST_ACTIVE);
-    return response.data;
+    return await getAccounts({ is_active: true });
   } catch (error) {
     console.error('Error fetching active accounts:', error);
     // Depending on error handling strategy, re-throw or return a default/empty value
@@ -186,6 +188,7 @@ const getAccountBalancePoints = async (
 };
 
 export const accountsApi = {
+  getAccounts,
   getAllAccounts,
   getAllActiveAccounts,
   createAccount,

@@ -11,13 +11,13 @@ import { TransactionDate } from './transaction-date';
 // Default mode layout props
 export interface TransactionItemDefaultProps {
   transaction: I_TransactionResponse;
-  onIgnoreTransaction?: (id: string) => void | null;
+  onIgnoreTransaction?: (id: string, currentIgnoreValue: boolean) => void | null;
   isPending?: boolean;
-  // isSelected: boolean;
-  // showCheckbox: boolean;
+  isSelected?: boolean;
+  showCheckbox?: boolean;
   // onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
-  // onDelete?: (transaction: I_TransactionResponse) => void;
-  // onSelectionChange?: (selected: boolean) => void;
+  onDelete?: (transaction: I_TransactionResponse) => void;
+  onSelectionChange?: (selected: boolean) => void;
   // onSelectTransaction?: (id: string) => void;
   // className?: string;
 }
@@ -26,11 +26,11 @@ export const TransactionItemDefault = ({
   transaction,
   isPending,
   onIgnoreTransaction,
-  // isSelected,
-  // showCheckbox,
+  isSelected,
+  showCheckbox,
   // onTriggerEditMode,
-  // onDelete,
-  // onSelectionChange,
+  onDelete,
+  onSelectionChange,
   // onSelectTransaction,
   // className,
 }: TransactionItemDefaultProps) => {
@@ -115,10 +115,11 @@ export const TransactionItemDefault = ({
       <TransactionHoverActions
         transaction={transaction}
         onIgnoreTransaction={onIgnoreTransaction}
-        // isSelected={isSelected}
+        isSelected={isSelected}
+        showCheckbox={showCheckbox}
         // onTriggerEditMode={onTriggerEditMode}
-        // onDelete={onDelete}
-        // onSelectionChange={onSelectionChange}
+        onDelete={onDelete}
+        onSelectionChange={onSelectionChange}
         // onSelectTransaction={onSelectTransaction}
       />
     </div>
@@ -128,30 +129,37 @@ export const TransactionItemDefault = ({
 // Hover actions props
 export interface TransactionHoverActionsProps {
   transaction: I_TransactionResponse;
-  onIgnoreTransaction?: (id: string) => void | null;
-  // isSelected: boolean;
-  // showCheckbox: boolean;
+  onIgnoreTransaction?: (id: string, currentIgnoreValue: boolean) => void | null;
+  isSelected?: boolean;
+  showCheckbox?: boolean;
   // onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
-  // onDelete?: (transaction: I_TransactionResponse) => void;
-  // onSelectionChange?: (selected: boolean) => void;
+  onDelete?: (transaction: I_TransactionResponse) => void;
+  onSelectionChange?: (selected: boolean) => void;
   // onSelectTransaction?: (id: string) => void;
 }
 
 export const TransactionHoverActions = ({
   transaction,
   onIgnoreTransaction,
-  // isSelected,
+  isSelected,
+  showCheckbox,
   // onTriggerEditMode,
-  // onDelete,
-  // onSelectionChange,
+  onDelete,
+  onSelectionChange,
   // onSelectTransaction,
 }: TransactionHoverActionsProps) => {
-  // const handleDelete = (e?: React.MouseEvent) => {
-  //   e?.stopPropagation();
-  //   if (onDelete) {
-  //     onDelete(transaction);
-  //   }
-  // };
+  const handleDelete = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (onDelete) {
+      onDelete(transaction);
+    }
+  };
+
+  const handleSelection = () => {
+    if (onSelectionChange) {
+      onSelectionChange(!isSelected);
+    }
+  };
 
   return (
     <div
@@ -162,7 +170,7 @@ export const TransactionHoverActions = ({
      flex gap-2 "
       onClick={e => e.stopPropagation()}
     >
-      {/* {showCheckbox && (
+      {showCheckbox && (
         <div className="p-3 rounded-lg flex cursor-pointer hover:bg-primary/10 transition-all duration-200">
           <input
             type="checkbox"
@@ -175,13 +183,13 @@ export const TransactionHoverActions = ({
             className="text-primary focus:ring-foreground border-primary "
           />
         </div>
-      )} */}
+      )}
 
       {onIgnoreTransaction && (
         <div
           onClick={e => {
             e.stopPropagation();
-            onIgnoreTransaction(transaction.id);
+            onIgnoreTransaction(transaction.id, transaction.ignored);
           }}
           className="p-3 rounded-lg flex cursor-pointer hover:bg-red-400 text-neutral-white transition-all duration-200"
         >
@@ -195,7 +203,7 @@ export const TransactionHoverActions = ({
         <Edit className="h-3 w-3 md:h-4 md:w-4" />
       </div>
 
-      {/* {onDelete && (
+      {onDelete && (
         <div
           onClick={e => {
             e.stopPropagation();
@@ -205,7 +213,7 @@ export const TransactionHoverActions = ({
         >
           <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
         </div>
-      )} */}
+      )}
     </div>
   );
 };

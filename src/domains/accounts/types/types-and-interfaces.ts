@@ -2,6 +2,11 @@ import { I_Broker } from '@/domains/broker/type/types-and-interfaces';
 
 export type T_AccountType = 'savings' | 'credit' | 'investment' | 'cash';
 
+export interface I_AccountsParams {
+  is_active?: boolean;
+  type?: T_AccountType;
+}
+
 export interface I_Account {
   id: string;
   name: string;

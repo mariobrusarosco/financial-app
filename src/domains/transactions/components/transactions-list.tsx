@@ -103,7 +103,7 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
 
   return (
     <div data-ui="transactions-main-list" className="rounded-3xl flex flex-col gap-2 flex-1">
-      {/* <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2">
         <button
           onClick={handleSelectAll}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors my-4"
@@ -125,7 +125,7 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
             <Plus className="h-4 w-4" />
           </Button>
         </Link>
-      </div> */}
+      </div>
 
       {/* <Link search={{ drawer: 'category-manager' }}>
         <Button variant="outline" size="sm" className="w-full justify-start">
@@ -195,11 +195,12 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
             onIgnoreTransaction={() =>
               handleToggleIgnoreTransaction(transaction.id, transaction.ignored)
             }
+            showCheckbox={true}
             // mode="default"
             // onTriggerEditMode={() => handleEdit(transaction)}
-            // isSelected={selectedIds.has(transaction.id)}
-            // onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-            // onDelete={handleDelete}
+            isSelected={selectedIds.has(transaction.id)}
+            onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
+            onDelete={handleDelete}
           />
         ))}
       </div>

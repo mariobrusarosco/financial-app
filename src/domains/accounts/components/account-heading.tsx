@@ -1,13 +1,11 @@
-import { useAccount } from '@/domains/accounts/hooks/use-account';
-import { Tabs, TabsTrigger, TabsList } from '@/domains/ui-system/components/tabs';
-import { CreditCard, FileText, TrendingUp } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
+import { ArrowLeft, CreditCard, FileText, Settings, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
+import AccountQuickActions from '@/domains/accounts/components/account-quick-actions';
+import { useAccount } from '@/domains/accounts/hooks/use-account';
+import { Tabs, TabsList, TabsTrigger } from '@/domains/ui-system/components/tabs';
 import { cn } from '@/domains/ui-system/utils';
-import React from 'react';
-import { Button } from '@/domains/ui-system/components/button';
-import { ArrowLeft } from 'lucide-react';
-import AccountQuickActions from './account-quick-actions';
 
 interface AccountOverviewProps {
   slug: string;
@@ -23,6 +21,7 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
     if (pathname.includes('/credit-card')) return 'credit-cards';
     if (pathname.includes('/expenses')) return 'expenses';
     if (pathname.includes('/income')) return 'income';
+    if (pathname.includes('/settings') || pathname.includes('/setttings')) return 'settings';
     return 'overview';
   }, [location.pathname]);
 
@@ -74,6 +73,14 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
                 activeTab={activeTab}
               />
             </Link>
+            <Link to="/accounts/$slug/settings" params={{ slug }}>
+              <AccountHeadingTab
+                value="settings"
+                label="Settings"
+                icon={<Settings className="h-4 w-4" />}
+                activeTab={activeTab}
+              />
+            </Link>
           </TabsList>
         </Tabs>
 
@@ -91,7 +98,7 @@ const AccountHeading = ({ slug }: AccountOverviewProps) => {
 interface AccountHeadingTabProps {
   value: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   activeTab: string;
 }
 

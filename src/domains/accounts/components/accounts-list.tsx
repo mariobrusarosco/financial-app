@@ -1,4 +1,4 @@
-import { useGetAllActiveAccounts } from '@/domains/accounts/hooks/use-accounts';
+import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
 import {
   BrushCleaning,
@@ -8,15 +8,13 @@ import {
   Banknote,
   CreditCard,
   ChartBar,
-  Loan,
 } from 'lucide-react';
 import { I_Account, T_AccountType } from '@/domains/accounts/types/types-and-interfaces';
-import { useAccountBalancePoints } from '../hooks/use-account-balance-points';
+import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
-import { cn } from '@/domains/ui-system/utils';
 
 const AccountIcon = ({ type }: { type: T_AccountType }) => {
   switch (type) {
@@ -33,6 +31,7 @@ const AccountIcon = ({ type }: { type: T_AccountType }) => {
 
 const AccountCard = ({ account }: { account: I_Account }) => {
   const { from, to } = Route.useSearch();
+  const hasDateRange = !!from && !!to;
 
   const { isPending: isLoadingBalancePoints, data: balancePoints } = useAccountBalancePoints(
     account.id,
@@ -40,9 +39,12 @@ const AccountCard = ({ account }: { account: I_Account }) => {
     to ?? ''
   );
 
-  const balancePoint = useMemo(() => {
-    return balancePoints?.at(-1);
-  }, [balancePoints]);
+  const balanceToDisplay = useMemo(() => {
+    if (hasDateRange && balancePoints) {
+      return balancePoints.at(-1)?.balance ?? 0;
+    }
+    return account.balance;
+  }, [hasDateRange, balancePoints, account.balance]);
 
   const brokerprimaryColor = account.broker.colors[0];
 
@@ -61,7 +63,6 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           </h3>
           <div
             data-testid="account-card-broker"
-            variant="outline"
             className="bg-primary/20 text-neutral-white text-xs py-1 px-3"
             style={{ backgroundColor: brokerprimaryColor }}
           >
@@ -80,10 +81,10 @@ const AccountCard = ({ account }: { account: I_Account }) => {
 
       <div className="rounded-b-3xl px-6 py-4 bg-primary/10">
         <p data-testid="account-card-balance" className="font-light text-primary text-2xl">
-          {isLoadingBalancePoints ? (
+          {hasDateRange && isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-primary transform-origin-center" />
           ) : (
-            formatCurrencyAmount(balancePoint?.balance ?? 0)
+            formatCurrencyAmount(balanceToDisplay)
           )}
         </p>
       </div>
@@ -137,17 +138,17 @@ const ErrorState = ({ error }: { error: Error }) => {
 };
 
 const AccountsList = () => {
-  const { data: accounts, isLoading, error } = useGetAllActiveAccounts();
+  const {
+    accounts: { query },
+  } = useAccounts({ is_active: true });
 
-  if (isLoading) return <LoadingState />;
-  if (error) return <ErrorState error={error} />;
-  if (!accounts || accounts.length === 0) return <EmptyState />;
-
-  const groupedByType = Object.groupBy(accounts, ({ type }) => type);
+  if (query.isLoading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} />;
+  if (query.data?.isEmpty) return <EmptyState />;
 
   return (
     <div data-testid="accounts-list" className="flex flex-col pt-15 gap-10">
-      {Object.entries(groupedByType).map(([type, accounts]) => (
+      {(query.data?.accountGroups ?? []).map(({ type, accounts }) => (
         <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
           <div className="flex gap-2 items-center mb-4">
             <AccountIcon type={type} />

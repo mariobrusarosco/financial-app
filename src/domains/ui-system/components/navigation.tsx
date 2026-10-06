@@ -165,6 +165,11 @@ const navigationItems: NavigationItem[] = [
     icon: Receipt,
   },
   {
+    label: 'Vendors',
+    href: '/vendors',
+    icon: Store,
+  },
+  {
     label: 'Settings',
     href: '/settings',
     icon: User,

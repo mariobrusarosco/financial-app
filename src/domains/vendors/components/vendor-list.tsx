@@ -22,9 +22,7 @@ interface VendorListProps {
   isError: boolean;
   isPlaceholderData: boolean;
   params: I_VendorsParams;
-  onParamsChange: (
-    params: I_VendorsParams | ((prev: I_VendorsParams) => I_VendorsParams)
-  ) => void;
+  onParamsChange: (params: I_VendorsParams | ((prev: I_VendorsParams) => I_VendorsParams)) => void;
 }
 
 export const VendorList = ({
@@ -46,12 +44,16 @@ export const VendorList = ({
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this vendor? This action cannot be undone and may affect associated subscriptions and transactions.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this vendor? This action cannot be undone and may affect associated subscriptions and transactions.'
+      )
+    ) {
       deleteVendorMutation(id, {
         onSuccess: () => {
           toast.success('Vendor deleted successfully.');
         },
-        onError: (error) => {
+        onError: error => {
           toast.error('Failed to delete vendor.', { description: error.message });
         },
       });
@@ -68,7 +70,9 @@ export const VendorList = ({
         <PageHeader
           title="Vendors"
           icon={Store}
-          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
+          onAdd={() =>
+            (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })
+          }
           addButtonLabel="Add Vendor"
         />
         <div className="text-center py-8">
@@ -84,7 +88,9 @@ export const VendorList = ({
         <PageHeader
           title="Vendors"
           icon={Store}
-          onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
+          onAdd={() =>
+            (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })
+          }
           addButtonLabel="Add Vendor"
         />
         <div className="text-center py-8">
@@ -100,7 +106,9 @@ export const VendorList = ({
       <PageHeader
         title="Vendors"
         icon={Store}
-        onAdd={() => (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })}
+        onAdd={() =>
+          (navigate as any)({ search: (prev: any) => ({ ...prev, drawer: 'vendor-create' }) })
+        }
         addButtonLabel="Add Vendor"
       />
       <CardDescription>
