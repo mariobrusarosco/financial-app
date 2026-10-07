@@ -10,7 +10,8 @@ import {
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { AccountTransactionFilters } from '@/domains/transactions/components/account-transaction-filters';
-import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
+import { BulkTransactionActions } from '@/domains/transactions/components/bulk-transaction-actions';
+import { CreditCard, Loader2, CheckSquare, Square } from 'lucide-react';
 import type {
   I_AccountTransactionsParams,
   I_TransactionResponse,
@@ -182,35 +183,12 @@ export const AccountTransactionsList = ({
       />
 
       {selectedIds.size > 0 && (
-        <div
-          data-ui="selected-transactions"
-          className="flex flex-col gap-3 rounded-xl border border-brand/15 bg-accent/45 p-3 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
-              {selectedIds.size} selected
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {selectedIds.size === 1 ? 'transaction' : 'transactions'} selected
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDeleteSelected}
-              disabled={isBulkDeleting}
-              className="text-destructive hover:bg-destructive/10"
-            >
-              {isBulkDeleting ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Trash2 className="h-4 w-4 mr-2" />
-              )}
-              {isBulkDeleting ? 'Deleting...' : 'Delete Selected'}
-            </Button>
-          </div>
-        </div>
+        <BulkTransactionActions
+          transactionIds={Array.from(selectedIds)}
+          isDeleting={isBulkDeleting}
+          onClearSelection={() => setSelectedIds(new Set())}
+          onDeleteSelected={handleDeleteSelected}
+        />
       )}
 
       <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>

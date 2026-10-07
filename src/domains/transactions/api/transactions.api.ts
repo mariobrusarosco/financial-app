@@ -4,10 +4,13 @@ import type {
   I_BulkTransactionRequestPayload,
   I_BulkTransactionResponse,
   I_BulkTransactionRequest,
+  I_BulkUpdateTransactionsRequest,
   I_AccountTransactionsParams,
   I_AccountTransactionsResponse,
   I_TransactionResponse,
-} from '../types/types-and-interfaces';
+} from '@/domains/transactions/types/types-and-interfaces';
+
+const BULK_TRANSACTIONS_PATH = '/transactions/bulk';
 
 export const transactionsApi = {
   createTransaction: async (
@@ -20,8 +23,15 @@ export const transactionsApi = {
   createBulkTransactions: async (
     payload: I_BulkTransactionRequestPayload
   ): Promise<I_BulkTransactionResponse> => {
-    const response = await apiClient.post<I_BulkTransactionResponse>('/transactions/bulk', payload);
+    const response = await apiClient.post<I_BulkTransactionResponse>(
+      BULK_TRANSACTIONS_PATH,
+      payload
+    );
     return response.data;
+  },
+
+  updateBulkTransactions: async (payload: I_BulkUpdateTransactionsRequest): Promise<void> => {
+    await apiClient.patch(BULK_TRANSACTIONS_PATH, payload);
   },
 
   getAllTransactions: async (
@@ -53,7 +63,7 @@ export const transactionsApi = {
       throw new Error(`Invalid transaction IDs: ${invalidIds.join(', ')}`);
     }
 
-    const response = await apiClient.delete('/transactions/bulk', {
+    const response = await apiClient.delete<{ deleted_count: number }>(BULK_TRANSACTIONS_PATH, {
       data: { transaction_ids: transactionIds },
     });
     return response.data;

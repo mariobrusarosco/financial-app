@@ -34,7 +34,7 @@ export const useUpdateTransaction = ({
   });
 };
 
-const invalidateAllTransactionRelatedQueries = (queryClient: QueryClient) => {
+export const invalidateAllTransactionRelatedQueries = (queryClient: QueryClient) => {
   TRANSACTION_RELATED_QUERY_KEYS.forEach(queryKey => {
     void queryClient.invalidateQueries({ queryKey });
   });

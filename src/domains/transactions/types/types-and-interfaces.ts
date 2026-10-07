@@ -58,6 +58,20 @@ export interface I_BulkTransactionResponse {
   results: I_BulkTransactionResult[];
 }
 
+export type T_BulkTransactionChanges =
+  | { category_id: string }
+  | { amount: number }
+  | { date: string }
+  | { description: string }
+  | { movement_type: T_TransactionType }
+  | { is_paid: boolean }
+  | { ignored: boolean };
+
+export interface I_BulkUpdateTransactionsRequest {
+  transaction_ids: string[];
+  changes: T_BulkTransactionChanges;
+}
+
 // Account transactions endpoint types
 export interface I_TransactionResponse {
   id: string;
@@ -123,4 +137,4 @@ export interface I_TransactionsResponse {
 }
 
 // Legacy alias for backward compatibility - will be removed
-export interface I_AccountTransactionsResponse extends I_TransactionsResponse {}
+export type I_AccountTransactionsResponse = I_TransactionsResponse;
