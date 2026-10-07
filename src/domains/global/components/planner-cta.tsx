@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Button } from '@ui-system/components/button';
-import { useGlobalUIState } from '../hooks/use-global-ui-state';
+import { Button } from '@/domains/ui-system/components/button';
+import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 import { ChevronDown, Plus } from 'lucide-react';
 
 export const PlannerCTA = () => {
@@ -10,21 +10,25 @@ export const PlannerCTA = () => {
 
   if (isCollapsed) {
     return (
-      <div
-        className="fixed bottom-4 right-4 flex items-center justify-center w-12 h-12 bg-background border rounded-full shadow-lg z-50 cursor-pointer hover:shadow-xl transition-shadow"
+      <button
+        type="button"
+        aria-label="Open quick add menu"
+        className="fixed right-4 bottom-4 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-2xl bg-brand shadow-lg shadow-brand/20 transition-transform hover:-translate-y-0.5"
         onClick={() => setIsCollapsed(false)}
       >
-        <img src="/wb.png" alt="Better Call Buffet" className="w-6 h-6" />
-      </div>
+        <Plus className="h-5 w-5 text-brand-foreground" />
+      </button>
     );
   }
 
   return (
-    <div className="fixed bottom-4 right-4 flex flex-col gap-2 p-4 bg-background border rounded-lg shadow-lg z-50 min-w-[200px]">
+    <div className="fixed right-4 bottom-4 z-40 flex min-w-[220px] flex-col gap-2 rounded-2xl border border-border bg-card p-4 shadow-xl">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <img src="/wb.png" alt="Better Call Buffet" className="w-4 h-4" />
-          <p className="text-sm font-medium">Your planner</p>
+          <span className="grid h-6 w-6 place-items-center rounded-lg bg-pastel-blue text-xs font-bold text-brand">
+            B
+          </span>
+          <p className="text-sm font-semibold">Quick add</p>
         </div>
         <Button
           size="sm"
@@ -36,37 +40,31 @@ export const PlannerCTA = () => {
         </Button>
       </div>
 
-      <Button
-        size="sm"
-        onClick={openAccountCreate}
-        className="bg-rose-500 hover:bg-rose-600 text-white"
-      >
+      <Button size="sm" onClick={openAccountCreate} variant="secondary" className="justify-between">
         <span className="font-semibold">Account</span>
-        <Plus className="h-5 w-5  text-white" />
+        <Plus className="h-4 w-4" />
       </Button>
-      <Button
-        size="sm"
-        onClick={openBrokerCreate}
-        className="bg-rose-500 hover:bg-rose-600 text-white"
-      >
+      <Button size="sm" onClick={openBrokerCreate} variant="secondary" className="justify-between">
         <span className="font-semibold">Broker</span>
-        <Plus className="h-5 w-5  text-white" />
+        <Plus className="h-4 w-4" />
       </Button>
       <Button
         size="sm"
         onClick={openTransactionCreate}
-        className="bg-rose-500 hover:bg-rose-600 text-white"
+        variant="secondary"
+        className="justify-between"
       >
         <span className="font-semibold">Transaction</span>
-        <Plus className="h-5 w-5  text-white" />
+        <Plus className="h-4 w-4" />
       </Button>
       <Button
         size="sm"
         onClick={openCreditCardCreate}
-        className="bg-rose-500 hover:bg-rose-600 text-white"
+        variant="secondary"
+        className="justify-between"
       >
         <span className="font-semibold">Credit Card</span>
-        <Plus className="h-5 w-5  text-white" />
+        <Plus className="h-4 w-4" />
       </Button>
     </div>
   );

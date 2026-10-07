@@ -30,7 +30,9 @@ export const PreferencesCard = () => {
               <h3 className="text-sm font-medium">Notifications</h3>
               <p className="text-sm text-muted-foreground">Manage how you receive notifications</p>
             </div>
-            <div variant="outline">Enabled</div>
+            <span className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              Enabled
+            </span>
           </div>
         </div>
       </CardContent>

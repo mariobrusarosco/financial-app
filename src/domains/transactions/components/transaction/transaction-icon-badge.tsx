@@ -10,7 +10,7 @@ export const TransactionIconBadge = ({
   movementType,
   size = 'xs',
 }: TransactionIconBadgeProps) => {
-  const IconComponent = getTransactionIconComponent(categoryName, movementType);
+  const IconComponent = getTransactionIconComponent(categoryName ?? undefined, movementType);
 
   return (
     <div className="p-3 rounded-lg bg-primary flex-shrink-0">

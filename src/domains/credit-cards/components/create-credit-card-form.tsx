@@ -16,26 +16,41 @@ interface Props {
   accountId?: string;
 }
 
+type CreditCardFormValues = Omit<I_CreateCreditCardRequest, 'credit_limit'> & {
+  account_id: string;
+  credit_limit: number;
+};
+
 export const CreateCreditCardForm = ({ accountId }: Props) => {
-  const { data: accounts, isLoading: accountsLoading } = useAccounts();
+  const {
+    accounts: { query: accountsQuery },
+  } = useAccounts();
+  const accounts = accountsQuery.data?.accounts ?? [];
+
+  const defaultValues: CreditCardFormValues = {
+    account_id: accountId ?? '',
+    name: '',
+    last_four_digits: '',
+    brand: 'visa',
+    credit_limit: 0,
+    due_date: 1,
+  };
 
   const form = useForm({
-    defaultValues: {
-      account_id: accountId || '',
-      name: '',
-      last_four_digits: '',
-      brand: 'visa',
-      credit_limit: 0,
-      due_date: 1,
-    } as I_CreateCreditCardRequest,
-    onSubmit: async ({ value }) => {
-      await Promise.resolve(); // Satisfy require-await
-      void createCreditCard(value);
+    defaultValues,
+    onSubmit: ({ value }) => {
+      void createCreditCard({
+        name: value.name,
+        last_four_digits: value.last_four_digits,
+        brand: value.brand,
+        credit_limit: value.credit_limit,
+        due_date: value.due_date,
+      });
     },
   });
 
   const { createCreditCard, error } = useCreateCreditCard({
-    accountId: form.getFieldValue('account_id') as string,
+    accountId: form.getFieldValue('account_id'),
   });
 
   return (
@@ -92,7 +107,7 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
                 <label htmlFor={field.name} className="text-sm font-medium text-primary">
                   Account:
                 </label>
-                {accountsLoading ? (
+                {accountsQuery.isLoading ? (
                   <div className="flex items-center text-sm text-muted-foreground">
                     Loading accounts...
                   </div>
@@ -105,12 +120,12 @@ export const CreateCreditCardForm = ({ accountId }: Props) => {
                       <SelectValue placeholder="Select an account" />
                     </SelectTrigger>
                     <SelectContent>
-                      {accounts?.map(account => (
+                      {accounts.map(account => (
                         <SelectItem key={account.id} value={account.id}>
                           <div className="flex items-center justify-between w-full">
                             <span>{account.name}</span>
                             <span className="text-sm text-muted-foreground ml-2">
-                              {account.account_type}
+                              {account.type}
                             </span>
                           </div>
                         </SelectItem>

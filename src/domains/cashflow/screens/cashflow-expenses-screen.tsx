@@ -11,10 +11,10 @@ import {
   groupExpensesByAccount,
   groupExpensesByCategory,
   groupExpensesByCreditCard,
-} from '../utils/grouping-utils';
-import { ExpensesByAccount } from '../components/expenses/expenses-by-account';
-import { ExpensesByCategory } from '../components/expenses/expenses-by-category';
-import { ExpensesByCreditCard } from '../components/expenses/expenses-by-credit-card';
+} from '@/domains/cashflow/utils/grouping-utils';
+import { ExpensesByAccount } from '@/domains/cashflow/components/expenses/expenses-by-account';
+import { ExpensesByCategory } from '@/domains/cashflow/components/expenses/expenses-by-category';
+import { ExpensesByCreditCard } from '@/domains/cashflow/components/expenses/expenses-by-credit-card';
 
 export const CashflowExpensesScreen = () => {
   const { from, to } = Route.useSearch();
@@ -32,7 +32,9 @@ export const CashflowExpensesScreen = () => {
   });
 
   // 2. Fetch Accounts, Credit Cards, and Categories for Mapping
-  const { data: accounts } = useAccounts();
+  const {
+    accounts: { query: accountsQuery },
+  } = useAccounts();
   const { data: creditCardsResponse } = useCreditCards(undefined);
   const creditCards = creditCardsResponse?.data || [];
   const { data: categories = [] } = useCategories();
@@ -52,9 +54,11 @@ export const CashflowExpensesScreen = () => {
       }
 
       // Build Maps
-      const accountMap = new Map(accounts?.map(a => [a.id, a.name]));
+      const accountMap = new Map(
+        accountsQuery.data?.accounts.map(account => [account.id, account.name])
+      );
       const creditCardMap = new Map(creditCards?.map(cc => [cc.id, cc.name]));
-      
+
       const categoryMap = new Map<string, string>();
       categories.forEach(c => {
         categoryMap.set(c.id, c.name);
@@ -77,33 +81,33 @@ export const CashflowExpensesScreen = () => {
         overallTotal: total,
         hasExpenses: true,
       };
-    }, [transactionsData, accounts, creditCards, categories]);
+    }, [transactionsData, accountsQuery.data, creditCards, categories]);
 
   const isLoading = isLoadingTransactions;
 
   return (
-    <div data-ui="cashflow-expenses-screen" className="py-4 space-y-8 rounded-3xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div data-ui="cashflow-expenses-screen" className="space-y-7 pb-8">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <PageHeader title="Expenses Analysis" icon={TrendingDown} showAddButton={false} />
         <GlobalDateFilter />
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-24 bg-muted/10 rounded-3xl border border-dashed border-border">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <div className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-border bg-card p-8">
+          <Loader2 className="mb-4 h-7 w-7 animate-spin text-brand" />
           <p className="text-sm text-muted-foreground">Analyzing expenses...</p>
         </div>
       ) : transactionsError ? (
-        <div className="p-8 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-center">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center text-destructive">
           <p className="font-semibold">Failed to load expenses</p>
-          <p className="text-sm opacity-80">{(transactionsError as any)?.message}</p>
+          <p className="mt-1 text-sm opacity-80">
+            {transactionsError instanceof Error ? transactionsError.message : 'Unexpected error'}
+          </p>
         </div>
       ) : !hasExpenses ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-muted/30 rounded-3xl border border-dashed">
-          <h2 className="text-xl font-medium text-muted-foreground mb-2">
-            No expenses found for this period
-          </h2>
-          <p className="text-sm text-muted-foreground/60 max-w-md text-center">
+        <div className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
+          <h2 className="mb-2 font-semibold text-foreground">No expenses found for this period</h2>
+          <p className="max-w-md text-sm text-muted-foreground">
             Try adjusting your date filters to see your expense breakdown.
           </p>
         </div>

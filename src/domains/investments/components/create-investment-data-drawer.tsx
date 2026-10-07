@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/domains/ui-system/components/tabs';
@@ -13,16 +12,11 @@ import type {
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const CreateInvestmentDataDrawer = () => {
-  const navigate = useNavigate();
   const [pendingMovements, setPendingMovements] = useState<I_CreateInvestmentMovementRequest[]>([]);
   const [pendingBalances, setPendingBalances] = useState<I_CreateInvestmentBalanceRequest[]>([]);
 
   const { mutate: createMovement, isPending: isSavingMovements } = useCreateInvestmentMovement();
   const { mutate: createBalance, isPending: isSavingBalances } = useCreateInvestmentBalance();
-
-  const handleClose = () => {
-    navigate({ search: {} });
-  };
 
   const handleAddMovement = (movement: I_CreateInvestmentMovementRequest) => {
     setPendingMovements(prev => [...prev, movement]);
@@ -66,7 +60,9 @@ export const CreateInvestmentDataDrawer = () => {
       <div className="flex justify-between items-center">
         <DrawerHeader title="Add Investment Data" icon={TrendingUp} />
         {(pendingMovements.length > 0 || pendingBalances.length > 0) && (
-          <div variant="secondary">{pendingMovements.length + pendingBalances.length} pending</div>
+          <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium">
+            {pendingMovements.length + pendingBalances.length} pending
+          </span>
         )}
       </div>
 

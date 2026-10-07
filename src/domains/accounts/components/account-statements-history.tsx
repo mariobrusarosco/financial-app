@@ -1,10 +1,5 @@
 import { Currency } from '@/domains/ui-system/components/currency';
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
+import { CardDescription, CardTitle } from '@/domains/ui-system/components/card';
 import { Surface } from '@/domains/global/components/surface';
 import { Button } from '@/domains/ui-system/components/button';
 import { FileText, DollarSign, Download, Upload } from 'lucide-react';
@@ -47,7 +42,9 @@ export const AccountStatementsHistory = ({ accountId }: AccountStatementsHistory
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div variant="secondary">Upload</div>
+                    <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium">
+                      Upload
+                    </span>
                     <Button variant="outline" size="sm">
                       <Download className="h-3 w-3" />
                     </Button>

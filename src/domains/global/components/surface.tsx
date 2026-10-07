@@ -30,7 +30,7 @@ const Surface = React.forwardRef<HTMLDivElement, SurfaceProps>(
       className,
       variant = 'default',
       size = 'md',
-      hoverable = true,
+      hoverable = false,
       clickable = false,
       children,
       ...props
@@ -40,14 +40,13 @@ const Surface = React.forwardRef<HTMLDivElement, SurfaceProps>(
     return (
       <div
         className={cn(
-          // Base styles - similar to the rounded cards in the screenshot
-          'rounded-2xl border bg-card text-card-foreground shadow-sm transition-colors',
+          'rounded-2xl border border-border/80 bg-card text-card-foreground shadow-[var(--shadow-panel)] transition-[background-color,border-color,box-shadow,transform]',
 
           // Variant styles
           {
-            'bg-background border-border': variant === 'default',
-            'bg-muted/50 border-muted': variant === 'muted',
-            'bg-card border-border shadow-md': variant === 'elevated',
+            'bg-card': variant === 'default',
+            'bg-muted/60': variant === 'muted',
+            'bg-card shadow-lg shadow-primary/5': variant === 'elevated',
           },
 
           // Size styles
@@ -59,9 +58,10 @@ const Surface = React.forwardRef<HTMLDivElement, SurfaceProps>(
 
           // Interactive styles
           {
-            'hover:bg-accent/50 hover:border-accent': hoverable,
+            'hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-lg hover:shadow-primary/8':
+              hoverable,
             'cursor-pointer': clickable,
-            'hover:shadow-md': hoverable || clickable,
+            'focus-visible:ring-2 focus-visible:ring-ring': clickable,
           },
 
           className

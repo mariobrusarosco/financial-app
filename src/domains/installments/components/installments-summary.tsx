@@ -1,6 +1,10 @@
 import { CreditCard, TrendingUp, Layers, CalendarCheck } from 'lucide-react';
-import type { I_InstallmentPlan } from '../types/types-and-interfaces';
-import { calculateTotalOutstandingDebt, calculateNextMonthLiability, calculateCurrentMonthLiability } from '../utils/installment-calculators';
+import type { I_InstallmentPlan } from '@/domains/installments/types/types-and-interfaces';
+import {
+  calculateTotalOutstandingDebt,
+  calculateNextMonthLiability,
+  calculateCurrentMonthLiability,
+} from '@/domains/installments/utils/installment-calculators';
 import { Card } from '@/domains/ui-system/components/card';
 import { cn } from '@/domains/ui-system/utils';
 
@@ -19,49 +23,43 @@ export const InstallmentsSummary = ({ plans }: InstallmentsSummaryProps) => {
       label: 'Due This Month',
       value: currentMonthLiability.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
       icon: CalendarCheck,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-500/10',
+      color: 'text-positive',
+      bgColor: 'bg-pastel-green',
     },
     {
       label: 'Due Next Month',
       value: nextMonthLiability.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
       icon: TrendingUp,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-500/10',
+      color: 'text-[#a15e48]',
+      bgColor: 'bg-pastel-peach',
     },
     {
       label: 'Total Outstanding',
       value: totalOutstanding.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
       icon: CreditCard,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-500/10',
+      color: 'text-brand',
+      bgColor: 'bg-pastel-blue',
     },
     {
       label: 'Active Plans',
       value: activePlansCount.toString(),
       icon: Layers,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-500/10',
+      color: 'text-[#6250c7]',
+      bgColor: 'bg-pastel-violet',
     },
   ];
 
   return (
-    <div 
-      data-ui="installments-summary-section"
-      className="bg-section-background rounded-3xl p-6"
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {cards.map((card, index) => (
-          <Card
-            key={index}
-            className="flex-row items-center gap-4 py-6 px-6 shadow-none border-none bg-neutral-white"
-          >
-            <div className={cn("p-3 rounded-xl", card.bgColor)}>
-              <card.icon className={cn("h-6 w-6", card.color)} />
+    <div data-ui="installments-summary-section">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map(card => (
+          <Card key={card.label} className="flex-row items-center gap-4 px-5 py-5">
+            <div className={cn('rounded-xl p-3', card.bgColor)}>
+              <card.icon className={cn('h-6 w-6', card.color)} />
             </div>
             <div className="flex flex-col gap-0.5">
               <p className="text-sm text-muted-foreground font-medium">{card.label}</p>
-              <p className="text-2xl font-bold tracking-tight text-primary">
+              <p className="financial-value text-2xl font-semibold tracking-tight text-foreground">
                 {card.value}
               </p>
             </div>

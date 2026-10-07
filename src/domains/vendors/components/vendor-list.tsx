@@ -1,13 +1,21 @@
+import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { Loader2, Store } from 'lucide-react';
-import type { I_Vendor, I_VendorsParams } from '../types/types-and-interfaces';
-import { useDeleteVendor } from '../hooks';
-import { toast } from 'sonner';
+import type { I_Vendor, I_VendorsParams } from '@/domains/vendors/types/types-and-interfaces';
+import { useDeleteVendor } from '@/domains/vendors/hooks/index';
 import { PageHeader } from '@/domains/global/components';
-import { CardDescription } from '@/domains/ui-system/components/card';
-import { VendorItem } from './vendor-item';
-import type { AuthSearchParams } from '@/routes/(auth)/route';
+import { VendorItem } from '@/domains/vendors/components/vendor-item';
+import { Button } from '@/domains/ui-system/components/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/domains/ui-system/components/dialog';
 
 interface VendorListProps {
   vendors: I_Vendor[];
@@ -35,7 +43,8 @@ export const VendorList = ({
   onParamsChange,
 }: VendorListProps) => {
   const navigate = useNavigate();
-  const { mutate: deleteVendorMutation } = useDeleteVendor();
+  const deleteVendorMutation = useDeleteVendor();
+  const [vendorToDelete, setVendorToDelete] = useState<I_Vendor | null>(null);
 
   const handleEdit = (vendorId: string) => {
     (navigate as any)({
@@ -44,20 +53,14 @@ export const VendorList = ({
   };
 
   const handleDelete = (id: string) => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete this vendor? This action cannot be undone and may affect associated subscriptions and transactions.'
-      )
-    ) {
-      deleteVendorMutation(id, {
-        onSuccess: () => {
-          toast.success('Vendor deleted successfully.');
-        },
-        onError: error => {
-          toast.error('Failed to delete vendor.', { description: error.message });
-        },
-      });
-    }
+    setVendorToDelete(vendors.find(vendor => vendor.id === id) ?? null);
+  };
+
+  const confirmDelete = () => {
+    if (!vendorToDelete) return;
+    deleteVendorMutation.mutate(vendorToDelete.id, {
+      onSuccess: () => setVendorToDelete(null),
+    });
   };
 
   const handlePageChange = (page: number) => {
@@ -66,7 +69,7 @@ export const VendorList = ({
 
   if (isError) {
     return (
-      <div data-ui="vendor-list" className="py-4 space-y-5 rounded-3xl">
+      <div data-ui="vendor-list" className="space-y-6 pb-8">
         <PageHeader
           title="Vendors"
           icon={Store}
@@ -75,7 +78,7 @@ export const VendorList = ({
           }
           addButtonLabel="Add Vendor"
         />
-        <div className="text-center py-8">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center">
           <p className="text-destructive">Failed to load vendors</p>
         </div>
       </div>
@@ -84,7 +87,7 @@ export const VendorList = ({
 
   if (vendors.length === 0 && !isLoading && !isPlaceholderData) {
     return (
-      <div data-ui="vendor-list" className="py-4 space-y-5 rounded-3xl">
+      <div data-ui="vendor-list" className="space-y-6 pb-8">
         <PageHeader
           title="Vendors"
           icon={Store}
@@ -93,7 +96,7 @@ export const VendorList = ({
           }
           addButtonLabel="Add Vendor"
         />
-        <div className="text-center py-8">
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
           <p className="text-muted-foreground">No vendors found.</p>
           <p className="text-sm text-muted-foreground mt-1">Start by adding a new vendor.</p>
         </div>
@@ -102,7 +105,7 @@ export const VendorList = ({
   }
 
   return (
-    <div data-ui="vendor-list" className="py-4 space-y-5 rounded-3xl">
+    <div data-ui="vendor-list" className="space-y-6 pb-8">
       <PageHeader
         title="Vendors"
         icon={Store}
@@ -111,7 +114,7 @@ export const VendorList = ({
         }
         addButtonLabel="Add Vendor"
       />
-      <CardDescription>
+      <p className="text-sm text-muted-foreground">
         {isLoading && !isPlaceholderData ? (
           'Loading vendors...'
         ) : (
@@ -122,14 +125,14 @@ export const VendorList = ({
             )}
           </>
         )}
-      </CardDescription>
+      </p>
 
       {isLoading && !isPlaceholderData ? (
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex min-h-64 items-center justify-center rounded-2xl border border-border bg-card">
+          <Loader2 className="h-6 w-6 animate-spin text-brand" />
         </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {vendors.map(vendor => (
             <VendorItem
               key={vendor.id}
@@ -142,7 +145,7 @@ export const VendorList = ({
       )}
 
       {meta && meta.total > (params.per_page || 1) && (
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
               Showing {(meta.page - 1) * meta.per_page + 1} to{' '}
@@ -150,16 +153,43 @@ export const VendorList = ({
               {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
             </span>
           </div>
-          <Pagination
-            currentPage={meta.page}
-            totalPages={Math.ceil(meta.total / (params.per_page || 1))}
-            hasNext={meta.has_next && !isPlaceholderData}
-            hasPrevious={meta.has_previous && !isPlaceholderData}
-            onPageChange={handlePageChange}
-            className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
-          />
+          <div className={isPlaceholderData ? 'pointer-events-none opacity-50' : ''}>
+            <Pagination
+              currentPage={meta.page}
+              totalPages={Math.ceil(meta.total / (params.per_page || 1))}
+              hasNext={meta.has_next && !isPlaceholderData}
+              hasPrevious={meta.has_previous && !isPlaceholderData}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       )}
+
+      <Dialog
+        open={Boolean(vendorToDelete)}
+        onOpenChange={open => !open && setVendorToDelete(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete {vendorToDelete?.name}?</DialogTitle>
+            <DialogDescription>
+              This cannot be undone and may affect associated subscriptions and transactions.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteVendorMutation.isPending}
+            >
+              {deleteVendorMutation.isPending ? 'Deleting…' : 'Delete vendor'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

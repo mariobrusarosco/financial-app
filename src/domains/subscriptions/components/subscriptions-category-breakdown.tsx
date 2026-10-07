@@ -36,16 +36,11 @@ export const SubscriptionsCategoryBreakdown = ({
   };
 
   return (
-    <div
-      data-ui="subscriptions-category-breakdown-section"
-      className="bg-section-background rounded-3xl p-6"
-    >
-      <Card className="shadow-none border-none bg-neutral-white h-full flex flex-col">
+    <div data-ui="subscriptions-category-breakdown-section">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-primary font-semibold">Subscriptions by Category</CardTitle>
-          <CardDescription>
-            Distribution of monthly subscription costs by category.
-          </CardDescription>
+          <CardDescription>Distribution of monthly subscription costs by category.</CardDescription>
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col md:flex-row items-center gap-6">
@@ -70,7 +65,8 @@ export const SubscriptionsCategoryBreakdown = ({
                       {data.map((_entry, index) => (
                         <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
                       ))}
-                    </Pie>                    <Tooltip content={<CustomTooltip />} />
+                    </Pie>{' '}
+                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
                 {/* Center Text for Total */}

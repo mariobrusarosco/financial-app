@@ -4,7 +4,8 @@ import { CreditCardTransactionsList } from '@/domains/credit-cards/components/cr
 import { useCreditCard } from '@/domains/credit-cards/hooks/use-credit-card';
 import { CreditCardHeading } from '@/domains/credit-cards/components/credit-card-heading';
 import { useMemo } from 'react';
-import { I_CreditCard } from '@/domains/credit-cards/types/types-and-interfaces';
+import type { I_CreditCard } from '@/domains/credit-cards/types/types-and-interfaces';
+import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 interface AccountCreditCardScreenProps {
   params: {
@@ -25,20 +26,27 @@ export const AccountCreditCardScreen = ({ params }: AccountCreditCardScreenProps
   }, []);
 
   if (creditCard.isLoading) {
-    return <div>Loading...</div>;
+    return <Skeleton className="h-80 w-full rounded-2xl" />;
   }
 
   if (creditCard.error) {
-    return <div>Error: {creditCard.error.message}</div>;
+    return (
+      <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center text-sm text-destructive">
+        We couldn&apos;t load this credit card: {creditCard.error.message}
+      </div>
+    );
   }
 
   if (!creditCard.isSuccess) {
-    return <div>Credit card not found</div>;
+    return (
+      <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
+        Credit card not found.
+      </div>
+    );
   }
 
-  console.log('💾 AccountCreditCardScreen - currentView:', currentView);
   return (
-    <div className="space-y-6" data-ui="account-credit-card-screen">
+    <div className="space-y-5" data-ui="account-credit-card-screen">
       <CreditCardHeading creditCard={creditCard.data} />
       {renderContent(currentView, creditCard.data)}
     </div>
@@ -49,20 +57,20 @@ const renderContent = (currentView: string, creditCard: I_CreditCard) => {
   switch (currentView) {
     case 'transactions':
       return (
-        <div className="max-w-4xl">
+        <div>
           <CreditCardTransactionsList creditCardId={creditCard.id} />
         </div>
       );
     case 'invoices':
       return (
-        <div className="flex">
+        <div className="grid gap-5 xl:grid-cols-2">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
           <CreditCardInvoiceList creditCardId={creditCard.id} />
         </div>
       );
     default:
       return (
-        <div className="">
+        <div className="grid gap-5">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
           <CreditCardInvoiceList creditCardId={creditCard.id} />
           <CreditCardTransactionsList creditCardId={creditCard.id} />

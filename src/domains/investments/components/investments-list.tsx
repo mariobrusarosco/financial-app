@@ -143,9 +143,9 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
                       <h3 className="font-semibold text-lg">{investment.investment.name}</h3>
-                      <div variant="outline" className="text-xs">
+                      <span className="rounded-full border border-border px-2.5 py-1 text-xs font-medium">
                         Investment
-                      </div>
+                      </span>
                     </div>
                     {investment.investment.description && (
                       <p className="text-sm text-muted-foreground">

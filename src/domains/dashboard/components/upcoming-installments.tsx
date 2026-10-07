@@ -67,18 +67,18 @@ const EmptyState = () => {
 const InstallmentStatusBadge = ({ status }: { status: T_InstallmentStatus }) => {
   if (status === 'overdue') {
     return (
-      <div variant="outline" className="gap-1 bg-red-50 px-2 py-0.5 text-red-700">
+      <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
         <AlertTriangle className="h-3 w-3" />
         Overdue
-      </div>
+      </span>
     );
   }
 
   return (
-    <div variant="outline" className="gap-1 bg-orange-100/90 px-2 py-0.5 text-orange-700">
+    <span className="inline-flex items-center gap-1 rounded-full bg-orange-100/90 px-2 py-0.5 text-xs font-medium text-orange-700">
       <AlertCircle className="h-3 w-3" />
       Due
-    </div>
+    </span>
   );
 };
 

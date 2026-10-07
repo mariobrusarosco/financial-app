@@ -5,16 +5,16 @@ import type {
 
 // Icon badge props
 export interface TransactionIconBadgeProps {
-  categoryName?: string;
+  categoryName?: string | null;
   movementType: T_TransactionType;
   size?: 'sm' | 'xs';
 }
 
 // Amount props
 export interface TransactionAmountProps {
-  amount: number;
+  amount: string | number;
   movementType: T_TransactionType;
-  ignored: boolean;
+  ignored?: boolean;
   size?: 'compact' | 'large';
 }
 
@@ -24,9 +24,9 @@ export interface TransactionCategoryProps {
     name: string;
     parent?: {
       name: string;
-    };
-  };
-  categoryName?: string;
+    } | null;
+  } | null;
+  categoryName?: string | null;
   category?: string;
 }
 

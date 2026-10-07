@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
@@ -9,22 +9,28 @@ import {
   useBulkDeleteTransactions,
   useDeleteTransaction,
 } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
-import { AccountTransactionFilters } from './account-transaction-filters';
-import { CreditCard, Loader2, Trash2, CheckSquare, Square, Plus, Settings2 } from 'lucide-react';
+import { AccountTransactionFilters } from '@/domains/transactions/components/account-transaction-filters';
+import { CreditCard, Loader2, Trash2, CheckSquare, Square } from 'lucide-react';
 import type {
   I_AccountTransactionsParams,
   I_TransactionResponse,
   I_TransactionsResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
 import { CategoryManagerButton } from '@/domains/categories/components/category-manager-button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/domains/ui-system/components/dialog';
 
 interface AccountTransactionsListProps {
   params: I_AccountTransactionsParams;
-  onParamsChange: (
-    params:
-      | I_AccountTransactionsParams
-      | ((prev: I_AccountTransactionsParams) => I_AccountTransactionsParams)
-  ) => void;
+  onParamsChange: (params: I_AccountTransactionsParams) => void;
+  showMovementTypeFilter?: boolean;
   query: {
     data?: I_TransactionsResponse;
     isLoading: boolean;
@@ -36,6 +42,7 @@ interface AccountTransactionsListProps {
 export const AccountTransactionsList = ({
   params,
   onParamsChange,
+  showMovementTypeFilter = true,
   query,
 }: AccountTransactionsListProps) => {
   const { data: response, isLoading, isError, isPlaceholderData } = query;
@@ -43,6 +50,10 @@ export const AccountTransactionsList = ({
   const meta = response?.meta;
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [transactionToDelete, setTransactionToDelete] = useState<I_TransactionResponse | null>(
+    null
+  );
+  const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
@@ -79,19 +90,18 @@ export const AccountTransactionsList = ({
   }
 
   const handlePageChange = (page: number) => {
-    onParamsChange(prev => ({ ...prev, page }));
+    onParamsChange({ ...params, page });
   };
 
   const handleEdit = (transaction: I_TransactionResponse) => {
-    navigate({
+    void navigate({
+      to: '.',
       search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }),
     });
   };
 
   const handleDelete = (transaction: I_TransactionResponse) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
-      deleteTransaction(String(transaction.id));
-    }
+    setTransactionToDelete(transaction);
   };
 
   // Selection handlers
@@ -117,24 +127,34 @@ export const AccountTransactionsList = ({
 
   const handleDeleteSelected = () => {
     if (selectedIds.size === 0) return;
+    setIsBulkDeleteDialogOpen(true);
+  };
 
-    if (
-      window.confirm(`Are you sure you want to delete ${selectedIds.size} selected transactions?`)
-    ) {
-      bulkDeleteTransactions(Array.from(selectedIds), {
-        onSuccess: () => {
-          setSelectedIds(new Set());
-        },
-      });
-    }
+  const confirmBulkDelete = () => {
+    bulkDeleteTransactions(Array.from(selectedIds), {
+      onSuccess: () => {
+        setSelectedIds(new Set());
+        setIsBulkDeleteDialogOpen(false);
+      },
+    });
+  };
+
+  const confirmSingleDelete = () => {
+    if (!transactionToDelete) return;
+    deleteTransaction(String(transactionToDelete.id), {
+      onSuccess: () => setTransactionToDelete(null),
+    });
   };
 
   const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
   return (
-    <div data-ui="account-transactions-list" className="flex flex-col">
-      <div className="flex items-start justify-between">
+    <section
+      data-ui="account-transactions-list"
+      className="flex min-w-0 flex-col rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] sm:p-5"
+    >
+      <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">Account Transactions</h2>
@@ -155,17 +175,21 @@ export const AccountTransactionsList = ({
         <CategoryManagerButton />
       </div>
 
-      <AccountTransactionFilters params={params} onParamsChange={onParamsChange} />
+      <AccountTransactionFilters
+        params={params}
+        onParamsChange={onParamsChange}
+        showMovementTypeFilter={showMovementTypeFilter}
+      />
 
       {selectedIds.size > 0 && (
         <div
           data-ui="selected-transactions"
-          className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
+          className="flex flex-col gap-3 rounded-xl border border-brand/15 bg-accent/45 p-3 sm:flex-row sm:items-center sm:justify-between"
         >
           <div className="flex items-center gap-3">
-            <div variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <span className="rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
               {selectedIds.size} selected
-            </div>
+            </span>
             <span className="text-sm text-muted-foreground">
               {selectedIds.size === 1 ? 'transaction' : 'transactions'} selected
             </span>
@@ -192,16 +216,16 @@ export const AccountTransactionsList = ({
       <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
         {transactions && transactions.length > 0 ? (
           <>
-            <div className="flex items-center gap-3 p-2 border-b">
+            <div className="flex items-center gap-3 border-b border-border/70 p-2">
               <button
                 onClick={handleSelectAll}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 {isAllSelected ? (
-                  <CheckSquare className="h-4 w-4 text-primary" />
+                  <CheckSquare className="h-4 w-4 text-brand" />
                 ) : isPartiallySelected ? (
-                  <div className="h-4 w-4 border-2 border-primary rounded bg-primary/20 flex items-center justify-center">
-                    <div className="h-2 w-2 bg-primary rounded-sm" />
+                  <div className="flex h-4 w-4 items-center justify-center rounded border-2 border-brand bg-brand/15">
+                    <div className="h-2 w-2 rounded-sm bg-brand" />
                   </div>
                 ) : (
                   <Square className="h-4 w-4" />
@@ -213,7 +237,7 @@ export const AccountTransactionsList = ({
               </span>
             </div>
 
-            <ul data-ui="account-transactions-list-items" className="pr-2 grid gap-3">
+            <ul data-ui="account-transactions-list-items" className="grid gap-2">
               {transactions.map(transaction => (
                 <UnifiedTransactionItem
                   key={transaction.id}
@@ -262,7 +286,7 @@ export const AccountTransactionsList = ({
       {meta && meta.total > meta.per_page && (
         <div
           data-ui="account-transactions-list-pagination"
-          className="flex items-center justify-between p-3 bg-muted/50 rounded-lg sticky bottom-0 z-10 bg-neutral-white shadow-lg"
+          className="sticky bottom-0 z-10 mt-3 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 shadow-lg sm:flex-row sm:items-center sm:justify-between"
         >
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
@@ -271,16 +295,58 @@ export const AccountTransactionsList = ({
               {isPlaceholderData && <span className="text-xs ml-2">(Previous data shown)</span>}
             </span>
           </div>
-          <Pagination
-            currentPage={meta.page}
-            totalPages={Math.ceil(meta.total / meta.per_page)}
-            hasNext={meta.has_next && !isPlaceholderData}
-            hasPrevious={meta.has_previous && !isPlaceholderData}
-            onPageChange={handlePageChange}
-            className={isPlaceholderData ? 'opacity-50 pointer-events-none' : ''}
-          />
+          <div className={isPlaceholderData ? 'pointer-events-none opacity-50' : ''}>
+            <Pagination
+              currentPage={meta.page}
+              totalPages={Math.ceil(meta.total / meta.per_page)}
+              hasNext={meta.has_next && !isPlaceholderData}
+              hasPrevious={meta.has_previous && !isPlaceholderData}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       )}
-    </div>
+
+      <Dialog
+        open={Boolean(transactionToDelete)}
+        onOpenChange={open => !open && setTransactionToDelete(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete transaction?</DialogTitle>
+            <DialogDescription>
+              {transactionToDelete?.description ?? 'This transaction'} will be permanently deleted.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button variant="destructive" onClick={confirmSingleDelete}>
+              Delete transaction
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete {selectedIds.size} transactions?</DialogTitle>
+            <DialogDescription>
+              The selected transactions will be permanently deleted. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button variant="destructive" onClick={confirmBulkDelete} disabled={isBulkDeleting}>
+              {isBulkDeleting ? 'Deleting…' : 'Delete transactions'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </section>
   );
 };

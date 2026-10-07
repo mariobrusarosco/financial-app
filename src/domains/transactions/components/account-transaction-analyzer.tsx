@@ -97,9 +97,9 @@ const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAn
   };
 
   return (
-    <div className="p-4 border rounded-lg bg-muted/30 space-y-4 h-fit">
+    <aside className="h-fit space-y-5 rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
       <div>
-        <h3 className="text-lg">Category Distribution</h3>
+        <h3 className="text-sm font-semibold text-foreground">Category distribution</h3>
         <p className="text-xs text-muted-foreground">
           Analysis of {transactionsToAnalyze.length} transactions
         </p>
@@ -163,7 +163,7 @@ const AccountTransactionAnalyzer = ({ transactions, type }: AccountTransactionAn
           </p>
         )}
       </div>
-    </div>
+    </aside>
   );
 };
 

@@ -1417,10 +1417,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/barlow-condensed@npm:^5.2.8":
-  version: 5.2.8
-  resolution: "@fontsource/barlow-condensed@npm:5.2.8"
-  checksum: 82d51487130af05c7690c706433338490c134de97821c10ee50869fb83dbfdab67ec13235154ec2862d2d2402da4f8b0a8e12b64dbd76f45a467716da987ddef
+"@fontsource/inter@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "@fontsource/inter@npm:5.3.0"
+  checksum: 2457049dbc46312964a61f2246de8bb24837d83f59c471de922e7d8cfd7fd7cb0d0c51a4716ac059fe39f06fa6ec670164ee1550fc0d7688a5d2470e1c0d4226
   languageName: node
   linkType: hard
 
@@ -7243,7 +7243,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "better-call-buffet-front@workspace:."
   dependencies:
-    "@fontsource/barlow-condensed": ^5.2.8
+    "@fontsource/inter": ^5.3.0
     "@playwright/test": ^1.57.0
     "@radix-ui/react-avatar": ^1.1.9
     "@radix-ui/react-checkbox": ^1.1.1

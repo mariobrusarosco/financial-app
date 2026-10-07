@@ -5,15 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface SubscriptionsChartProps {
   data?: { month: string; amount: number }[];
@@ -38,13 +30,11 @@ export const SubscriptionsChart = ({ data, isLoading }: SubscriptionsChartProps)
   };
 
   return (
-    <div data-ui="subscriptions-chart-section" className="bg-section-background rounded-3xl p-6">
-      <Card className="shadow-none border-none bg-neutral-white h-full flex flex-col">
+    <div data-ui="subscriptions-chart-section">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-primary font-semibold">Subscription Cost Forecast</CardTitle>
-          <CardDescription>
-            Projected subscription expenses for the next 12 months.
-          </CardDescription>
+          <CardDescription>Projected subscription expenses for the next 12 months.</CardDescription>
         </CardHeader>
 
         <CardContent className="h-[300px] w-full pt-4">
@@ -55,35 +45,23 @@ export const SubscriptionsChart = ({ data, isLoading }: SubscriptionsChartProps)
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data || []} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="oklch(var(--border))"
-                />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                 <XAxis
                   dataKey="month"
-                  tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   dy={10}
                 />
                 <YAxis
                   tickFormatter={formatCurrency}
-                  tick={{ fill: 'oklch(var(--muted-foreground))', fontSize: 12 }}
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   width={60}
                 />
-                <Tooltip
-                  cursor={{ fill: 'oklch(var(--muted) / 0.3)' }}
-                  content={<CustomTooltip />}
-                />
-                <Bar
-                  dataKey="amount"
-                  fill="oklch(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={50}
-                />
+                <Tooltip cursor={{ fill: 'var(--muted)' }} content={<CustomTooltip />} />
+                <Bar dataKey="amount" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={50} />
               </BarChart>
             </ResponsiveContainer>
           )}

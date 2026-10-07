@@ -7,6 +7,7 @@ interface PaginationProps {
   hasNext: boolean;
   hasPrevious: boolean;
   onPageChange: (page: number) => void;
+  className?: string;
 }
 
 export const Pagination = ({
@@ -15,6 +16,7 @@ export const Pagination = ({
   hasNext,
   hasPrevious,
   onPageChange,
+  className,
 }: PaginationProps) => {
   const getPageNumbers = () => {
     const delta = 2;
@@ -53,13 +55,15 @@ export const Pagination = ({
   const pageNumbers = getPageNumbers();
 
   return (
-    <nav className="flex gap-2">
+    <nav className={cn('flex gap-2', className)} aria-label="Pagination">
       <button
+        type="button"
+        aria-label="Previous page"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPrevious}
-        className="grid bg-neutral-grey/10 hover:bg-sea-blue group  w-7 h-7 place-items-center rounded-md transition-colors"
+        className="group grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <ChevronLeft className="h-4 w-4 text-sea-blue group-hover:text-neutral-white transition-colors" />
+        <ChevronLeft className="h-4 w-4" />
       </button>
 
       <div className="flex items-center space-x-1">
@@ -70,32 +74,31 @@ export const Pagination = ({
             </div>
           ) : (
             <button
+              type="button"
+              aria-label={`Go to page ${page}`}
+              aria-current={page === currentPage ? 'page' : undefined}
               key={page}
               onClick={() => onPageChange(page as number)}
               className={cn(
-                'grid bg-neutral-grey/10 hover:bg-sea-blue group w-7 h-7 place-items-center rounded-md transition-colors',
-                page === currentPage && 'bg-sea-blue'
+                'group grid h-8 w-8 place-items-center rounded-lg bg-muted text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-brand',
+                page === currentPage &&
+                  'bg-brand text-brand-foreground hover:bg-brand hover:text-brand-foreground'
               )}
             >
-              <span
-                className={cn(
-                  'text-sea-blue group-hover:text-neutral-white transition-colors',
-                  page === currentPage && 'text-neutral-white'
-                )}
-              >
-                {page}
-              </span>
+              {page}
             </button>
           )
         )}
       </div>
 
       <button
+        type="button"
+        aria-label="Next page"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNext}
-        className="grid bg-neutral-grey/10 hover:bg-sea-blue group  w-7 h-7 place-items-center rounded-md transition-colors"
+        className="group grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <ChevronRight className="h-4 w-4 text-sea-blue text-sea-blue group-hover:text-neutral-white transition-colors" />
+        <ChevronRight className="h-4 w-4" />
       </button>
     </nav>
   );

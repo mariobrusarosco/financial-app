@@ -17,9 +17,15 @@ export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHead
       : 'upload';
 
   return (
-    <div className="flex items-center justify-between mb-6" data-ui="account-statements-heading">
+    <div
+      className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)] sm:flex-row sm:items-center sm:justify-between"
+      data-ui="account-statements-heading"
+    >
       <div>
-        <h1 className="text-3xl font-thin">Account Statements</h1>
+        <h2 className="text-lg font-semibold tracking-[-0.025em] text-foreground">
+          Account statements
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">Upload and review imported statements</p>
       </div>
 
       <div className="flex items-center gap-2">

@@ -40,7 +40,9 @@ export const ProfileCard = ({ user }: ProfileCardProps) => {
             <Separator />
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">Status</span>
-              <div variant="secondary">Active</div>
+              <span className="rounded-full bg-positive/10 px-2.5 py-1 text-xs font-medium text-positive">
+                Active
+              </span>
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import type { I_Vendor } from '../types/types-and-interfaces';
+import type { I_Vendor } from '@/domains/vendors/types/types-and-interfaces';
 import { Button } from '@/domains/ui-system/components/button';
 import { Pencil, Trash2, Globe } from 'lucide-react';
 
@@ -12,16 +12,17 @@ export const VendorItem = ({ vendor, onEdit, onDelete }: VendorItemProps) => {
   return (
     <li
       data-ui="vendor-item"
-      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+      className="flex min-h-24 items-center justify-between gap-3 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] transition-[transform,border-color] hover:-translate-y-0.5 hover:border-brand/20"
     >
       <div className="flex items-center gap-4">
-        {/* Placeholder for a logo, if we add one later */}
-        <div className="h-10 w-10 bg-muted rounded-full flex items-center justify-center">
-          <span className="text-muted-foreground text-sm">{vendor.name.charAt(0)}</span>
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-pastel-blue">
+          <span className="text-sm font-semibold text-brand">
+            {vendor.name.slice(0, 2).toUpperCase()}
+          </span>
         </div>
         <div>
-          <p className="font-medium">{vendor.name}</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">{vendor.name}</p>
+          <p className="text-xs text-muted-foreground">
             Created: {new Date(vendor.created_at).toLocaleDateString()}
           </p>
         </div>
@@ -39,12 +40,7 @@ export const VendorItem = ({ vendor, onEdit, onDelete }: VendorItemProps) => {
             </Button>
           </a>
         )}
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => onEdit(vendor.id)}
-        >
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onEdit(vendor.id)}>
           <Pencil className="h-4 w-4" />
         </Button>
         <Button

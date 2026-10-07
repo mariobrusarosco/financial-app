@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
-import { useLogin } from '../hooks/use-login';
+import { useLogin } from '@/domains/auth/hooks/use-login';
 import { Input } from '@/domains/ui-system/components/input';
 import { Button } from '@/domains/ui-system/components/button';
 import { Checkbox } from '@/domains/ui-system/components/checkbox';
 import { Label } from '@/domains/ui-system/components/label';
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
-import type { I_LoginRequest } from '../types/auth.types';
+import type { I_LoginRequest } from '@/domains/auth/types/auth.types';
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,14 +25,14 @@ export const LoginForm = () => {
   });
 
   return (
-    <div data-ui="login-form" className="grid place-content-center">
+    <div data-ui="login-form">
       <form
         data-testid="login-form"
         onSubmit={e => {
           e.preventDefault();
           void form.handleSubmit();
         }}
-        className="w-100"
+        className="w-full"
       >
         <div className="space-y-4">
           <form.Field
@@ -97,8 +97,10 @@ export const LoginForm = () => {
                     disabled={isPending}
                     autoComplete="current-password"
                   />
-                  <span
-                    className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
+                  <button
+                    type="button"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -106,7 +108,7 @@ export const LoginForm = () => {
                     ) : (
                       <EyeOffIcon className="w-4 h-4" />
                     )}
-                  </span>
+                  </button>
                 </div>
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
@@ -134,20 +136,20 @@ export const LoginForm = () => {
             )}
           </form.Field>
 
-          <div className="text-sm bg-muted/50 border border-border/50 p-4 rounded-lg">
-            <p className="font-medium mb-2 text-primary">Demo Credentials:</p>
-            <div className="space-y-1 font-mono text-xs text-primary/70">
+          <div className="rounded-xl border border-border/70 bg-muted/50 p-4 text-sm">
+            <p className="mb-2 font-medium text-foreground">Demo credentials</p>
+            <div className="space-y-1 font-mono text-xs text-muted-foreground">
               <p>Email: user@example.com</p>
               <p>Password: password123</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 items-center mt-8">
+        <div className="mt-7 flex flex-col items-center gap-3">
           <Button
             data-testid="login-submit-button"
             type="submit"
-            className="w-fit px-8 py-4"
+            className="w-full"
             disabled={isPending || !form.state.canSubmit}
           >
             {isPending ? (

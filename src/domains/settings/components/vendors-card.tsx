@@ -4,15 +4,19 @@ import { Store } from 'lucide-react';
 export const VendorsCard = () => {
   return (
     <Link
-      className="text-primary bg-neutral-white rounded-3xl p-4 inline-flex items-center gap-4"
+      className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-5 text-foreground shadow-[var(--shadow-panel)] transition-[transform,border-color] hover:-translate-y-0.5 hover:border-brand/20"
       to="/vendors"
     >
       <div className="flex items-center gap-4">
-        <span className="p-32bg-foreground/20 rounded-lg">
-          <Store className="h-5 w-5 text-primary" />
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-pastel-blue">
+          <Store className="h-5 w-5 text-brand" />
         </span>
-        <p className="text-lg text-primary font-light tracking-tight">Vendors</p>
+        <span>
+          <p className="text-sm font-semibold text-foreground">Vendors and payees</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Manage transaction counterparties</p>
+        </span>
       </div>
+      <span className="text-xs font-semibold text-brand">Manage</span>
     </Link>
   );
 };

@@ -9,6 +9,12 @@ const transactionsSearchSchema = z.object({
   sort_order: z.enum(['asc', 'desc']).optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
+  amount_min: z.number().optional(),
+  amount_max: z.number().optional(),
+  category: z.string().optional(),
+  description_contains: z.string().optional(),
+  movement_type: z.enum(['expense', 'income', 'investment', 'transfer']).optional(),
+  is_paid: z.boolean().optional(),
 });
 
 export const Route = createFileRoute('/(auth)/transactions/')({

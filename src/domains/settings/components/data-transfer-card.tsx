@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import type { ChangeEvent } from 'react';
 import { Download, Upload, FileCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import {
   Card,
@@ -54,7 +55,7 @@ export const DataTransferCard = () => {
     }
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
@@ -183,7 +184,7 @@ export const DataTransferCard = () => {
           </div>
 
           <Button
-            onClick={handleExport}
+            onClick={() => void handleExport()}
             disabled={exportMutation.isPending || downloadMutation.isPending}
             className="w-full flex items-center gap-2"
           >
@@ -227,16 +228,16 @@ export const DataTransferCard = () => {
             />
             {selectedFile && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div variant="secondary">
+                <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium">
                   {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
-                </div>
+                </span>
               </div>
             )}
           </div>
 
           <div className="flex gap-2">
             <Button
-              onClick={handleValidate}
+              onClick={() => void handleValidate()}
               disabled={!selectedFile || validateMutation.isPending}
               variant="outline"
               className="flex-1 flex items-center gap-2"
@@ -246,7 +247,7 @@ export const DataTransferCard = () => {
             </Button>
 
             <Button
-              onClick={handleImport}
+              onClick={() => void handleImport()}
               disabled={!selectedFile || importMutation.isPending}
               className="flex-1 flex items-center gap-2"
             >

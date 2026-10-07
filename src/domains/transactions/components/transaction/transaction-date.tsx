@@ -22,5 +22,5 @@ export const TransactionDate = ({ date, dateFormat = 'medium' }: TransactionDate
     }
   };
 
-  return <p className="text-sm text-neutral-grey/50  truncate">{formatDate()}</p>;
+  return <p className="mt-1 truncate text-xs text-muted-foreground">{formatDate()}</p>;
 };

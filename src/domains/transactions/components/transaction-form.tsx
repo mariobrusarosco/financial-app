@@ -73,8 +73,8 @@ interface TransactionFormProps {
 }
 
 type TransactionFormApi = ReturnType<typeof useForm>;
-type AccountsData = ReturnType<typeof useAccounts>['data'];
-type AccountOption = NonNullable<AccountsData>[number];
+type AccountsData = ReturnType<typeof useAccounts>['accounts']['query']['data'];
+type AccountOption = NonNullable<AccountsData>['accounts'][number];
 type CreditCardsData = ReturnType<typeof useCreditCards>['data'];
 type CreditCardOption = NonNullable<NonNullable<CreditCardsData>['data']>[number];
 type VendorsData = ReturnType<typeof useVendors>['data'];
@@ -87,7 +87,9 @@ export const TransactionForm = ({
   onSubmit,
   isEditMode = false,
 }: TransactionFormProps) => {
-  const { data: accounts, isFetching: isFetchingAccounts } = useAccounts();
+  const {
+    accounts: { query: accountsQuery },
+  } = useAccounts();
   const { data: creditCards, isFetching: isFetchingCreditCards } = useCreditCards(undefined);
   // Fetch all vendors for selector (max allowed by API)
   const { data: vendorsData, isFetching: isFetchingVendors } = useVendors({ per_page: 100 });
@@ -97,7 +99,7 @@ export const TransactionForm = ({
 
   const availableVendors = vendorsData?.data || [];
   const availableSubscriptions = useMemo(() => subscriptionsData?.data || [], [subscriptionsData]);
-  const accountList = accounts || [];
+  const accountList = accountsQuery.data?.accounts ?? [];
   const creditCardList = creditCards?.data || [];
   const paymentMethodDefaults = getPaymentMethodDefaults(initialValues, isEditMode);
 
@@ -137,7 +139,7 @@ export const TransactionForm = ({
 
       const broker_id =
         creditCards?.data?.find(c => c.id === paymentMethod.credit_card_id)?.broker_id ||
-        accounts?.find(a => a.id === paymentMethod.account_id)?.broker?.id;
+        accountList.find(a => a.id === paymentMethod.account_id)?.broker?.id;
 
       if (broker_id) {
         submissionData.broker_id = broker_id;
@@ -148,7 +150,12 @@ export const TransactionForm = ({
   });
 
   // Handle loading state after hook calls to avoid hook order errors
-  if (isFetchingAccounts || isFetchingCreditCards || isFetchingVendors || isFetchingSubscriptions) {
+  if (
+    accountsQuery.isFetching ||
+    isFetchingCreditCards ||
+    isFetchingVendors ||
+    isFetchingSubscriptions
+  ) {
     return (
       <div className="flex items-center justify-center p-8">
         <p className="text-muted-foreground">Loading...</p>

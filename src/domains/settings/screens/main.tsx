@@ -11,18 +11,20 @@ export const SettingsMainScreen = () => {
   const { user } = useAuth();
 
   return (
-    <div className="py-4 space-y-5 rounded-3xl">
+    <div className="space-y-7 pb-8">
       <PageHeader title="Settings" icon={User} showAddButton={false} />
 
-      <section className="bg-section-background rounded-3xl p-4">
+      <section>
         <VendorsCard />
       </section>
 
-      <div className="space-y-6">
-        <ProfileCard user={user} />
+      <div className="grid items-start gap-5 xl:grid-cols-2">
+        <div className="space-y-5">
+          <ProfileCard user={user ?? null} />
+          <PreferencesCard />
+          <AccountActionsCard />
+        </div>
         <DataTransferCard />
-        <AccountActionsCard />
-        <PreferencesCard />
       </div>
     </div>
   );

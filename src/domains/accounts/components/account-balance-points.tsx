@@ -10,14 +10,11 @@ import {
 } from '@/domains/ui-system/components/chart';
 import { Route } from '@/routes/(auth)/route';
 import { startOfMonth, endOfMonth, format, parseISO, isValid } from 'date-fns';
-import { UseQueryResult } from '@tanstack/react-query';
-import { I_AccountTransactionsResponse } from '@/domains/transactions/types/types-and-interfaces';
 import { formatCurrencyAmount, formatDateMedium } from '@/domains/global/utils/formatting';
 
 interface Props {
   title?: string;
   slug: string;
-  // transactionsQuery: UseQueryResult<I_AccountTransactionsResponse, Error>;
 }
 
 // Chart configuration for shadcn/ui charts
@@ -45,7 +42,7 @@ const EmptyBalancePoints = ({ title }: { title: string }) => {
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-muted-foreground">{title}</p>
       </div>
-      <div className="flex items-center justify-center h-64 text-center">
+      <div className="flex h-48 items-center justify-center text-center">
         <div>
           <p className="text-muted-foreground">No balance history available</p>
           <p className="text-sm text-muted-foreground mt-1">
@@ -90,7 +87,11 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
   );
 
   if (isLoadingBalancePoints) {
-    return <div className="flex items-center justify-center h-64 text-center">Loading...</div>;
+    return (
+      <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
+        Loading balance history…
+      </div>
+    );
   }
 
   if (!balancePoints || balancePoints.length === 0) {
@@ -98,8 +99,8 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
   }
 
   return (
-    <div data-ui="account-balance-points" className="flex-1 min-w-0 overflow-hidden max-h-[280px]">
-      <ChartContainer config={chartConfig} className="bg-neutral-white/40 rounded-lg w-full h-full">
+    <div data-ui="account-balance-points" className="h-48 min-w-0 overflow-hidden">
+      <ChartContainer config={chartConfig} className="h-full w-full">
         <LineChart
           accessibilityLayer
           data={chartData}

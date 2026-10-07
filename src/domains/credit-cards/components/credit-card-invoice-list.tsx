@@ -1,15 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/domains/ui-system/components/card';
-import { Download, FileText, Text, Upload, Calendar, DollarSign, CreditCard } from 'lucide-react';
+import { Download, FileText, Upload, DollarSign, CreditCard } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { useCreditCardInvoices } from '@/domains/credit-cards/hooks/user-credit-card-invoices';
-import { Surface } from '@/domains/global/components/surface';
 import type { I_CreditCardInvoice } from '@/domains/credit-cards/types/types-and-interfaces';
 
 interface CreditCardInvoiceListProps {
@@ -73,9 +65,15 @@ const CreditCardInvoiceList = ({ creditCardId }: CreditCardInvoiceListProps) => 
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div variant={invoice.is_paid ? 'secondary' : 'destructive'}>
+                    <span
+                      className={
+                        invoice.is_paid
+                          ? 'rounded-full bg-positive/10 px-2.5 py-1 text-xs font-medium text-positive'
+                          : 'rounded-full bg-destructive/10 px-2.5 py-1 text-xs font-medium text-destructive'
+                      }
+                    >
                       {invoice.is_paid ? 'Paid' : 'Unpaid'}
-                    </div>
+                    </span>
                     <Button variant="outline" size="sm">
                       <Download className="h-3 w-3" />
                     </Button>

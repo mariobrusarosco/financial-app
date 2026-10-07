@@ -44,11 +44,13 @@ interface SubscriptionFormProps {
 export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormProps) => {
   // Fetch all vendors for selector (max allowed by API)
   const { data: vendorsData } = useVendors({ per_page: 100 });
-  const { data: accountsData } = useAccounts();
+  const {
+    accounts: { query: accountsQuery },
+  } = useAccounts();
   const { data: categoriesData } = useCategories();
 
   const availableVendors = vendorsData?.data || [];
-  const availableAccounts = accountsData || [];
+  const availableAccounts = accountsQuery.data?.accounts ?? [];
 
   const availableCategories: { id: string; name: string; level: number }[] = [];
   (categoriesData || []).forEach(cat => {

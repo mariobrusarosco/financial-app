@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { z } from 'zod';
-import { AppLayout } from '@/domains/ui-system/components/app-layout';
+import { AppLayout } from '@/domains/global/components/app-layout';
 import { GlobalDrawer } from '@/domains/global/components/global-drawer';
 import { PlannerCTA } from '@/domains/global/components/planner-cta';
 import { AuthGuard } from '@/domains/auth/components/auth-guard';

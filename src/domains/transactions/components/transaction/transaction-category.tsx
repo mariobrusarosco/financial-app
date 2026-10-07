@@ -9,18 +9,18 @@ export const TransactionCategory = ({
 }: TransactionCategoryProps) => {
   // Priority: category_tree.name > categoryName > category (if not UUID) > 'Uncategorized'
   const displayName = resolveCategoryDisplayName(categoryTree, categoryName, category);
-  const hasParent = categoryTree?.parent;
+  const parentName = categoryTree?.parent?.name;
 
   return (
-    <div className="flex gap-1 items-center w-full">
-      <Tag className="h-3 w-3" />
+    <div className="mt-1 flex w-full items-center gap-1 text-muted-foreground">
+      <Tag className="h-3 w-3 shrink-0" />
 
       <div className="flex gap-1 w-full">
-        <span className="text-sm text-muted-foreground truncate">{displayName}</span>
-        {hasParent && (
-          <div className="text-sm text-muted-foreground flex items-center gap-1 truncate">
-            <p className="truncate">(sub)</p>
-            <p className="truncate">{categoryTree.parent.name}</p>
+        <span className="truncate text-xs">{displayName}</span>
+        {parentName && (
+          <div className="flex items-center gap-1 truncate text-xs">
+            <span aria-hidden="true">·</span>
+            <p className="truncate">{parentName}</p>
           </div>
         )}
       </div>

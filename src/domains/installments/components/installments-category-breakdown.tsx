@@ -1,8 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/domains/ui-system/components/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/domains/ui-system/components/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import type { I_InstallmentPlan } from '../types/types-and-interfaces';
+import type { I_InstallmentPlan } from '@/domains/installments/types/types-and-interfaces';
 import type { I_CategoryTreeNode } from '@/domains/categories/types';
-import { aggregateInstallmentsByCategory } from '../utils/installment-calculators';
+import { aggregateInstallmentsByCategory } from '@/domains/installments/utils/installment-calculators';
 import { generateDistinctColors } from '@/domains/ui-system/utils/color-generator';
 
 interface InstallmentsCategoryBreakdownProps {
@@ -10,7 +16,10 @@ interface InstallmentsCategoryBreakdownProps {
   categories: I_CategoryTreeNode[];
 }
 
-export const InstallmentsCategoryBreakdown = ({ plans, categories }: InstallmentsCategoryBreakdownProps) => {
+export const InstallmentsCategoryBreakdown = ({
+  plans,
+  categories,
+}: InstallmentsCategoryBreakdownProps) => {
   const chartData = aggregateInstallmentsByCategory(plans, categories);
   const colors = generateDistinctColors(chartData.length);
 
@@ -23,9 +32,7 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
       return (
         <div className="bg-popover border border-border p-2 rounded-lg shadow-sm">
           <p className="text-sm font-medium">{payload[0].name}</p>
-          <p className="text-sm text-primary">
-            {formatCurrency(payload[0].value)}
-          </p>
+          <p className="text-sm text-primary">{formatCurrency(payload[0].value)}</p>
         </div>
       );
     }
@@ -33,16 +40,11 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
   };
 
   return (
-    <div
-      data-ui="installments-category-breakdown-section"
-      className="bg-section-background rounded-3xl p-6"
-    >
-      <Card className="shadow-none border-none bg-neutral-white h-full flex flex-col">
+    <div data-ui="installments-category-breakdown-section">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-primary font-semibold">Spending by Category</CardTitle>
-          <CardDescription>
-            Distribution of outstanding debt by spending category.
-          </CardDescription>
+          <CardDescription>Distribution of outstanding debt by spending category.</CardDescription>
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col md:flex-row items-center gap-6">
@@ -58,7 +60,7 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
                   paddingAngle={2}
                   dataKey="amount"
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={colors[index]} strokeWidth={0} />
                   ))}
                 </Pie>
@@ -79,7 +81,10 @@ export const InstallmentsCategoryBreakdown = ({ plans, categories }: Installment
           <div className="w-full md:w-1/2 h-[250px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
             <div className="space-y-3">
               {chartData.map((item, index) => (
-                <div key={item.name} className="flex items-center justify-between text-sm group hover:bg-muted/50 p-1.5 rounded-md transition-colors">
+                <div
+                  key={item.name}
+                  className="flex items-center justify-between text-sm group hover:bg-muted/50 p-1.5 rounded-md transition-colors"
+                >
                   <div className="flex items-center gap-2 overflow-hidden">
                     <div
                       className="w-3 h-3 rounded-full flex-shrink-0"

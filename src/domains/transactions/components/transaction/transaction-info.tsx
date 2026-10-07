@@ -1,9 +1,9 @@
-import { cn } from '@/domains/ui-system/utils';
-
 interface TransactionInfoProps {
   description: string;
 }
 
 export const TransactionInfo = ({ description }: TransactionInfoProps) => {
-  return <p className="leading-tight text-xl truncate line-height-[1]">{description}</p>;
+  return (
+    <p className="truncate text-sm font-medium leading-tight text-foreground">{description}</p>
+  );
 };

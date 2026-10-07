@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useInstallmentPlans } from '@/domains/installments/hooks/use-installment-plans';
-import { InstallmentPlanList } from '../components/installment-plan-list';
-import type { I_InstallmentPlansParams } from '../types/types-and-interfaces';
+import { InstallmentPlanList } from '@/domains/installments/components/installment-plan-list';
+import type { I_InstallmentPlansParams } from '@/domains/installments/types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components/page-header';
 import { Calendar } from 'lucide-react';
-import { InstallmentsSummary } from '../components/installments-summary';
-import { InstallmentsChart } from '../components/installments-chart';
-import { InstallmentsCategoryBreakdown } from '../components/installments-category-breakdown';
+import { InstallmentsSummary } from '@/domains/installments/components/installments-summary';
+import { InstallmentsChart } from '@/domains/installments/components/installments-chart';
+import { InstallmentsCategoryBreakdown } from '@/domains/installments/components/installments-category-breakdown';
 import { useCategories } from '@/domains/categories/hooks/use-categories';
 
 const ITEMS_PER_PAGE = 20;
@@ -41,7 +41,7 @@ export const InstallmentsMainScreen = () => {
   const isLoading = isPlansLoading || isCategoriesLoading;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7 pb-8">
       <PageHeader title="Installments" icon={Calendar} />
 
       <InstallmentsSummary plans={plans} />
@@ -53,7 +53,7 @@ export const InstallmentsMainScreen = () => {
 
       <section
         data-ui="installments-plans-section"
-        className="bg-section-background rounded-3xl p-6"
+        className="rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] sm:p-6"
       >
         <InstallmentPlanList
           plans={plans}

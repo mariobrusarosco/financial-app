@@ -1,27 +1,27 @@
-import { Link, useLocation } from '@tanstack/react-router';
-import { cn } from '@/domains/ui-system/utils/index';
-import { Button } from '@/domains/ui-system/components/button';
-import { ModeToggle } from '@/domains/ui-system/components/mode-toggle';
+import { useState, type ComponentType, type FormEvent } from 'react';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import {
-  LayoutDashboard,
-  CreditCard,
-  Building2,
-  TrendingUp,
-  Settings,
-  Menu,
-  X,
-  Receipt,
-  User,
-  LogOut,
+  ArrowRightLeft,
+  BarChart3,
+  CalendarDays,
   House,
+  LogOut,
+  Menu,
+  Moon,
   PiggyBank,
-  Store, // New icon for Vendors
-  Repeat, // New icon for Subscriptions
-  Calendar, // New icon for Installments
-  BarChart3, // New icon for Cashflow
+  Repeat2,
+  Search,
+  Settings,
+  Store,
+  Sun,
+  TrendingUp,
+  User,
+  X,
 } from 'lucide-react';
-import { useState } from 'react';
-import * as React from 'react';
+import { useAuth } from '@/domains/auth/hooks/use-auth';
+import { useLogout } from '@/domains/auth/hooks/use-logout';
+import { Avatar, AvatarFallback } from '@/domains/ui-system/components/avatar';
+import { Button } from '@/domains/ui-system/components/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,109 +30,160 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/domains/ui-system/components/avatar';
-import { useAuth } from '@/domains/auth/hooks/use-auth';
-import { useLogout } from '@/domains/auth/hooks/use-logout';
+import { Input } from '@/domains/ui-system/components/input';
+import { useTheme } from '@/domains/ui-system/hooks/use-theme';
+import { cn } from '@/domains/ui-system/utils/index';
+
+interface NavigationItem {
+  label: string;
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+}
+
+const primaryNavigationItems: NavigationItem[] = [
+  { label: 'Dashboard', href: '/dashboard', icon: House },
+  { label: 'Accounts', href: '/accounts', icon: PiggyBank },
+  { label: 'Transactions', href: '/transactions', icon: ArrowRightLeft },
+  { label: 'Cashflow', href: '/cashflow', icon: BarChart3 },
+  { label: 'Investments', href: '/investments', icon: TrendingUp },
+  { label: 'Vendors', href: '/vendors', icon: Store },
+];
+
+const planningNavigationItems: NavigationItem[] = [
+  { label: 'Subscriptions', href: '/subscriptions', icon: Repeat2 },
+  { label: 'Installments', href: '/installments', icon: CalendarDays },
+];
+
+const getInitials = (name: string) => {
+  if (!name) return 'U';
+
+  return name
+    .split(' ')
+    .map(part => part.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+const NavigationLink = ({
+  item,
+  onNavigate,
+}: {
+  item: NavigationItem;
+  onNavigate?: () => void;
+}) => {
+  const location = useLocation();
+  const Icon = item.icon;
+  const isActive = location.pathname === item.href || location.pathname.startsWith(`${item.href}/`);
+
+  return (
+    <Link
+      to={item.href}
+      title={item.label}
+      aria-current={isActive ? 'page' : undefined}
+      onClick={onNavigate}
+      className={cn(
+        'group flex h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors',
+        'md:justify-center md:px-0 xl:justify-start xl:px-3',
+        isActive
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+          : 'text-muted-foreground hover:bg-muted/70 hover:text-sidebar-foreground'
+      )}
+    >
+      <Icon
+        className={cn(
+          'h-5 w-5 shrink-0 transition-colors',
+          isActive ? 'text-brand' : 'text-muted-foreground group-hover:text-foreground'
+        )}
+      />
+      <span className="md:hidden xl:inline">{item.label}</span>
+    </Link>
+  );
+};
+
+const NavigationGroup = ({
+  label,
+  items,
+  onNavigate,
+}: {
+  label: string;
+  items: NavigationItem[];
+  onNavigate?: () => void;
+}) => (
+  <div className="space-y-1">
+    <p className="mb-2 px-3 text-[0.65rem] font-semibold tracking-[0.16em] text-muted-foreground uppercase md:hidden xl:block">
+      {label}
+    </p>
+    {items.map(item => (
+      <NavigationLink key={item.href} item={item} onNavigate={onNavigate} />
+    ))}
+  </div>
+);
 
 export const Navigation = () => {
-  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const isActiveRoute = (href: string) => {
-    return location.pathname === href || location.pathname.startsWith(href + '/');
-  };
 
   return (
     <>
-      <nav
+      <aside
         data-ui="app-navigation"
-        className="hidden md:grid h-full place-content-center gap-6 bg-foreground p-3 font-sans
-        text-primary"
+        className="hidden h-full w-20 shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-3 py-5 md:flex xl:w-60 xl:px-4"
       >
-        {navigationItems.map(item => {
-          const Icon = item.icon;
-          const isActive = isActiveRoute(item.href);
+        <Brand />
 
-          return (
-            <Link
-              key={item.href}
-              to={item.href}
-              title={item.label}
-              className={cn(
-                'group flex items-center justify-center p-3 rounded-lg transition-colors',
-                isActive ? 'bg-neutral-white/10' : 'hover:bg-neutral-white/10'
-              )}
-            >
-              <Icon className="h-5 w-5" />
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="mt-8 flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto">
+          <NavigationGroup label="Overview" items={primaryNavigationItems} />
+          <NavigationGroup label="Planning" items={planningNavigationItems} />
+        </nav>
+
+        <div className="space-y-2 border-t border-sidebar-border pt-4">
+          <NavigationLink item={{ label: 'Settings', href: '/settings', icon: Settings }} />
+          <ThemeButton />
+        </div>
+      </aside>
 
       <div className="md:hidden" data-testid="mobile-navigation">
-        <div className="fixed top-8 left-0 right-0 z-40 flex items-center justify-between h-16 px-4 bg-card border-b border-border">
-          <Link to="/" className="flex items-center">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="ml-2 text-lg font-thin font-sans text-primary">
-              Better Call Buffet
-            </span>
-          </Link>
-
+        <header className="fixed top-7 right-0 left-0 z-40 flex h-16 items-center justify-between border-b border-border bg-card/95 px-4 backdrop-blur">
+          <Brand compact />
           <div className="flex items-center gap-2">
             <UserMenu />
-            <ModeToggle />
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="h-10 w-10"
+              aria-label={isMobileMenuOpen ? 'Close navigation' : 'Open navigation'}
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(current => !current)}
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
-        </div>
+        </header>
 
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-30 md:hidden">
-            <div
-              className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+          <div className="fixed inset-0 z-30 pt-23 md:hidden">
+            <button
+              type="button"
+              aria-label="Close navigation"
+              className="absolute inset-0 bg-[#060429]/30 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-
-            <nav className="fixed top-16 left-0 right-0 bottom-0 flex flex-col w-full max-w-xs bg-card shadow-xl">
-              <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                <div className="px-2 space-y-1">
-                  {navigationItems.map(item => {
-                    const Icon = item.icon;
-                    const isActive = isActiveRoute(item.href);
-
-                    return (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={cn(
-                          'group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors',
-                          isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                        )}
-                      >
-                        <Icon
-                          className={cn(
-                            'mr-4 flex-shrink-0 h-6 w-6',
-                            isActive
-                              ? 'text-primary'
-                              : 'text-muted-foreground group-hover:text-accent-foreground'
-                          )}
-                        />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </div>
+            <nav className="relative flex h-full w-[min(88vw,22rem)] flex-col gap-8 overflow-y-auto border-r border-border bg-card p-5 shadow-2xl">
+              <NavigationGroup
+                label="Overview"
+                items={primaryNavigationItems}
+                onNavigate={() => setIsMobileMenuOpen(false)}
+              />
+              <NavigationGroup
+                label="Planning"
+                items={planningNavigationItems}
+                onNavigate={() => setIsMobileMenuOpen(false)}
+              />
+              <div className="mt-auto space-y-2 border-t border-border pt-4">
+                <NavigationLink
+                  item={{ label: 'Settings', href: '/settings', icon: Settings }}
+                  onNavigate={() => setIsMobileMenuOpen(false)}
+                />
+                <ThemeButton />
               </div>
             </nav>
           </div>
@@ -142,66 +193,109 @@ export const Navigation = () => {
   );
 };
 
-interface NavigationItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
+export const AppTopBar = () => {
+  const navigate = useNavigate();
+  const [search, setSearch] = useState('');
 
-const navigationItems: NavigationItem[] = [
-  {
-    label: 'Home',
-    href: '/dashboard',
-    icon: House,
-  },
-  {
-    label: 'Accounts',
-    href: '/accounts',
-    icon: PiggyBank,
-  },
-  {
-    label: 'Transactions',
-    href: '/transactions',
-    icon: Receipt,
-  },
-  {
-    label: 'Vendors',
-    href: '/vendors',
-    icon: Store,
-  },
-  {
-    label: 'Settings',
-    href: '/settings',
-    icon: User,
-  },
-];
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const description = search.trim();
 
-const UserMenu = () => {
+    void navigate({
+      to: '/transactions',
+      search: {
+        page: 1,
+        per_page: 20,
+        sort_by: 'date',
+        sort_order: 'desc',
+        description_contains: description || undefined,
+      },
+    });
+  };
+
+  return (
+    <header className="hidden h-20 shrink-0 items-center justify-between gap-6 border-b border-border/70 bg-background px-6 md:flex lg:px-8">
+      <form className="relative w-full max-w-xl" role="search" onSubmit={handleSearch}>
+        <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="search"
+          value={search}
+          onChange={event => setSearch(event.target.value)}
+          placeholder="Search transactions"
+          aria-label="Search transactions"
+          className="border-transparent bg-card pr-4 pl-10 shadow-[var(--shadow-panel)]"
+        />
+      </form>
+
+      <UserMenu showIdentity />
+    </header>
+  );
+};
+
+const Brand = ({ compact = false }: { compact?: boolean }) => (
+  <Link to="/dashboard" className="flex min-w-0 items-center gap-3">
+    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand text-lg font-bold text-brand-foreground shadow-sm">
+      B
+    </span>
+    <span
+      className={cn(
+        'truncate text-sm font-semibold tracking-[-0.03em] text-sidebar-foreground',
+        compact ? 'block' : 'hidden xl:block'
+      )}
+    >
+      Better Call Buffet
+    </span>
+  </Link>
+);
+
+const ThemeButton = () => {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === 'dark';
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground md:justify-center md:px-0 xl:justify-start xl:px-3"
+    >
+      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      <span className="md:hidden xl:inline">{isDark ? 'Light mode' : 'Dark mode'}</span>
+    </button>
+  );
+};
+
+const UserMenu = ({ showIdentity = false }: { showIdentity?: boolean }) => {
   const { user } = useAuth();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   if (!user) return null;
 
-  const getInitials = (name: string) => {
-    if (!name) return 'U';
-    return name
-      .split(' ')
-      .map(part => part.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button data-testid="user-menu" variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
+        <Button
+          data-testid="user-menu"
+          variant="ghost"
+          className={cn('h-auto rounded-xl p-1.5', showIdentity && 'gap-3 pr-3')}
+        >
+          <Avatar className="h-9 w-9 border border-brand/15 bg-pastel-blue">
+            <AvatarFallback className="bg-pastel-blue text-xs font-semibold text-brand">
+              {getInitials(user.name)}
+            </AvatarFallback>
           </Avatar>
+          {showIdentity && (
+            <span className="hidden min-w-0 text-left lg:block">
+              <span className="block max-w-40 truncate text-sm font-semibold text-foreground">
+                {user.name}
+              </span>
+              <span className="block max-w-40 truncate text-xs font-normal text-muted-foreground">
+                {user.email}
+              </span>
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-60" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.name}</p>
@@ -212,23 +306,13 @@ const UserMenu = () => {
         <DropdownMenuItem asChild>
           <Link to="/settings" className="flex items-center">
             <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            Profile and settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-destructive focus:text-destructive"
-          onClick={() => logout()}
-          disabled={isLoggingOut}
-        >
+        <DropdownMenuItem variant="destructive" onClick={() => logout()} disabled={isLoggingOut}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>{isLoggingOut ? 'Logging out...' : 'Log out'}</span>
+          {isLoggingOut ? 'Logging out…' : 'Log out'}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -6,8 +6,8 @@ import {
   CardTitle,
 } from '@/domains/ui-system/components/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { I_InstallmentPlan } from '../types/types-and-interfaces';
-import { groupFutureInstallmentsByMonth } from '../utils/installment-calculators';
+import type { I_InstallmentPlan } from '@/domains/installments/types/types-and-interfaces';
+import { groupFutureInstallmentsByMonth } from '@/domains/installments/utils/installment-calculators';
 
 interface InstallmentsChartProps {
   plans: I_InstallmentPlan[];
@@ -33,8 +33,8 @@ export const InstallmentsChart = ({ plans }: InstallmentsChartProps) => {
   };
 
   return (
-    <div data-ui="installments-chart-section" className="bg-section-background rounded-3xl p-6">
-      <Card className="shadow-none border-none bg-neutral-white h-full flex flex-col">
+    <div data-ui="installments-chart-section">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-primary font-semibold">Debt Burndown Forecast</CardTitle>
           <CardDescription>Projected installment payments for the next 12 months.</CardDescription>
@@ -43,23 +43,23 @@ export const InstallmentsChart = ({ plans }: InstallmentsChartProps) => {
         <CardContent className="h-[300px] w-full pt-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="teal" />
+              <CartesianGrid strokeDasharray="3 6" vertical={false} stroke="var(--border)" />
               <XAxis
                 dataKey="month"
-                tick={{ fill: 'teal', fontSize: 12 }}
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
                 dy={10}
               />
               <YAxis
                 tickFormatter={formatCurrency}
-                tick={{ fill: 'teal', fontSize: 12 }}
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
                 width={60}
               />
               <Tooltip cursor={{ fill: 'rgb(0,0,0,0.03)' }} content={<CustomTooltip />} />
-              <Bar dataKey="amount" fill="teal" radius={[4, 4, 0, 0]} maxBarSize={50} />
+              <Bar dataKey="amount" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={50} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

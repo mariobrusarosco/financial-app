@@ -13,7 +13,7 @@ export const InvestmentsMainScreen = () => {
   };
 
   return (
-    <div className="py-4 space-y-5 rounded-3xl">
+    <div className="space-y-6 pb-8">
       <PageHeader title="Investments" icon={TrendingUp} showAddButton={false} />
 
       <p className="text-sm text-muted-foreground">
@@ -21,12 +21,12 @@ export const InvestmentsMainScreen = () => {
       </p>
 
       {/* Section Navigation */}
-      <div className="border-b">
+      <div className="rounded-2xl border border-border/80 bg-card p-2 shadow-[var(--shadow-panel)]">
         <InvestmentSectionNavigation selectedInvestment={selectedInvestment} />
       </div>
 
       {/* Section Content */}
-      <div className="py-6">
+      <div>
         <InvestmentSectionContent
           selectedInvestment={selectedInvestment}
           onInvestmentClick={handleInvestmentClick}

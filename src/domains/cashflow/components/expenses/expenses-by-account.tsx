@@ -1,4 +1,4 @@
-import { I_GroupedEntity } from '../../utils/grouping-utils';
+import type { I_GroupedEntity } from '@/domains/cashflow/utils/grouping-utils';
 
 interface ExpensesByAccountProps {
   groupedData: I_GroupedEntity[];
@@ -12,12 +12,10 @@ export const ExpensesByAccount = ({ groupedData, overallTotal }: ExpensesByAccou
   });
 
   return (
-    <div className="p-6 border rounded-3xl bg-neutral-white space-y-6 h-fit shadow-sm">
+    <div className="h-fit space-y-6 rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
       <div>
         <h3 className="text-lg font-semibold text-primary">By Account</h3>
-        <p className="text-sm text-muted-foreground">
-          Expenses deducted directly from accounts
-        </p>
+        <p className="text-sm text-muted-foreground">Expenses deducted directly from accounts</p>
       </div>
 
       <div className="space-y-4">
@@ -28,7 +26,9 @@ export const ExpensesByAccount = ({ groupedData, overallTotal }: ExpensesByAccou
             <div key={account.id} className="space-y-2">
               <div className="flex justify-between text-sm font-medium text-primary">
                 <span>{account.name}</span>
-                <span className="text-rose-600 font-bold">{currencyFormatter.format(account.total)}</span>
+                <span className="font-semibold text-destructive">
+                  {currencyFormatter.format(account.total)}
+                </span>
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>{account.count} transactions</span>
@@ -36,7 +36,7 @@ export const ExpensesByAccount = ({ groupedData, overallTotal }: ExpensesByAccou
               </div>
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden border">
                 <div
-                  className="h-full bg-rose-500 transition-all duration-500"
+                  className="h-full bg-[#b46d64] transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>

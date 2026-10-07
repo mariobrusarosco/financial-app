@@ -33,40 +33,44 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     return balancePoints?.at(-1);
   }, [balancePoints]);
 
-  const transactionsQuery = queryClient.getQueryData(
-    GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY(slug, from ?? '', to ?? '')
-  );
-
-  console.log({ transactionsQuery });
-
   return (
-    <div data-ui="account-overview" className="flex justify-between gap-4 pt-6">
+    <section data-ui="account-overview" className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
       <div
-        className="flex flex-col gap-2 bg-neutral-white w-fit p-2.5 md:p-4 rounded-lg h-fit"
+        className="flex min-h-64 flex-col justify-between rounded-2xl bg-[#2b2865] p-5 text-white shadow-lg shadow-primary/10"
         data-ui="account-overview-balance"
       >
-        <div className="flex items-center justify-between">
-          <p className="text-primary text-sm">Balance</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-medium text-white/70">Current balance</p>
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0"
+            className="h-8 w-8 p-0 text-white hover:bg-white/10 hover:text-white"
             disabled={isLoadingBalancePoints}
             onClick={refreshAccountBalance}
+            aria-label="Refresh balance"
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
         </div>
-        <Currency
-          variant="default"
-          value={balancePoint?.balance}
-          currency={account?.currency}
-          autoColor
-        />
+        <div>
+          <Currency
+            variant="large"
+            value={balancePoint?.balance ?? account?.balance}
+            currency={account?.currency}
+            className="financial-value text-3xl text-white"
+          />
+          <p className="mt-2 text-xs text-white/55">Updated from recorded balance points</p>
+        </div>
       </div>
 
-      <AccountBalancePoints slug={slug} title="" />
-    </div>
+      <div className="min-h-64 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)]">
+        <div className="mb-2">
+          <h2 className="text-sm font-semibold text-foreground">Balance history</h2>
+          <p className="text-xs text-muted-foreground">Movement across the selected period</p>
+        </div>
+        <AccountBalancePoints slug={slug} title="" />
+      </div>
+    </section>
   );
 };
 

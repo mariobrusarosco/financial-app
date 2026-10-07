@@ -1,14 +1,6 @@
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { Link } from '@tanstack/react-router';
-import {
-  BrushCleaning,
-  ChevronRight,
-  RefreshCcw,
-  XCircle,
-  Banknote,
-  CreditCard,
-  ChartBar,
-} from 'lucide-react';
+import { BrushCleaning, ChevronRight, XCircle, Banknote, CreditCard, ChartBar } from 'lucide-react';
 import { I_Account, T_AccountType } from '@/domains/accounts/types/types-and-interfaces';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import { Route } from '@/routes/(auth)/route';
@@ -19,13 +11,11 @@ import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 const AccountIcon = ({ type }: { type: T_AccountType }) => {
   switch (type) {
     case 'cash':
-      return <Banknote className="h-7 w-7 text bg-teal-700/50 text-neutral-white rounded-md p-2" />;
+      return <Banknote className="h-4 w-4" />;
     case 'investment':
-      return <ChartBar className="h-7 w-7 text bg-blue-700/50 text-neutral-white rounded-md p-2" />;
+      return <ChartBar className="h-4 w-4" />;
     default:
-      return (
-        <CreditCard className="h-7 w-7 text bg-red-700/50 text-neutral-white rounded-md p-2" />
-      );
+      return <CreditCard className="h-4 w-4" />;
   }
 };
 
@@ -52,19 +42,27 @@ const AccountCard = ({ account }: { account: I_Account }) => {
     <div
       data-testid="account-card"
       data-account-id={account.id}
-      className="w-full flex flex-col gap-1 justify-between bg-card-background rounded-3xl"
+      className="group relative flex min-h-40 w-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card shadow-[var(--shadow-panel)] transition-[transform,border-color,box-shadow] hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-lg"
       data-ui="account-card"
     >
-      <div className="flex items-start justify-between p-4">
-        <div className="w-full overflow-hidden ">
-          {' '}
-          <h3 data-testid="account-card-name" className="truncate text-ellipsis whitespace-nowrap">
+      <span
+        className="absolute inset-x-0 top-0 h-1"
+        style={{ backgroundColor: brokerprimaryColor }}
+      />
+      <div className="flex items-start justify-between gap-4 p-5">
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <p className="mb-2 text-[0.65rem] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+            {account.type}
+          </p>
+          <h3
+            data-testid="account-card-name"
+            className="truncate text-sm font-semibold text-foreground"
+          >
             {account.name}
           </h3>
           <div
             data-testid="account-card-broker"
-            className="bg-primary/20 text-neutral-white text-xs py-1 px-3"
-            style={{ backgroundColor: brokerprimaryColor }}
+            className="mt-1 truncate text-xs text-muted-foreground"
           >
             {account.broker?.name}
           </div>
@@ -73,14 +71,19 @@ const AccountCard = ({ account }: { account: I_Account }) => {
           data-testid="account-card-link"
           to="/accounts/$slug"
           params={{ slug: account.id }}
-          className="text-neutral-white rounded-lg p-2 bg-primary/50"
+          aria-label={`Open ${account.name}`}
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-brand group-hover:text-brand-foreground"
         >
           <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
 
-      <div className="rounded-b-3xl px-6 py-4 bg-primary/10">
-        <p data-testid="account-card-balance" className="font-light text-primary text-2xl">
+      <div className="border-t border-border/70 bg-muted/35 px-5 py-4">
+        <p className="text-[0.65rem] font-medium text-muted-foreground">Current balance</p>
+        <p
+          data-testid="account-card-balance"
+          className="financial-value mt-1 text-2xl font-semibold text-foreground"
+        >
           {hasDateRange && isLoadingBalancePoints ? (
             <Loader2 className="w-7 h-7 animate-spin text-primary transform-origin-center" />
           ) : (
@@ -96,11 +99,11 @@ const LoadingState = () => {
   return (
     <div
       data-testid="accounts-list-loading"
-      className="flex flex-col items-center justify-center gap-4 h-full"
+      className="grid min-h-72 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <div className="p-6 rounded-3xl">
-        <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
-      </div>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="h-40 animate-pulse rounded-2xl bg-muted" />
+      ))}
     </div>
   );
 };
@@ -109,12 +112,15 @@ const EmptyState = () => {
   return (
     <div
       data-testid="accounts-list-empty"
-      className="flex flex-col items-center justify-center gap-4 h-full"
+      className="flex min-h-72 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center"
     >
-      <div className="p-6 bg-muted-foreground/10 rounded-3xl">
-        <BrushCleaning className="h-15 w-15 text-muted-foreground stroke-1" />
+      <div className="rounded-2xl bg-pastel-blue p-4">
+        <BrushCleaning className="h-7 w-7 text-brand" />
       </div>
-      <p className="text-2xl font-light">You don&apos;t have any accounts yet</p>
+      <div>
+        <p className="font-semibold text-foreground">You don&apos;t have any accounts yet</p>
+        <p className="mt-1 text-sm text-muted-foreground">Create one to start tracking balances.</p>
+      </div>
     </div>
   );
 };
@@ -125,14 +131,12 @@ const ErrorState = ({ error }: { error: Error }) => {
   return (
     <div
       data-testid="accounts-list-error"
-      className="flex flex-col items-center justify-center gap-4 flex-1 h-full"
+      className="flex min-h-72 flex-col items-center justify-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center"
     >
-      <div className="p-6 bg-destructive/10 rounded-3xl">
-        <XCircle className="h-15 w-15 text-destructive stroke-1" />
+      <div className="rounded-2xl bg-destructive/10 p-4">
+        <XCircle className="h-7 w-7 text-destructive" />
       </div>
-      <p className="text-destructive text-2xl font-light">
-        Ops! Something went wrong while loading accounts
-      </p>
+      <p className="font-semibold text-destructive">We couldn&apos;t load your accounts.</p>
     </div>
   );
 };
@@ -147,27 +151,29 @@ const AccountsList = () => {
   if (query.data?.isEmpty) return <EmptyState />;
 
   return (
-    <div data-testid="accounts-list" className="flex flex-col pt-15 gap-10">
+    <div data-testid="accounts-list" className="space-y-8">
       {(query.data?.accountGroups ?? []).map(({ type, accounts }) => (
-        <div key={type} className="w-1/2" data-testid={`accounts-group-${type}`}>
-          <div className="flex gap-2 items-center mb-4">
-            <AccountIcon type={type} />
+        <section key={type} data-testid={`accounts-group-${type}`}>
+          <div className="mb-3 flex items-center gap-2 text-muted-foreground">
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-muted">
+              <AccountIcon type={type} />
+            </span>
             <h2
-              className="text-xl font-light text-primary uppercase"
+              className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase"
               data-testid={`accounts-group-header-${type}`}
             >
               {type}
             </h2>
           </div>
 
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-wrap gap-5 bg-section-background rounded-3xl">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {accounts.map(account => (
               <li key={account.id}>
                 <AccountCard account={account} />
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       ))}
     </div>
   );

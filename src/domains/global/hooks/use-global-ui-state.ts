@@ -4,16 +4,28 @@ export const useGlobalUIState = () => {
   const navigate = useNavigate();
 
   const closeUI = () => {
-    navigate({ search: {} });
+    void navigate({ search: {} as never });
   };
 
   // Simple convenience methods - no complex state objects
-  const openAccountCreate = () => navigate({ search: { drawer: 'account-create' } });
-  const openBrokerCreate = () => navigate({ search: { drawer: 'broker-create' } });
-  const openTransactionCreate = () => navigate({ search: { drawer: 'transaction-create' } });
-  const openCreditCardCreate = () => navigate({ search: { drawer: 'credit-card-create' } });
-  const openInvestmentCreate = () => navigate({ search: { drawer: 'investment-create' } });
-  const openInvestmentDataCreate = () => navigate({ search: { drawer: 'investment-data-create' } });
+  const openAccountCreate = () => {
+    void navigate({ search: { drawer: 'account-create' } as never });
+  };
+  const openBrokerCreate = () => {
+    void navigate({ search: { drawer: 'broker-create' } as never });
+  };
+  const openTransactionCreate = () => {
+    void navigate({ search: { drawer: 'transaction-create' } as never });
+  };
+  const openCreditCardCreate = () => {
+    void navigate({ search: { drawer: 'credit-card-create' } as never });
+  };
+  const openInvestmentCreate = () => {
+    void navigate({ search: { drawer: 'investment-create' } as never });
+  };
+  const openInvestmentDataCreate = () => {
+    void navigate({ search: { drawer: 'investment-data-create' } as never });
+  };
 
   return {
     closeUI,

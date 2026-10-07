@@ -1,13 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useAllTransactionsWithPagination } from '@/domains/transactions/hooks/use-all-transactions';
 import { TransactionsList } from '@/domains/transactions/components/transactions-list';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
 import { Route } from '@/routes/(auth)/transactions/index';
 import { ArrowRightLeft, CreditCard, RefreshCcw, XCircle } from 'lucide-react';
-import { cn } from '@/domains/ui-system/utils';
-import { getRouteApi } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import { PageHeader } from '@/domains/global/components/page-header';
+import { AccountTransactionFilters } from '@/domains/transactions/components/account-transaction-filters';
+import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 
 const ITEMS_PER_PAGE = 20;
 const START_PAGE = 1;
@@ -15,22 +14,19 @@ const DEFAULT_SORT_BY = 'date';
 const DEFAULT_SORT_ORDER = 'desc';
 
 export const TransactionsMainScreen = () => {
-  // Hooks
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
-  const { data, isFetching, error, isPlaceholderData } = useAllTransactionsWithPagination(
+  const { openTransactionCreate } = useGlobalUIState();
+  const { data, isFetching, error } = useAllTransactionsWithPagination(
     search.page ?? START_PAGE,
     search.per_page ?? ITEMS_PER_PAGE,
     search
   );
-  // States
   const transactions = data?.data || [];
   const meta = data?.meta;
-  // Derived state
   const inLoadingState = isFetching && !error;
   const inErrorState = !!error;
   const isEmptyState = !inLoadingState && !inErrorState && transactions.length === 0;
-  // Hanlders and callbacks
   const handleParamsChange = (nextParams: I_AccountTransactionsParams) => {
     void navigate({
       search: prev => ({
@@ -39,7 +35,6 @@ export const TransactionsMainScreen = () => {
       }),
     });
   };
-  // Effects
   useEffect(function InitTransactionsSearchParamsOnMount() {
     void navigate({
       search: {
@@ -54,52 +49,54 @@ export const TransactionsMainScreen = () => {
   }, []);
 
   return (
-    <div data-ui="transactions-main-screen" className="flex flex-col h-full">
-      <div className="flex items-center gap-2  items-start pb-3">
-        <ArrowRightLeft className="bg-transactions text-neutral-white rounded-md p-2.5 h-10 w-10" />
-
-        <div className="flex flex-col gap-2">
-          <h1 className="text-5xl text-primary tracking-tight leading-[0.7]">Transactions</h1>
-          {!inLoadingState && (
-            <p className="text-sm text-primary tracking-tight">Found {meta?.total} transactions</p>
-          )}
-          {inLoadingState && (
-            <p className="text-sm text-primary tracking-tight">Loading transactions...</p>
-          )}
-        </div>
+    <div data-ui="transactions-main-screen" className="flex min-h-full flex-col gap-6 pb-8">
+      <div>
+        <PageHeader
+          title="Transactions"
+          icon={ArrowRightLeft}
+          onAdd={openTransactionCreate}
+          addButtonLabel="New transaction"
+        />
+        <p className="mt-2 text-sm text-muted-foreground">
+          {inLoadingState ? 'Loading transactions…' : `${meta?.total ?? 0} transactions found`}
+        </p>
       </div>
 
-      {/* <AccountTransactionFilters params={mergedParams} onParamsChange={handleParamsChange} /> */}
-
       {inLoadingState && (
-        <div className="flex flex-col items-center justify-center gap-4 flex-1">
-          <div className="p-6 rounded-3xl">
-            <RefreshCcw className="h-15 w-15 animate-spin text-muted-foreground/50 stroke-1 transform-origin-center" />
+        <div className="flex min-h-72 flex-1 flex-col items-center justify-center gap-4 rounded-2xl border border-border/80 bg-card">
+          <div className="rounded-2xl bg-muted p-4">
+            <RefreshCcw className="h-7 w-7 animate-spin text-muted-foreground" />
           </div>
+          <p className="text-sm text-muted-foreground">Loading your activity…</p>
         </div>
       )}
 
       {inErrorState && <TransactionsErrorState />}
       {isEmptyState && <TransactionsEmptyState />}
 
-      <TransactionsList
-        transactions={transactions}
-        meta={meta}
-        onParamsChange={handleParamsChange}
-      />
+      {!inLoadingState && !inErrorState && !isEmptyState && (
+        <section className="rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] sm:p-5">
+          <AccountTransactionFilters params={search} onParamsChange={handleParamsChange} />
+          <TransactionsList
+            transactions={transactions}
+            meta={meta}
+            onParamsChange={handleParamsChange}
+          />
+        </section>
+      )}
     </div>
   );
 };
 
 const TransactionsEmptyState = () => {
   return (
-    <div data-ui="transactions-main-screen-empty" className="w-full flex-1 h-full">
-      <div className="flex flex-col items-center justify-center gap-4 h-full">
-        <div className="p-6 bg-muted-foreground/10 rounded-3xl">
-          <CreditCard className="h-15 w-15 text-muted-foreground stroke-1" />
+    <div data-ui="transactions-main-screen-empty" className="min-h-72 flex-1">
+      <div className="flex h-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
+        <div className="rounded-2xl bg-pastel-blue p-4">
+          <CreditCard className="h-7 w-7 text-brand" />
         </div>
-        <p className="text-2xl font-light">No transactions yet</p>
-        <p className="text-muted-foreground mb-4">
+        <p className="font-semibold text-foreground">No transactions yet</p>
+        <p className="max-w-md text-sm text-muted-foreground">
           Transactions will appear here once you start using your accounts
         </p>
       </div>
@@ -109,19 +106,12 @@ const TransactionsEmptyState = () => {
 
 const TransactionsErrorState = () => {
   return (
-    <div data-ui="transactions-main-screen-error" className="w-full flex-1 h-full">
-      <div className="flex flex-col gap-4 h-full">
-        <PageHeader title="Transaction History" icon={ArrowRightLeft} showAddButton={false} />
-        <h2>A complete record of all your financial transactions</h2>
-
-        <div className="flex flex-col items-center justify-center gap-4 flex-1">
-          <div className="p-6 bg-destructive/10 rounded-3xl">
-            <XCircle className="h-15 w-15 text-destructive stroke-1" />
-          </div>
-          <p className="text-destructive text-2xl font-light">
-            Ops! Something went wrong while loading transactions
-          </p>
+    <div data-ui="transactions-main-screen-error" className="min-h-72 flex-1">
+      <div className="flex h-full flex-col items-center justify-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center">
+        <div className="rounded-2xl bg-destructive/10 p-4">
+          <XCircle className="h-7 w-7 text-destructive" />
         </div>
+        <p className="font-semibold text-destructive">We couldn&apos;t load your transactions.</p>
       </div>
     </div>
   );

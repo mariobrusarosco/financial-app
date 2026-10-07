@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import { 
-  PieChart, Pie, Cell, ResponsiveContainer, Sector,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip 
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Sector,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
 } from 'recharts';
 import { PieChart as PieIcon, BarChart3 } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
-import { I_GroupedCategory } from '../../utils/grouping-utils';
+import type { I_GroupedCategory } from '@/domains/cashflow/utils/grouping-utils';
 
 interface ExpensesByCategoryProps {
   groupedData: I_GroupedCategory[];
@@ -27,11 +36,19 @@ const COLORS = [
 
 // Helper to lighten/darken colors for subcategories
 const adjustColor = (color: string, amount: number) => {
-  return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
-}
+  return (
+    '#' +
+    color
+      .replace(/^#/, '')
+      .replace(/../g, color =>
+        ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2)
+      )
+  );
+};
 
 const renderActiveShape = (props: any) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } =
+    props;
 
   return (
     <g>
@@ -79,38 +96,37 @@ export const ExpensesByCategory = ({ groupedData }: ExpensesByCategoryProps) => 
     name: category.name,
     value: category.total,
     color: COLORS[index % COLORS.length],
-    subcategories: category.sortedSubcategories?.map((sub, subIndex) => ({
-      name: sub.name,
-      value: sub.total,
-      // Slightly vary the color for subcategories
-      color: adjustColor(COLORS[index % COLORS.length], subIndex * -20)
-    })) || []
+    subcategories:
+      category.sortedSubcategories?.map((sub, subIndex) => ({
+        name: sub.name,
+        value: sub.total,
+        // Slightly vary the color for subcategories
+        color: adjustColor(COLORS[index % COLORS.length], subIndex * -20),
+      })) || [],
   }));
 
-  const formatCurrency = (value: number) => 
+  const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
   return (
-    <div className="p-6 border rounded-3xl bg-neutral-white space-y-6 h-fit shadow-sm">
+    <div className="h-fit space-y-6 rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-primary">Category Distribution</h3>
-          <p className="text-sm text-muted-foreground">
-            Breakdown of expenses by category
-          </p>
+          <p className="text-sm text-muted-foreground">Breakdown of expenses by category</p>
         </div>
         <div className="flex bg-muted p-1 rounded-lg">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className={`h-8 w-8 p-0 rounded-md ${chartType === 'pie' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
             onClick={() => setChartType('pie')}
           >
             <PieIcon className="h-4 w-4 text-muted-foreground" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className={`h-8 w-8 p-0 rounded-md ${chartType === 'bar' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
             onClick={() => setChartType('bar')}
           >
@@ -150,15 +166,15 @@ export const ExpensesByCategory = ({ groupedData }: ExpensesByCategoryProps) => 
             >
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
               <XAxis type="number" hide />
-              <YAxis 
-                dataKey="name" 
-                type="category" 
+              <YAxis
+                dataKey="name"
+                type="category"
                 width={100}
                 tick={{ fontSize: 12, fill: '#64748b' }}
                 tickLine={false}
                 axisLine={false}
               />
-              <Tooltip 
+              <Tooltip
                 cursor={{ fill: 'transparent' }}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -175,16 +191,16 @@ export const ExpensesByCategory = ({ groupedData }: ExpensesByCategoryProps) => 
                   return null;
                 }}
               />
-              <Bar 
-                dataKey="value" 
-                radius={[0, 4, 4, 0]} 
+              <Bar
+                dataKey="value"
+                radius={[0, 4, 4, 0]}
                 onMouseEnter={onPieEnter}
-                background={{ fill: '#f1f5f9', radius: [0, 4, 4, 0] }}
+                background={{ fill: 'var(--muted)' }}
               >
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={entry.color} 
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.color}
                     opacity={activeIndex === index ? 1 : 0.7}
                     className="transition-all duration-300"
                   />
@@ -199,17 +215,21 @@ export const ExpensesByCategory = ({ groupedData }: ExpensesByCategoryProps) => 
       {data[activeIndex] && (
         <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-500">
           <h4 className="text-sm font-semibold border-b pb-2 flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: data[activeIndex].color }} />
+            <span
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: data[activeIndex].color }}
+            />
             {data[activeIndex].name} Breakdown
           </h4>
           <div className="grid grid-cols-1 gap-2">
             {data[activeIndex].subcategories.length > 0 ? (
               data[activeIndex].subcategories.map((sub: any, idx: number) => (
-                <div key={idx} className="flex justify-between items-center text-sm p-2 hover:bg-muted/50 rounded-lg transition-colors">
+                <div
+                  key={idx}
+                  className="flex justify-between items-center text-sm p-2 hover:bg-muted/50 rounded-lg transition-colors"
+                >
                   <span className="text-muted-foreground">{sub.name}</span>
-                  <span className="font-medium">
-                    {formatCurrency(sub.value)}
-                  </span>
+                  <span className="font-medium">{formatCurrency(sub.value)}</span>
                 </div>
               ))
             ) : (

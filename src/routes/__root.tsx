@@ -52,7 +52,7 @@ export const Route = createRootRoute({
 export function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <RootDocument>
           <ObservabilityUserSync />
           <AppContent />
@@ -67,7 +67,7 @@ export function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html className="bg-red-100">
+    <html>
       <head>
         <HeadContent />
       </head>

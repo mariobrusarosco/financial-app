@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
@@ -19,16 +20,14 @@ export const InvestmentDataInputScreen = () => {
 
   // Fetch all accounts and filter for investment type
   const {
-    data: allAccountsData,
-    isLoading: isLoadingAccounts,
-    error: accountsError,
+    accounts: { query: accountsQuery },
   } = useAccounts();
 
   // Filter accounts to only show investment type accounts
   const investmentAccounts =
-    allAccountsData?.filter(account => account.type === 'investment') || [];
-  const isLoadingInvestments = isLoadingAccounts;
-  const investmentsError = accountsError;
+    accountsQuery.data?.accounts.filter(account => account.type === 'investment') ?? [];
+  const isLoadingInvestments = accountsQuery.isLoading;
+  const investmentsError = accountsQuery.error;
 
   // Fetch monthly summaries for selected investment
   const {
@@ -46,7 +45,7 @@ export const InvestmentDataInputScreen = () => {
   // Create balance point mutation
   const createBalancePointMutation = useCreateBalancePoint();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!selectedInvestment || !formData.balance) {
@@ -108,7 +107,9 @@ export const InvestmentDataInputScreen = () => {
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold">{account.name}</h3>
                 <div className="flex items-center justify-between mt-2">
-                  <div variant="secondary">{account.broker.name}</div>
+                  <div className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium">
+                    {account.broker.name}
+                  </div>
                   <div className="text-right">
                     <div className="text-sm font-mono">R$ {account.balance.toFixed(2)}</div>
                     <div className="text-xs text-muted-foreground">{account.currency}</div>
@@ -155,7 +156,7 @@ export const InvestmentDataInputScreen = () => {
                       <CardHeader className="p-2">
                         <CardTitle className="text-base">{entry.month_name}</CardTitle>
                         {!entry.has_data && (
-                          <div variant="outline" className="w-fit">
+                          <div className="w-fit rounded-full border px-2.5 py-1 text-xs font-medium">
                             No data
                           </div>
                         )}
@@ -188,16 +189,15 @@ export const InvestmentDataInputScreen = () => {
                               <div className="flex justify-between items-center">
                                 <span className="text-sm font-medium">Profit</span>
                                 <div className="flex items-center gap-2">
-                                  <div
-                                    variant="outline"
-                                    className={`text-xs ${
+                                  <span
+                                    className={`rounded-full border px-2.5 py-1 text-xs font-medium ${
                                       entry.profit_percentage >= 0
                                         ? 'text-green-600'
                                         : 'text-red-600'
                                     }`}
                                   >
                                     {entry.profit_percentage.toFixed(1)}%
-                                  </div>
+                                  </span>
                                   <div
                                     className={`text-sm font-mono ${
                                       parseFloat(entry.profit) >= 0

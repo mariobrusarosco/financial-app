@@ -3,7 +3,6 @@
 import { useMemo, useEffect } from 'react';
 import { Route } from '@/routes/(auth)/route';
 import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
-import { Button } from '@/domains/ui-system/components/button';
 import type { DateRange } from 'react-day-picker';
 import {
   format,
@@ -19,8 +18,10 @@ import {
 } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
 
+const URL_DATE_FORMAT = 'yyyy-MM-dd';
+
 const formatDateForURL = (date: Date): string => {
-  return format(date, 'yyyy-MM-dd');
+  return format(date, URL_DATE_FORMAT);
 };
 
 const getDefaultDateRange = (): DateRange => {
@@ -99,8 +100,8 @@ export const GlobalDateFilter = () => {
     // Use parse() instead of parseISO() to avoid timezone issues
     // parseISO treats "2026-02-01" as UTC midnight, which shifts to previous day in local timezone
     // parse() with 'yyyy-MM-dd' format creates a local date at midnight
-    const fromDate = from ? parse(from, 'yyyy-MM-dd', new Date()) : defaultRange.from;
-    const toDate = to ? parse(to, 'yyyy-MM-dd', new Date()) : defaultRange.to;
+    const fromDate = from ? parse(from, URL_DATE_FORMAT, new Date()) : defaultRange.from;
+    const toDate = to ? parse(to, URL_DATE_FORMAT, new Date()) : defaultRange.to;
 
     return {
       from: fromDate && isValid(fromDate) ? fromDate : defaultRange.from,
@@ -128,7 +129,6 @@ export const GlobalDateFilter = () => {
     return isSameDay(dateRange.from, presetRange.from) && isSameDay(dateRange.to, presetRange.to);
   };
 
-
   const formatDateRange = useMemo(() => {
     if (!dateRange?.from) {
       return 'Pick a date range';
@@ -142,30 +142,32 @@ export const GlobalDateFilter = () => {
   }, [dateRange]);
 
   return (
-    <div data-ui="global-date-filter" className="w-full flex items-end gap-6 my-4 md:my-0">
+    <div
+      data-ui="global-date-filter"
+      className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end"
+    >
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-primary">{formatDateRange}</span>
+        <span className="text-xs text-muted-foreground">{formatDateRange}</span>
 
-        <div className="flex gap-3 bg-primary rounded-md p-1">
+        <div className="flex gap-1 overflow-x-auto rounded-xl bg-muted p-1">
           {PRESETS.map(preset => {
             const isActive = isPresetActive(preset);
             return (
-              <div
+              <button
+                type="button"
                 key={preset.label}
                 onClick={() => handleSetDateRange(preset.getValue())}
                 className={cn(
-                  'text-xs bg-primary px-3 py-2 rounded-md cursor-pointer hover:bg-foreground hover:text-primary',
-                  isActive && 'bg-neutral-white text-primary',
-                  !isActive && 'text-neutral-white'
+                  'cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground',
+                  isActive && 'bg-card text-brand shadow-sm'
                 )}
               >
                 {preset.label}
-              </div>
+              </button>
             );
           })}
         </div>
       </div>
-
 
       <DateRangePicker dateRange={dateRange} setDateRange={handleSetDateRange} />
     </div>

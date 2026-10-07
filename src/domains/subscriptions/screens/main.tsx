@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Route } from '@/routes/(auth)/route';
-import { useSubscriptions } from '../hooks';
+import { useSubscriptions } from '@/domains/subscriptions/hooks/index';
 import {
   SubscriptionList,
   SubscriptionsSummary,
   SubscriptionsChart,
   SubscriptionsCategoryBreakdown,
-} from '../components';
-import type { I_SubscriptionsParams } from '../types/types-and-interfaces';
+} from '@/domains/subscriptions/components/index';
+import type { I_SubscriptionsParams } from '@/domains/subscriptions/types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components/page-header';
 import { Repeat } from 'lucide-react';
 
@@ -42,7 +42,7 @@ export const SubscriptionsMainScreen = () => {
   const handleParamsChange = (
     newParams: I_SubscriptionsParams | ((prev: I_SubscriptionsParams) => I_SubscriptionsParams)
   ) => {
-    setParams((prev) => {
+    setParams(prev => {
       const updated = typeof newParams === 'function' ? newParams(prev) : newParams;
       return { ...prev, ...updated, page: updated.page || 1 };
     });
@@ -51,7 +51,7 @@ export const SubscriptionsMainScreen = () => {
   const summary = paginatedData?.meta?.summary;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7 pb-8">
       <PageHeader title="Subscriptions" icon={Repeat} />
 
       <SubscriptionsSummary summary={summary} isLoading={isLoading} />
@@ -61,7 +61,10 @@ export const SubscriptionsMainScreen = () => {
         <SubscriptionsCategoryBreakdown data={summary?.category_breakdown} isLoading={isLoading} />
       </div>
 
-      <section data-ui="subscriptions-list-section" className="bg-section-background rounded-3xl p-6">
+      <section
+        data-ui="subscriptions-list-section"
+        className="rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] sm:p-6"
+      >
         <SubscriptionList
           subscriptions={paginatedData?.data || []}
           meta={paginatedData?.meta}

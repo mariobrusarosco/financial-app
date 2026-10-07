@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import type { T_TransactionType } from '@/domains/transactions/types/types-and-interfaces';
-import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
+import { formatCurrencyAmount, parseCurrencyAmount } from '@/domains/global/utils/formatting';
 
 export {
   formatDateShort,
@@ -83,7 +83,7 @@ export const getCurrencyClasses = (
 ) => {
   const isDebit = isDebitTransaction(movementType);
   const baseClasses = 'tabular-nums';
-  const colorClasses = isDebit ? 'text-red-700/90' : 'text-teal-500/80';
+  const colorClasses = isDebit ? 'text-foreground' : 'text-positive';
   const sizeClasses = {
     default: 'font-medium',
     large: 'text-lg font-semibold',
@@ -98,7 +98,7 @@ export const formatCurrencyWithSign = (
   movementType: T_TransactionType
 ) => {
   const isDebit = isDebitTransaction(movementType);
-  const formatted = formatCurrencyAmount(amount, { showSign: true });
+  const formatted = formatCurrencyAmount(Math.abs(parseCurrencyAmount(amount)));
 
   return {
     sign: isDebit ? '-' : '+',
@@ -188,12 +188,7 @@ export const resolveCategoryDisplayName = (
   categoryTree?: { name: string } | null,
   categoryName?: string | null,
   category?: string,
-  fallback: string = 'Uncategorized'
+  fallback = 'Uncategorized'
 ): string => {
-  return (
-    categoryTree?.name ||
-    categoryName ||
-    getDisplayableCategoryName(category) ||
-    fallback
-  );
+  return categoryTree?.name || categoryName || getDisplayableCategoryName(category) || fallback;
 };

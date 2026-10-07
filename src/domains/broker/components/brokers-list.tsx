@@ -1,11 +1,11 @@
 import useBrokers from '@/domains/broker/hooks/use-brokers';
-import BrokerCard from './broker-card';
+import BrokerCard from '@/domains/broker/components/broker-card';
 
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 const BrokerCardSkeleton = () => {
   return (
-    <div className="w-full h-full flex flex-col justify-between bg-card-background rounded-3xl overflow-hidden animate-pulse">
+    <div className="flex min-h-40 w-full animate-pulse flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card">
       <div className="flex items-start justify-between px-6 py-5">
         {/* Name Skeleton */}
         <Skeleton className="h-7 w-3/4 rounded-md bg-muted-foreground/20" />
@@ -27,7 +27,10 @@ const BrokerCardSkeleton = () => {
 
 const LoadingState = () => {
   return (
-    <div data-testid="brokers-loading" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 pt-15">
+    <div
+      data-testid="brokers-loading"
+      className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    >
       {Array.from({ length: 10 }).map((_, i) => (
         <BrokerCardSkeleton key={i} />
       ))}
@@ -37,7 +40,10 @@ const LoadingState = () => {
 
 const EmptyState = () => {
   return (
-    <div data-testid="brokers-empty" className="text-center py-12">
+    <div
+      data-testid="brokers-empty"
+      className="rounded-2xl border border-dashed border-border bg-card/50 py-12 text-center"
+    >
       <p className="text-lg text-muted-foreground">No brokers found!</p>
       <p className="text-sm mt-2 text-muted-foreground">Create your first broker to get started.</p>
     </div>
@@ -46,7 +52,10 @@ const EmptyState = () => {
 
 const ErrorState = ({ error }: { error: Error }) => {
   return (
-    <div data-testid="brokers-error" className="text-center py-8">
+    <div
+      data-testid="brokers-error"
+      className="rounded-2xl border border-destructive/20 bg-destructive/5 py-8 text-center"
+    >
       <p className="text-destructive">Error loading brokers: {error.message}</p>
     </div>
   );
@@ -60,7 +69,10 @@ const BrokersList = () => {
   if (!brokers || brokers.length === 0) return <EmptyState />;
 
   return (
-    <ul data-testid="brokers-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 pt-15">
+    <ul
+      data-testid="brokers-list"
+      className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    >
       {brokers.map(broker => (
         <li key={broker.id}>
           <BrokerCard broker={broker} />

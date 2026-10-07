@@ -1,19 +1,16 @@
-import { TransactionForm } from '../transaction-form'; // Corrected import path
-import { TransactionItemDefault } from './transaction-item-default';
-import { TransactionItemCompact } from './transaction-item-compact';
-import type { TransactionItemProps } from './types';
-import type { I_TransactionPayload, I_TransactionResponse } from '../types/types-and-interfaces';
+import { TransactionItemDefault } from '@/domains/transactions/components/transaction/transaction-item-default';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
 
 // Main transaction item props
 export interface TransactionItemProps {
   transaction: I_TransactionResponse;
   isPending?: boolean;
   onIgnoreTransaction?: (id: string, currentIgnoreValue: boolean) => void | null;
-  // mode: 'compact' | 'default';
+  mode?: 'compact' | 'default';
   onDelete?: (transaction: I_TransactionResponse) => void;
   // onSave?: (updates: Partial<I_TransactionResponse>) => void;
   // onCancel?: () => void;
-  // onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
+  onTriggerEditMode?: (transaction: I_TransactionResponse) => void;
   // isEditing?: boolean;
   isSelected?: boolean;
   // onSelectTransaction?: (id: string) => void;
@@ -28,7 +25,7 @@ export const UnifiedTransactionItem = ({
   onIgnoreTransaction,
   // mode,
   onDelete,
-  // onTriggerEditMode,
+  onTriggerEditMode,
   // onSave,
   // onCancel,
   // isEditing = false,
@@ -64,7 +61,7 @@ export const UnifiedTransactionItem = ({
       isPending={isPending}
       isSelected={isSelected}
       showCheckbox={showCheckbox}
-      // onTriggerEditMode={onTriggerEditMode}
+      onTriggerEditMode={onTriggerEditMode}
       onDelete={onDelete}
       onSelectionChange={onSelectionChange}
       // onSelectTransaction={onSelectTransaction}

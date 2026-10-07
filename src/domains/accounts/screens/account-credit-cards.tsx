@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { Button } from '@/domains/ui-system/components/button';
-import { Plus, CreditCard, CreditCardIcon } from 'lucide-react';
+import { CreditCard, Plus, WalletCards } from 'lucide-react';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
-import { Surface } from '@/domains/global/components/surface';
-import { Separator } from '@/domains/ui-system/components/separator';
-import { Currency } from '@/domains/ui-system/components/currency';
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
+import { Button } from '@/domains/ui-system/components/button';
+import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 interface AccountCreditCardsScreenProps {
   params: {
@@ -15,85 +14,93 @@ interface AccountCreditCardsScreenProps {
 
 export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenProps) => {
   const { openCreditCardCreate } = useGlobalUIState();
-  const {
-    data: creditCards,
-    isLoading: isLoadingCreditCards,
-    error: errorCreditCards,
-  } = useCreditCards(params.slug);
-
-  const accountHasCreditCards = creditCards?.data && creditCards.data.length > 0;
-
-  if (isLoadingCreditCards) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-muted-foreground">Loading credit cards...</p>
-      </div>
-    );
-  }
-
-  if (errorCreditCards) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-destructive">Error: {errorCreditCards.message}</p>
-      </div>
-    );
-  }
+  const creditCardsQuery = useCreditCards(params.slug);
+  const creditCards = creditCardsQuery.data?.data ?? [];
 
   return (
-    <div className="" data-ui="account-credit-cards-screen">
-      <div className="flex items-center justify-between">
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold">Credit Cards</h2>
-          <p className="text-sm text-muted-foreground">Credit cards associated with this account</p>
+    <section
+      className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]"
+      data-ui="account-credit-cards-screen"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold tracking-[-0.025em] text-foreground">
+            Credit cards
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">Cards associated with this account</p>
         </div>
         <Button onClick={openCreditCardCreate}>
-          <Plus className="w-4 h-4 mr-2" />
-          Credit Card
+          <Plus className="h-4 w-4" />
+          New card
         </Button>
       </div>
 
-      {accountHasCreditCards && (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {creditCards.data.map(creditCard => (
+      {creditCardsQuery.isLoading ? (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} className="aspect-[1.58/1] w-full rounded-3xl" />
+          ))}
+        </div>
+      ) : creditCardsQuery.error ? (
+        <div className="mt-6 flex min-h-48 items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/5 p-6 text-center text-sm text-destructive">
+          We couldn&apos;t load your credit cards.
+        </div>
+      ) : creditCards.length > 0 ? (
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {creditCards.map(creditCard => (
             <li key={creditCard.id}>
               <Link
                 to="/accounts/$slug/credit-card/$creditCardId"
                 params={{ slug: params.slug, creditCardId: creditCard.id }}
-                className="block h-full"
+                className="group relative block aspect-[1.58/1] overflow-hidden rounded-3xl bg-[#1f4ae0] p-5 text-white shadow-lg shadow-brand/15 transition-transform hover:-translate-y-1"
               >
-                <Surface
-                  hoverable
-                  clickable
-                  variant="elevated"
-                  size="lg"
-                  className="h-48 w-full hover:bg-primary/5 p-4 flex flex-col justify-between"
-                >
-                  <div className="flex-shrink-0 mb-3">
-                    <div className="flex items-center gap-1 mb-3">
-                      <span className="font-medium truncate">{creditCard.name}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {creditCard.last_four_digits}
-                      </span>
+                <span className="absolute -top-14 -right-12 h-44 w-44 rounded-full border-[32px] border-white/10" />
+                <div className="relative flex h-full flex-col justify-between">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs text-white/65">Credit limit</p>
+                      <p className="financial-value mt-1 text-lg font-semibold">
+                        {formatCurrencyAmount(creditCard.credit_limit)}
+                      </p>
+                    </div>
+                    <WalletCards className="h-5 w-5 text-white/80" />
+                  </div>
+                  <div>
+                    <p className="font-mono text-sm tracking-[0.18em] text-white/90">
+                      •••• •••• •••• {creditCard.last_four_digits}
+                    </p>
+                    <div className="mt-3 flex items-end justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{creditCard.name}</p>
+                        <p className="mt-0.5 text-xs text-white/60">
+                          Due day {creditCard.due_date}
+                        </p>
+                      </div>
+                      <span className="text-xs font-semibold capitalize">{creditCard.brand}</span>
                     </div>
                   </div>
-
-                  <div className="flex flex-col gap-3 flex-grow">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm text-primary">Available</span>
-                      <span className="text-xs text-muted-foreground">Coming soon</span>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm text-primary">Compromised</span>
-                      <span className="text-xs text-muted-foreground">Coming soon</span>
-                    </div>
-                  </div>
-                </Surface>
+                </div>
               </Link>
             </li>
           ))}
         </ul>
+      ) : (
+        <button
+          type="button"
+          onClick={openCreditCardCreate}
+          className="mt-6 flex min-h-48 w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand/30 bg-pastel-blue/40 p-6 text-center transition-colors hover:bg-pastel-blue/70"
+        >
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-card text-brand shadow-sm">
+            <CreditCard className="h-5 w-5" />
+          </span>
+          <span>
+            <span className="block text-sm font-semibold text-foreground">No cards yet</span>
+            <span className="mt-1 block text-xs text-muted-foreground">
+              Add a card to track invoices and transactions.
+            </span>
+          </span>
+        </button>
       )}
-    </div>
+    </section>
   );
 };

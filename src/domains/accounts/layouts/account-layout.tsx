@@ -1,10 +1,8 @@
-import { Outlet, Link } from '@tanstack/react-router';
+import { Outlet } from '@tanstack/react-router';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
-
-import AccountQuickActions from '@/domains/accounts/components/account-quick-actions';
 import AccountHeading from '@/domains/accounts/components/account-heading';
 import AccountOverview from '@/domains/accounts/components/account-overview';
-import { Separator } from '@/domains/ui-system/components/separator';
+import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 interface AccountLayoutProps {
   slug: string;
@@ -15,26 +13,28 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-muted-foreground">Loading account...</p>
+      <div className="space-y-6">
+        <Skeleton className="h-28 w-full rounded-2xl" />
+        <Skeleton className="h-72 w-full rounded-2xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-destructive">Error: {error.message}</p>
+      <div className="flex min-h-72 items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center">
+        <div>
+          <p className="font-semibold text-destructive">We couldn&apos;t load this account.</p>
+          <p className="mt-1 text-sm text-muted-foreground">{error.message}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="md:pr-4 max-h-full" data-ui="account-layout">
+    <div className="space-y-6 pb-8" data-ui="account-layout">
       <AccountHeading slug={slug} />
       <AccountOverview slug={slug} />
-      <Separator className="my-4" />
-
       <Outlet />
     </div>
   );

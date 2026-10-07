@@ -7,8 +7,16 @@ import {
 } from '@/domains/accounts/types/types-and-interfaces';
 import { GET_ACCOUNTS_QUERY_KEY } from '@/domains/accounts/api/keys';
 
+interface AccountsViewData {
+  accounts: I_Account[];
+  accountsByType: Partial<Record<T_AccountType, I_Account[]>>;
+  accountGroups: { type: T_AccountType; accounts: I_Account[] }[];
+  totalAccounts: number;
+  isEmpty: boolean;
+}
+
 export const useAccounts = (params?: I_AccountsParams) => {
-  const accountsQuery = useQuery<I_Account[], Error>({
+  const accountsQuery = useQuery<I_Account[], Error, AccountsViewData>({
     queryKey: GET_ACCOUNTS_QUERY_KEY(params),
     queryFn: () => accountsApi.getAccounts(params),
     select: getAccountsData,

@@ -1,120 +1,100 @@
-import type { ReactNode } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ArrowLeft, CreditCard, FileText, Settings, TrendingUp } from 'lucide-react';
-import { useMemo } from 'react';
+import {
+  ArrowLeft,
+  CreditCard,
+  FileText,
+  LayoutDashboard,
+  Settings,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
 import AccountQuickActions from '@/domains/accounts/components/account-quick-actions';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
-import { Tabs, TabsList, TabsTrigger } from '@/domains/ui-system/components/tabs';
-import { cn } from '@/domains/ui-system/utils';
+import { cn } from '@/domains/ui-system/utils/index';
 
-interface AccountOverviewProps {
+interface AccountHeadingProps {
   slug: string;
 }
 
-const AccountHeading = ({ slug }: AccountOverviewProps) => {
+const accountTabs = [
+  { label: 'Overview', href: '/accounts/$slug', icon: LayoutDashboard, match: 'overview' },
+  { label: 'Statements', href: '/accounts/$slug/statements', icon: FileText, match: 'statements' },
+  { label: 'Expenses', href: '/accounts/$slug/expenses', icon: TrendingDown, match: 'expenses' },
+  { label: 'Income', href: '/accounts/$slug/income', icon: TrendingUp, match: 'income' },
+  {
+    label: 'Credit cards',
+    href: '/accounts/$slug/credit-card',
+    icon: CreditCard,
+    match: 'credit-card',
+  },
+  { label: 'Settings', href: '/accounts/$slug/settings', icon: Settings, match: 'settings' },
+] as const;
+
+const AccountHeading = ({ slug }: AccountHeadingProps) => {
   const { data: account } = useAccount(slug);
   const location = useLocation();
 
-  const activeTab = useMemo(() => {
-    const pathname = location.pathname;
-    if (pathname.includes('/statements')) return 'statements';
-    if (pathname.includes('/credit-card')) return 'credit-cards';
-    if (pathname.includes('/expenses')) return 'expenses';
-    if (pathname.includes('/income')) return 'income';
-    if (pathname.includes('/settings') || pathname.includes('/setttings')) return 'settings';
-    return 'overview';
-  }, [location.pathname]);
+  const isTabActive = (match: string) => {
+    if (match === 'overview') return location.pathname.endsWith(`/accounts/${slug}`);
+    if (match === 'settings') {
+      return location.pathname.includes('/settings') || location.pathname.includes('/setttings');
+    }
+    return location.pathname.includes(`/${match}`);
+  };
 
   return (
-    <div className="relative flex flex-col md:flex-row md:gap-30" data-ui="account-heading">
-      <p className="text-sm text-muted-foreground">Bank Account</p>
-      <h1 className="text-3xl font-bold tracking-tight">{account?.name}</h1>
+    <header
+      className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]"
+      data-ui="account-heading"
+    >
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <Link
+            to="/accounts"
+            className="mb-3 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-brand"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            All accounts
+          </Link>
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {account?.broker?.name ?? 'Bank account'}
+          </p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-[-0.035em] text-foreground sm:text-3xl">
+            {account?.name}
+          </h1>
+        </div>
 
-      <div className="flex justify-between items-end ">
-        <Tabs value={activeTab} className="mt-4 md:mt-0 md:ml-4 w-full">
-          <TabsList className="flex flex-row gap-3 bg-primary rounded-md p-1 h-fit">
-            <Link to="/accounts/$slug" params={{ slug }}>
-              <AccountHeadingTab
-                value="overview"
-                label="Overview"
-                icon={<TrendingUp className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-            <Link to="/accounts/$slug/statements" params={{ slug }}>
-              <AccountHeadingTab
-                value="statements"
-                label="Statements"
-                icon={<FileText className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-            <Link to="/accounts/$slug/expenses" params={{ slug }}>
-              <AccountHeadingTab
-                value="expenses"
-                label="Expenses"
-                icon={<TrendingUp className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-            <Link to="/accounts/$slug/income" params={{ slug }}>
-              <AccountHeadingTab
-                value="income"
-                label="Income"
-                icon={<TrendingUp className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-            <Link to="/accounts/$slug/credit-card" params={{ slug }}>
-              <AccountHeadingTab
-                value="credit-cards"
-                label="Credit Cards"
-                icon={<CreditCard className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-            <Link to="/accounts/$slug/settings" params={{ slug }}>
-              <AccountHeadingTab
-                value="settings"
-                label="Settings"
-                icon={<Settings className="h-4 w-4" />}
-                activeTab={activeTab}
-              />
-            </Link>
-          </TabsList>
-        </Tabs>
-
-        <AccountQuickActions slug={slug} />
+        <AccountQuickActions />
       </div>
 
-      <Link to="/accounts" className="flex gap-1 items-center absolute top-0 right-0 md:relative">
-        <ArrowLeft className="h-2 w-2 md:h-4 md:w-4 h-3 w-3" />
-        <span className="text-xs md:text-sm">Back to Accounts</span>
-      </Link>
-    </div>
-  );
-};
+      <nav
+        className="mt-6 flex gap-1 overflow-x-auto border-t border-border/70 pt-4"
+        aria-label="Account sections"
+      >
+        {accountTabs.map(tab => {
+          const Icon = tab.icon;
+          const isActive = isTabActive(tab.match);
 
-interface AccountHeadingTabProps {
-  value: string;
-  label: string;
-  icon: ReactNode;
-  activeTab: string;
-}
-
-const AccountHeadingTab = ({ value, label, icon, activeTab }: AccountHeadingTabProps) => {
-  return (
-    <TabsTrigger
-      value={value}
-      className={cn(
-        'md:flex text-xs px-2 py-2.5 rounded-md cursor-pointer text-neutral-white hover:bg-foreground hover:text-primary',
-        activeTab === value && 'bg-neutral-white text-primary',
-        activeTab !== value && 'text-neutral-white'
-      )}
-    >
-      {icon}
-      <span className="hidden md:flex">{label}</span>
-    </TabsTrigger>
+          return (
+            <Link
+              key={tab.label}
+              to={tab.href}
+              params={{ slug }}
+              aria-current={isActive ? 'page' : undefined}
+              className={cn(
+                'inline-flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-accent text-accent-foreground'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {tab.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </header>
   );
 };
 

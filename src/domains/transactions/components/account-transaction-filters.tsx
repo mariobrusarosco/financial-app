@@ -22,11 +22,13 @@ import { HierarchicalCategorySelector } from '@/domains/transactions/components/
 interface AccountTransactionFiltersProps {
   params: I_AccountTransactionsParams;
   onParamsChange: (params: I_AccountTransactionsParams) => void;
+  showMovementTypeFilter?: boolean;
 }
 
 export const AccountTransactionFilters = ({
   params,
   onParamsChange,
+  showMovementTypeFilter = true,
 }: AccountTransactionFiltersProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,7 +41,7 @@ export const AccountTransactionFilters = ({
       const currentValue = params[key];
       if (currentValue === value) return;
 
-      const nextValue = value || undefined;
+      const nextValue = value === '' ? undefined : value;
 
       onParamsChange({
         ...params,
@@ -55,43 +57,44 @@ export const AccountTransactionFilters = ({
       page: 1,
       per_page: params.per_page,
       sort_by: 'date',
-      sort_order: 'asc',
+      sort_order: 'desc',
     });
   }, [onParamsChange, params.per_page]);
 
-  const hasActiveFilters = useMemo(() => Object.keys(params).length, [params]);
-
-  console.log('hasActiveFilters', hasActiveFilters, params);
+  const hasActiveFilters = useMemo(
+    () =>
+      Boolean(
+        params.description_contains ||
+          params.category ||
+          params.amount_min !== undefined ||
+          params.amount_max !== undefined ||
+          params.is_paid !== undefined ||
+          params.sort_by !== 'date' ||
+          params.sort_order !== 'desc' ||
+          (showMovementTypeFilter && params.movement_type)
+      ),
+    [params, showMovementTypeFilter]
+  );
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="py-4">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="py-3">
       <div className="flex items-center justify-between">
         <CollapsibleTrigger asChild>
-          <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
             <Filter className="h-4 w-4" />
-            <span className="text-xs"> Filters</span>
-            {/* {hasActiveFilters && (
-              <span className="ml-1 rounded-full bg-primary text-primary-foreground text-xs px-2 py-0.5">
-                {console.log(
-                  Object.keys(params).filter(
-                    key =>
-                      key !== 'page' &&
-                      key !== 'per_page' &&
-                      params[key as keyof I_AccountTransactionsParams]
-                  )
-                )}
-              </span>
-            )} */}
-            <ChevronDown className="h-4 w-4" />
-
-            {hasActiveFilters && <ClearFiltersButton onClick={clearFilters} />}
-          </div>
+            Filters
+            <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          </button>
         </CollapsibleTrigger>
+        {hasActiveFilters && <ClearFiltersButton onClick={clearFilters} />}
       </div>
 
-      <CollapsibleContent className="space-y-4 mt-4">
-        <div className="flex flex-col gap-4 p-4 bg-background rounded-lg border border-primary/20">
-          <div className="flex gap-4">
+      <CollapsibleContent className="mt-3 space-y-4">
+        <div className="flex flex-col gap-4 rounded-xl border border-border bg-muted/35 p-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <SearchFilter
               value={params.description_contains || ''}
               onChange={value => updateParam('description_contains', value)}
@@ -102,13 +105,15 @@ export const AccountTransactionFilters = ({
               onChange={value => updateParam('category', value)}
             />
 
-            <TypeFilter
-              value={params.movement_type}
-              onChange={value => updateParam('movement_type', value)}
-            />
+            {showMovementTypeFilter && (
+              <TypeFilter
+                value={params.movement_type}
+                onChange={value => updateParam('movement_type', value)}
+              />
+            )}
           </div>
 
-          <div className="flex gap-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <AmountRangeFilter
               minAmount={params.amount_min}
               maxAmount={params.amount_max}
@@ -118,9 +123,7 @@ export const AccountTransactionFilters = ({
 
             <StatusFilter
               isPaid={params.is_paid}
-              movementType={params.movement_type}
               onIsPaidChange={value => updateParam('is_paid', value)}
-              onMovementTypeChange={value => updateParam('movement_type', value)}
             />
 
             <SortingFilter
@@ -148,13 +151,14 @@ const SearchFilter = ({
   value: string;
   onChange: (value: string) => void;
 }) => {
-  const { draftValue: searchDraft, setDraftValue: setSearchDraft } = useDebouncedControlledValue({
-    value,
-    onChange,
-  });
+  const { draftValue: searchDraft, setDraftValue: setSearchDraft } =
+    useDebouncedControlledValue<string>({
+      value,
+      onChange,
+    });
 
   return (
-    <div data-ui="search-filter" className="flex flex-col gap-1 justify-between">
+    <div data-ui="search-filter" className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-sm font-medium">Search</Label>
       <div className="space-y-2">
         <Input
@@ -175,20 +179,24 @@ const CategoryFilter = ({
   onChange: (value: string) => void;
 }) => {
   return (
-    <div data-ui="category-filter" className="flex flex-col gap-2 justify-between max-w-[200px]">
+    <div data-ui="category-filter" className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-sm font-medium">Category</Label>
       <div className="flex items-center gap-2">
         <HierarchicalCategorySelector
           value={value}
           onValueChange={onChange}
           placeholder="Filter by Category"
-          className="w-full bg-background"
+          className="w-full bg-card"
           size="sm"
         />
         {value && (
-          <span className="text-xs text-primary cursor-pointer" onClick={() => onChange('')}>
-            clear
-          </span>
+          <button
+            type="button"
+            className="text-xs font-medium text-brand"
+            onClick={() => onChange('')}
+          >
+            Clear
+          </button>
         )}
       </div>
     </div>
@@ -203,7 +211,7 @@ const TypeFilter = ({
   onChange: (value: I_AccountTransactionsParams['movement_type']) => void;
 }) => {
   return (
-    <div data-ui="type-filter" className="flex flex-col gap-1 justify-between">
+    <div data-ui="type-filter" className="flex flex-col justify-between gap-2">
       <Label className="text-sm font-medium">Type</Label>
       <div className="flex flex-col gap-2">
         <div className="flex items-center space-x-2">
@@ -272,9 +280,9 @@ const AmountRangeFilter = ({
     });
 
   return (
-    <div className="flex flex-col gap-1 justify-between">
+    <div className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-sm font-medium">Amount Range</Label>
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <Input
           type="number"
           placeholder="Min amount"
@@ -294,17 +302,13 @@ const AmountRangeFilter = ({
 
 const StatusFilter = ({
   isPaid,
-  movementType,
   onIsPaidChange,
-  onMovementTypeChange,
 }: {
   isPaid: I_AccountTransactionsParams['is_paid'];
-  movementType: I_AccountTransactionsParams['movement_type'];
   onIsPaidChange: (value: I_AccountTransactionsParams['is_paid']) => void;
-  onMovementTypeChange: (value: I_AccountTransactionsParams['movement_type']) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-1 justify-between">
+    <div className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-sm font-medium">Status</Label>
       <div className="flex gap-2">
         <Select
@@ -318,22 +322,6 @@ const StatusFilter = ({
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="true">Paid</SelectItem>
             <SelectItem value="false">Unpaid</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={movementType || 'all'}
-          onValueChange={value => onMovementTypeChange(value === 'all' ? undefined : value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Movement type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All types</SelectItem>
-            <SelectItem value="income">Income</SelectItem>
-            <SelectItem value="expense">Expense</SelectItem>
-            <SelectItem value="investment">Investment</SelectItem>
-            <SelectItem value="transfer">Transfer</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -353,7 +341,7 @@ const SortingFilter = ({
   onSortOrderChange: (value: I_AccountTransactionsParams['sort_order']) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-1 justify-between">
+    <div className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-xs font-medium">Sorting</Label>
       <div className="flex gap-2">
         <Select
@@ -398,7 +386,7 @@ const ItemsPerPageFilter = ({
   onChange: (value: I_AccountTransactionsParams['per_page']) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-1 justify-between">
+    <div className="flex min-w-0 flex-col justify-between gap-2">
       <Label className="text-xs font-medium">Items per page</Label>
       <Select
         value={value?.toString() || '20'}
@@ -421,7 +409,8 @@ const ItemsPerPageFilter = ({
 const ClearFiltersButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <button
-      className="flex items-center gap-1 cursor-pointer text-primary-foreground bg-primary hover:bg-primary/80 p-2 rounded-md"
+      type="button"
+      className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-accent"
       onClick={onClick}
     >
       <X className="h-4 w-4" />

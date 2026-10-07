@@ -11,7 +11,7 @@ function SignupPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background pt-7">
         <div className="text-muted-foreground">Loading...</div>
       </div>
     );
@@ -22,14 +22,19 @@ function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
-      <div className="mb-8 text-center">
-        <img src="/wb.png" alt="Better Call Buffet" className="w-12 h-12 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-primary">Better Call Buffet</h1>
-        <p className="text-muted-foreground mt-2">Start your financial journey today</p>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-14 pt-20">
+      <div className="w-full max-w-md">
+        <div className="mb-7">
+          <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand text-lg font-bold text-brand-foreground">
+            B
+          </span>
+          <p className="mt-6 text-sm font-medium text-muted-foreground">Get started</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-[-0.045em] text-foreground">
+            Build a clearer financial picture
+          </h1>
+        </div>
+        <SignupForm />
       </div>
-
-      <SignupForm />
     </div>
   );
 }

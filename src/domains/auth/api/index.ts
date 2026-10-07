@@ -8,11 +8,37 @@ import type {
   I_User,
 } from '../types/auth.types';
 import { AuthStorage } from '../utils/auth-storage';
-import { T_AppError } from '@/domains/global/typing/types-and-interfaces';
+
+interface I_AuthUserResponse {
+  id: string;
+  email: string;
+  full_name: string | null;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface I_TokenResponse {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+}
+
+interface I_RegisterResponse extends I_TokenResponse {
+  user: I_AuthUserResponse;
+}
+
+const toUser = (user: I_AuthUserResponse): I_User => ({
+  id: user.id,
+  email: user.email,
+  name: user.full_name?.trim() || user.email.split('@')[0] || 'User',
+  createdAt: user.created_at ?? '',
+  updatedAt: user.updated_at ?? '',
+});
 
 const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
   try {
-    const response = await apiClient.post('/auth/login', {
+    const response = await apiClient.post<I_TokenResponse>('/auth/login', {
       email: credentials.email,
       password: credentials.password,
       device_name: navigator.userAgent || 'Unknown Device',
@@ -29,12 +55,12 @@ const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
     };
 
     // Get user data with the new token
-    const userResponse = await apiClient.get('/auth/me', {
+    const userResponse = await apiClient.get<I_AuthUserResponse>('/auth/me', {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
     return {
-      user: userResponse.data,
+      user: toUser(userResponse.data),
       tokens,
     };
   } catch (error) {
@@ -44,28 +70,24 @@ const login = async (credentials: I_LoginRequest): Promise<I_AuthResponse> => {
 };
 
 const signup = async (data: I_SignupRequest): Promise<I_AuthResponse> => {
-  try {
-    const response = await apiClient.post('/auth/register', {
-      email: data.email,
-      password: data.password,
-      full_name: data.name,
-      device_name: navigator.userAgent || 'Unknown Device',
-    });
+  const response = await apiClient.post<I_RegisterResponse>('/auth/register', {
+    email: data.email,
+    password: data.password,
+    full_name: data.name,
+    device_name: navigator.userAgent || 'Unknown Device',
+  });
 
-    // Backend returns: { access_token, refresh_token, expires_in, user }
-    const { access_token, refresh_token, expires_in, user } = response.data;
+  // Backend returns: { access_token, refresh_token, expires_in, user }
+  const { access_token, refresh_token, expires_in, user } = response.data;
 
-    return {
-      user,
-      tokens: {
-        accessToken: access_token,
-        refreshToken: refresh_token,
-        expiresIn: expires_in,
-      },
-    };
-  } catch (error: T_AppError | unknown) {
-    throw error;
-  }
+  return {
+    user: toUser(user),
+    tokens: {
+      accessToken: access_token,
+      refreshToken: refresh_token,
+      expiresIn: expires_in,
+    },
+  };
 };
 
 const refreshToken = async (data: I_RefreshTokenRequest): Promise<I_AuthTokens> => {
@@ -102,8 +124,8 @@ const getCurrentUser = async (): Promise<I_User | null> => {
       return null;
     }
 
-    const response = await apiClient.get<I_User>('/auth/me');
-    return response.data;
+    const response = await apiClient.get<I_AuthUserResponse>('/auth/me');
+    return toUser(response.data);
   } catch (error) {
     console.error('Get current user error:', error);
     return null;
