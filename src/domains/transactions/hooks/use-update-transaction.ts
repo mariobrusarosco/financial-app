@@ -1,10 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
-import { updateTransaction } from '../api/transactions.api';
-import type { I_TransactionResponse } from '../types/types-and-interfaces';
-import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
+import {
+  useMutation,
+  useQueryClient,
+  type QueryClient,
+  type QueryKey,
+} from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { GET_ACCOUNT_TRANSACTIONS_PAGINATED_QUERY_KEY } from '../api/keys';
+import { GET_ALL_TRANSACTIONS_QUERY_KEY } from '@/domains/transactions/api/keys';
+import { updateTransaction } from '@/domains/transactions/api/transactions.api';
+import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
+import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 
 export const useUpdateTransaction = ({
   onSuccess: onUpdateSuccess,
@@ -12,13 +16,13 @@ export const useUpdateTransaction = ({
   onSuccess?: (data: I_TransactionResponse) => void;
 }) => {
   const queryClient = useQueryClient();
-  const params = useParams({ strict: false });
-  const accountIdFromUrl = (params as any).slug;
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<I_TransactionResponse> }) =>
-      updateTransaction(id, updates),
+    mutationFn: ({ id, updates }: UpdateTransactionInput) => updateTransaction(id, updates),
     onSuccess: data => {
+      queryClient.setQueryData(['transaction', data.id], data);
+      invalidateAllTransactionRelatedQueries(queryClient);
+
       onUpdateSuccess?.(data);
       toast.success('Transaction updated successfully');
     },
@@ -29,3 +33,30 @@ export const useUpdateTransaction = ({
     },
   });
 };
+
+const invalidateAllTransactionRelatedQueries = (queryClient: QueryClient) => {
+  TRANSACTION_RELATED_QUERY_KEYS.forEach(queryKey => {
+    void queryClient.invalidateQueries({ queryKey });
+  });
+};
+
+const TRANSACTION_RELATED_QUERY_KEYS: QueryKey[] = [
+  ['transaction'],
+  GET_ALL_TRANSACTIONS_QUERY_KEY(),
+  ['account-transactions'],
+  ['account-transactions-paginated'],
+  ['account-transactions-infinite'],
+  ['account-transactions-combined'],
+  ['credit-card-transactions'],
+  ['credit-card-transactions-infinite'],
+  ['accounts'],
+  ['balance-points'],
+  ['cashflow-summary'],
+  ['credit-cards'],
+  ['credit_cards'],
+];
+
+interface UpdateTransactionInput {
+  id: string;
+  updates: Partial<I_TransactionResponse>;
+}

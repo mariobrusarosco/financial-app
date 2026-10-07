@@ -12,8 +12,6 @@ import type {
   I_AccountTransactionsParams,
 } from '@/domains/transactions/types/types-and-interfaces';
 import { useUpdateTransaction } from '@/domains/transactions/hooks/use-update-transaction';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_ALL_TRANSACTIONS_QUERY_KEY } from '@/domains/transactions/api/keys';
 import {
   Dialog,
   DialogClose,
@@ -39,7 +37,6 @@ interface TransactionsListProps {
 
 export const TransactionsList = ({ transactions, meta, onParamsChange }: TransactionsListProps) => {
   // Hooks
-  const queryClient = useQueryClient();
   const { openTransactionCreate } = useGlobalUIState();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [transactionToDelete, setTransactionToDelete] = useState<I_TransactionResponse | null>(
@@ -48,16 +45,13 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
   const { mutate: deleteTransaction } = useDeleteTransaction();
-  const { mutate: updateTransaction, isPending: isUpdatingTransaction } = useUpdateTransaction({
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: GET_ALL_TRANSACTIONS_QUERY_KEY(),
-      });
-    },
-  });
+  const { mutate: updateTransaction, isPending: isUpdatingTransaction } = useUpdateTransaction({});
   // Derived state
-  const handleToggleIgnoreTransaction = (id: string, currIgnoreValue: boolean) => {
-    updateTransaction({ id, updates: { ignored: !currIgnoreValue } });
+  const handleToggleIgnoreTransaction = (transaction: I_TransactionResponse) => {
+    updateTransaction({
+      id: transaction.id,
+      updates: { ignored: !transaction.ignored },
+    });
   };
   const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
@@ -192,9 +186,7 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
             key={transaction.id}
             transaction={transaction}
             isPending={isUpdatingTransaction}
-            onIgnoreTransaction={() =>
-              handleToggleIgnoreTransaction(transaction.id, transaction.ignored)
-            }
+            onIgnoreTransaction={() => handleToggleIgnoreTransaction(transaction)}
             showCheckbox={true}
             // mode="default"
             // onTriggerEditMode={() => handleEdit(transaction)}

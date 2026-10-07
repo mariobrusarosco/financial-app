@@ -18,7 +18,7 @@ export const EditTransactionDrawer = () => {
   const queryClient = useQueryClient();
   const { transactionId } = Route.useSearch();
   const params = useParams({ strict: false });
-  const accountId = (params as any).slug;
+  const accountId = 'slug' in params && typeof params.slug === 'string' ? params.slug : undefined;
 
   // Cache-first approach: Try to find transaction in ANY paginated cache for this account
   // Note: We use getQueriesData (plural) because the cache key includes params
