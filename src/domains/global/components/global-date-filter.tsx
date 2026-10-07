@@ -5,6 +5,7 @@ import { Route } from '@/routes/(auth)/route';
 import { DateRangePicker } from '@/domains/ui-system/components/date-range-picker';
 import type { DateRange } from 'react-day-picker';
 import {
+  addMonths,
   format,
   startOfMonth,
   endOfMonth,
@@ -16,9 +17,11 @@ import {
   isSameDay,
   parse,
 } from 'date-fns';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 
 const URL_DATE_FORMAT = 'yyyy-MM-dd';
+const MONTHS_IN_RAIL = 5;
 
 const formatDateForURL = (date: Date): string => {
   return format(date, URL_DATE_FORMAT);
@@ -31,11 +34,6 @@ const getDefaultDateRange = (): DateRange => {
     to: endOfMonth(today),
   };
 };
-
-interface Preset {
-  label: string;
-  getValue: () => DateRange;
-}
 
 const PRESETS: Preset[] = [
   {
@@ -109,6 +107,10 @@ export const GlobalDateFilter = () => {
     };
   }, [from, to]);
 
+  const selectedMonth = useMemo(() => startOfMonth(dateRange.from ?? new Date()), [dateRange.from]);
+  const visibleMonths = useMemo(() => getVisibleMonths(selectedMonth), [selectedMonth]);
+  const canSelectNextMonth = selectedMonth.getTime() < startOfMonth(new Date()).getTime();
+
   const handleSetDateRange = (range: DateRange) => {
     void navigate({
       search: prev => ({
@@ -129,6 +131,23 @@ export const GlobalDateFilter = () => {
     return isSameDay(dateRange.from, presetRange.from) && isSameDay(dateRange.to, presetRange.to);
   };
 
+  const handleSelectMonth = (month: Date) => {
+    handleSetDateRange({
+      from: startOfMonth(month),
+      to: endOfMonth(month),
+    });
+  };
+
+  const isMonthActive = (month: Date) => {
+    if (!dateRange.from || !dateRange.to) {
+      return false;
+    }
+
+    return (
+      isSameDay(dateRange.from, startOfMonth(month)) && isSameDay(dateRange.to, endOfMonth(month))
+    );
+  };
+
   const formatDateRange = useMemo(() => {
     if (!dateRange?.from) {
       return 'Pick a date range';
@@ -146,10 +165,72 @@ export const GlobalDateFilter = () => {
       data-ui="global-date-filter"
       className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end"
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex min-w-0 flex-col gap-2">
         <span className="text-xs text-muted-foreground">{formatDateRange}</span>
 
-        <div className="flex gap-1 overflow-x-auto rounded-xl bg-muted p-1">
+        <div
+          className="flex min-w-0 items-center gap-1 rounded-xl bg-muted p-1"
+          aria-label="Calendar month navigation"
+        >
+          <button
+            type="button"
+            onClick={() => handleSelectMonth(addMonths(selectedMonth, -1))}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
+            aria-label="Select previous month"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectMonth(selectedMonth)}
+            className={cn(
+              'h-9 min-w-36 flex-1 rounded-lg px-3 text-xs font-semibold transition-colors sm:hidden',
+              isMonthActive(selectedMonth)
+                ? 'bg-card text-brand shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {format(selectedMonth, 'MMMM yyyy')}
+          </button>
+
+          <div className="hidden min-w-0 flex-1 items-center gap-1 sm:flex">
+            {visibleMonths.map(month => {
+              const isActive = isMonthActive(month);
+              return (
+                <button
+                  type="button"
+                  key={format(month, 'yyyy-MM')}
+                  onClick={() => handleSelectMonth(month)}
+                  aria-label={`Select ${format(month, 'MMMM yyyy')}`}
+                  aria-pressed={isActive}
+                  className={cn(
+                    'h-9 min-w-14 flex-1 rounded-lg px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-card/70 hover:text-foreground',
+                    isActive && 'bg-card font-semibold text-brand shadow-sm'
+                  )}
+                >
+                  <span className="block">{format(month, 'MMM')}</span>
+                  <span className="block text-[0.6rem] opacity-60">{format(month, 'yy')}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleSelectMonth(addMonths(selectedMonth, 1))}
+            disabled={!canSelectNextMonth}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+            aria-label="Select next month"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div
+          className="flex gap-1 overflow-x-auto rounded-xl bg-muted p-1"
+          aria-label="Rolling date ranges"
+        >
           {PRESETS.map(preset => {
             const isActive = isPresetActive(preset);
             return (
@@ -157,6 +238,7 @@ export const GlobalDateFilter = () => {
                 type="button"
                 key={preset.label}
                 onClick={() => handleSetDateRange(preset.getValue())}
+                aria-pressed={isActive}
                 className={cn(
                   'cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground',
                   isActive && 'bg-card text-brand shadow-sm'
@@ -173,3 +255,18 @@ export const GlobalDateFilter = () => {
     </div>
   );
 };
+
+const getVisibleMonths = (selectedMonth: Date) => {
+  const currentMonth = startOfMonth(new Date());
+  const centeredEndMonth = addMonths(selectedMonth, 2);
+  const endMonth =
+    centeredEndMonth.getTime() > currentMonth.getTime() ? currentMonth : centeredEndMonth;
+  const startMonth = addMonths(endMonth, -(MONTHS_IN_RAIL - 1));
+
+  return Array.from({ length: MONTHS_IN_RAIL }, (_, index) => addMonths(startMonth, index));
+};
+
+interface Preset {
+  label: string;
+  getValue: () => DateRange;
+}

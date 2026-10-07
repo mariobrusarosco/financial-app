@@ -1,14 +1,17 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { Route } from '@/routes/(auth)/route';
-import { DrawerClose, DrawerFooter } from '@/domains/ui-system/components/drawer';
-import { Button } from '@/domains/ui-system/components/button';
-import { TransactionForm } from './transaction-form';
-import { useUpdateTransaction } from '../hooks/use-update-transaction';
-import { getTransactionById } from '../api/transactions.api';
-import type { I_TransactionResponse, I_TransactionPayload } from '../types/types-and-interfaces';
-import { Loader2, X, Save } from 'lucide-react';
+import { Loader2, Save, X } from 'lucide-react';
+import { getTransactionById } from '@/domains/transactions/api/transactions.api';
+import { TransactionForm } from '@/domains/transactions/components/transaction-form';
+import { useUpdateTransaction } from '@/domains/transactions/hooks/use-update-transaction';
+import type {
+  I_TransactionPayload,
+  I_TransactionResponse,
+} from '@/domains/transactions/types/types-and-interfaces';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
+import { Button } from '@/domains/ui-system/components/button';
+import { DrawerClose } from '@/domains/ui-system/components/drawer';
+import { Route } from '@/routes/(auth)/route';
 
 export const EditTransactionDrawer = () => {
   const navigate = useNavigate();
@@ -44,12 +47,15 @@ export const EditTransactionDrawer = () => {
     staleTime: 30 * 1000,
   });
 
-  const { mutate: updateTransaction } = useUpdateTransaction(() => {
-    handleClose();
-  });
+  const handleClose = () => {
+    void navigate({
+      search: prev => ({ ...prev, drawer: undefined, transactionId: undefined }),
+    });
+  };
 
-  const handleClose = () =>
-    navigate({ search: prev => ({ ...prev, drawer: undefined, transactionId: undefined }) });
+  const { mutate: updateTransaction } = useUpdateTransaction({
+    onSuccess: handleClose,
+  });
 
   const handleSave = (payload: I_TransactionPayload) => {
     if (transactionId) {

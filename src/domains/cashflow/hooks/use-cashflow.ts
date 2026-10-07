@@ -1,28 +1,24 @@
-import { useMemo } from 'react';
-import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
-import { aggregateCashflowData } from '../utils/cashflow-utils';
-import { I_CashflowFilter } from '../types';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { endOfMonth, format, startOfMonth } from 'date-fns';
+import { cashflowApi } from '@/domains/cashflow/api/cashflow.api';
+import type { I_CashflowFilter } from '@/domains/cashflow/types/index';
 
 export const useCashflow = (filters?: I_CashflowFilter) => {
-  // We fetch all transactions for the filtered range
-  // Note: For a large number of transactions, we might want a specialized backend endpoint
-  const { data, isLoading, error, isPlaceholderData } = useAllTransactions({
-    date_from: filters?.date_from,
-    date_to: filters?.date_to,
-    per_page: 100, // Temporary limit: Backend enforces max 100. We need a non-paginated endpoint for full accuracy.
-    sort_by: 'date',
-    sort_order: 'asc',
-  });
+  const resolvedFilters = resolveCashflowFilters(filters);
 
-  const cashflowSummary = useMemo(() => {
-    if (!data?.data) return null;
-    return aggregateCashflowData(data.data);
-  }, [data]);
+  return useQuery({
+    queryKey: ['cashflow-summary', resolvedFilters],
+    queryFn: () => cashflowApi.getSummary(resolvedFilters),
+    placeholderData: keepPreviousData,
+  });
+};
+
+const resolveCashflowFilters = (filters?: I_CashflowFilter): I_CashflowFilter => {
+  const today = new Date();
 
   return {
-    data: cashflowSummary,
-    isLoading,
-    error,
-    isPlaceholderData,
+    date_from: filters?.date_from ?? format(startOfMonth(today), 'yyyy-MM-dd'),
+    date_to: filters?.date_to ?? format(endOfMonth(today), 'yyyy-MM-dd'),
+    account_id: filters?.account_id,
   };
 };
