@@ -61,7 +61,7 @@ export const SubscriptionsChart = ({ data, isLoading }: SubscriptionsChartProps)
                   width={60}
                 />
                 <Tooltip cursor={{ fill: 'var(--muted)' }} content={<CustomTooltip />} />
-                <Bar dataKey="amount" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                <Bar dataKey="amount" fill="var(--chart-1)" radius={[8, 8, 0, 0]} maxBarSize={50} />
               </BarChart>
             </ResponsiveContainer>
           )}

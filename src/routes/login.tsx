@@ -23,7 +23,7 @@ function LoginPage() {
 
   return (
     <div data-ui="login-screen" className="grid min-h-screen bg-card pt-7 lg:grid-cols-2">
-      <section className="relative hidden overflow-hidden bg-[#2b2865] p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <section className="relative hidden overflow-hidden bg-spotlight p-12 text-spotlight-foreground lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -top-36 -right-24 h-96 w-96 rounded-full border-[72px] border-white/5" />
         <div className="relative flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand text-lg font-bold">

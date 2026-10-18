@@ -49,7 +49,9 @@ export const InvestmentBalanceTable = ({
     if (!showSign) return formatted;
 
     return (
-      <span className={cn('font-medium', numericAmount >= 0 ? 'text-green-600' : 'text-red-600')}>
+      <span
+        className={cn('font-medium', numericAmount >= 0 ? 'text-positive' : 'text-destructive')}
+      >
         {numericAmount >= 0 ? '+' : '-'}
         {formatted}
       </span>
@@ -61,11 +63,11 @@ export const InvestmentBalanceTable = ({
     return (
       <div className="flex items-center gap-1">
         {isPositive ? (
-          <TrendingUp className="h-3 w-3 text-green-600" />
+          <TrendingUp className="h-3 w-3 text-positive" />
         ) : (
-          <TrendingDown className="h-3 w-3 text-red-600" />
+          <TrendingDown className="h-3 w-3 text-destructive" />
         )}
-        <span className={cn('font-medium', isPositive ? 'text-green-600' : 'text-red-600')}>
+        <span className={cn('font-medium', isPositive ? 'text-positive' : 'text-destructive')}>
           {Math.abs(percentage).toFixed(2)}%
         </span>
       </div>
@@ -92,8 +94,8 @@ export const InvestmentBalanceTable = ({
         className={cn(
           'font-medium',
           isDeposit
-            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200'
-            : 'bg-orange-100 text-orange-700 hover:bg-orange-200 border-orange-200'
+            ? 'bg-accent text-accent-foreground hover:bg-accent/80 border-accent-foreground/20'
+            : 'bg-warning/15 text-warning hover:bg-warning/25 border-warning/20'
         )}
       >
         {isDeposit ? 'Deposit' : 'Withdrawal'}
@@ -110,7 +112,7 @@ export const InvestmentBalanceTable = ({
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <p className="text-red-600">Error loading investment data: {error.message}</p>
+            <p className="text-destructive">Error loading investment data: {error.message}</p>
           </div>
         </CardContent>
       </Card>

@@ -33,11 +33,11 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
     return (
       <div className="flex items-center gap-1">
         {isPositive ? (
-          <TrendingUp className="h-4 w-4 text-green-600" />
+          <TrendingUp className="h-4 w-4 text-positive" />
         ) : (
-          <TrendingDown className="h-4 w-4 text-red-600" />
+          <TrendingDown className="h-4 w-4 text-destructive" />
         )}
-        <span className={cn('font-medium', isPositive ? 'text-green-600' : 'text-red-600')}>
+        <span className={cn('font-medium', isPositive ? 'text-positive' : 'text-destructive')}>
           {isPositive ? '+' : ''}
           {percentage.toFixed(2)}%
         </span>
@@ -54,7 +54,7 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <p className="text-red-600">Error loading investments: {error.message}</p>
+            <p className="text-destructive">Error loading investments: {error.message}</p>
           </div>
         </CardContent>
       </Card>
@@ -92,7 +92,7 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Total Growth</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-positive">
                   {formatCurrency(data.meta.total_growth)}
                 </p>
               </div>
@@ -167,7 +167,7 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
                     <div className="space-y-1">
                       <p className="text-sm text-muted-foreground">Growth</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-green-600">
+                        <span className="text-sm font-medium text-positive">
                           {formatCurrency(investment.total_growth)}
                         </span>
                         {formatPercentage(investment.growth_percentage)}

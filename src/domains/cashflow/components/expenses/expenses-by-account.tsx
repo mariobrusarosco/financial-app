@@ -36,7 +36,7 @@ export const ExpensesByAccount = ({ groupedData, overallTotal }: ExpensesByAccou
               </div>
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden border">
                 <div
-                  className="h-full bg-[#b46d64] transition-all duration-500"
+                  className="h-full bg-chart-4 transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>

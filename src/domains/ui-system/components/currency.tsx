@@ -124,18 +124,16 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
     const colorClass = React.useMemo(() => {
       switch (color) {
         case 'positive':
-          return 'text-teal-600 dark:text-teal-400';
+          return 'text-positive';
         case 'negative':
-          return 'text-red-600 dark:text-red-400';
+          return 'text-destructive';
         case 'muted':
           return 'text-muted-foreground';
         case 'default':
         default:
           // Auto-detect color based on value
           if ((showSign || autoColor) && numericValue !== 0) {
-            return isNegative
-              ? 'text-red-600 dark:text-red-400'
-              : 'text-teal-600 dark:text-teal-400';
+            return isNegative ? 'text-destructive' : 'text-positive';
           }
           return 'text-primary';
       }

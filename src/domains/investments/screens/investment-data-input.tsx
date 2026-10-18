@@ -71,7 +71,9 @@ export const InvestmentDataInputScreen = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Investment Data Input</h1>
+        <h1 className="text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
+          Investment Data Input
+        </h1>
         <Button>
           <PlusIcon className="w-4 h-4 mr-2" />
           Add New Investment
@@ -192,8 +194,8 @@ export const InvestmentDataInputScreen = () => {
                                   <span
                                     className={`rounded-full border px-2.5 py-1 text-xs font-medium ${
                                       entry.profit_percentage >= 0
-                                        ? 'text-green-600'
-                                        : 'text-red-600'
+                                        ? 'text-positive'
+                                        : 'text-destructive'
                                     }`}
                                   >
                                     {entry.profit_percentage.toFixed(1)}%
@@ -201,8 +203,8 @@ export const InvestmentDataInputScreen = () => {
                                   <div
                                     className={`text-sm font-mono ${
                                       parseFloat(entry.profit) >= 0
-                                        ? 'text-green-600'
-                                        : 'text-red-600'
+                                        ? 'text-positive'
+                                        : 'text-destructive'
                                     }`}
                                   >
                                     R$ {parseFloat(entry.profit).toFixed(2)}

@@ -21,7 +21,7 @@ interface Props {
 const chartConfig = {
   balance: {
     label: 'Balance',
-    color: 'var(--chart-2)',
+    color: 'var(--chart-1)',
   },
 } satisfies ChartConfig;
 

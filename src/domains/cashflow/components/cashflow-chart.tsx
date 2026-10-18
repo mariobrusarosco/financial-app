@@ -25,8 +25,8 @@ import {
 } from '@/domains/cashflow/utils/cashflow-formatting';
 import { isMonthInPeriod } from '@/domains/cashflow/utils/cashflow-periods';
 
-const INCOME_COLOR = 'var(--positive)';
-const EXPENSES_COLOR = 'var(--destructive)';
+const INCOME_COLOR = 'var(--chart-1)';
+const EXPENSES_COLOR = 'var(--chart-4)';
 // Months outside the selected period are dimmed, so the selection stands out
 const DIMMED_OPACITY = 0.35;
 
@@ -79,7 +79,7 @@ export const CashflowChart = ({ data, from, to }: CashflowChartProps) => {
                 name={dataKey === 'income' ? 'Income' : 'Expenses'}
                 dataKey={dataKey}
                 fill={dataKey === 'income' ? INCOME_COLOR : EXPENSES_COLOR}
-                radius={[4, 4, 0, 0]}
+                radius={[8, 8, 0, 0]}
                 maxBarSize={40}
               >
                 {data.map(month => (

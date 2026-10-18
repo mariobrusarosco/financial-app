@@ -25,7 +25,9 @@ import {
   parseCurrencyAmount,
 } from '@/domains/global/utils/formatting';
 import { Button } from '@/domains/ui-system/components/button';
+import { MoneyValue } from '@/domains/ui-system/components/money-value';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
+import { StatTile } from '@/domains/ui-system/components/stat-tile';
 import { cn } from '@/domains/ui-system/utils/index';
 
 type DashboardData = ReturnType<typeof useDashboard>['data'];
@@ -37,12 +39,16 @@ export const DashboardIndexScreen = () => {
 
   return (
     <div data-testid="dashboard-index-screen" className="space-y-7 pb-8">
-      <DashboardGreeting firstName={data.firstName} />
+      <DashboardHeader
+        firstName={data.firstName}
+        onNewTransaction={handlers.openTransactionCreate}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-6">
+          <KeyFigures data={data} states={states} />
+          <CashflowPanel data={data} states={states} />
           <QuickActions handlers={handlers} />
-          <BalancePanel data={data} states={states} />
           <ScheduledPayments data={data} states={states} />
           <VendorPanel data={data} states={states} />
         </div>
@@ -56,15 +62,26 @@ export const DashboardIndexScreen = () => {
   );
 };
 
-const DashboardGreeting = ({ firstName }: { firstName: string }) => (
-  <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+const DashboardHeader = ({
+  firstName,
+  onNewTransaction,
+}: {
+  firstName: string;
+  onNewTransaction: () => void;
+}) => (
+  <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <p className="text-sm font-medium text-muted-foreground">Welcome back</p>
+      <p className="text-sm font-medium text-muted-foreground">
+        Welcome back · {format(new Date(), 'EEEE, MMM d')}
+      </p>
       <h1 className="mt-1 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl">
         Hi, {firstName}
       </h1>
     </div>
-    <p className="text-sm font-medium text-muted-foreground">{format(new Date(), 'EEEE, MMM d')}</p>
+    <Button onClick={onNewTransaction}>
+      <Plus className="h-4 w-4" />
+      New transaction
+    </Button>
   </header>
 );
 
@@ -88,7 +105,7 @@ const QuickActions = ({ handlers }: { handlers: DashboardHandlers }) => {
       label: 'New card',
       description: 'Track a credit card',
       icon: CreditCard,
-      className: 'bg-pastel-violet text-[#6250c7]',
+      className: 'bg-pastel-violet text-accent-foreground',
       onClick: handlers.openCreditCardCreate,
     },
   ];
@@ -122,7 +139,7 @@ const QuickActions = ({ handlers }: { handlers: DashboardHandlers }) => {
 
         <Link
           to="/accounts"
-          className="group flex min-h-28 flex-col items-start justify-between rounded-2xl bg-pastel-peach p-4 text-left text-[#a15e48] transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className="group flex min-h-28 flex-col items-start justify-between rounded-2xl bg-pastel-peach p-4 text-left text-brand transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
           <FileUp className="h-5 w-5" />
           <span>
@@ -135,74 +152,93 @@ const QuickActions = ({ handlers }: { handlers: DashboardHandlers }) => {
   );
 };
 
-const BalancePanel = ({ data, states }: { data: DashboardData; states: DashboardStates }) => (
-  <section className="rounded-3xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)] sm:p-6">
-    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-      <div>
-        <p className="text-sm font-medium text-muted-foreground">Active account balances</p>
-        {states.isAccountsLoading ? (
-          <Skeleton className="mt-3 h-10 w-48" />
-        ) : states.isAccountsError ? (
-          <p className="mt-3 text-sm text-destructive">Balances are temporarily unavailable.</p>
-        ) : data.balances.length > 0 ? (
-          <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            {data.balances.map(balance => (
-              <p
-                key={balance.currency}
-                className="financial-value text-3xl font-semibold text-foreground sm:text-4xl"
-              >
-                {formatCurrencyAmount(balance.balance, { currency: balance.currency })}
-              </p>
-            ))}
-          </div>
-        ) : (
-          <p className="financial-value mt-2 text-3xl font-semibold text-foreground sm:text-4xl">
-            {formatCurrencyAmount(0)}
-          </p>
-        )}
-        <p className="mt-2 text-xs text-muted-foreground">
-          {data.accountCount} active {data.accountCount === 1 ? 'account' : 'accounts'} · currencies
-          are not converted
-        </p>
+const KeyFigures = ({ data, states }: { data: DashboardData; states: DashboardStates }) => {
+  const [primaryBalance, ...otherBalances] = data.balances;
+  const cashflow = data.cashflow;
+
+  return (
+    <section aria-label="Key figures" className="grid gap-4 sm:grid-cols-2">
+      <StatTile
+        label="Active account balances"
+        isLoading={states.isAccountsLoading}
+        value={
+          states.isAccountsError ? (
+            <span className="text-base font-medium text-destructive">Unavailable</span>
+          ) : (
+            <MoneyValue amount={primaryBalance?.balance ?? 0} currency={primaryBalance?.currency} />
+          )
+        }
+        hint={
+          otherBalances.length > 0
+            ? `+ ${otherBalances
+                .map(balance =>
+                  formatCurrencyAmount(balance.balance, { currency: balance.currency })
+                )
+                .join(' · ')} (not converted)`
+            : `${data.accountCount} active ${data.accountCount === 1 ? 'account' : 'accounts'}`
+        }
+      />
+      <StatTile
+        label="Net cashflow this month"
+        isLoading={states.isCashflowLoading}
+        value={<MoneyValue amount={cashflow?.net_cashflow ?? 0} />}
+      />
+      <StatTile
+        label="Income this month"
+        isLoading={states.isCashflowLoading}
+        value={<MoneyValue amount={cashflow?.total_income ?? 0} />}
+      />
+      <StatTile
+        label="Expenses this month"
+        isLoading={states.isCashflowLoading}
+        value={<MoneyValue amount={cashflow?.total_expenses ?? 0} />}
+      />
+    </section>
+  );
+};
+
+const CashflowPanel = ({ data, states }: { data: DashboardData; states: DashboardStates }) => (
+  <section
+    aria-labelledby="cashflow-title"
+    className="rounded-3xl border border-border bg-card p-5 sm:p-6"
+  >
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <h2 id="cashflow-title" className="text-xl font-semibold tracking-[-0.02em] text-foreground">
+        Cashflow: <span className="font-normal text-muted-foreground">This month</span>
+      </h2>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-sm text-foreground">
+          <span className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-[4px] bg-chart-1" /> Income
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-[4px] bg-chart-4" /> Expenses
+          </span>
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link to="/cashflow">
+            View cashflow
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
       </div>
-      <Button variant="outline" size="sm" asChild>
-        <Link to="/cashflow">
-          View cashflow
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </Button>
     </div>
 
-    <div className="mt-7 border-t border-border/70 pt-5">
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-sm font-semibold text-foreground">Monthly cashflow</h2>
-          <p className="text-xs text-muted-foreground">Income and expenses from recent activity</p>
-        </div>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-brand" /> Income
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-[#b46d64]" /> Expenses
-          </span>
-        </div>
-      </div>
-
+    <div className="mt-6">
       {states.isCashflowLoading ? (
-        <Skeleton className="h-56 w-full" />
+        <Skeleton className="h-64 w-full" />
       ) : states.isCashflowError ? (
         <DashboardEmptyState message="Cashflow is temporarily unavailable." />
       ) : data.cashflow?.monthly_data.length ? (
-        <div className="h-56 w-full">
+        <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data.cashflow.monthly_data} barGap={8}>
+            <BarChart data={data.cashflow.monthly_data} barGap={6}>
               <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 6" />
               <XAxis
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                 dy={8}
               />
               <Tooltip
@@ -212,11 +248,10 @@ const BalancePanel = ({ data, states }: { data: DashboardData; states: Dashboard
                   borderRadius: '12px',
                   background: 'var(--popover)',
                   color: 'var(--popover-foreground)',
-                  boxShadow: 'var(--shadow-panel)',
                 }}
               />
-              <Bar dataKey="income" name="Income" fill="var(--brand)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="expenses" name="Expenses" fill="#b46d64" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="income" name="Income" fill="var(--chart-1)" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="expenses" name="Expenses" fill="var(--chart-4)" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -304,13 +339,13 @@ const ScheduledCard = ({
   isEmpty: boolean;
   children: ReactNode;
 }) => (
-  <div className="min-h-72 rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
+  <div className="min-h-72 rounded-2xl border border-border bg-card p-5">
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2.5">
         <span className="grid h-9 w-9 place-items-center rounded-xl bg-muted text-foreground">
           <Icon className="h-4 w-4" />
         </span>
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+        <h3 className="text-base font-semibold text-foreground">{title}</h3>
       </div>
       <Link to={href} className="text-xs font-semibold text-brand hover:underline">
         View all
@@ -335,11 +370,11 @@ const ScheduledCard = ({
 );
 
 const VendorPanel = ({ data, states }: { data: DashboardData; states: DashboardStates }) => (
-  <section className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
+  <section className="rounded-2xl border border-border bg-card p-5">
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2.5">
         <Users className="h-5 w-5 text-brand" />
-        <h2 className="text-sm font-semibold text-foreground">Vendors and payees</h2>
+        <h2 className="text-base font-semibold text-foreground">Vendors and payees</h2>
       </div>
       <Link to="/vendors" className="text-xs font-semibold text-brand hover:underline">
         Manage
@@ -403,7 +438,7 @@ const CreditCardPanel = ({
       {states.isCreditCardsLoading ? (
         <Skeleton className="mt-3 aspect-[1.58/1] w-full rounded-3xl" />
       ) : creditCard ? (
-        <div className="relative mt-3 aspect-[1.58/1] overflow-hidden rounded-3xl bg-[#1f4ae0] p-6 text-white shadow-xl shadow-brand/20">
+        <div className="relative mt-3 aspect-[1.58/1] overflow-hidden rounded-3xl bg-spotlight p-6 text-spotlight-foreground">
           <div className="absolute -top-16 -right-12 h-48 w-48 rounded-full border-[36px] border-white/10" />
           <div className="relative flex h-full flex-col justify-between">
             <div className="flex items-start justify-between">
@@ -451,7 +486,7 @@ const CreditCardPanel = ({
 };
 
 const RecentTransactions = ({ data, states }: { data: DashboardData; states: DashboardStates }) => (
-  <section className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]">
+  <section className="rounded-2xl border border-border bg-card p-5">
     <div className="flex items-center justify-between gap-3">
       <SectionHeading id="recent-transactions-title" title="Recent activity" />
       <Link to="/transactions" className="text-xs font-semibold text-brand hover:underline">
@@ -486,9 +521,7 @@ const RecentTransactions = ({ data, states }: { data: DashboardData; states: Das
                     <span
                       className={cn(
                         'grid h-9 w-9 shrink-0 place-items-center rounded-xl',
-                        isIncome
-                          ? 'bg-pastel-green text-positive'
-                          : 'bg-pastel-peach text-[#a15e48]'
+                        isIncome ? 'bg-pastel-green text-positive' : 'bg-pastel-peach text-brand'
                       )}
                     >
                       {isIncome ? (
@@ -553,7 +586,7 @@ const StatusLabel = ({
 };
 
 const SectionHeading = ({ id, title }: { id: string; title: string }) => (
-  <h2 id={id} className="text-sm font-semibold tracking-[-0.015em] text-foreground">
+  <h2 id={id} className="text-base font-semibold tracking-[-0.015em] text-foreground">
     {title}
   </h2>
 );

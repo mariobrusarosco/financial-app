@@ -52,7 +52,7 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
               <Link
                 to="/accounts/$slug/credit-card/$creditCardId"
                 params={{ slug: params.slug, creditCardId: creditCard.id }}
-                className="group relative block aspect-[1.58/1] overflow-hidden rounded-3xl bg-[#1f4ae0] p-5 text-white shadow-lg shadow-brand/15 transition-transform hover:-translate-y-1"
+                className="group relative block aspect-[1.58/1] overflow-hidden rounded-3xl bg-spotlight p-5 text-spotlight-foreground transition-transform hover:-translate-y-1"
               >
                 <span className="absolute -top-14 -right-12 h-44 w-44 rounded-full border-[32px] border-white/10" />
                 <div className="relative flex h-full flex-col justify-between">

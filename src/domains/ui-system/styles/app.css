@@ -18,6 +18,8 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-soft: var(--brand-soft);
+  --color-spotlight: var(--spotlight);
+  --color-spotlight-foreground: var(--spotlight-foreground);
   --color-positive: var(--positive);
   --color-warning: var(--warning);
   --color-pastel-blue: var(--pastel-blue);
@@ -87,6 +89,9 @@
   --brand-foreground: #ffffff;
   /* Reference coral, for decoration and chart highlights only */
   --brand-soft: #e97877;
+  /* Deep purple for hero surfaces (credit card visuals, highlight panels) */
+  --spotlight: #655097;
+  --spotlight-foreground: #ffffff;
   --secondary: #f1eef7;
   --secondary-foreground: #514080;
   --card: #ffffff;
@@ -148,6 +153,8 @@
   --brand: #ef8a88;
   --brand-foreground: #1a0b0b;
   --brand-soft: #e97877;
+  --spotlight: #3d3163;
+  --spotlight-foreground: #f4f4f7;
   --secondary: #262234;
   --secondary-foreground: #e6e1f5;
   --muted: #20202b;

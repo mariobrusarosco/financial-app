@@ -55,7 +55,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[16rem_18rem_minmax(0,1fr)]">
         <div
-          className="flex min-h-64 flex-col justify-between rounded-2xl bg-[#2b2865] p-5 text-white shadow-lg shadow-primary/10"
+          className="flex min-h-64 flex-col justify-between rounded-2xl bg-spotlight p-5 text-spotlight-foreground"
           data-ui="account-overview-balance"
         >
           <div className="flex items-center justify-between gap-3">

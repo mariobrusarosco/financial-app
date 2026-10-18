@@ -64,7 +64,7 @@ export const EditableTransactionsTable = ({
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Editable Transactions</h2>
           {selectedTransactions.size > 0 && (
-            <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+            <span className="rounded-full border border-accent-foreground/20 bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
               {selectedTransactions.size} selected
             </span>
           )}
@@ -202,15 +202,15 @@ export const EditableTransactionsTable = ({
                       <span
                         className={
                           transaction.is_paid
-                            ? 'rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800'
-                            : 'rounded-full bg-orange-100 px-2.5 py-1 text-xs font-medium text-orange-800'
+                            ? 'rounded-full bg-pastel-green px-2.5 py-1 text-xs font-medium text-positive'
+                            : 'rounded-full bg-warning/15 px-2.5 py-1 text-xs font-medium text-warning'
                         }
                       >
                         {transaction.is_paid ? 'Paid' : 'Pending'}
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <span className="font-semibold tabular-nums text-gray-900">
+                      <span className="font-semibold tabular-nums text-foreground">
                         {formatCurrencyAmount(transaction.amount)}
                       </span>
                     </TableCell>

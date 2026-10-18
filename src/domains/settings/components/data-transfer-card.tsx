@@ -196,7 +196,7 @@ export const DataTransferCard = () => {
 
           {exportMutation.isSuccess && exportMutation.data && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <CheckCircle2 className="h-4 w-4 text-positive" />
               <span>
                 Exported {exportMutation.data.row_count} rows (
                 {((exportMutation.data.file_size || 0) / 1024).toFixed(2)} KB)
@@ -260,8 +260,8 @@ export const DataTransferCard = () => {
             <div
               className={`flex items-start gap-2 text-sm p-3 rounded-md ${
                 validateMutation.data.valid
-                  ? 'bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200'
-                  : 'bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200'
+                  ? 'bg-pastel-green text-positive'
+                  : 'bg-destructive/10 text-destructive'
               }`}
             >
               {validateMutation.data.valid ? (
@@ -283,7 +283,7 @@ export const DataTransferCard = () => {
           )}
 
           {importMutation.isSuccess && importMutation.data && (
-            <div className="flex items-start gap-2 text-sm p-3 rounded-md bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200">
+            <div className="flex items-start gap-2 text-sm p-3 rounded-md bg-pastel-green text-positive">
               <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-medium">Import completed</p>

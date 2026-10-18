@@ -49,7 +49,7 @@ export const CreditCardHeading = ({ creditCard, currency }: CreditCardHeadingPro
           <CreditCard className="h-6 w-6 text-primary" />
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-semibold tracking-[-0.035em] text-foreground">
+          <h1 className="truncate text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
             {creditCard?.name}
           </h1>
           {metaItems.length > 0 && (

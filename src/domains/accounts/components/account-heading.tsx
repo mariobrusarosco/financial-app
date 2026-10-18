@@ -59,7 +59,7 @@ const AccountHeading = ({ slug }: AccountHeadingProps) => {
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             {account?.broker?.name ?? 'Bank account'}
           </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-[-0.035em] text-foreground sm:text-3xl">
+          <h1 className="mt-1 text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
             {account?.name}
           </h1>
         </div>
