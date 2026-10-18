@@ -1,8 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { CASHFLOW_VIEW_QUERY_KEYS } from '@/domains/cashflow/api/keys';
 import { cashflowViewsApi } from '@/domains/cashflow/api/cashflow-views.api';
 import type {
+  I_CashflowViewGroupTransactionsParams,
   I_CashflowViewPayload,
   I_CashflowViewReportParams,
   I_CashflowViewUpdatePayload,
@@ -66,6 +67,22 @@ export const useCashflowViewSummary = (
     queryKey: CASHFLOW_VIEW_QUERY_KEYS.summary(viewId ?? '', params),
     queryFn: () => cashflowViewsApi.getSummary(viewId!, params),
     enabled: !!viewId,
+    retry: retryUnlessClientError,
+  });
+
+// `groupId: null` → expenses that aren't in any group of the view
+export const useCashflowViewGroupTransactions = (
+  viewId: string,
+  groupId: string | null,
+  params: I_CashflowViewGroupTransactionsParams,
+  { enabled = true }: { enabled?: boolean } = {}
+) =>
+  useQuery({
+    queryKey: CASHFLOW_VIEW_QUERY_KEYS.groupTransactions(viewId, groupId, params),
+    queryFn: () => cashflowViewsApi.getGroupTransactions(viewId, groupId, params),
+    enabled,
+    // Keep the current page on screen while the next one loads
+    placeholderData: keepPreviousData,
     retry: retryUnlessClientError,
   });
 

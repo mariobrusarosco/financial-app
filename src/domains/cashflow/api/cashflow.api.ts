@@ -23,7 +23,7 @@ const toCashflowSummary = (summary: I_CashflowSummaryResponse): I_CashflowSummar
 
 export const cashflowApi = {
   getSummary: async (filters: I_CashflowFilter): Promise<I_CashflowSummary> => {
-    const response = await apiClient.get<I_CashflowSummaryResponse>('/analytics/cashflow', {
+    const response = await apiClient.get<I_CashflowSummaryResponse>('/cashflow', {
       params: filters,
     });
 

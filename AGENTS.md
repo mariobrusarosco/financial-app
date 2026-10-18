@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to coding agents (Claude Code, Codex) when working with code in this repository. Claude Code loads it through `CLAUDE.md`.
 
 ## Core Mandates
 
@@ -26,18 +26,48 @@ current codebase.
 - `yarn lint:fix` - Auto-fix linting issues
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check code formatting
+- `yarn test` - Run tests once
+- `yarn test:watch` - Run tests in watch mode
+- `yarn test:ui` - Run tests with UI interface
+- `yarn test:coverage` - Run tests with coverage report
+
+## Technology Stack
+
+- TanStack Start (full-stack React) with TanStack Router file-based routing
+- shadcn/ui (Radix UI + Tailwind CSS v4), Lucide React icons
+- React Query for server state, React Context for local state
+- Axios with centralized configuration
+- Vitest + Testing Library; Playwright for E2E
 
 ## Domain-Based Architecture
 
 The codebase uses domain-based architecture organized in `src/domains/`:
 
-## System Domains
+### Core Domains
+
+- `accounts/` - Bank accounts, their transactions, income/expenses, and linked credit cards
+- `credit-cards/` - Credit cards, invoices, and statement upload/refinement
+- `transactions/` - Transaction listing, editing, and bulk updates
+- `cashflow/` - Cashflow screens and saved Cashflow views
+- `installments/` - Installment plans and upcoming installments
+- `subscriptions/` - Recurring subscriptions
+- `tags/` - Transaction tags (replaced categories)
+- `vendors/` - Vendor management
+- `broker/` - Investment broker management
+- `investments/` - Investment tracking and data input
+- `dashboard/` - Main dashboard views
+- `settings/` - Settings screen (profile, preferences, tags, vendors, data transfer)
+- `data-transfer/` - Data export/import API, used from settings
+- `auth/` - Login, registration, sessions, and token refresh
+- `aggregations/` - Empty scaffold, no code yet
+
+### System Domains
 
 - `ui-system/` - All UI components, themes, and design system
 - `global/` - Shared utilities, types, and error handling
 - `testing/` - Test utilities and mock data
 
-## Domain Structure
+### Domain Structure
 
 Each domain follows this pattern:
 
@@ -54,6 +84,22 @@ domain-name/
 
 ## Coding Style
 
+- **File Imports**: Always use absolute imports with the `@/` prefix (see Aliases below).
+- **File Naming**: All files use `kebab-case`. Hooks: `use-hook-name.ts`. Types: `types-and-interfaces.ts`.
+- **Type Imports**: Always import types with the `type` keyword: `import type { MyType } from './types'`
+- **Formatting**: The project uses Prettier for automatic code formatting.
+
+### API Type Naming Convention
+
+Also documented in `README.md`.
+
+- `I_[Resource]Response` - Single resource FROM backend (GET /resource/:id)
+- `I_[Resource]Payload` - Single resource TO backend (POST/PUT /resource)
+- `I_[Resources]Response` - Collection FROM backend (GET /resources)
+- `I_[Resources]Payload` - Collection TO backend (bulk operations)
+
+Examples: `I_TransactionResponse`, `I_TransactionPayload`, `I_TransactionsResponse`, `I_TransactionsPayload`.
+
 ### Component and Hooks Creation
 
 Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for more information.
@@ -63,9 +109,6 @@ Refer to [Component Lifecycle](docs/style-guide/components-lifecycle.md) for mor
 To avoid duplicated rules across files, use these as the single sources of truth:
 
 - [Code Taste](docs/style-guide/code-taste.md) for tradeoff decisions
-- [Path Aliases](docs/style-guide/path-aliases.md) for import rules
-- [Coding Conventions](docs/style-guide/coding-conventions.md) for naming and API type conventions
-- [Domain Architecture](docs/style-guide/domain-architecture.md) for domain structure
 - [Component Lifecycle](docs/style-guide/components-lifecycle.md) for UI-hook responsibilities
 
 #### Aliases (tsconfig.json)

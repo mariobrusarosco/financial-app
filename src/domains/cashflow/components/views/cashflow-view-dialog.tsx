@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Dialog,
@@ -74,7 +74,17 @@ export const CashflowViewDialog = ({
   const trimmedName = name.trim();
   const isGroupComplete = (group: I_DraftGroup) =>
     group.name.trim().length > 0 && group.tag_ids.length > 0;
-  const canSave = trimmedName.length > 0 && groups.every(isGroupComplete) && !isSaving;
+  // Deactivated tags still count in existing views, but the API rejects saving groups with them
+  const getInactiveTags = (group: I_DraftGroup) =>
+    findTags(group.tag_ids).filter(tag => !tag.is_active);
+  const willSendGroups = !view || !haveSameGroups(toGroupsPayload(groups), view.groups);
+  const hasBlockingInactiveTags =
+    willSendGroups && groups.some(group => getInactiveTags(group).length > 0);
+  const canSave =
+    trimmedName.length > 0 &&
+    groups.every(isGroupComplete) &&
+    !hasBlockingInactiveTags &&
+    !isSaving;
   const close = () => onOpenChange(false);
   const handleSaved = (savedView: I_CashflowViewResponse) => {
     onSaved?.(savedView);
@@ -84,10 +94,7 @@ export const CashflowViewDialog = ({
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!canSave) return;
-    const groupsPayload = groups.map(group => ({
-      name: group.name.trim(),
-      tag_ids: group.tag_ids,
-    }));
+    const groupsPayload = toGroupsPayload(groups);
 
     if (!view) {
       mutations.create.mutate(
@@ -116,7 +123,7 @@ export const CashflowViewDialog = ({
           <DialogHeader>
             <DialogTitle>{isEditing ? 'Edit view' : 'New view'}</DialogTitle>
             <DialogDescription>
-              A view arranges your tags into groups. Each group shows the expenses with any of its
+              A view arranges your tags into groups. Each group shows the expenses with all of its
               tags.
             </DialogDescription>
           </DialogHeader>
@@ -166,6 +173,16 @@ export const CashflowViewDialog = ({
                   historicalTags={findTags(group.tag_ids)}
                   placeholder="Select tags…"
                 />
+                <InactiveTagsWarning
+                  tagNames={getInactiveTags(group).map(tag => tag.name)}
+                  onRemove={() =>
+                    updateGroup(group.key, {
+                      tag_ids: group.tag_ids.filter(
+                        tagId => !getInactiveTags(group).some(tag => tag.id === tagId)
+                      ),
+                    })
+                  }
+                />
               </div>
             ))}
             <Button
@@ -197,6 +214,36 @@ export const CashflowViewDialog = ({
     </Dialog>
   );
 };
+
+const InactiveTagsWarning = ({
+  tagNames,
+  onRemove,
+}: {
+  tagNames: string[];
+  onRemove: () => void;
+}) => {
+  if (tagNames.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-warning/10 px-3 py-2 text-xs text-warning">
+      <span className="flex items-center gap-1.5">
+        <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+        {tagNames.join(', ')} {tagNames.length === 1 ? 'is' : 'are'} inactive and can&apos;t be
+        saved in a group.
+      </span>
+      <button
+        type="button"
+        onClick={onRemove}
+        className="font-semibold underline-offset-2 hover:underline"
+      >
+        Remove inactive tags
+      </button>
+    </div>
+  );
+};
+
+const toGroupsPayload = (groups: I_DraftGroup[]): I_CashflowViewGroupPayload[] =>
+  groups.map(group => ({ name: group.name.trim(), tag_ids: group.tag_ids }));
 
 let draftGroupCounter = 0;
 

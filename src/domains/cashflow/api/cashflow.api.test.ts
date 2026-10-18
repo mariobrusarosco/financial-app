@@ -6,7 +6,7 @@ import { cashflowApi } from '@/domains/cashflow/api/cashflow.api';
 describe('cashflowApi.getSummary', () => {
   it('requests an account summary for the selected range and normalizes decimal strings', async () => {
     server.use(
-      http.get('*/analytics/cashflow', ({ request }) => {
+      http.get('*/cashflow', ({ request }) => {
         const url = new URL(request.url);
 
         expect(url.searchParams.get('account_id')).toBe('account-1');

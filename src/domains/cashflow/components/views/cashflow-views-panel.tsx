@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from '@tanstack/react-router';
 import { format, parseISO } from 'date-fns';
 import { Layers, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
@@ -12,8 +11,8 @@ import {
   DialogTitle,
 } from '@/domains/ui-system/components/dialog';
 import { cn } from '@/domains/ui-system/utils';
-import { useTags } from '@/domains/tags/hooks/use-tags';
 import { CashflowViewDialog } from '@/domains/cashflow/components/views/cashflow-view-dialog';
+import { CashflowViewGroup } from '@/domains/cashflow/components/views/cashflow-view-group';
 import {
   useCashflowViewOverlaps,
   useCashflowViews,
@@ -22,7 +21,6 @@ import {
 import type {
   I_CashflowViewReportParams,
   I_CashflowViewResponse,
-  I_CashflowViewSummaryResponse,
 } from '@/domains/cashflow/types/index';
 import {
   readLastViewId,
@@ -239,27 +237,39 @@ const ViewContent = ({
   onEdit: () => void;
 }) => {
   const summaryQuery = useCashflowViewSummary(view.id, params);
-  const {
-    tags: { query: tagsQuery },
-  } = useTags({ includeInactive: true });
-  const tagName = (tagId: string) =>
-    tagsQuery.data?.find(tag => tag.id === tagId)?.name ?? 'Unknown tag';
-  const totals = toTotalsLookup(summaryQuery.data);
+  const totalsByGroupId = new Map(
+    (summaryQuery.data?.groups ?? []).map(group => [
+      group.group_id,
+      { total: Number(group.total), count: group.count },
+    ])
+  );
+  const ungrouped = {
+    total: Number(summaryQuery.data?.ungrouped.total ?? 0),
+    count: summaryQuery.data?.ungrouped.count ?? 0,
+  };
   const maxGroupTotal = Math.max(
     0,
-    ...view.groups.map(group => totals.groups.get(group.id)?.total ?? 0)
+    ungrouped.total,
+    ...view.groups.map(group => totalsByGroupId.get(group.id)?.total ?? 0)
+  );
+  const ungroupedLine = (
+    <CashflowViewGroup
+      viewId={view.id}
+      total={ungrouped.total}
+      count={ungrouped.count}
+      barWidth={maxGroupTotal > 0 ? (ungrouped.total / maxGroupTotal) * 100 : 0}
+      params={params}
+    />
   );
 
-  if (view.groups.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
-        This view has no groups yet.{' '}
-        <button type="button" onClick={onEdit} className="font-medium text-brand hover:underline">
-          Add a group
-        </button>
-      </div>
-    );
-  }
+  const noGroupsHint = (
+    <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+      This view has no groups yet.{' '}
+      <button type="button" onClick={onEdit} className="font-medium text-brand hover:underline">
+        Add a group
+      </button>
+    </div>
+  );
 
   if (summaryQuery.isLoading) {
     return (
@@ -276,95 +286,39 @@ const ViewContent = ({
     );
   }
 
+  if (view.groups.length === 0) {
+    return (
+      <div className="space-y-3">
+        {noGroupsHint}
+        <ul>{ungroupedLine}</ul>
+      </div>
+    );
+  }
+
   return (
-    <ul className="space-y-5">
-      {view.groups.map(group => {
-        const groupTotals = totals.groups.get(group.id) ?? { total: 0, count: 0 };
-        return (
-          <li key={group.id} className="space-y-1">
-            <TotalLine
-              label={group.name}
-              total={groupTotals.total}
-              count={groupTotals.count}
-              barWidth={maxGroupTotal > 0 ? (groupTotals.total / maxGroupTotal) * 100 : 0}
-              search={{ ...transactionsSearch(params), tag_ids: group.tag_ids, tag_match: 'any' }}
-              isGroup
+    <div className="space-y-2">
+      <ul className="space-y-2">
+        {view.groups.map(group => {
+          const { total, count } = totalsByGroupId.get(group.id) ?? { total: 0, count: 0 };
+          return (
+            <CashflowViewGroup
+              // Group ids change after each save, which also collapses the group
+              key={group.id}
+              viewId={view.id}
+              group={group}
+              total={total}
+              count={count}
+              barWidth={maxGroupTotal > 0 ? (total / maxGroupTotal) * 100 : 0}
+              params={params}
             />
-            <ul className="space-y-0.5 pl-5">
-              {group.tag_ids.map(tagId => {
-                const tagTotals = totals.tags.get(`${group.id}:${tagId}`) ?? {
-                  total: 0,
-                  count: 0,
-                };
-                return (
-                  <li key={tagId}>
-                    <TotalLine
-                      label={tagName(tagId)}
-                      total={tagTotals.total}
-                      count={tagTotals.count}
-                      barWidth={maxGroupTotal > 0 ? (tagTotals.total / maxGroupTotal) * 100 : 0}
-                      search={{ ...transactionsSearch(params), tag_ids: [tagId] }}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </li>
-        );
-      })}
-    </ul>
+          );
+        })}
+      </ul>
+      {/* Its own total; never added to the groups (they can share expenses) */}
+      <ul className="border-t border-border/70 pt-2">{ungroupedLine}</ul>
+    </div>
   );
 };
-
-const TotalLine = ({
-  label,
-  total,
-  count,
-  barWidth,
-  search,
-  isGroup = false,
-}: {
-  label: string;
-  total: number;
-  count: number;
-  barWidth: number;
-  search: I_TransactionsLinkSearch;
-  isGroup?: boolean;
-}) => (
-  <Link
-    to="/transactions"
-    search={search}
-    className="block space-y-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/50"
-  >
-    <div className="flex items-center justify-between gap-3 text-sm">
-      <span className={cn('truncate', isGroup ? 'font-semibold text-primary' : 'text-foreground')}>
-        {label}
-      </span>
-      <span
-        className={cn(
-          'shrink-0',
-          isGroup ? 'font-semibold text-destructive' : 'text-muted-foreground'
-        )}
-      >
-        {currencyFormatter.format(total)}
-      </span>
-    </div>
-    <div className="flex items-center gap-3">
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-        <div
-          className={cn(
-            'h-full rounded-full transition-all duration-500',
-            isGroup ? 'bg-destructive/60' : 'bg-destructive/25'
-          )}
-          style={{ width: `${barWidth}%` }}
-        />
-      </div>
-      <span className="w-24 shrink-0 text-right text-xs text-muted-foreground">
-        {count} {count === 1 ? 'transaction' : 'transactions'}
-      </span>
-    </div>
-  </Link>
-);
 
 const OverlapsDialog = ({
   open,
@@ -430,33 +384,4 @@ const OverlapsDialog = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-interface I_TransactionsLinkSearch {
-  tag_ids: string[];
-  tag_match?: 'all' | 'any';
-  movement_type: 'expense';
-  date_from?: string;
-  date_to?: string;
-}
-
-const transactionsSearch = (params: I_CashflowViewReportParams) => ({
-  movement_type: 'expense' as const,
-  date_from: params.date_from,
-  date_to: params.date_to,
-});
-
-// Totals by group id, and by "groupId:tagId" for the tags inside each group
-const toTotalsLookup = (summary?: I_CashflowViewSummaryResponse) => {
-  const groups = new Map<string, { total: number; count: number }>();
-  const tags = new Map<string, { total: number; count: number }>();
-
-  summary?.groups.forEach(group => {
-    groups.set(group.group_id, { total: Number(group.total), count: group.count });
-    group.tags.forEach(tag =>
-      tags.set(`${group.group_id}:${tag.tag_id}`, { total: Number(tag.total), count: tag.count })
-    );
-  });
-
-  return { groups, tags };
 };

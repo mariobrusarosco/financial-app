@@ -40,14 +40,15 @@ View "By kind"                    View "By person"
 
 ### Task 1 - Plan (this doc) [x]
 
-### Task 2 - Backend: views API (see "Backend Contract") [ ]
+### Task 2 - Backend: views API (see "Backend Contract") [x]
+> Shipped in backend commit `8aebec2` under `/api/v1/cashflow/views`. The monthly report moved to `GET /api/v1/cashflow` (`/analytics/cashflow` is deprecated). The frontend uses both new paths.
 - Owned by the backend session. Also removes `/tag-groups`.
 
 ### Task 3 - Frontend: remove tag groups [x]
 - Delete the groups card/dialog on `/tags`, the "By Group" card in Cashflow, and the tag-groups API, hooks, types, keys, utils, and tests.
 - The tag-deactivation warning switches from groups to views.
 
-### Task 4 - Frontend: views in Cashflow → Expenses [x] (verify once the backend ships)
+### Task 4 - Frontend: views in Cashflow → Expenses [x]
 - View switcher (tabs), plus New view and Edit/Delete for the current view.
 - View editor dialog: view name, plus a list of groups (each with a name and tags), add/remove groups.
 - View content: each group with its total and count, its tags listed below with their totals. Click-through to Transactions.
@@ -55,8 +56,8 @@ View "By kind"                    View "By person"
 - Built against the contract below. Verify once the backend ships.
 
 ## Implementation Notes
-- **Code:** types in `cashflow/types/index.ts`, `cashflow/api/cashflow-views.api.ts`, `cashflow/api/keys.ts` (`CASHFLOW_VIEW_QUERY_KEYS`), `cashflow/hooks/use-cashflow-views.ts` (list + create/update/delete, summary, overlaps), `cashflow/utils/cashflow-views.ts` (+ tests).
-- **UI:** `cashflow/components/views/cashflow-views-panel.tsx` (tabs, group and tag totals, edit/delete, overlaps) and `cashflow-view-dialog.tsx` (view name + groups editor). The panel replaced the "By Group" card in Cashflow → Expenses.
+- **Code:** types in `cashflow/types/index.ts`, `cashflow/api/cashflow/views.api.ts`, `cashflow/api/keys.ts` (`CASHFLOW_VIEW_QUERY_KEYS`), `cashflow/hooks/use-cashflow-views.ts` (list + create/update/delete, summary, overlaps), `cashflow/utils/cashflow/views.ts` (+ tests).
+- **UI:** `cashflow/components/views/cashflow/views-panel.tsx` (tabs, group and tag totals, edit/delete, overlaps) and `cashflow-view-dialog.tsx` (view name + groups editor). The panel replaced the "By Group" card in Cashflow → Expenses.
 - **Editing** sends only what changed. `groups` is sent as the full list, and only if anything in it changed.
 - **Last opened view** is stored in `localStorage` (`cashflow:last-view-id`), and falls back to the first view if unavailable.
 - **Tag deactivation warning** on `/tags` now lists the views and groups that use the tag (`View › Group`).
@@ -64,9 +65,9 @@ View "By kind"                    View "By person"
 ## Backend Contract (proposal)
 All endpoints are under `/api/v1`. Amounts are decimal strings (`"1240.00"`). Dates are inclusive and work the same as the transactions list. Ignored transactions are skipped, like the rest of Cashflow.
 
-**Resource:** `/cashflow-views`
+**Resource:** `/cashflow/views`
 ```jsonc
-// GET /cashflow-views → the user's views, ordered by display_order, then name
+// GET /cashflow/views → the user's views, ordered by display_order, then name
 [
   {
     "id": "uuid",
@@ -80,17 +81,17 @@ All endpoints are under `/api/v1`. Amounts are decimal strings (`"1240.00"`). Da
   }
 ]
 
-// POST   /cashflow-views       { "name": "…", "groups": [{ "name": "…", "tag_ids": ["…"] }] } → 201, same shape
-// PATCH  /cashflow-views/:id   any of name, display_order, groups → 200, same shape
+// POST   /cashflow/views       { "name": "…", "groups": [{ "name": "…", "tag_ids": ["…"] }] } → 201, same shape
+// PATCH  /cashflow/views/:id   any of name, display_order, groups → 200, same shape
 //        `groups`, when sent, REPLACES the whole list (order = array order). Omitted fields are unchanged.
-// DELETE /cashflow-views/:id   → 204
+// DELETE /cashflow/views/:id   → 204
 ```
 
 **Validation (422, with an `error.code` like today):** view name required. Each group needs a name and at least one tag. Tags must be the user's own and active. A tag can't appear twice in the **same** group, but **can** appear in different groups. Limits: 50 groups per view, 20 tags per group.
 
 **Totals for one view:**
 ```jsonc
-// GET /cashflow-views/:id/summary?date_from=…&date_to=…&movement_type=expense
+// GET /cashflow/views/:id/summary?date_from=…&date_to=…&movement_type=expense
 {
   "groups": [
     {
@@ -109,7 +110,7 @@ Every group and tag of the view is included (zero matches come back as `"0.00"` 
 
 **Overlaps for one view:**
 ```jsonc
-// GET /cashflow-views/:id/overlaps?date_from=…&date_to=…&movement_type=expense
+// GET /cashflow/views/:id/overlaps?date_from=…&date_to=…&movement_type=expense
 // Expenses that fall into 2+ groups of this view
 [ { "transaction_id": "uuid", "description": "Pharmacy", "amount": "100.00",
     "date": "…", "group_ids": ["uuid-a", "uuid-b"] } ]
