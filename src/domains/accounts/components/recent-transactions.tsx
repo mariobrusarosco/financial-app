@@ -3,7 +3,7 @@ import { Button } from '@/domains/ui-system/components/button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useAccountRecentTransactions } from '@/domains/transactions/hooks/use-account-transactions';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 
 interface RecentTransactionsProps {
   accountId?: string;
@@ -46,14 +46,11 @@ export function RecentTransactions({ accountId }: RecentTransactionsProps) {
           <p className="text-muted-foreground">No transactions found</p>
         </div>
       ) : (
-        transactions.map(transaction => (
-          <UnifiedTransactionItem
-            key={transaction.id}
-            transaction={transaction}
-            mode="default"
-            isSelected={false}
-          />
-        ))
+        <ul className="space-y-2">
+          {transactions.map(transaction => (
+            <TransactionRow key={transaction.id} transaction={transaction} variant="readonly" />
+          ))}
+        </ul>
       )}
       <Button variant="outline" className="w-full" asChild>
         <Link to="/transactions">

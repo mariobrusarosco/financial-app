@@ -108,7 +108,7 @@ export const InstallmentPlanList = ({
         </div>
       </div>
 
-      <ul className="space-y-3 grid grid-cols-2 gap-4">
+      <ul className="grid items-start gap-4 xl:grid-cols-2">
         {plans.map(plan => (
           <InstallmentPlanItem
             key={plan.id}

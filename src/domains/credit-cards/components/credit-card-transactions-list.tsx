@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { useCreditCardTransactions } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
-import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2 } from 'lucide-react';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
 import { Route } from '@/routes/(auth)/route';
@@ -39,14 +38,8 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     isPlaceholderData,
   } = useCreditCardTransactions(creditCardId, mergedParams);
 
-  const { mutate: deleteTransaction } = useDeleteTransaction();
-
   const transactions = response?.data || [];
   const meta = response?.meta;
-
-  const handleDelete = (transaction: { id: string }) => {
-    deleteTransaction(transaction.id);
-  };
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -105,15 +98,11 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
         <div className={`space-y-2 ${isPlaceholderData ? 'opacity-50 transition-opacity' : ''}`}>
           {transactions && transactions.length > 0 ? (
             <>
-              {transactions.map(transaction => (
-                <UnifiedTransactionItem
-                  key={transaction.id}
-                  transaction={transaction}
-                  mode="default"
-                  isSelected={false}
-                  onDelete={handleDelete}
-                />
-              ))}
+              <ul className="space-y-2">
+                {transactions.map(transaction => (
+                  <TransactionRow key={transaction.id} transaction={transaction} />
+                ))}
+              </ul>
 
               {meta && meta.total > meta.per_page && (
                 <div className="pt-4">

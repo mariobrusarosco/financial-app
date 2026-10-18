@@ -1,3 +1,4 @@
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 import { useState } from 'react';
 import { useEditableTransactions } from '@/domains/transactions/hooks/use-editable-transactions';
 import type { I_Transaction } from '@/domains/transactions/types/types-and-interfaces';
@@ -210,7 +211,7 @@ export const EditableTransactionsTable = ({
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="font-semibold tabular-nums text-gray-900">
-                        ${parseFloat(transaction.amount).toFixed(2)}
+                        {formatCurrencyAmount(transaction.amount)}
                       </span>
                     </TableCell>
                     <TableCell>

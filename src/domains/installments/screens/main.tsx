@@ -6,8 +6,6 @@ import { PageHeader } from '@/domains/global/components/page-header';
 import { Calendar } from 'lucide-react';
 import { InstallmentsSummary } from '@/domains/installments/components/installments-summary';
 import { InstallmentsChart } from '@/domains/installments/components/installments-chart';
-import { InstallmentsCategoryBreakdown } from '@/domains/installments/components/installments-category-breakdown';
-import { useCategories } from '@/domains/categories/hooks/use-categories';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -19,7 +17,6 @@ export const InstallmentsMainScreen = () => {
 
   const { data: installmentPlansData, states: installmentPlansStates } =
     useInstallmentPlans(params);
-  const { data: categories = [], isLoading: isCategoriesLoading } = useCategories();
   const { plans, totalCount, page, perPage } = installmentPlansData;
   const {
     isLoading: isPlansLoading,
@@ -38,7 +35,7 @@ export const InstallmentsMainScreen = () => {
     });
   };
 
-  const isLoading = isPlansLoading || isCategoriesLoading;
+  const isLoading = isPlansLoading;
 
   return (
     <div className="space-y-7 pb-8">
@@ -46,10 +43,7 @@ export const InstallmentsMainScreen = () => {
 
       <InstallmentsSummary plans={plans} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <InstallmentsChart plans={plans} />
-        <InstallmentsCategoryBreakdown plans={plans} categories={categories} />
-      </div>
+      <InstallmentsChart plans={plans} />
 
       <section
         data-ui="installments-plans-section"

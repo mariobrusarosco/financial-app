@@ -7,10 +7,10 @@ const accountExpensesSearchSchema = z.object({
   per_page: z.number().int().positive().optional(),
   amount_min: z.number().optional(),
   amount_max: z.number().optional(),
-  category: z.string().optional(),
+  tag_ids: z.array(z.string()).optional(),
   description_contains: z.string().optional(),
   is_paid: z.boolean().optional(),
-  sort_by: z.enum(['date', 'amount', 'created_at', 'category']).optional(),
+  sort_by: z.enum(['date', 'amount', 'created_at']).optional(),
   sort_order: z.enum(['asc', 'desc']).optional(),
 });
 

@@ -17,7 +17,7 @@ import {
 import { ChevronDown, Filter, X } from 'lucide-react';
 import { useDebouncedControlledValue } from '@/domains/global/hooks/use-debounced-controlled-value';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
-import { HierarchicalCategorySelector } from '@/domains/transactions/components/hierarchical-category-selector';
+import { TagSelector } from '@/domains/tags/components/tag-selector';
 
 interface AccountTransactionFiltersProps {
   params: I_AccountTransactionsParams;
@@ -65,7 +65,7 @@ export const AccountTransactionFilters = ({
     () =>
       Boolean(
         params.description_contains ||
-          params.category ||
+          (params.tag_ids?.length ?? 0) > 0 ||
           params.amount_min !== undefined ||
           params.amount_max !== undefined ||
           params.is_paid !== undefined ||
@@ -100,9 +100,9 @@ export const AccountTransactionFilters = ({
               onChange={value => updateParam('description_contains', value)}
             />
 
-            <CategoryFilter
-              value={params.category || ''}
-              onChange={value => updateParam('category', value)}
+            <TagFilter
+              value={params.tag_ids ?? []}
+              onChange={value => updateParam('tag_ids', value.length > 0 ? value : undefined)}
             />
 
             {showMovementTypeFilter && (
@@ -171,29 +171,28 @@ const SearchFilter = ({
   );
 };
 
-const CategoryFilter = ({
+const TagFilter = ({
   value,
   onChange,
 }: {
-  value: string;
-  onChange: (value: string) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
 }) => {
   return (
-    <div data-ui="category-filter" className="flex min-w-0 flex-col justify-between gap-2">
-      <Label className="text-sm font-medium">Category</Label>
+    <div data-ui="tag-filter" className="flex min-w-0 flex-col justify-between gap-2">
+      <Label className="text-sm font-medium">Tags</Label>
       <div className="flex items-center gap-2">
-        <HierarchicalCategorySelector
+        <TagSelector
           value={value}
           onValueChange={onChange}
-          placeholder="Filter by Category"
+          placeholder="Filter by tags"
           className="w-full bg-card"
-          size="sm"
         />
-        {value && (
+        {value.length > 0 && (
           <button
             type="button"
             className="text-xs font-medium text-brand"
-            onClick={() => onChange('')}
+            onClick={() => onChange([])}
           >
             Clear
           </button>
@@ -355,7 +354,6 @@ const SortingFilter = ({
             <SelectItem value="date">Date</SelectItem>
             <SelectItem value="amount">Amount</SelectItem>
             <SelectItem value="created_at">Created</SelectItem>
-            <SelectItem value="category">Category</SelectItem>
           </SelectContent>
         </Select>
 

@@ -26,8 +26,7 @@ The response should be a valid JSON object with the following structure:
     {
       "date": string,     // Date of the transaction
       "description": string, // Description of the transaction
-      "amount": string,    // Amount of the transaction
-      "category": string  // Empty string if no category is found
+      "amount": string    // Amount of the transaction
     }
   ],
   "next_due_info": {      // Optional: Information about the next payment due

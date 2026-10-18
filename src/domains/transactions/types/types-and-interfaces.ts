@@ -1,3 +1,5 @@
+import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
+
 export type T_TransactionType = 'expense' | 'income' | 'investment' | 'transfer';
 
 // Single transaction payload (data going TO backend)
@@ -12,7 +14,7 @@ export interface I_TransactionPayload {
   is_paid: boolean;
   ignored: boolean;
   movement_type: T_TransactionType;
-  category_id?: string | null; // Foreign key to user_categories
+  tag_ids?: string[];
 }
 
 // Legacy alias for backward compatibility - will be removed
@@ -35,7 +37,7 @@ export interface I_BulkTransactionRequest {
   amount: number;
   description: string;
   movement_type: T_TransactionType;
-  category_id?: string | null; // Foreign key to user_categories
+  tag_ids?: string[];
 }
 
 export interface I_BulkTransactionRequestPayload {
@@ -59,7 +61,7 @@ export interface I_BulkTransactionResponse {
 }
 
 export type T_BulkTransactionChanges =
-  | { category_id: string }
+  | { tag_ids: string[] }
   | { amount: number }
   | { date: string }
   | { description: string }
@@ -88,17 +90,8 @@ export interface I_TransactionResponse {
   amount: string;
   description: string;
   movement_type: T_TransactionType;
-  category?: string;
-  category_id?: string | null;
-  category_name?: string | null;
-  category_tree?: {
-    id: string;
-    name: string;
-    parent: {
-      id: string;
-      name: string;
-    } | null;
-  } | null;
+  tag_ids: string[];
+  tags: I_Tag[];
   subscription?: {
     // New
     name: string;
@@ -114,11 +107,13 @@ export interface I_AccountTransactionsParams {
   date_to?: string;
   amount_min?: number;
   amount_max?: number;
-  category?: string;
+  tag_ids?: string[];
+  tag_match?: 'all' | 'any';
+  exclude_tag_ids?: string[];
   description_contains?: string;
   movement_type?: T_TransactionType;
   is_paid?: boolean;
-  sort_by?: 'date' | 'amount' | 'created_at' | 'category';
+  sort_by?: 'date' | 'amount' | 'created_at';
   sort_order?: 'asc' | 'desc';
   include_credit_cards?: boolean;
   subscription_id?: string;

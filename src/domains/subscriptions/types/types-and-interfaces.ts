@@ -1,3 +1,5 @@
+import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
+
 export type T_BillingCycle = 'daily' | 'weekly' | 'monthly' | 'annually';
 
 export interface I_Subscription {
@@ -5,7 +7,6 @@ export interface I_Subscription {
   user_id: string;
   vendor_id: string;
   account_id: string;
-  category_id?: string;
   name: string;
   amount: number;
   currency: string; // Stays here for consistency with other entities
@@ -15,6 +16,8 @@ export interface I_Subscription {
   notes?: string;
   is_active: boolean;
   is_paid_this_cycle: boolean;
+  tag_ids: string[];
+  tags: I_Tag[];
   created_at: string;
   updated_at: string;
 }
@@ -22,7 +25,6 @@ export interface I_Subscription {
 export interface I_CreateSubscriptionRequest {
   vendor_id: string;
   account_id: string;
-  category_id?: string;
   name: string;
   amount: number;
   billing_cycle: T_BillingCycle;
@@ -30,12 +32,12 @@ export interface I_CreateSubscriptionRequest {
   end_date?: string; // ISO Date string
   notes?: string;
   is_active?: boolean;
+  tag_ids?: string[];
 }
 
 export interface I_UpdateSubscriptionRequest {
   vendor_id?: string;
   account_id?: string;
-  category_id?: string;
   name?: string;
   amount?: number;
   billing_cycle?: T_BillingCycle;
@@ -43,6 +45,8 @@ export interface I_UpdateSubscriptionRequest {
   end_date?: string; // ISO Date string
   notes?: string;
   is_active?: boolean;
+  // Replaces the whole set; omit to keep the current tags
+  tag_ids?: string[];
 }
 
 export interface I_SubscriptionResponse {
@@ -54,7 +58,6 @@ export interface I_SubscriptionSummary {
   yearly_projection: number;
   due_next_30_days: number;
   active_count: number;
-  category_breakdown: { name: string; amount: number }[];
   monthly_forecast: { month: string; amount: number }[];
 }
 

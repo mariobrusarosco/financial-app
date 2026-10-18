@@ -1,5 +1,5 @@
-import { useState, type ComponentType, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import { useState, type ComponentType } from 'react';
+import { Link, useLocation } from '@tanstack/react-router';
 import {
   ArrowRightLeft,
   BarChart3,
@@ -10,7 +10,6 @@ import {
   Moon,
   PiggyBank,
   Repeat2,
-  Search,
   Settings,
   Store,
   Sun,
@@ -30,7 +29,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
-import { Input } from '@/domains/ui-system/components/input';
 import { useTheme } from '@/domains/ui-system/hooks/use-theme';
 import { cn } from '@/domains/ui-system/utils/index';
 
@@ -193,44 +191,11 @@ export const Navigation = () => {
   );
 };
 
-export const AppTopBar = () => {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-
-  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const description = search.trim();
-
-    void navigate({
-      to: '/transactions',
-      search: {
-        page: 1,
-        per_page: 20,
-        sort_by: 'date',
-        sort_order: 'desc',
-        description_contains: description || undefined,
-      },
-    });
-  };
-
-  return (
-    <header className="hidden h-20 shrink-0 items-center justify-between gap-6 border-b border-border/70 bg-background px-6 md:flex lg:px-8">
-      <form className="relative w-full max-w-xl" role="search" onSubmit={handleSearch}>
-        <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="search"
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-          placeholder="Search transactions"
-          aria-label="Search transactions"
-          className="border-transparent bg-card pr-4 pl-10 shadow-[var(--shadow-panel)]"
-        />
-      </form>
-
-      <UserMenu showIdentity />
-    </header>
-  );
-};
+export const AppTopBar = () => (
+  <header className="hidden h-20 shrink-0 items-center justify-end gap-6 border-b border-border/70 bg-background px-6 md:flex lg:px-8">
+    <UserMenu showIdentity />
+  </header>
+);
 
 const Brand = ({ compact = false }: { compact?: boolean }) => (
   <Link to="/dashboard" className="flex min-w-0 items-center gap-3">

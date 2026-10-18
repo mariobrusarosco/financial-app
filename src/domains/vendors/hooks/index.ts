@@ -8,11 +8,12 @@ import type {
 } from '../types/types-and-interfaces';
 import { toast } from 'sonner';
 
-export const useVendors = (params?: I_VendorsParams) => {
+export const useVendors = (params?: I_VendorsParams, { enabled = true } = {}) => {
   return useQuery({
     queryKey: VENDORS_QUERY_KEYS.list(params),
     queryFn: () => vendorsApi.getVendors(params),
     placeholderData: previousData => previousData,
+    enabled,
   });
 };
 

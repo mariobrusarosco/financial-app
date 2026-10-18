@@ -17,8 +17,8 @@ export function CreditCardStatementUpload({ creditCardId }: CreditCardStatementU
   });
 
   return (
-    <Surface className="w-2/3" data-ui="credit-card-statement-upload">
-      <div className="space-y-4">
+    <Surface size="lg" className="min-w-0" data-ui="credit-card-statement-upload">
+      <div className="space-y-6">
         <InvoiceUploadProcess creditCardId={creditCardId} />
         {invoice && <InvoiceTransactionsRefinementProcess invoice={invoice} />}
       </div>

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { transactionsApi } from '../api/transactions.api';
 import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 import { GET_ALL_TRANSACTIONS_QUERY_KEY } from '../api/keys';
+import { invalidateAllTransactionRelatedQueries } from './use-update-transaction';
 
 export const useBulkDeleteTransactions = () => {
   const queryClient = useQueryClient();
@@ -53,27 +54,8 @@ export const useDeleteTransaction = () => {
     mutationFn: (transactionId: string) => transactionsApi.deleteTransaction(transactionId),
     onSuccess: () => {
       toast.success('Transaction deleted successfully');
-
-      // Partial key invalidation - invalidates ALL account transactions
-      // (we don't know which account this transaction belonged to from the API response)
-      void queryClient.invalidateQueries({
-        queryKey: ['account-transactions-paginated'],
-      });
-
-      // Invalidate all account details (balances may have changed)
-      void queryClient.invalidateQueries({
-        queryKey: ['accounts', 'account'],
-      });
-
-      // Invalidate all balance timelines
-      void queryClient.invalidateQueries({
-        queryKey: ['balance-points'],
-      });
-
-      // Invalidate active accounts list
-      void queryClient.invalidateQueries({
-        queryKey: ['accounts', 'active'],
-      });
+      // Refresh every list/summary that can show this transaction (account, all, credit cards…)
+      invalidateAllTransactionRelatedQueries(queryClient);
     },
     onError: error => {
       handleErrorWithToast(error, {

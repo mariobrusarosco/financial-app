@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/domains/ui-system/components/select';
-import { HierarchicalCategorySelector } from '@/domains/transactions/components/hierarchical-category-selector';
+import { TagSelector } from '@/domains/tags/components/tag-selector';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import { useBulkUpdateTransactions } from '@/domains/transactions/hooks/use-bulk-update-transactions';
 import type {
@@ -19,7 +19,7 @@ import type {
 } from '@/domains/transactions/types/types-and-interfaces';
 
 type T_BulkEditableField =
-  | 'category_id'
+  | 'tag_ids'
   | 'amount'
   | 'date'
   | 'description'
@@ -35,13 +35,13 @@ interface BulkTransactionActionsProps {
 }
 
 const FIELD_OPTIONS: { value: T_BulkEditableField; label: string }[] = [
-  { value: 'category_id', label: 'Category' },
+  { value: 'tag_ids', label: 'Tags' },
   { value: 'amount', label: 'Amount' },
   { value: 'date', label: 'Date' },
   { value: 'description', label: 'Description' },
   { value: 'movement_type', label: 'Movement type' },
   { value: 'is_paid', label: 'Payment status' },
-  { value: 'ignored', label: 'Cashflow visibility' },
+  { value: 'ignored', label: 'Ignored status' },
 ];
 
 const MOVEMENT_TYPE_OPTIONS: { value: T_TransactionType; label: string }[] = [
@@ -57,16 +57,18 @@ export const BulkTransactionActions = ({
   onClearSelection,
   onDeleteSelected,
 }: BulkTransactionActionsProps) => {
-  const [field, setField] = useState<T_BulkEditableField>('category_id');
+  const [field, setField] = useState<T_BulkEditableField>('tag_ids');
   const [value, setValue] = useState('');
+  const [tagIds, setTagIds] = useState<string[]>([]);
   const { mutate: updateTransactions, isPending: isUpdating } = useBulkUpdateTransactions();
 
-  const changes = useMemo(() => toBulkChanges(field, value), [field, value]);
+  const changes = useMemo(() => toBulkChanges(field, value, tagIds), [field, value, tagIds]);
   const isBusy = isUpdating || isDeleting;
 
   const handleFieldChange = (nextField: T_BulkEditableField) => {
     setField(nextField);
     setValue('');
+    setTagIds([]);
   };
 
   const handleApply = () => {
@@ -122,7 +124,13 @@ export const BulkTransactionActions = ({
         </Select>
 
         <div className="min-w-0 flex-1">
-          <BulkValueEditor field={field} value={value} onValueChange={setValue} />
+          <BulkValueEditor
+            field={field}
+            value={value}
+            tagIds={tagIds}
+            onValueChange={setValue}
+            onTagIdsChange={setTagIds}
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -163,16 +171,24 @@ export const BulkTransactionActions = ({
 interface BulkValueEditorProps {
   field: T_BulkEditableField;
   value: string;
+  tagIds: string[];
   onValueChange: (value: string) => void;
+  onTagIdsChange: (tagIds: string[]) => void;
 }
 
-const BulkValueEditor = ({ field, value, onValueChange }: BulkValueEditorProps) => {
-  if (field === 'category_id') {
+const BulkValueEditor = ({
+  field,
+  value,
+  tagIds,
+  onValueChange,
+  onTagIdsChange,
+}: BulkValueEditorProps) => {
+  if (field === 'tag_ids') {
     return (
-      <HierarchicalCategorySelector
-        value={value}
-        onValueChange={onValueChange}
-        placeholder="Choose category"
+      <TagSelector
+        value={tagIds}
+        onValueChange={onTagIdsChange}
+        placeholder="Choose tags"
         className="w-full"
       />
     );
@@ -244,9 +260,9 @@ const BulkValueEditor = ({ field, value, onValueChange }: BulkValueEditorProps) 
     <BooleanValueSelect
       value={value}
       onValueChange={onValueChange}
-      trueLabel="Ignore in cashflow"
-      falseLabel="Include in cashflow"
-      placeholder="Choose visibility"
+      trueLabel="Mark as ignored"
+      falseLabel="Mark as not ignored"
+      placeholder="Choose ignored status"
     />
   );
 };
@@ -279,8 +295,10 @@ const BooleanValueSelect = ({
 
 const toBulkChanges = (
   field: T_BulkEditableField,
-  value: string
+  value: string,
+  tagIds: string[]
 ): T_BulkTransactionChanges | null => {
+  if (field === 'tag_ids') return { tag_ids: tagIds };
   if (!value.trim()) return null;
 
   if (field === 'amount') {
@@ -291,7 +309,6 @@ const toBulkChanges = (
   if (field === 'is_paid') return { is_paid: value === 'true' };
   if (field === 'ignored') return { ignored: value === 'true' };
   if (field === 'movement_type') return { movement_type: value as T_TransactionType };
-  if (field === 'category_id') return { category_id: value };
   if (field === 'date') return { date: value };
 
   return { description: value.trim() };

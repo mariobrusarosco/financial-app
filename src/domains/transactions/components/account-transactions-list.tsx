@@ -1,23 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Pagination } from '@/domains/ui-system/components/pagination';
-import {
-  useBulkDeleteTransactions,
-  useDeleteTransaction,
-} from '@/domains/transactions/hooks/use-bulk-delete-transactions';
+import { useBulkDeleteTransactions } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { AccountTransactionFilters } from '@/domains/transactions/components/account-transaction-filters';
 import { BulkTransactionActions } from '@/domains/transactions/components/bulk-transaction-actions';
 import { CreditCard, Loader2, CheckSquare, Square } from 'lucide-react';
 import type {
   I_AccountTransactionsParams,
-  I_TransactionResponse,
   I_TransactionsResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
-import { CategoryManagerButton } from '@/domains/categories/components/category-manager-button';
 import {
   Dialog,
   DialogClose,
@@ -51,14 +45,9 @@ export const AccountTransactionsList = ({
   const meta = response?.meta;
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [transactionToDelete, setTransactionToDelete] = useState<I_TransactionResponse | null>(
-    null
-  );
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
-  const navigate = useNavigate();
 
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
-  const { mutate: deleteTransaction } = useDeleteTransaction();
 
   // Show loading state only on initial load, not when using placeholder data
   if (isLoading && !isPlaceholderData) {
@@ -92,17 +81,6 @@ export const AccountTransactionsList = ({
 
   const handlePageChange = (page: number) => {
     onParamsChange({ ...params, page });
-  };
-
-  const handleEdit = (transaction: I_TransactionResponse) => {
-    void navigate({
-      to: '.',
-      search: prev => ({ ...prev, drawer: 'transaction-edit', transactionId: transaction.id }),
-    });
-  };
-
-  const handleDelete = (transaction: I_TransactionResponse) => {
-    setTransactionToDelete(transaction);
   };
 
   // Selection handlers
@@ -140,13 +118,6 @@ export const AccountTransactionsList = ({
     });
   };
 
-  const confirmSingleDelete = () => {
-    if (!transactionToDelete) return;
-    deleteTransaction(String(transactionToDelete.id), {
-      onSuccess: () => setTransactionToDelete(null),
-    });
-  };
-
   const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
 
@@ -172,8 +143,6 @@ export const AccountTransactionsList = ({
             )}
           </div>
         </div>
-
-        <CategoryManagerButton />
       </div>
 
       <AccountTransactionFilters
@@ -217,15 +186,11 @@ export const AccountTransactionsList = ({
 
             <ul data-ui="account-transactions-list-items" className="grid gap-2">
               {transactions.map(transaction => (
-                <UnifiedTransactionItem
+                <TransactionRow
                   key={transaction.id}
                   transaction={transaction}
-                  mode="default"
                   isSelected={selectedIds.has(transaction.id)}
                   onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-                  showCheckbox={true}
-                  onTriggerEditMode={handleEdit}
-                  onDelete={handleDelete}
                 />
               ))}
             </ul>
@@ -284,28 +249,6 @@ export const AccountTransactionsList = ({
           </div>
         </div>
       )}
-
-      <Dialog
-        open={Boolean(transactionToDelete)}
-        onOpenChange={open => !open && setTransactionToDelete(null)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete transaction?</DialogTitle>
-            <DialogDescription>
-              {transactionToDelete?.description ?? 'This transaction'} will be permanently deleted.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button variant="destructive" onClick={confirmSingleDelete}>
-              Delete transaction
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
         <DialogContent>

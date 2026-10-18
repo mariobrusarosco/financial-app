@@ -1,11 +1,9 @@
-import { Fragment } from 'react';
 import { Surface } from '@/domains/global/components/surface';
 import { CardTitle, CardDescription } from '@/domains/ui-system/components/card';
 import { Button } from '@/domains/ui-system/components/button';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { useCreditCardTransactionsInfinite } from '@/domains/credit-cards/hooks/use-credit-card-transactions';
 import { CreditCardTransactionFilters } from './credit-card-transaction-filters';
-import { useDeleteTransaction } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CreditCard, Loader2, ChevronDown } from 'lucide-react';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
 
@@ -33,16 +31,10 @@ export const CreditCardTransactionsInfinite = ({
     error,
   } = useCreditCardTransactionsInfinite(creditCardId, filters);
 
-  const { mutate: deleteTransaction } = useDeleteTransaction();
-
   const handleFiltersChange = (newFilters: I_CreditCardTransactionsParams) => {
     // Remove page from filters since infinite query manages pagination
     const { page: _page, ...filtersWithoutPage } = newFilters;
     onFiltersChange?.(filtersWithoutPage);
-  };
-
-  const handleDelete = (transaction: { id: string }) => {
-    deleteTransaction(transaction.id);
   };
 
   // Show loading state only on initial load
@@ -130,17 +122,11 @@ export const CreditCardTransactionsInfinite = ({
           <div className="space-y-2">
             {allTransactions.length > 0 ? (
               data?.pages.map((page, pageIndex) => (
-                <Fragment key={pageIndex}>
+                <ul key={pageIndex} className="space-y-2">
                   {page.data.map(transaction => (
-                    <UnifiedTransactionItem
-                      key={transaction.id}
-                      transaction={transaction}
-                      mode="default"
-                      isSelected={false}
-                      onDelete={handleDelete}
-                    />
+                    <TransactionRow key={transaction.id} transaction={transaction} />
                   ))}
-                </Fragment>
+                </ul>
               ))
             ) : (
               <div className="text-center py-8">

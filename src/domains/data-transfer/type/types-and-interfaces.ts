@@ -30,7 +30,6 @@ export interface I_ImportResponse {
   entities_created?: {
     accounts?: number;
     credit_cards?: number;
-    categories?: number;
     vendors?: number;
     transactions?: number;
     brokers?: number;

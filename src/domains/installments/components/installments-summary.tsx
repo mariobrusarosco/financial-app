@@ -21,21 +21,21 @@ export const InstallmentsSummary = ({ plans }: InstallmentsSummaryProps) => {
   const cards = [
     {
       label: 'Due This Month',
-      value: currentMonthLiability.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+      value: currentMonthLiability.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
       icon: CalendarCheck,
       color: 'text-positive',
       bgColor: 'bg-pastel-green',
     },
     {
       label: 'Due Next Month',
-      value: nextMonthLiability.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+      value: nextMonthLiability.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
       icon: TrendingUp,
       color: 'text-[#a15e48]',
       bgColor: 'bg-pastel-peach',
     },
     {
       label: 'Total Outstanding',
-      value: totalOutstanding.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+      value: totalOutstanding.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
       icon: CreditCard,
       color: 'text-brand',
       bgColor: 'bg-pastel-blue',

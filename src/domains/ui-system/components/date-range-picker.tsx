@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, ArrowRight, Check, X } from 'lucide-react';
+import { Calendar as CalendarIcon, ArrowRight, Check, ChevronDown, X } from 'lucide-react';
 
 import { Calendar } from '@/domains/ui-system/components/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/components/popover';
@@ -10,14 +10,24 @@ import { Button } from '@/domains/ui-system/components/button';
 import { cn } from '@/domains/ui-system/utils';
 import type { DateRange } from 'react-day-picker';
 
+export interface DateRangePreset {
+  label: string;
+  getValue: () => DateRange;
+  isActive?: boolean;
+}
+
 interface Props {
   dateRange: DateRange;
   setDateRange: (dateRange: DateRange) => void;
+  // Quick ranges shown next to the calendar; picking one applies it right away
+  presets?: DateRangePreset[];
+  // Text on the trigger button (icon only when omitted)
+  label?: string;
 }
 
 type SelectionMode = 'from' | 'to';
 
-export function DateRangePicker({ dateRange, setDateRange }: Props) {
+export function DateRangePicker({ dateRange, setDateRange, presets = [], label }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectionMode, setSelectionMode] = React.useState<SelectionMode>('from');
   const [tempRange, setTempRange] = React.useState<DateRange>(dateRange);
@@ -73,135 +83,174 @@ export function DateRangePicker({ dateRange, setDateRange }: Props) {
 
   const canApply = tempRange.from && tempRange.to;
 
+  const handlePresetClick = (preset: DateRangePreset) => {
+    setDateRange(preset.getValue());
+    setIsOpen(false);
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <div
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           data-empty={!dateRange?.from}
           data-testid="date-range-picker"
-          className="data-[empty=true]:text-primary text-sm text-primary bg-foreground p-3.5 rounded-md cursor-pointer hover:opacity-90 transition-opacity"
+          aria-label={label ? undefined : 'Pick a date range'}
+          className="h-9"
         >
           <CalendarIcon className="h-4 w-4" />
-        </div>
+          {label && (
+            <>
+              <span>{label}</span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </>
+          )}
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="end" sideOffset={8}>
-        <div className="flex flex-col">
-          {/* Selection Mode Header */}
-          <div className="p-4 border-b border-border bg-muted/30">
-            <div className="flex items-center gap-3">
-              {/* From Date Selector */}
-              <button
-                type="button"
-                onClick={() => setSelectionMode('from')}
-                className={cn(
-                  'flex-1 flex flex-col items-start gap-1 p-3 rounded-lg border-2 transition-all',
-                  selectionMode === 'from'
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-transparent bg-background hover:bg-accent/50'
-                )}
-              >
-                <span
+        <div className="flex flex-col sm:flex-row">
+          {presets.length > 0 && (
+            <div
+              className="flex gap-1 overflow-x-auto border-b border-border p-2 sm:w-36 sm:flex-col sm:border-b-0 sm:border-r"
+              aria-label="Quick ranges"
+            >
+              {presets.map(preset => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => handlePresetClick(preset)}
+                  aria-pressed={preset.isActive}
                   className={cn(
-                    'text-xs font-medium uppercase tracking-wide',
-                    selectionMode === 'from' ? 'text-primary' : 'text-muted-foreground'
+                    'whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-muted',
+                    preset.isActive && 'bg-muted font-semibold text-brand'
                   )}
                 >
-                  Start Date
-                </span>
-                <div className="flex items-center gap-2 w-full">
-                  <span
-                    className={cn(
-                      'text-sm font-semibold',
-                      tempRange.from ? 'text-foreground' : 'text-muted-foreground'
-                    )}
-                  >
-                    {tempRange.from ? format(tempRange.from, 'MMM d, yyyy') : 'Select date'}
-                  </span>
-                  {tempRange.from && (
-                    <X
-                      className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground ml-auto cursor-pointer"
-                      onClick={handleClearFrom}
-                    />
-                  )}
-                </div>
-              </button>
-
-              <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-
-              {/* To Date Selector */}
-              <button
-                type="button"
-                onClick={() => setSelectionMode('to')}
-                className={cn(
-                  'flex-1 flex flex-col items-start gap-1 p-3 rounded-lg border-2 transition-all',
-                  selectionMode === 'to'
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-transparent bg-background hover:bg-accent/50'
-                )}
-              >
-                <span
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="flex flex-col">
+            {/* Selection Mode Header */}
+            <div className="p-4 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-3">
+                {/* From Date Selector */}
+                <button
+                  type="button"
+                  onClick={() => setSelectionMode('from')}
                   className={cn(
-                    'text-xs font-medium uppercase tracking-wide',
-                    selectionMode === 'to' ? 'text-primary' : 'text-muted-foreground'
+                    'flex-1 flex flex-col items-start gap-1 p-3 rounded-lg border-2 transition-all',
+                    selectionMode === 'from'
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-transparent bg-background hover:bg-accent/50'
                   )}
                 >
-                  End Date
-                </span>
-                <div className="flex items-center gap-2 w-full">
                   <span
                     className={cn(
-                      'text-sm font-semibold',
-                      tempRange.to ? 'text-foreground' : 'text-muted-foreground'
+                      'text-xs font-medium uppercase tracking-wide',
+                      selectionMode === 'from' ? 'text-primary' : 'text-muted-foreground'
                     )}
                   >
-                    {tempRange.to ? format(tempRange.to, 'MMM d, yyyy') : 'Select date'}
+                    Start Date
                   </span>
-                  {tempRange.to && (
-                    <X
-                      className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground ml-auto cursor-pointer"
-                      onClick={handleClearTo}
-                    />
+                  <div className="flex items-center gap-2 w-full">
+                    <span
+                      className={cn(
+                        'text-sm font-semibold',
+                        tempRange.from ? 'text-foreground' : 'text-muted-foreground'
+                      )}
+                    >
+                      {tempRange.from ? format(tempRange.from, 'MMM d, yyyy') : 'Select date'}
+                    </span>
+                    {tempRange.from && (
+                      <X
+                        className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground ml-auto cursor-pointer"
+                        onClick={handleClearFrom}
+                      />
+                    )}
+                  </div>
+                </button>
+
+                <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+
+                {/* To Date Selector */}
+                <button
+                  type="button"
+                  onClick={() => setSelectionMode('to')}
+                  className={cn(
+                    'flex-1 flex flex-col items-start gap-1 p-3 rounded-lg border-2 transition-all',
+                    selectionMode === 'to'
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-transparent bg-background hover:bg-accent/50'
                   )}
-                </div>
-              </button>
+                >
+                  <span
+                    className={cn(
+                      'text-xs font-medium uppercase tracking-wide',
+                      selectionMode === 'to' ? 'text-primary' : 'text-muted-foreground'
+                    )}
+                  >
+                    End Date
+                  </span>
+                  <div className="flex items-center gap-2 w-full">
+                    <span
+                      className={cn(
+                        'text-sm font-semibold',
+                        tempRange.to ? 'text-foreground' : 'text-muted-foreground'
+                      )}
+                    >
+                      {tempRange.to ? format(tempRange.to, 'MMM d, yyyy') : 'Select date'}
+                    </span>
+                    {tempRange.to && (
+                      <X
+                        className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground ml-auto cursor-pointer"
+                        onClick={handleClearTo}
+                      />
+                    )}
+                  </div>
+                </button>
+              </div>
+
+              {/* Selection hint */}
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                {selectionMode === 'from'
+                  ? 'Click a date to set the start of your range'
+                  : 'Click a date to set the end of your range'}
+              </p>
             </div>
 
-            {/* Selection hint */}
-            <p className="text-xs text-muted-foreground mt-3 text-center">
-              {selectionMode === 'from'
-                ? 'Click a date to set the start of your range'
-                : 'Click a date to set the end of your range'}
-            </p>
-          </div>
+            {/* Calendar */}
+            <div className="p-2">
+              <Calendar
+                mode="range"
+                selected={tempRange}
+                captionLayout="dropdown"
+                onDayClick={handleDayClick}
+                numberOfMonths={2}
+                modifiers={{
+                  selecting_from:
+                    selectionMode === 'from' && tempRange.from ? [tempRange.from] : [],
+                  selecting_to: selectionMode === 'to' && tempRange.to ? [tempRange.to] : [],
+                }}
+                modifiersClassNames={{
+                  selecting_from: 'ring-2 ring-primary ring-offset-2',
+                  selecting_to: 'ring-2 ring-primary ring-offset-2',
+                }}
+              />
+            </div>
 
-          {/* Calendar */}
-          <div className="p-2">
-            <Calendar
-              mode="range"
-              selected={tempRange}
-              captionLayout="dropdown"
-              onDayClick={handleDayClick}
-              numberOfMonths={2}
-              modifiers={{
-                selecting_from: selectionMode === 'from' && tempRange.from ? [tempRange.from] : [],
-                selecting_to: selectionMode === 'to' && tempRange.to ? [tempRange.to] : [],
-              }}
-              modifiersClassNames={{
-                selecting_from: 'ring-2 ring-primary ring-offset-2',
-                selecting_to: 'ring-2 ring-primary ring-offset-2',
-              }}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-2 p-4 border-t border-border bg-muted/30">
-            <Button variant="ghost" size="sm" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button size="sm" onClick={handleApply} disabled={!canApply}>
-              <Check className="h-4 w-4 mr-1.5" />
-              Apply Range
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-2 p-4 border-t border-border bg-muted/30">
+              <Button variant="ghost" size="sm" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleApply} disabled={!canApply}>
+                <Check className="h-4 w-4 mr-1.5" />
+                Apply Range
+              </Button>
+            </div>
           </div>
         </div>
       </PopoverContent>

@@ -1,3 +1,4 @@
+import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '@ui-system/components/button';
@@ -7,12 +8,15 @@ import { Plus, Trash2, Loader2, Home, PiggyBank } from 'lucide-react';
 import { TransactionForm } from './transaction-form';
 import type { I_TransactionPayload } from '../types/types-and-interfaces';
 import { useCreateBulkTransactions } from '../hooks/use-create-bulk-transactions';
-import { findCategoryById } from '../utils/categories';
+import { useTags } from '@/domains/tags/hooks/use-tags';
 
 export const CreateTransactionDrawer = () => {
   const navigate = useNavigate();
   const [pendingTransactions, setPendingTransactions] = useState<I_TransactionPayload[]>([]);
   const { mutate: createBulkTransactions, isPending: isSaving } = useCreateBulkTransactions();
+  const {
+    tags: { query: tagsQuery },
+  } = useTags();
 
   const handleClose = () => {
     navigate({ search: {} });
@@ -31,6 +35,7 @@ export const CreateTransactionDrawer = () => {
       createBulkTransactions(pendingTransactions as any, {
         onSuccess: () => {
           setPendingTransactions([]);
+          handleClose();
         },
       });
     }
@@ -77,19 +82,20 @@ export const CreateTransactionDrawer = () => {
           ) : (
             <div className="space-y-3">
               {pendingTransactions.map((transaction, index) => {
-                const category = findCategoryById(transaction.category_id || '');
+                const transactionTags = (transaction.tag_ids ?? [])
+                  .map(tagId => tagsQuery.data?.find(tag => tag.id === tagId))
+                  .filter(tag => Boolean(tag));
                 return (
                   <div key={index} className="p-3 border rounded-lg space-y-2">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <p className="font-medium text-sm truncate">{transaction.description}</p>
                         <p className="text-sm text-muted-foreground">
-                          ${transaction.amount?.toFixed(2)} • {transaction.movement_type}
+                          {formatCurrencyAmount(transaction.amount ?? 0)} • {transaction.movement_type}
                         </p>
-                        {category && (
-                          <p className="text-xs text-muted-foreground flex items-center gap-1">
-                            <span>{category.icon}</span>
-                            {category.name}
+                        {transactionTags.length > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {transactionTags.map(tag => tag?.name).join(' · ')}
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">

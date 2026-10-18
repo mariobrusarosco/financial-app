@@ -7,13 +7,15 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/domains/ui-system/components/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/components/popover';
 import { Button } from '@/domains/ui-system/components/button';
+import { cn } from '@/domains/ui-system/utils';
 
 interface Props {
   date: Date | undefined;
   setDate: (date: Date) => void;
+  className?: string;
 }
 
-export function TransactionDatePicker({ date, setDate }: Props) {
+export function TransactionDatePicker({ date, setDate, className }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -22,16 +24,22 @@ export function TransactionDatePicker({ date, setDate }: Props) {
         <Button
           variant="outline"
           data-empty={!date}
-          className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal w-full"
+          className={cn(
+            'justify-start text-left font-normal w-full rounded-xl h-11 border-input px-3.5 gap-2.5 bg-background hover:bg-muted/30 transition-colors',
+            !date && 'text-muted-foreground',
+            className
+          )}
         >
-          <CalendarIcon />
-          {date ? dateFns.format(date, 'PPP') : <span>Pick a date</span>}
+          <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-foreground">
+            {date ? dateFns.format(date, 'MMMM d, yyyy') : <span>Pick a date</span>}
+          </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={date} // Calendar component typically handles Date | undefined
+          selected={date}
           captionLayout="dropdown"
           fromYear={new Date().getFullYear() - 2}
           toYear={new Date().getFullYear() + 2}

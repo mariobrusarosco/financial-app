@@ -39,7 +39,8 @@ export interface I_VendorsParams {
   [key: string]: unknown; // Added index signature
   page?: number;
   per_page?: number;
-  name?: string;
+  // Case-insensitive match on the vendor name
+  name_contains?: string;
   sort_by?: 'name' | 'created_at';
   sort_order?: 'asc' | 'desc';
 }

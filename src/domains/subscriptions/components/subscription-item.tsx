@@ -5,6 +5,7 @@ import { Pencil, Trash2, DollarSign, ChevronDown, ChevronUp } from 'lucide-react
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/domains/ui-system/utils';
 import { SubscriptionPaymentHistory } from './subscription-payment-history';
+import { TagChips } from '@/domains/tags/components/tag-chips';
 
 interface SubscriptionItemProps {
   subscription: I_Subscription;
@@ -38,7 +39,7 @@ export const SubscriptionItem = ({ subscription, onEdit, onDelete }: Subscriptio
             <p className="text-sm text-muted-foreground">
               Next Payment: {format(parseISO(subscription.next_due_date), 'PP')}
             </p>
-            <div className="flex gap-2 mt-2">
+            <div className="flex flex-wrap items-center gap-2 mt-2">
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors',
@@ -61,6 +62,7 @@ export const SubscriptionItem = ({ subscription, onEdit, onDelete }: Subscriptio
                   {subscription.is_paid_this_cycle ? 'Paid' : 'Pending Payment'}
                 </span>
               )}
+              <TagChips tags={subscription.tags ?? []} />
             </div>
           </div>
         </div>

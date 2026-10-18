@@ -17,9 +17,14 @@ export const useParseCreditCardInvoice = (creditCardId: string, accountId?: stri
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
 
+  const selectFile = (file: File | null) => {
+    setSelectedFile(file);
+    mutation.reset();
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      selectFile(e.target.files[0]);
     }
   };
 
@@ -74,6 +79,7 @@ export const useParseCreditCardInvoice = (creditCardId: string, accountId?: stri
   return {
     selectedFile,
     mutation,
+    selectFile,
     handleFileChange,
     handleFileUpload,
     resetInvoice,

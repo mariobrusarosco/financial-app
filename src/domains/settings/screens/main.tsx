@@ -5,6 +5,7 @@ import { ProfileCard } from '@/domains/settings/components/profile-card';
 import { AccountActionsCard } from '@/domains/settings/components/account-actions-card';
 import { PreferencesCard } from '@/domains/settings/components/preferences-card';
 import { VendorsCard } from '@/domains/settings/components/vendors-card';
+import { TagsCard } from '@/domains/settings/components/tags-card';
 import { DataTransferCard } from '@/domains/settings/components/data-transfer-card';
 
 export const SettingsMainScreen = () => {
@@ -14,8 +15,9 @@ export const SettingsMainScreen = () => {
     <div className="space-y-7 pb-8">
       <PageHeader title="Settings" icon={User} showAddButton={false} />
 
-      <section>
+      <section className="grid gap-5 xl:grid-cols-2">
         <VendorsCard />
+        <TagsCard />
       </section>
 
       <div className="grid items-start gap-5 xl:grid-cols-2">

@@ -15,6 +15,7 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authVendorsIndexRouteImport } from './routes/(auth)/vendors/index'
 import { Route as authTransactionsIndexRouteImport } from './routes/(auth)/transactions/index'
+import { Route as authTagsIndexRouteImport } from './routes/(auth)/tags/index'
 import { Route as authSubscriptionsIndexRouteImport } from './routes/(auth)/subscriptions/index'
 import { Route as authSettingsIndexRouteImport } from './routes/(auth)/settings/index'
 import { Route as authInvestmentsIndexRouteImport } from './routes/(auth)/investments/index'
@@ -68,6 +69,11 @@ const authVendorsIndexRoute = authVendorsIndexRouteImport.update({
 const authTransactionsIndexRoute = authTransactionsIndexRouteImport.update({
   id: '/transactions/',
   path: '/transactions/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authTagsIndexRoute = authTagsIndexRouteImport.update({
+  id: '/tags/',
+  path: '/tags/',
   getParentRoute: () => authRouteRoute,
 } as any)
 const authSubscriptionsIndexRoute = authSubscriptionsIndexRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/subscriptions': typeof authSubscriptionsIndexRoute
+  '/tags': typeof authTagsIndexRoute
   '/transactions': typeof authTransactionsIndexRoute
   '/vendors': typeof authVendorsIndexRoute
   '/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/investments': typeof authInvestmentsIndexRoute
   '/settings': typeof authSettingsIndexRoute
   '/subscriptions': typeof authSubscriptionsIndexRoute
+  '/tags': typeof authTagsIndexRoute
   '/transactions': typeof authTransactionsIndexRoute
   '/vendors': typeof authVendorsIndexRoute
   '/accounts/$slug': typeof authAccountsSlugIndexRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/(auth)/investments/': typeof authInvestmentsIndexRoute
   '/(auth)/settings/': typeof authSettingsIndexRoute
   '/(auth)/subscriptions/': typeof authSubscriptionsIndexRoute
+  '/(auth)/tags/': typeof authTagsIndexRoute
   '/(auth)/transactions/': typeof authTransactionsIndexRoute
   '/(auth)/vendors/': typeof authVendorsIndexRoute
   '/(auth)/accounts/$slug/statements': typeof authAccountsSlugStatementsRouteRouteWithChildren
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/investments'
     | '/settings'
     | '/subscriptions'
+    | '/tags'
     | '/transactions'
     | '/vendors'
     | '/accounts/$slug/statements'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/investments'
     | '/settings'
     | '/subscriptions'
+    | '/tags'
     | '/transactions'
     | '/vendors'
     | '/accounts/$slug'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/(auth)/investments/'
     | '/(auth)/settings/'
     | '/(auth)/subscriptions/'
+    | '/(auth)/tags/'
     | '/(auth)/transactions/'
     | '/(auth)/vendors/'
     | '/(auth)/accounts/$slug/statements'
@@ -451,6 +463,13 @@ declare module '@tanstack/react-router' {
       path: '/transactions'
       fullPath: '/transactions'
       preLoaderRoute: typeof authTransactionsIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/tags/': {
+      id: '/(auth)/tags/'
+      path: '/tags'
+      fullPath: '/tags'
+      preLoaderRoute: typeof authTagsIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/subscriptions/': {
@@ -697,6 +716,7 @@ interface authRouteRouteChildren {
   authInvestmentsIndexRoute: typeof authInvestmentsIndexRoute
   authSettingsIndexRoute: typeof authSettingsIndexRoute
   authSubscriptionsIndexRoute: typeof authSubscriptionsIndexRoute
+  authTagsIndexRoute: typeof authTagsIndexRoute
   authTransactionsIndexRoute: typeof authTransactionsIndexRoute
   authVendorsIndexRoute: typeof authVendorsIndexRoute
   authAccountsCreateIndexRoute: typeof authAccountsCreateIndexRoute
@@ -714,6 +734,7 @@ const authRouteRouteChildren: authRouteRouteChildren = {
   authInvestmentsIndexRoute: authInvestmentsIndexRoute,
   authSettingsIndexRoute: authSettingsIndexRoute,
   authSubscriptionsIndexRoute: authSubscriptionsIndexRoute,
+  authTagsIndexRoute: authTagsIndexRoute,
   authTransactionsIndexRoute: authTransactionsIndexRoute,
   authVendorsIndexRoute: authVendorsIndexRoute,
   authAccountsCreateIndexRoute: authAccountsCreateIndexRoute,

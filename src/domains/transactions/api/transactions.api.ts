@@ -39,6 +39,7 @@ export const transactionsApi = {
   ): Promise<I_AccountTransactionsResponse> => {
     const response = await apiClient.get<I_AccountTransactionsResponse>('/transactions', {
       params,
+      paramsSerializer: serializeTransactionParams,
     });
     return response.data;
   },
@@ -49,7 +50,7 @@ export const transactionsApi = {
   ): Promise<I_AccountTransactionsResponse> => {
     const response = await apiClient.get<I_AccountTransactionsResponse>(
       `/accounts/${accountId}/transactions`,
-      { params }
+      { params, paramsSerializer: serializeTransactionParams }
     );
     return response.data;
   },
@@ -94,7 +95,7 @@ export const transformFormToBulkRequest = (
     amount: transaction.amount || 0,
     description: transaction.description,
     movement_type: transaction.movement_type,
-    category_id: transaction.category_id || null,
+    tag_ids: transaction.tag_ids ?? [],
   }));
 };
 
@@ -109,4 +110,17 @@ export const updateTransaction = async (
 export const getTransactionById = async (id: string): Promise<I_TransactionResponse> => {
   const response = await apiClient.get<I_TransactionResponse>(`/transactions/${id}`);
   return response.data;
+};
+
+const serializeTransactionParams = (params: I_AccountTransactionsParams) => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') return;
+    if (Array.isArray(value)) {
+      value.forEach(item => searchParams.append(key, String(item)));
+      return;
+    }
+    searchParams.set(key, String(value));
+  });
+  return searchParams.toString();
 };

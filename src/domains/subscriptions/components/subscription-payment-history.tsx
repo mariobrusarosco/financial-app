@@ -1,5 +1,5 @@
 import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Loader2, History } from 'lucide-react';
 import { CardDescription } from '@/domains/ui-system/components/card';
 
@@ -44,15 +44,11 @@ export const SubscriptionPaymentHistory = ({ subscriptionId }: SubscriptionPayme
           No payments recorded yet for this subscription.
         </CardDescription>
       ) : (
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {transactions.map((transaction) => (
-            <UnifiedTransactionItem
-              key={transaction.id}
-              transaction={transaction}
-              mode="compact"
-            />
+            <TransactionRow key={transaction.id} transaction={transaction} variant="readonly" />
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

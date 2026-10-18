@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDebouncedValue } from '@tanstack/react-pacer';
 import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transactions';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { DrawerHeader } from '@/domains/global/components/drawer-header';
@@ -65,7 +65,9 @@ const TransactionListContent = ({
               : ''
           }`}
         >
-          <UnifiedTransactionItem transaction={transaction} mode="compact" />
+          <ul>
+            <TransactionRow transaction={transaction} variant="picker" />
+          </ul>
           {selectedTransactionId === transaction.id && (
             <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1">
               <Check className="h-3 w-3" />

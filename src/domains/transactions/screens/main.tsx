@@ -36,15 +36,16 @@ export const TransactionsMainScreen = () => {
     });
   };
   useEffect(function InitTransactionsSearchParamsOnMount() {
+    // Fill in defaults but keep incoming filters (e.g. tag_ids from a Cashflow group link)
     void navigate({
-      search: {
+      search: prev => ({
+        ...prev,
         page: search.page ?? START_PAGE,
         per_page: search.per_page ?? ITEMS_PER_PAGE,
         sort_by: search.sort_by ?? DEFAULT_SORT_BY,
         sort_order: search.sort_order ?? DEFAULT_SORT_ORDER,
-        date_from: search.date_from,
-        date_to: search.date_to,
-      },
+      }),
+      replace: true,
     });
   }, []);
 

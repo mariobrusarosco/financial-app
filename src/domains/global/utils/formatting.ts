@@ -105,7 +105,7 @@ export const parseCurrencyAmount = (amount: string | number): number => {
 };
 
 /**
- * Formats a number or string amount to a currency string (e.g., "$1,234.56")
+ * Formats a number or string amount to a currency string (defaults to BRL, e.g. "R$ 1.234,56")
  */
 export const formatCurrencyAmount = (
   amount: string | number,
@@ -115,7 +115,7 @@ export const formatCurrencyAmount = (
     locale?: string;
   } = {}
 ) => {
-  const { showSign = false, currency = 'USD', locale = 'en-US' } = options;
+  const { showSign = false, currency = 'BRL', locale = 'pt-BR' } = options;
 
   if (amount === undefined || amount === null) {
     // Return formatted zero with correct currency/locale
@@ -125,7 +125,7 @@ export const formatCurrencyAmount = (
         currency,
       }).format(0);
     } catch {
-      return '$0.00';
+      return 'R$ 0,00';
     }
   }
 
@@ -137,6 +137,6 @@ export const formatCurrencyAmount = (
       currency,
     }).format(showSign ? Math.abs(numAmount) : numAmount);
   } catch (error) {
-    return '$0.00';
+    return 'R$ 0,00';
   }
 };

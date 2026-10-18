@@ -1,20 +1,12 @@
+import { DollarSign } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
-import {
-  getTransactionIconComponent,
-  getIconSizeClass,
-} from '@/domains/transactions/utils/transaction-formatting';
+import { getIconSizeClass } from '@/domains/transactions/utils/transaction-formatting';
 import type { TransactionIconBadgeProps } from './types';
 
-export const TransactionIconBadge = ({
-  categoryName,
-  movementType,
-  size = 'xs',
-}: TransactionIconBadgeProps) => {
-  const IconComponent = getTransactionIconComponent(categoryName ?? undefined, movementType);
-
+export const TransactionIconBadge = ({ size = 'xs' }: TransactionIconBadgeProps) => {
   return (
     <div className="p-3 rounded-lg bg-primary flex-shrink-0">
-      <IconComponent className={cn(getIconSizeClass(size), 'text-neutral-white')} />
+      <DollarSign className={cn(getIconSizeClass(size), 'text-neutral-white')} />
     </div>
   );
 };

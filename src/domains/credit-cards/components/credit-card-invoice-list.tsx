@@ -1,139 +1,132 @@
-import { Download, FileText, Upload, DollarSign, CreditCard } from 'lucide-react';
-import { Button } from '@/domains/ui-system/components/button';
+import { CalendarClock, FileText, Receipt } from 'lucide-react';
 import { Currency } from '@/domains/ui-system/components/currency';
+import { Skeleton } from '@/domains/ui-system/components/skeleton';
+import { Surface } from '@/domains/global/components/surface';
 import { useCreditCardInvoices } from '@/domains/credit-cards/hooks/user-credit-card-invoices';
 import type { I_CreditCardInvoice } from '@/domains/credit-cards/types/types-and-interfaces';
+import {
+  formatInvoiceDate,
+  formatInvoicePeriod,
+  getInvoiceStatus,
+  sortInvoicesByDueDate,
+  type T_InvoiceStatus,
+} from '@/domains/credit-cards/utils/invoice-utils';
+import { cn } from '@/domains/ui-system/utils';
 
 interface CreditCardInvoiceListProps {
   creditCardId: string;
+  currency?: string;
 }
 
-const CreditCardInvoiceList = ({ creditCardId }: CreditCardInvoiceListProps) => {
+const STATUS_STYLES: Record<T_InvoiceStatus, { label: string; className: string }> = {
+  paid: { label: 'Paid', className: 'bg-positive/10 text-positive' },
+  unpaid: { label: 'Open', className: 'bg-muted text-muted-foreground' },
+  overdue: { label: 'Overdue', className: 'bg-destructive/10 text-destructive' },
+};
+
+const CreditCardInvoiceList = ({ creditCardId, currency }: CreditCardInvoiceListProps) => {
   const { data: invoices, isLoading, isError } = useCreditCardInvoices(creditCardId);
-
-  if (isLoading) {
-    return (
-      <div data-ui="credit-card-invoice-list" className="w-1/3">
-        <div>
-          <h1 className="text-2xl font-bold">Invoice History</h1>
-          <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
-        </div>
-        <div className="flex items-center justify-center py-8">
-          <p className="text-muted-foreground">Loading invoices...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div data-ui="credit-card-invoice-list" className="w-1/3">
-        <div>
-          <h1 className="text-2xl font-bold">Invoice History</h1>
-          <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-destructive">Failed to load invoices</p>
-        </div>
-      </div>
-    );
-  }
+  const sortedInvoices = invoices ? sortInvoicesByDueDate(invoices) : [];
 
   return (
-    <div data-ui="credit-card-invoice-list" className="w-1/3 p-4">
-      <div>
-        <h1 className="text-2xl font-bold">Invoice History</h1>
-        <p className="text-muted-foreground">Previously uploaded invoices for this credit card</p>
-      </div>
-
-      <div className="space-y-4 grid gap-4">
-        {invoices && invoices.length > 0 ? (
-          <>
-            {invoices.map((invoice: I_CreditCardInvoice) => (
-              <div
-                key={invoice.id}
-                className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">{invoice.raw_invoice.period}</span>
-                      <span className="text-xs text-muted-foreground">
-                        Due: {invoice.raw_invoice.due_date}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={
-                        invoice.is_paid
-                          ? 'rounded-full bg-positive/10 px-2.5 py-1 text-xs font-medium text-positive'
-                          : 'rounded-full bg-destructive/10 px-2.5 py-1 text-xs font-medium text-destructive'
-                      }
-                    >
-                      {invoice.is_paid ? 'Paid' : 'Unpaid'}
-                    </span>
-                    <Button variant="outline" size="sm">
-                      <Download className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">Total Due:</span>
-                    <Currency
-                      value={parseFloat(invoice.raw_invoice.total_due)}
-                      color="negative"
-                      variant="compact"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">Min Payment:</span>
-                    <Currency
-                      value={parseFloat(invoice.raw_invoice.min_payment)}
-                      variant="compact"
-                    />
-                  </div>
-                </div>
-
-                {invoice.raw_invoice.transactions &&
-                  invoice.raw_invoice.transactions.length > 0 && (
-                    <div className="mt-3 pt-3 border-t">
-                      <span className="text-xs text-muted-foreground">
-                        {invoice.raw_invoice.transactions.length} transactions
-                      </span>
-                    </div>
-                  )}
-              </div>
-            ))}
-
-            {invoices.length >= 5 && (
-              <div className="text-center py-2">
-                <p className="text-sm text-muted-foreground">
-                  Showing recent {invoices.length} invoices
-                </p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-8">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No invoices uploaded yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Upload your first invoice to start tracking your account history
-            </p>
-            <Button variant="outline">
-              <Upload className="h-4 w-4 mr-2" />
-              Upload Invoice
-            </Button>
-          </div>
+    <Surface size="lg" className="flex flex-col gap-5" data-ui="credit-card-invoice-list">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-base font-semibold text-foreground">Invoice history</h2>
+          <p className="text-sm text-muted-foreground">Invoices uploaded for this card</p>
+        </div>
+        {sortedInvoices.length > 0 && (
+          <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+            {sortedInvoices.length}
+          </span>
         )}
       </div>
-    </div>
+
+      {isLoading ? (
+        <div className="space-y-3">
+          <Skeleton className="h-28 w-full rounded-xl" />
+          <Skeleton className="h-28 w-full rounded-xl" />
+        </div>
+      ) : isError ? (
+        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
+          We couldn&apos;t load the invoices for this card.
+        </div>
+      ) : sortedInvoices.length === 0 ? (
+        <div className="flex flex-col items-center rounded-xl border border-dashed border-border px-6 py-10 text-center">
+          <FileText className="mb-3 h-6 w-6 text-muted-foreground" />
+          <p className="text-sm font-medium text-foreground">No invoices yet</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Upload a PDF invoice to start tracking this card.
+          </p>
+        </div>
+      ) : (
+        <ul className="space-y-3">
+          {sortedInvoices.map(invoice => (
+            <InvoiceItem key={invoice.id} invoice={invoice} currency={currency} />
+          ))}
+        </ul>
+      )}
+    </Surface>
+  );
+};
+
+const InvoiceItem = ({
+  invoice,
+  currency,
+}: {
+  invoice: I_CreditCardInvoice;
+  currency?: string;
+}) => {
+  const status = STATUS_STYLES[getInvoiceStatus(invoice)];
+  const transactionsCount = invoice.raw_invoice.transactions?.length ?? 0;
+
+  return (
+    <li className="rounded-xl border border-border/80 p-4 transition-colors hover:bg-muted/40">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-foreground">
+            {formatInvoicePeriod(invoice.raw_invoice.period)}
+          </p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <CalendarClock className="h-3 w-3" />
+            Due {formatInvoiceDate(invoice.raw_invoice.due_date)}
+          </p>
+        </div>
+        <span
+          className={cn('shrink-0 rounded-full px-2.5 py-1 text-xs font-medium', status.className)}
+        >
+          {status.label}
+        </span>
+      </div>
+
+      <div className="mt-4 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xs text-muted-foreground">Total due</p>
+          <Currency
+            value={invoice.raw_invoice.total_due}
+            currency={currency}
+            color="default"
+            className="financial-value text-lg text-foreground"
+          />
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-muted-foreground">Minimum</p>
+          <Currency
+            value={invoice.raw_invoice.min_payment}
+            currency={currency}
+            variant="small"
+            color="muted"
+          />
+        </div>
+      </div>
+
+      {transactionsCount > 0 && (
+        <p className="mt-3 flex items-center gap-1.5 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+          <Receipt className="h-3 w-3" />
+          {transactionsCount} {transactionsCount === 1 ? 'transaction' : 'transactions'}
+        </p>
+      )}
+    </li>
   );
 };
 

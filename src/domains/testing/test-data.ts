@@ -45,7 +45,6 @@ export const createMockTransaction = (overrides = {}) => ({
   currency: 'USD',
   description: 'Grocery shopping',
   date: new Date('2023-01-01'),
-  category: 'food',
   type: 'expense',
   ...overrides,
 });

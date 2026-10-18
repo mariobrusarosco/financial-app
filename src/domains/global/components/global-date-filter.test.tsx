@@ -30,7 +30,7 @@ describe('GlobalDateFilter month navigation', () => {
 
     render(<GlobalDateFilter />);
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Select September 2026' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Select previous month' }));
 
     const navigation = navigate.mock.calls[0][0];
     expect(navigation.search({ drawer: 'transaction-create' })).toEqual({
@@ -38,5 +38,13 @@ describe('GlobalDateFilter month navigation', () => {
       from: '2026-09-01',
       to: '2026-09-30',
     });
+  });
+
+  it('shows the selected month as the period label', async () => {
+    vi.setSystemTime(new Date('2026-10-07T12:00:00'));
+
+    render(<GlobalDateFilter />);
+
+    expect(await screen.findByText('October 2026')).toBeInTheDocument();
   });
 });

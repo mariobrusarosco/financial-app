@@ -502,7 +502,9 @@ const RecentTransactions = ({ data, states }: { data: DashboardData; states: Das
                         {transaction.description}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
-                        {transaction.category_name ?? transaction.category ?? 'Uncategorized'}
+                        {transaction.tags?.length
+                          ? transaction.tags.map(tag => tag.name).join(' · ')
+                          : 'No tags'}
                       </p>
                     </div>
                     <p

@@ -6,6 +6,7 @@ import type {
   I_InstallmentPlansParams,
   I_LinkInstallmentRequest,
   I_InstallmentPlan,
+  I_InstallmentPlanUpdatePayload,
 } from '../types/types-and-interfaces';
 
 export const installmentsApi = {
@@ -23,6 +24,12 @@ export const installmentsApi = {
 
   createPlan: async (data: I_CreateInstallmentPlanRequest) => {
     const response = await apiClient.post<I_InstallmentPlanResponse>('/installments/plans', data);
+    return response.data;
+  },
+
+  // Send only the fields that changed; the API returns the updated plan
+  updatePlan: async (id: string, data: I_InstallmentPlanUpdatePayload) => {
+    const response = await apiClient.patch<I_InstallmentPlan>(`/installments/plans/${id}`, data);
     return response.data;
   },
 

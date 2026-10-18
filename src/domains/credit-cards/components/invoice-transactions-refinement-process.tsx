@@ -1,6 +1,6 @@
 import { Button } from '@/domains/ui-system/components/button';
 import { Card } from '@/domains/ui-system/components/card';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
 import { useEditableCreditCardTransactions } from '@/domains/credit-cards/hooks/use-editable-credit-card-transactions';
 import type { I_CreditCardInvoiceResponse } from '@/domains/credit-cards/types/types-and-interfaces';
@@ -46,7 +46,6 @@ export const InvoiceTransactionsRefinementProcess = ({
         is_paid: transaction.is_paid,
         ignored: transaction.ignored ?? false,
         type: transaction.movement_type,
-        category: transaction.category || 'Credit Card',
         is_deleted: transaction.is_deleted,
       }))
       .filter(transaction => !ignoredTransactions.has(transaction.id));
@@ -92,29 +91,30 @@ export const InvoiceTransactionsRefinementProcess = ({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <ul className="space-y-3">
         {editableTransactions.map(transaction => {
           const isIgnored = ignoredTransactions.has(transaction.id);
           const isSelected = selectedTransactions.has(transaction.id);
           const isEditing = transactionInEditMode?.id === transaction.id;
 
           return (
-            <UnifiedTransactionItem
+            <TransactionRow
               key={transaction.id}
               transaction={transaction}
-              mode="compact"
-              className="border rounded-lg"
-              onIgnoreTransaction={handleTransactionIgnored}
-              onSelectTransaction={toggleTransaction}
+              variant="draft"
               isSelected={isSelected}
-              onTriggerEditMode={triggerEditMode}
-              isEditing={isEditing}
-              onSave={updateTransactionInEditionMode}
-              onCancel={() => setTransactionInEditMode(null)}
+              draft={{
+                isIgnored,
+                isEditing,
+                onIgnore: () => handleTransactionIgnored(transaction.id),
+                onEdit: () => triggerEditMode(transaction),
+                onSave: updateTransactionInEditionMode,
+                onCancelEdit: () => setTransactionInEditMode(null),
+              }}
             />
           );
         })}
-      </div>
+      </ul>
     </Card>
   );
 };

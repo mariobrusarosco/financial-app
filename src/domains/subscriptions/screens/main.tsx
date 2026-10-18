@@ -5,7 +5,6 @@ import {
   SubscriptionList,
   SubscriptionsSummary,
   SubscriptionsChart,
-  SubscriptionsCategoryBreakdown,
 } from '@/domains/subscriptions/components/index';
 import type { I_SubscriptionsParams } from '@/domains/subscriptions/types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components/page-header';
@@ -56,10 +55,7 @@ export const SubscriptionsMainScreen = () => {
 
       <SubscriptionsSummary summary={summary} isLoading={isLoading} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SubscriptionsChart data={summary?.monthly_forecast} isLoading={isLoading} />
-        <SubscriptionsCategoryBreakdown data={summary?.category_breakdown} isLoading={isLoading} />
-      </div>
+      <SubscriptionsChart data={summary?.monthly_forecast} isLoading={isLoading} />
 
       <section
         data-ui="subscriptions-list-section"

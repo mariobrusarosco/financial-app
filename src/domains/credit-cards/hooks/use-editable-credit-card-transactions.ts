@@ -19,7 +19,7 @@ export const useEditableCreditCardTransactions = ({
 
   const [editableTransactions, setEditableTransactions] = useState<I_TransactionResponse[]>(
     invoice?.raw_invoice?.transactions?.map((transaction, index) => ({
-      ...transaction, // Spread all fields from backend (includes movement_type, category_id, etc.)
+      ...transaction, // Spread all fields from backend (includes movement_type, etc.)
       id: index.toString(), // Override with index-based ID for UI editing
       account_id: null, // Credit card transactions don't have account_id
       broker_id: brokerId || '',
@@ -27,7 +27,6 @@ export const useEditableCreditCardTransactions = ({
       is_deleted: false,
       is_paid: false,
       ignored: false,
-      category: transaction.category || 'Credit Card', // Fallback if backend didn't set it
     })) || []
   );
 

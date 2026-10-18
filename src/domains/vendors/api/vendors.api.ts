@@ -1,5 +1,6 @@
 import { apiClient } from '@/config/api';
 import type {
+  I_Vendor,
   I_CreateVendorRequest,
   I_UpdateVendorRequest,
   I_VendorResponse,
@@ -19,7 +20,8 @@ export const vendorsApi = {
   },
 
   createVendor: async (data: I_CreateVendorRequest) => {
-    const response = await apiClient.post<I_VendorResponse>('/vendors', data);
+    // The API returns the created vendor itself (not wrapped in `data`)
+    const response = await apiClient.post<I_Vendor>('/vendors', data);
     return response.data;
   },
 

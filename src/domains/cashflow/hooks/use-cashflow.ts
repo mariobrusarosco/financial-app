@@ -3,13 +3,17 @@ import { endOfMonth, format, startOfMonth } from 'date-fns';
 import { cashflowApi } from '@/domains/cashflow/api/cashflow.api';
 import type { I_CashflowFilter } from '@/domains/cashflow/types/index';
 
-export const useCashflow = (filters?: I_CashflowFilter) => {
+export const useCashflow = (
+  filters?: I_CashflowFilter,
+  { enabled = true }: { enabled?: boolean } = {}
+) => {
   const resolvedFilters = resolveCashflowFilters(filters);
 
   return useQuery({
     queryKey: ['cashflow-summary', resolvedFilters],
     queryFn: () => cashflowApi.getSummary(resolvedFilters),
     placeholderData: keepPreviousData,
+    enabled,
   });
 };
 

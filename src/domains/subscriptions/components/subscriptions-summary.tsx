@@ -11,7 +11,7 @@ interface SubscriptionsSummaryProps {
 export const SubscriptionsSummary = ({ summary, isLoading }: SubscriptionsSummaryProps) => {
   const formatValue = (value?: number) => {
     if (isLoading || value === undefined) return '...';
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
 
   const cards = [

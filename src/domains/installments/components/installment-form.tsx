@@ -11,7 +11,6 @@ import { useVendors } from '@/domains/vendors/hooks';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import * as dateFns from 'date-fns';
-import { useCategories } from '@/domains/categories/hooks/use-categories';
 import { useQuery } from '@tanstack/react-query';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
 import type { I_CreateInstallmentPlanRequest } from '../types/types-and-interfaces';
@@ -28,25 +27,29 @@ interface InstallmentFormProps {
 export const InstallmentForm = ({ form }: InstallmentFormProps) => {
   // Fetch all vendors for selector (max allowed by API)
   const { data: vendorsData } = useVendors({ per_page: 100 });
-  const { data: categoriesData } = useCategories();
   const { data: creditCardsData } = useQuery({
     queryKey: ['credit_cards', 'all'],
     queryFn: () => creditCardApi.getAllCreditCards(),
   });
   const [showCalculator, setShowCalculator] = useState(false);
+  const [installmentValue, setInstallmentValue] = useState('');
+
+  // The total is derived from installment value × count; it's the only amount the API receives
+  const syncTotalAmount = (value: number, count: number) => {
+    const total =
+      Number.isFinite(value) && value > 0 && Number.isInteger(count) && count > 0
+        ? Math.round(value * count * 100) / 100
+        : 0;
+    form.setFieldValue('total_amount', total);
+  };
+
+  const updateInstallmentValue = (value: string) => {
+    setInstallmentValue(value);
+    syncTotalAmount(parseFloat(value), form.getFieldValue('installment_count'));
+  };
 
   const availableVendors = vendorsData?.data || [];
   const availableCreditCards = creditCardsData?.data || [];
-
-  const availableCategories: { id: string; name: string; level: number }[] = [];
-  (categoriesData || []).forEach(cat => {
-    availableCategories.push({ id: cat.id, name: cat.name, level: 0 });
-    if (cat.children) {
-      cat.children.forEach(child => {
-        availableCategories.push({ id: child.id, name: child.name, level: 1 });
-      });
-    }
-  });
 
   return (
     <div className="space-y-6">
@@ -87,48 +90,38 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <form.Field
-          name="total_amount"
-          children={field => (
-            <div className="space-y-2 relative">
-              <Label htmlFor={field.name}>Total Amount</Label>
-              <Input
-                id={field.name}
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={e => field.handleChange(parseFloat(e.target.value))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-2 relative">
+          <Label htmlFor="installment_value">Installment Value</Label>
+          <Input
+            id="installment_value"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={installmentValue}
+            onChange={e => updateInstallmentValue(e.target.value)}
+          />
+          <Button
+            variant="link"
+            size="sm"
+            className="p-0 h-auto text-xs text-muted-foreground"
+            onClick={() => setShowCalculator(!showCalculator)}
+            type="button"
+          >
+            <CalculatorIcon className="w-3 h-3 mr-1" />
+            {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
+          </Button>
+          {showCalculator && (
+            <div className="absolute z-50 mt-1 shadow-lg">
+              <Calculator
+                initialValue={parseFloat(installmentValue) || undefined}
+                onApply={val => updateInstallmentValue(val.toString())}
+                onClose={() => setShowCalculator(false)}
               />
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="p-0 h-auto text-xs text-muted-foreground"
-                  onClick={() => setShowCalculator(!showCalculator)}
-                  type="button"
-                >
-                  <CalculatorIcon className="w-3 h-3 mr-1" />
-                  {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
-                </Button>
-              </div>
-              {showCalculator && (
-                <div className="absolute z-50 mt-1 shadow-lg">
-                  <Calculator
-                    initialValue={field.state.value}
-                    onApply={(val) => field.handleChange(val)}
-                    onClose={() => setShowCalculator(false)}
-                  />
-                </div>
-              )}
-              {field.state.meta.touched && field.state.meta.errors.length > 0 && (
-                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
-              )}
             </div>
           )}
-        />
+        </div>
 
         <form.Field
           name="installment_count"
@@ -142,8 +135,34 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
                 max="120"
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={e => field.handleChange(parseInt(e.target.value))}
+                onChange={e => {
+                  const count = parseInt(e.target.value);
+                  field.handleChange(count);
+                  syncTotalAmount(parseFloat(installmentValue), count);
+                }}
               />
+              {field.state.meta.touched && field.state.meta.errors.length > 0 && (
+                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
+              )}
+            </div>
+          )}
+        />
+
+        <form.Field
+          name="total_amount"
+          children={field => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Total Amount</Label>
+              <Input
+                id={field.name}
+                type="number"
+                readOnly
+                tabIndex={-1}
+                placeholder="0.00"
+                value={field.state.value > 0 ? field.state.value.toFixed(2) : ''}
+                className="cursor-default bg-muted/60 text-muted-foreground focus-visible:ring-0"
+              />
+              <p className="text-xs text-muted-foreground">Installment value × installments</p>
               {field.state.meta.touched && field.state.meta.errors.length > 0 && (
                 <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
               )}
@@ -185,27 +204,6 @@ export const InstallmentForm = ({ form }: InstallmentFormProps) => {
                 onValueChange={field.handleChange}
                 vendors={availableVendors}
               />
-            </div>
-          )}
-        />
-
-        <form.Field
-          name="category_id"
-          children={field => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Category</Label>
-              <Select value={field.state.value || ''} onValueChange={field.handleChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableCategories.map(category => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.level > 0 ? `\u00A0\u00A0 ${category.name}` : category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           )}
         />

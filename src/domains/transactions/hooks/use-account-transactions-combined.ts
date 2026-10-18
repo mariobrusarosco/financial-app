@@ -85,20 +85,12 @@ export const useAccountTransactionsCombined = (
                   amount: transaction.amount.toString(),
                   description: transaction.description,
                   movement_type: transaction.movement_type as any, // Type conversion needed
-                  category: transaction.category || '',
                   created_at: transaction.created_at,
                   updated_at: transaction.updated_at,
                 }) as I_TransactionResponse
             )
           ),
         ];
-
-        // Apply filtering that wasn't handled by the APIs
-        if (params?.category) {
-          allTransactions = allTransactions.filter(t =>
-            t.category?.toLowerCase().includes(params.category!.toLowerCase())
-          );
-        }
 
         // Sort all transactions by the requested field and order
         allTransactions.sort((a, b) => {
@@ -119,10 +111,6 @@ export const useAccountTransactionsCombined = (
             case 'created_at':
               valueA = new Date(a.created_at).getTime();
               valueB = new Date(b.created_at).getTime();
-              break;
-            case 'category':
-              valueA = a.category || '';
-              valueB = b.category || '';
               break;
             default:
               valueA = new Date(a.date).getTime();

@@ -1,18 +1,14 @@
 import { useState } from 'react';
 import { Button } from '@/domains/ui-system/components/button';
-import { UnifiedTransactionItem } from '@/domains/transactions/components/transaction/unified-transaction-item';
+import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { BulkTransactionActions } from '@/domains/transactions/components/bulk-transaction-actions';
-import {
-  useBulkDeleteTransactions,
-  useDeleteTransaction,
-} from '@/domains/transactions/hooks/use-bulk-delete-transactions';
+import { useBulkDeleteTransactions } from '@/domains/transactions/hooks/use-bulk-delete-transactions';
 import { CheckSquare, Square, Plus } from 'lucide-react';
 import type {
   I_TransactionResponse,
   I_AccountTransactionsParams,
 } from '@/domains/transactions/types/types-and-interfaces';
-import { useUpdateTransaction } from '@/domains/transactions/hooks/use-update-transaction';
 import {
   Dialog,
   DialogClose,
@@ -40,20 +36,9 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
   // Hooks
   const { openTransactionCreate } = useGlobalUIState();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [transactionToDelete, setTransactionToDelete] = useState<I_TransactionResponse | null>(
-    null
-  );
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const { mutate: bulkDeleteTransactions, isPending: isBulkDeleting } = useBulkDeleteTransactions();
-  const { mutate: deleteTransaction } = useDeleteTransaction();
-  const { mutate: updateTransaction, isPending: isUpdatingTransaction } = useUpdateTransaction({});
   // Derived state
-  const handleToggleIgnoreTransaction = (transaction: I_TransactionResponse) => {
-    updateTransaction({
-      id: transaction.id,
-      updates: { ignored: !transaction.ignored },
-    });
-  };
   const isAllSelected = selectedIds.size === transactions.length && transactions.length > 0;
   const isPartiallySelected = selectedIds.size > 0 && selectedIds.size < transactions.length;
   // Hanlders and callbacks
@@ -84,23 +69,12 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
     setIsBulkDeleteDialogOpen(true);
   };
 
-  const handleDelete = (transaction: I_TransactionResponse) => {
-    setTransactionToDelete(transaction);
-  };
-
   const confirmBulkDelete = () => {
     bulkDeleteTransactions(Array.from(selectedIds), {
       onSuccess: () => {
         setSelectedIds(new Set());
         setIsBulkDeleteDialogOpen(false);
       },
-    });
-  };
-
-  const confirmSingleDelete = () => {
-    if (!transactionToDelete) return;
-    deleteTransaction(String(transactionToDelete.id), {
-      onSuccess: () => setTransactionToDelete(null),
     });
   };
 
@@ -160,42 +134,14 @@ export const TransactionsList = ({ transactions, meta, onParamsChange }: Transac
 
       <ul className="grid flex-1 gap-2 overflow-hidden">
         {transactions.map(transaction => (
-          <UnifiedTransactionItem
+          <TransactionRow
             key={transaction.id}
             transaction={transaction}
-            isPending={isUpdatingTransaction}
-            onIgnoreTransaction={() => handleToggleIgnoreTransaction(transaction)}
-            showCheckbox={true}
-            // mode="default"
-            // onTriggerEditMode={() => handleEdit(transaction)}
             isSelected={selectedIds.has(transaction.id)}
             onSelectionChange={selected => handleSelectTransaction(transaction.id, selected)}
-            onDelete={handleDelete}
           />
         ))}
       </ul>
-
-      <Dialog
-        open={Boolean(transactionToDelete)}
-        onOpenChange={open => !open && setTransactionToDelete(null)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete transaction?</DialogTitle>
-            <DialogDescription>
-              {transactionToDelete?.description ?? 'This transaction'} will be permanently deleted.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button variant="destructive" onClick={confirmSingleDelete}>
-              Delete transaction
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
         <DialogContent>

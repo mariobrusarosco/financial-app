@@ -62,7 +62,7 @@ describe('AccountsList', () => {
         expect(await screen.findByText('Balance Test Account')).toBeInTheDocument();
 
         // 2. Wait for the balance to appear formatted
-        // Default locale is en-US and currency is USD -> $5,000.00
-        expect(await screen.findByText('$5,000.00')).toBeInTheDocument();
+        // Default locale is pt-BR and currency is BRL -> R$ 5.000,00
+        expect(await screen.findByText('R$ 5.000,00')).toBeInTheDocument();
     });
 });

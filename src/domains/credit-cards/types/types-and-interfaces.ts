@@ -132,14 +132,13 @@ export interface I_CreditCardTransactionsParams {
 
   // Text search
   description_contains?: string;
-  category?: string;
 
   // Status filtering
   is_paid?: boolean;
   movement_type?: 'income' | 'expense' | 'investment' | 'transfer';
 
   // Sorting
-  sort_by?: 'date' | 'amount' | 'created_at' | 'category';
+  sort_by?: 'date' | 'amount' | 'created_at';
   sort_order?: 'asc' | 'desc';
 }
 

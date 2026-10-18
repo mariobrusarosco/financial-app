@@ -6,6 +6,7 @@ import { CreditCardHeading } from '@/domains/credit-cards/components/credit-card
 import { useMemo } from 'react';
 import type { I_CreditCard } from '@/domains/credit-cards/types/types-and-interfaces';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
+import { useAccount } from '@/domains/accounts/hooks/use-account';
 
 interface AccountCreditCardScreenProps {
   params: {
@@ -15,8 +16,9 @@ interface AccountCreditCardScreenProps {
 }
 
 export const AccountCreditCardScreen = ({ params }: AccountCreditCardScreenProps) => {
-  const { creditCardId } = params;
+  const { creditCardId, slug } = params;
   const creditCard = useCreditCard(creditCardId);
+  const { data: account } = useAccount(slug);
 
   const currentView = useMemo(() => {
     const pathname = window.location.pathname;
@@ -47,13 +49,13 @@ export const AccountCreditCardScreen = ({ params }: AccountCreditCardScreenProps
 
   return (
     <div className="space-y-5" data-ui="account-credit-card-screen">
-      <CreditCardHeading creditCard={creditCard.data} />
-      {renderContent(currentView, creditCard.data)}
+      <CreditCardHeading creditCard={creditCard.data} currency={account?.currency} />
+      {renderContent(currentView, creditCard.data, account?.currency)}
     </div>
   );
 };
 
-const renderContent = (currentView: string, creditCard: I_CreditCard) => {
+const renderContent = (currentView: string, creditCard: I_CreditCard, currency?: string) => {
   switch (currentView) {
     case 'transactions':
       return (
@@ -63,16 +65,16 @@ const renderContent = (currentView: string, creditCard: I_CreditCard) => {
       );
     case 'invoices':
       return (
-        <div className="grid gap-5 xl:grid-cols-2">
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,380px)]">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
-          <CreditCardInvoiceList creditCardId={creditCard.id} />
+          <CreditCardInvoiceList creditCardId={creditCard.id} currency={currency} />
         </div>
       );
     default:
       return (
         <div className="grid gap-5">
           <CreditCardStatementUpload creditCardId={creditCard.id} />
-          <CreditCardInvoiceList creditCardId={creditCard.id} />
+          <CreditCardInvoiceList creditCardId={creditCard.id} currency={currency} />
           <CreditCardTransactionsList creditCardId={creditCard.id} />
         </div>
       );

@@ -7,7 +7,7 @@ export interface CurrencyProps extends React.HTMLAttributes<HTMLSpanElement> {
    */
   value: string | number | undefined;
   /**
-   * Currency code (default: USD)
+   * Currency code (default: BRL)
    */
   currency?: string;
   /**
@@ -27,7 +27,7 @@ export interface CurrencyProps extends React.HTMLAttributes<HTMLSpanElement> {
    */
   forcePositive?: boolean;
   /**
-   * Locale for number formatting (default: en-US)
+   * Locale for number formatting (default: pt-BR)
    */
   locale?: string;
   /**
@@ -49,12 +49,12 @@ const Currency = React.forwardRef<HTMLSpanElement, CurrencyProps>(
     {
       className,
       value,
-      currency = 'USD',
+      currency = 'BRL',
       variant = 'default',
       color = 'default',
       showSign = false,
       forcePositive = false,
-      locale = 'en-US',
+      locale = 'pt-BR',
       showDecimals = true,
       showLoading = true,
       autoColor = false,

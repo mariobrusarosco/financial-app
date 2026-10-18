@@ -23,7 +23,6 @@ export const useEditableTransactions = ({
       amount: transaction.amount,
       description: transaction.description,
       movement_type: transaction.movement_type,
-      category: transaction.category || 'General',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })) || []

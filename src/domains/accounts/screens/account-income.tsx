@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import { AccountTransactionsList } from '@/domains/transactions/components/account-transactions-list';
-import AccountTransactionAnalyzer from '@/domains/transactions/components/account-transaction-analyzer';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
 
@@ -20,7 +19,7 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
     per_page: search.per_page ?? ITEMS_PER_PAGE,
     amount_min: search.amount_min,
     amount_max: search.amount_max,
-    category: search.category,
+    tag_ids: search.tag_ids,
     description_contains: search.description_contains,
     movement_type: 'income',
     is_paid: search.is_paid,
@@ -38,7 +37,7 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
         per_page: nextParams.per_page,
         amount_min: nextParams.amount_min,
         amount_max: nextParams.amount_max,
-        category: nextParams.category,
+        tag_ids: nextParams.tag_ids,
         description_contains: nextParams.description_contains,
         is_paid: nextParams.is_paid,
         sort_by: nextParams.sort_by,
@@ -69,15 +68,9 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
 
   const query = useAccountTransactionsPaginated(slug, params, true);
 
-  const transactions = query.data?.data || [];
-
   return (
     <div>
-      <div
-        data-ui="account-income-screen"
-        className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[18rem_minmax(0,1fr)]"
-      >
-        <AccountTransactionAnalyzer transactions={transactions} type="income" />
+      <div data-ui="account-income-screen">
         <AccountTransactionsList
           params={params}
           onParamsChange={handleParamsChange}

@@ -16,8 +16,8 @@ import { useVendors } from '@/domains/vendors/hooks';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
+import { TagSelector } from '@/domains/tags/components/tag-selector';
 import * as dateFns from 'date-fns';
-import { useCategories } from '@/domains/categories/hooks/use-categories';
 
 const BILLING_CYCLES = ['daily', 'weekly', 'monthly', 'annually'] as const;
 
@@ -33,7 +33,6 @@ const subscriptionFormSchema = z.object({
   is_active: z.boolean(),
   vendor_id: z.string().min(1, 'Vendor is required.'),
   account_id: z.string().min(1, 'Account is required.'),
-  category_id: z.string().min(1, 'Category is required.'),
 });
 
 interface SubscriptionFormProps {
@@ -47,20 +46,9 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
   const {
     accounts: { query: accountsQuery },
   } = useAccounts();
-  const { data: categoriesData } = useCategories();
 
   const availableVendors = vendorsData?.data || [];
   const availableAccounts = accountsQuery.data?.accounts ?? [];
-
-  const availableCategories: { id: string; name: string; level: number }[] = [];
-  (categoriesData || []).forEach(cat => {
-    availableCategories.push({ id: cat.id, name: cat.name, level: 0 });
-    if (cat.children) {
-      cat.children.forEach(child => {
-        availableCategories.push({ id: child.id, name: child.name, level: 1 });
-      });
-    }
-  });
 
   const form = useForm({
     validatorAdapter: zodValidator,
@@ -74,13 +62,17 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
       is_active: initialValues?.is_active ?? true,
       vendor_id: initialValues?.vendor_id || '',
       account_id: initialValues?.account_id || '',
-      category_id: initialValues?.category_id || '',
+      tag_ids: initialValues?.tag_ids ?? [],
     },
     onSubmit: async ({ value }) => {
+      const { tag_ids: tagIds, ...rest } = value;
+      // When editing, only send tag_ids if they changed: PATCH replaces the whole set
+      const hasTagChanges = !initialValues || !haveSameTagIds(tagIds, initialValues.tag_ids ?? []);
       const submittedValue: I_CreateSubscriptionRequest = {
-        ...value,
+        ...rest,
         amount: parseFloat(value.amount.toString()),
         end_date: value.end_date === '' ? undefined : value.end_date,
+        ...(hasTagChanges && { tag_ids: tagIds }),
       } as I_CreateSubscriptionRequest;
       onSubmit(submittedValue);
     },
@@ -300,34 +292,25 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
             </div>
           )}
         />
-
-        <form.Field
-          name="category_id"
-          validators={{
-            onChange: subscriptionFormSchema.shape.category_id,
-          }}
-          children={field => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Category</Label>
-              <Select value={field.state.value} onValueChange={field.handleChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableCategories.map(category => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.level > 0 ? `\u00A0\u00A0 ${category.name}` : category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {field.state.meta.errors.length > 0 && (
-                <em className="text-destructive text-sm">{field.state.meta.errors.join(', ')}</em>
-              )}
-            </div>
-          )}
-        />
       </div>
+
+      <form.Field
+        name="tag_ids"
+        children={field => (
+          <div className="space-y-2 md:max-w-xl">
+            <Label>Tags (Optional)</Label>
+            <TagSelector
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              historicalTags={initialValues?.tags}
+              placeholder="Select tags…"
+            />
+          </div>
+        )}
+      />
     </form>
   );
 };
+
+const haveSameTagIds = (left: string[], right: string[]) =>
+  left.length === right.length && left.every(tagId => right.includes(tagId));

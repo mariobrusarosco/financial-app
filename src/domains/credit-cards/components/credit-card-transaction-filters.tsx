@@ -17,6 +17,9 @@ import {
 import { ChevronDown, Filter, X } from 'lucide-react';
 import type { I_CreditCardTransactionsParams } from '@/domains/credit-cards/types/types-and-interfaces';
 
+// Radix Select reserves the empty string for clearing the selection, so "All" needs its own value
+const ALL_OPTION = 'all';
+
 interface CreditCardTransactionFiltersProps {
   params: I_CreditCardTransactionsParams;
   onParamsChange: (params: I_CreditCardTransactionsParams) => void;
@@ -116,11 +119,6 @@ export const CreditCardTransactionFilters = ({
                 value={params.description_contains || ''}
                 onChange={e => updateParam('description_contains', e.target.value)}
               />
-              <Input
-                placeholder="Category"
-                value={params.category || ''}
-                onChange={e => updateParam('category', e.target.value)}
-              />
             </div>
           </div>
 
@@ -129,32 +127,32 @@ export const CreditCardTransactionFilters = ({
             <Label className="text-sm font-medium">Status</Label>
             <div className="space-y-2">
               <Select
-                value={params.is_paid?.toString() || ''}
+                value={params.is_paid?.toString() ?? ALL_OPTION}
                 onValueChange={value =>
-                  updateParam('is_paid', value === '' ? undefined : value === 'true')
+                  updateParam('is_paid', value === ALL_OPTION ? undefined : value === 'true')
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Payment status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value={ALL_OPTION}>All</SelectItem>
                   <SelectItem value="true">Paid</SelectItem>
                   <SelectItem value="false">Unpaid</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select
-                value={params.movement_type || ''}
+                value={params.movement_type ?? ALL_OPTION}
                 onValueChange={value =>
-                  updateParam('movement_type', value === '' ? undefined : value)
+                  updateParam('movement_type', value === ALL_OPTION ? undefined : value)
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Movement type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All types</SelectItem>
+                  <SelectItem value={ALL_OPTION}>All types</SelectItem>
                   <SelectItem value="income">Income</SelectItem>
                   <SelectItem value="expense">Expense</SelectItem>
                   <SelectItem value="investment">Investment</SelectItem>
@@ -179,7 +177,6 @@ export const CreditCardTransactionFilters = ({
                   <SelectItem value="date">Date</SelectItem>
                   <SelectItem value="amount">Amount</SelectItem>
                   <SelectItem value="created_at">Created</SelectItem>
-                  <SelectItem value="category">Category</SelectItem>
                 </SelectContent>
               </Select>
 

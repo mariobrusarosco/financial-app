@@ -15,7 +15,6 @@ const authSearchSchema = z.object({
       'credit-card-create',
       'investment-create',
       'investment-data-create',
-      'category-manager',
       'vendor-create',
       'vendor-edit',
       'subscription-create',
