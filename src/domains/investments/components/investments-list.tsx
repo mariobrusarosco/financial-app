@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
+import { parseISO } from 'date-fns';
 import { TrendingUp, TrendingDown, Plus, MoreHorizontal, PlusCircle } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import { useInvestments } from '../hooks/use-investments';
@@ -153,7 +154,7 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      Last updated: {new Date(investment.last_updated).toLocaleDateString()}
+                      Last updated: {parseISO(investment.last_updated).toLocaleDateString()}
                     </p>
                   </div>
 

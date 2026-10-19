@@ -4,14 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/domains/ui-system/co
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
-import { PlusIcon, TrendingUpIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PlusIcon, TrendingUpIcon } from 'lucide-react';
 
 import { useMonthlyBalanceSummaries } from '../hooks/use-monthly-balance-summaries';
 import { useCreateBalancePoint } from '../hooks/use-create-balance-point';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const InvestmentDataInputScreen = () => {
   const [selectedInvestment, setSelectedInvestment] = useState<string>('');
+  const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     balance: '',
@@ -36,7 +39,7 @@ export const InvestmentDataInputScreen = () => {
     error: monthlyError,
   } = useMonthlyBalanceSummaries({
     account_id: selectedInvestment,
-    year: new Date().getFullYear(),
+    year: selectedYear,
     months: 12,
   });
 
@@ -52,12 +55,18 @@ export const InvestmentDataInputScreen = () => {
       return;
     }
 
-    createBalancePointMutation.mutate({
-      account_id: selectedInvestment,
-      date: formData.date,
-      balance: parseFloat(formData.balance),
-      note: formData.note || undefined,
-    });
+    createBalancePointMutation.mutate(
+      {
+        account_id: selectedInvestment,
+        date: formData.date,
+        balance: parseFloat(formData.balance),
+        note: formData.note || undefined,
+      },
+      {
+        // Show the year the balance was saved in.
+        onSuccess: () => setSelectedYear(Number(formData.date.slice(0, 4))),
+      }
+    );
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -131,9 +140,31 @@ export const InvestmentDataInputScreen = () => {
           </div>
           <div className="flex gap-6">
             <div className="flex-1 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
-              <h3 className="text-lg font-semibold sticky top-0 bg-background py-2 z-10">
-                Investment History
-              </h3>
+              <div className="flex items-center justify-between sticky top-0 bg-background py-2 z-10">
+                <h3 className="text-lg font-semibold">Investment History</h3>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Previous year"
+                    onClick={() => setSelectedYear(year => year - 1)}
+                  >
+                    <ChevronLeft />
+                  </Button>
+                  <span className="w-12 text-center font-mono text-sm" aria-live="polite">
+                    {selectedYear}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Next year"
+                    disabled={selectedYear >= CURRENT_YEAR}
+                    onClick={() => setSelectedYear(year => year + 1)}
+                  >
+                    <ChevronRight />
+                  </Button>
+                </div>
+              </div>
 
               {isLoadingMonthly ? (
                 <div className="text-center py-8">

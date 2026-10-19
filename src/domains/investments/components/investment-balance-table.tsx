@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/domains/ui-system/components/card';
+import { parseISO } from 'date-fns';
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
 import { useAllInvestmentBalancesWithPagination } from '../hooks/use-investment-balance-history';
@@ -75,7 +76,9 @@ export const InvestmentBalanceTable = ({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    // parseISO reads a plain date ("2023-01-31") as local time; new Date() would read
+    // it as UTC and show the previous day west of UTC.
+    return parseISO(dateString).toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'short',
       year: '2-digit',
