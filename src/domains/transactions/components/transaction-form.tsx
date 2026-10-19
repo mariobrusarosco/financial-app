@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type {
   I_CreateTransactionForm,
   I_TransactionPayload,
-  T_TransactionType,
 } from '../types/types-and-interfaces';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
@@ -29,42 +28,14 @@ import { Skeleton } from '@/domains/ui-system/components/skeleton';
 import { Calculator as CalculatorIcon, ChevronDown, CreditCard, Landmark } from 'lucide-react';
 import { Calculator } from '@/domains/ui-system/components/calculator';
 import { cn } from '@/domains/ui-system';
+import {
+  MOVEMENT_TYPES,
+  MOVEMENT_TYPE_STYLES,
+} from '@/domains/transactions/utils/movement-type-styles';
 
-const MOVEMENT_TYPE_OPTIONS: {
-  value: T_TransactionType;
-  label: string;
-  selectedClassName: string;
-  idleClassName: string;
-}[] = [
-  {
-    value: 'expense',
-    label: 'Expense',
-    selectedClassName: 'bg-destructive text-white border-destructive',
-    idleClassName:
-      'bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/15',
-  },
-  {
-    value: 'income',
-    label: 'Income',
-    selectedClassName: 'bg-positive text-white border-positive',
-    idleClassName: 'bg-positive/10 text-positive border-positive/30 hover:bg-positive/15',
-  },
-  {
-    value: 'investment',
-    label: 'Investment',
-    selectedClassName: 'bg-brand text-brand-foreground border-brand',
-    idleClassName: 'bg-brand/10 text-brand border-brand/30 hover:bg-brand/15',
-  },
-  {
-    value: 'transfer',
-    label: 'Transfer',
-    selectedClassName: 'bg-warning text-white border-warning',
-    idleClassName: 'bg-warning/10 text-warning border-warning/30 hover:bg-warning/15',
-  },
-];
-
-const SELECTED_OPTION_CLASS_NAME =
-  'bg-primary text-primary-foreground border-transparent shadow-sm';
+// Destination selectors: segmented track uses a raised white pill, account/card chips a purple tint
+const SEGMENT_SELECTED_CLASS_NAME = 'bg-card text-foreground shadow-sm ring-1 ring-border';
+const CHIP_SELECTED_CLASS_NAME = 'border-accent-foreground/40 bg-accent text-accent-foreground';
 
 const transactionSchema = z
   .object({
@@ -79,9 +50,7 @@ const transactionSchema = z
         }
         return Number(val);
       },
-      z
-        .number({ message: 'Amount is required' })
-        .refine(val => val !== 0, 'Amount must not be 0')
+      z.number({ message: 'Amount is required' }).refine(val => val !== 0, 'Amount must not be 0')
     ),
     date: z.string().min(1, 'Date is required'),
     movement_type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
@@ -112,6 +81,8 @@ interface TransactionFormProps {
   isEditMode?: boolean;
   onCancel?: () => void;
   onDirtyChange?: (isDirty: boolean) => void;
+  /** Focus the amount field on mount (fast entry when adding several transactions) */
+  autoFocus?: boolean;
 }
 
 type TransactionFormApi = any;
@@ -129,6 +100,7 @@ export const TransactionForm = ({
   onSubmit,
   isEditMode = false,
   onDirtyChange,
+  autoFocus = false,
 }: TransactionFormProps) => {
   const {
     accounts: { query: accountsQuery },
@@ -154,9 +126,7 @@ export const TransactionForm = ({
     validatorAdapter: zodValidator,
     defaultValues: {
       description: initialValues?.description || '',
-      amount: initialValues?.amount
-        ? String(initialValues.amount).replace('.', ',')
-        : '',
+      amount: initialValues?.amount ? String(initialValues.amount).replace('.', ',') : '',
       date: initialValues?.date || new Date().toISOString().split('T')[0],
       movement_type: initialValues?.movement_type || 'expense',
       tag_ids: initialValues?.tag_ids ?? [],
@@ -210,6 +180,15 @@ export const TransactionForm = ({
     )
   );
 
+  const optionalFieldsSet = useStore(
+    form.store,
+    state =>
+      [
+        (state.values as Record<string, unknown>).vendor_id,
+        (state.values as Record<string, unknown>).subscription_id,
+      ].filter(Boolean).length
+  );
+
   useEffect(() => {
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
@@ -250,6 +229,7 @@ export const TransactionForm = ({
         void form.handleSubmit();
       }}
       className="flex flex-col gap-5"
+      data-vaul-no-drag
     >
       {/* SECTION 1: CORE DETAILS */}
       <div className="space-y-3">
@@ -257,7 +237,7 @@ export const TransactionForm = ({
           CORE DETAILS
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
-          <AmountField form={form} />
+          <AmountField form={form} autoFocus={autoFocus} />
           <DateField form={form} />
         </div>
         <DescriptionField form={form} />
@@ -290,9 +270,9 @@ export const TransactionForm = ({
             onClick={() => handleDestinationTypeChange('account')}
             aria-pressed={destinationType === 'account'}
             className={cn(
-              'flex-1 py-1.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2',
+              'flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2',
               destinationType === 'account'
-                ? SELECTED_OPTION_CLASS_NAME
+                ? SEGMENT_SELECTED_CLASS_NAME
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -303,9 +283,9 @@ export const TransactionForm = ({
             onClick={() => handleDestinationTypeChange('credit_card')}
             aria-pressed={destinationType === 'credit_card'}
             className={cn(
-              'flex-1 py-1.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2',
+              'flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2',
               destinationType === 'credit_card'
-                ? SELECTED_OPTION_CLASS_NAME
+                ? SEGMENT_SELECTED_CLASS_NAME
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -332,8 +312,15 @@ export const TransactionForm = ({
           aria-controls="transaction-form-optional"
           className="flex w-full items-center justify-between cursor-pointer py-1 select-none rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="text-xs font-semibold text-muted-foreground/80 tracking-wider uppercase">
-            OPTIONAL
+          <span className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-muted-foreground/80 tracking-wider uppercase">
+              OPTIONAL
+            </span>
+            {!isOptionalOpen && optionalFieldsSet > 0 && (
+              <span className="rounded-full bg-accent px-2 py-0.5 text-[0.7rem] font-medium text-accent-foreground">
+                {optionalFieldsSet} set
+              </span>
+            )}
           </span>
           <ChevronDown
             className={cn(
@@ -344,17 +331,16 @@ export const TransactionForm = ({
         </button>
 
         {isOptionalOpen && (
-          <div id="transaction-form-optional" className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div
+            id="transaction-form-optional"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1"
+          >
             <SubscriptionField
               form={form}
               isEditMode={isEditMode}
               availableSubscriptions={availableSubscriptions}
             />
-            <VendorField
-              form={form}
-              isEditMode={isEditMode}
-              availableVendors={availableVendors}
-            />
+            <VendorField form={form} isEditMode={isEditMode} availableVendors={availableVendors} />
           </div>
         )}
       </div>
@@ -377,7 +363,7 @@ export const TransactionForm = ({
 
 /* Core Details Subcomponents */
 
-const AmountField = ({ form }: { form: TransactionFormApi }) => {
+const AmountField = ({ form, autoFocus }: { form: TransactionFormApi; autoFocus: boolean }) => {
   const [showCalculator, setShowCalculator] = useState(false);
 
   return (
@@ -392,26 +378,34 @@ const AmountField = ({ form }: { form: TransactionFormApi }) => {
           <Label htmlFor={field.name} className="text-xs font-normal text-muted-foreground">
             Amount
           </Label>
-          <div className="relative flex items-center border-2 border-foreground/90 dark:border-foreground/70 rounded-xl px-3 py-1 bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 h-11">
-            <span className="text-muted-foreground font-medium text-sm pl-0.5 pr-1.5 select-none shrink-0">
+          <div
+            className={cn(
+              'relative flex h-14 items-center rounded-xl border border-input bg-background px-4 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20',
+              field.state.meta.errors.length > 0 && 'border-destructive'
+            )}
+          >
+            <span className="mr-2 shrink-0 text-sm font-medium text-muted-foreground select-none">
               R$
             </span>
             <input
               id={field.name}
               type="text"
               inputMode="decimal"
+              autoFocus={autoFocus}
+              placeholder="0,00"
               value={String(field.state.value ?? '')}
               onBlur={field.handleBlur}
               onChange={e => field.handleChange(e.target.value)}
-              className="text-xl font-bold tracking-tight bg-transparent border-0 p-0 focus:outline-none w-full text-foreground"
+              className="financial-value w-full border-0 bg-transparent p-0 text-3xl font-semibold tracking-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
             />
             <button
               type="button"
               onClick={() => setShowCalculator(!showCalculator)}
-              className="p-1 rounded-md border border-border/80 bg-muted/40 hover:bg-muted text-muted-foreground transition-colors shrink-0 ml-2"
+              className="ml-2 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Calculator"
+              aria-label="Open calculator"
             >
-              <CalculatorIcon className="w-3.5 h-3.5" />
+              <CalculatorIcon className="h-4 w-4" />
             </button>
           </div>
 
@@ -454,7 +448,7 @@ const DateField = ({ form }: { form: TransactionFormApi }) => (
         <TransactionDatePicker
           date={field.state.value ? new Date(String(field.state.value)) : undefined}
           setDate={date => field.handleChange(date ? date.toISOString().split('T')[0] : '')}
-          className="h-11 rounded-xl border-border/80 font-medium"
+          className="h-14 rounded-xl border-input font-medium"
         />
         <FieldErrors errors={field.state.meta.errors} />
       </div>
@@ -495,24 +489,28 @@ const MovementTypeField = ({ form }: { form: TransactionFormApi }) => (
     }}
   >
     {(field: any) => (
-      <div className="flex gap-2 flex-wrap items-center">
-        {MOVEMENT_TYPE_OPTIONS.map(option => {
-          const isSelected = field.state.value === option.value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => field.handleChange(option.value)}
-              className={cn(
-                'px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all cursor-pointer',
-                isSelected ? cn(option.selectedClassName, 'shadow-sm') : option.idleClassName
-              )}
-              aria-pressed={isSelected}
-            >
-              {option.label}
-            </button>
-          );
-        })}
+      <div className="space-y-1.5">
+        <Label className="block text-xs font-normal text-muted-foreground">Type</Label>
+        <div className="flex gap-2 flex-wrap items-center">
+          {MOVEMENT_TYPES.map(type => {
+            const style = MOVEMENT_TYPE_STYLES[type];
+            const isSelected = field.state.value === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => field.handleChange(type)}
+                className={cn(
+                  'h-10 px-4 rounded-full text-sm font-medium border transition-all cursor-pointer',
+                  isSelected ? style.selectedClassName : style.idleClassName
+                )}
+                aria-pressed={isSelected}
+              >
+                {style.label}
+              </button>
+            );
+          })}
+        </div>
         <FieldErrors errors={field.state.meta.errors} />
       </div>
     )}
@@ -573,8 +571,8 @@ const BankAccountSelector = ({
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border select-none',
                   isSelected
-                    ? SELECTED_OPTION_CLASS_NAME
-                    : 'border-border/80 bg-background text-foreground hover:bg-muted/50'
+                    ? CHIP_SELECTED_CLASS_NAME
+                    : 'border-border bg-background text-foreground hover:bg-muted/50'
                 )}
               >
                 {account.name}
@@ -620,8 +618,8 @@ const CreditCardSelector = ({
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border select-none',
                   isSelected
-                    ? SELECTED_OPTION_CLASS_NAME
-                    : 'border-border/80 bg-background text-foreground hover:bg-muted/50'
+                    ? CHIP_SELECTED_CLASS_NAME
+                    : 'border-border bg-background text-foreground hover:bg-muted/50'
                 )}
               >
                 {creditCard.name} (*{creditCard.last_four_digits})
@@ -715,7 +713,7 @@ const IsPaidField = ({ form }: { form: TransactionFormApi }) => (
           htmlFor={field.name}
           className="text-sm font-medium text-foreground cursor-pointer select-none"
         >
-          Payment Status
+          Paid
         </label>
       </div>
     )}
@@ -735,7 +733,7 @@ const IgnoredField = ({ form }: { form: TransactionFormApi }) => (
           htmlFor={field.name}
           className="text-sm font-medium text-foreground cursor-pointer select-none"
         >
-          Ignore Transaction
+          Ignore transaction
         </label>
       </div>
     )}

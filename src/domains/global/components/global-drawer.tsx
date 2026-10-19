@@ -1,6 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Drawer, DrawerContent } from '@ui-system/components/drawer';
+import { useMediaQuery } from '@/domains/ui-system/hooks/use-media-query';
+import { cn } from '@/domains/ui-system/utils';
 
 // Direct lazy imports - simple and clear
 const CreateAccountDrawer = lazy(() =>
@@ -100,8 +102,17 @@ interface GlobalDrawerProps {
     | 'installment-link-payment';
 }
 
+// Form-heavy drawers open as a right-side sheet from md up (bottom sheet on mobile), with these widths
+const SIDE_SHEET_WIDTHS: Partial<Record<GlobalDrawerProps['drawerType'], string>> = {
+  'transaction-create': 'data-[vaul-drawer-direction=right]:sm:max-w-5xl',
+  'transaction-edit': 'data-[vaul-drawer-direction=right]:sm:max-w-3xl',
+};
+
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery('(min-width: 48rem)');
+  const sideSheetWidth = SIDE_SHEET_WIDTHS[drawerType];
+  const direction = sideSheetWidth && isDesktop ? 'right' : 'bottom';
 
   const handleClose = () => {
     navigate({
@@ -156,8 +167,21 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
   }
 
   return (
-    <Drawer open={true} onOpenChange={open => !open && handleClose()}>
-      <DrawerContent className="min-h-[95vh] md:min-h-[80vh]">
+    <Drawer
+      open={true}
+      direction={direction}
+      // Keyboard-aware resizing is for mobile bottom sheets; on a side sheet it pins a stale inline height
+      repositionInputs={direction === 'bottom'}
+      onOpenChange={open => !open && handleClose()}
+    >
+      <DrawerContent
+        className={cn(
+          'min-h-[95vh] md:min-h-[80vh]',
+          sideSheetWidth &&
+            'overflow-hidden data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-l-3xl data-[vaul-drawer-direction=right]:border-l-0',
+          sideSheetWidth
+        )}
+      >
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-full">
