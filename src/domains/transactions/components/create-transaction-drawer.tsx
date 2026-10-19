@@ -1,16 +1,21 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import type * as React from 'react';
 import { useRef, useState } from 'react';
-import { ArrowRightLeft, Check, ListPlus, Loader2, X } from 'lucide-react';
+import { ArrowRightLeft, Check, ListPlus, Loader2 } from 'lucide-react';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import type { I_Account } from '@/domains/accounts/types/types-and-interfaces';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
 import { PendingTransactionsPanel } from '@/domains/transactions/components/pending-transactions-panel';
 import { TransactionForm } from '@/domains/transactions/components/transaction-form';
 import { useCreateBulkTransactions } from '@/domains/transactions/hooks/use-create-bulk-transactions';
 import type { I_CreateTransactionForm } from '@/domains/transactions/types/types-and-interfaces';
 import { Button } from '@/domains/ui-system/components/button';
-import { DrawerDescription, DrawerTitle } from '@/domains/ui-system/components/drawer';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 type T_FormSeed = Partial<I_CreateTransactionForm>;
@@ -123,104 +128,71 @@ export const CreateTransactionDrawer = () => {
       : accounts.find(account => account.id === transaction.account_id)?.name;
 
   return (
-    <div
-      data-ui="create-transaction-drawer"
-      className="flex min-h-0 flex-1 flex-col"
-      onKeyDown={handleKeyDown}
-    >
-      <header className="flex items-center justify-between gap-4 border-b border-border px-5 py-4 md:px-8 md:py-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-pastel-blue text-brand">
-            <ArrowRightLeft className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <DrawerTitle className="text-lg font-semibold text-foreground">
-              New transactions
-            </DrawerTitle>
-            <DrawerDescription className="text-xs text-muted-foreground">
-              Add one or several, then save them together.
-            </DrawerDescription>
+    <DrawerLayout data-ui="create-transaction-drawer" onKeyDown={handleKeyDown}>
+      <DrawerLayoutHeader
+        icon={ArrowRightLeft}
+        title="New transactions"
+        description="Add one or several, then save them together."
+      />
+
+      <DrawerLayoutBody
+        aside={
+          <PendingTransactionsPanel
+            transactions={pendingTransactions}
+            getDestinationName={getDestinationName}
+            onEdit={handleEditPending}
+            onRemove={handleRemovePending}
+            canEdit={!hasFormEntry}
+          />
+        }
+      >
+        {isReady ? (
+          <TransactionForm
+            key={formKey}
+            initialValues={seed}
+            onSubmit={handleFormSubmit}
+            onDirtyChange={setIsFormDirty}
+            autoFocus
+          />
+        ) : (
+          <div className="space-y-4" aria-busy="true">
+            <Skeleton className="h-14 w-full rounded-xl" />
+            <Skeleton className="h-10 w-full rounded-xl" />
+            <Skeleton className="h-10 w-2/3 rounded-xl" />
           </div>
-        </div>
+        )}
+      </DrawerLayoutBody>
+
+      <DrawerLayoutFooter
+        hint={
+          <>
+            <Kbd>Enter</Kbd> adds to the list · <Kbd>⌘/Ctrl</Kbd> + <Kbd>Enter</Kbd> saves
+          </>
+        }
+      >
+        {/* First submit button for the form, so pressing Enter in a field adds to the list */}
         <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={handleClose}
-          aria-label="Close"
-          className="h-9 w-9 shrink-0 text-muted-foreground"
+          type="submit"
+          form="transaction-form"
+          variant="outline"
+          onClick={() => {
+            submitIntentRef.current = 'add';
+          }}
+          disabled={!isReady || isSaving}
         >
-          <X className="h-5 w-5" />
+          <ListPlus className="h-4 w-4" />
+          Add to list
         </Button>
-      </header>
-
-      <div className="grid min-h-0 flex-1 overflow-y-auto md:grid-cols-[minmax(0,1fr)_20rem] md:overflow-hidden">
-        <div className="px-5 py-6 md:overflow-y-auto md:px-8">
-          {isReady ? (
-            <TransactionForm
-              key={formKey}
-              initialValues={seed}
-              onSubmit={handleFormSubmit}
-              onDirtyChange={setIsFormDirty}
-              autoFocus
-            />
-          ) : (
-            <div className="space-y-4" aria-busy="true">
-              <Skeleton className="h-14 w-full rounded-xl" />
-              <Skeleton className="h-10 w-full rounded-xl" />
-              <Skeleton className="h-10 w-2/3 rounded-xl" />
-            </div>
-          )}
-        </div>
-
-        <PendingTransactionsPanel
-          transactions={pendingTransactions}
-          getDestinationName={getDestinationName}
-          onEdit={handleEditPending}
-          onRemove={handleRemovePending}
-          canEdit={!hasFormEntry}
-        />
-      </div>
-
-      <footer className="flex flex-col gap-3 border-t border-border bg-background px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-8">
-        <p className="hidden text-xs text-muted-foreground sm:block">
-          <Kbd>Enter</Kbd> adds to the list · <Kbd>⌘/Ctrl</Kbd> + <Kbd>Enter</Kbd> saves
-        </p>
-        <div className="flex gap-2 sm:justify-end">
-          {/* First submit button for the form, so pressing Enter in a field adds to the list */}
-          <Button
-            type="submit"
-            form="transaction-form"
-            variant="outline"
-            className="flex-1 sm:flex-none"
-            onClick={() => {
-              submitIntentRef.current = 'add';
-            }}
-            disabled={!isReady || isSaving}
-          >
-            <ListPlus className="h-4 w-4" />
-            Add to list
-          </Button>
-          <Button
-            type="button"
-            className="flex-1 sm:flex-none"
-            onClick={handleSave}
-            disabled={saveCount === 0 || isSaving}
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Check className="h-4 w-4" />
-            )}
-            {isSaving
-              ? 'Saving…'
-              : saveCount === 0
-                ? 'Save'
-                : `Save ${saveCount} ${saveCount === 1 ? 'transaction' : 'transactions'}`}
-          </Button>
-        </div>
-      </footer>
-    </div>
+        <Button type="button" onClick={handleSave} disabled={saveCount === 0 || isSaving}>
+          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+          {isSaving
+            ? 'Saving…'
+            : saveCount === 0
+              ? 'Save'
+              : `Save ${saveCount} ${saveCount === 1 ? 'transaction' : 'transactions'}`}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };
 

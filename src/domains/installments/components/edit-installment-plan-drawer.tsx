@@ -1,14 +1,18 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Route } from '@/routes/(auth)/installments/index';
 import { Button } from '@ui-system/components/button';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import { DrawerDescription, DrawerTitle } from '@/domains/ui-system/components/drawer';
+import {
+  DrawerLayout,
+  DrawerLayoutAside,
+  DrawerLayoutBody,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { DrawerTitle } from '@/domains/ui-system/components/drawer';
 import {
   AlertCircle,
   CalendarDays,
   CheckCircle2,
   CreditCard,
-  Edit,
   Link as LinkIcon,
   Loader2,
   Check,
@@ -111,32 +115,25 @@ export const EditInstallmentPlanDrawer = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      <DrawerLayout data-ui="edit-installment-plan-drawer">
+        <DrawerLayoutHeader icon={CalendarDays} title="Installment plan" description="Loading…" />
+        <DrawerLayoutBody className="grid place-items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
-  if (isError) {
+  if (isError || !plan) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-destructive p-4 text-center">
-        <p>Failed to load installment plan.</p>
-        <Button variant="outline" onClick={handleClose} className="mt-4">
-          Close
-        </Button>
-      </div>
-    );
-  }
-
-  if (!plan) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
-        <DrawerHeader title="Installment plan" icon={Edit} />
-        <p>Installment plan not found.</p>
-        <Button variant="outline" onClick={handleClose} className="mt-4">
-          Close
-        </Button>
-      </div>
+      <DrawerLayout data-ui="edit-installment-plan-drawer">
+        <DrawerLayoutHeader icon={CalendarDays} title="Installment plan" />
+        <DrawerLayoutBody>
+          <p className={cn('text-sm', isError ? 'text-destructive' : 'text-muted-foreground')}>
+            {isError ? 'Failed to load installment plan.' : 'Installment plan not found.'}
+          </p>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
@@ -153,17 +150,11 @@ export const EditInstallmentPlanDrawer = () => {
   const planStatus = PLAN_STATUS[plan.status] ?? PLAN_STATUS.active;
 
   return (
-    <div
-      className="mx-auto flex h-full w-full max-w-5xl flex-col gap-6 overflow-y-auto p-4 md:p-6"
-      data-ui="edit-installment-plan-drawer"
-    >
-      {/* Header */}
-      <div className="flex items-start gap-3 border-b border-border/70 pb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60">
-          <CalendarDays className="h-5 w-5 text-foreground" />
-        </div>
-        <div className="min-w-0 space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
+    <DrawerLayout data-ui="edit-installment-plan-drawer">
+      <DrawerLayoutHeader
+        icon={CalendarDays}
+        title={
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <PlanNameEditor planId={plan.id} name={plan.name} />
             <span
               className={cn('rounded-full px-2 py-0.5 text-xs font-medium', planStatus.className)}
@@ -171,81 +162,86 @@ export const EditInstallmentPlanDrawer = () => {
               {planStatus.label}
             </span>
           </div>
-          <DrawerDescription className="text-sm text-muted-foreground">
+        }
+        description={
+          <>
             {plan.installment_count} × {formatCurrency(installmentAmount)} · from{' '}
             {formatDate(plan.start_date)}
-          </DrawerDescription>
-        </div>
-      </div>
+          </>
+        }
+        onClose={handleClose}
+      />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-        {/* Summary */}
-        <aside className="space-y-4 lg:sticky lg:top-0">
-          <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Remaining</p>
-              <p className="text-2xl font-bold tracking-tight">{formatCurrency(remainingAmount)}</p>
-              <p className="text-xs text-muted-foreground">
-                of {formatCurrency(plan.total_amount)} total · {formatCurrency(paidAmount)} paid
-              </p>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">
-                  {paidInstallments.length} of {plan.installment_count} paid
-                </span>
-                <span className="font-medium">{Math.round(progress)}%</span>
+      <DrawerLayoutBody
+        aside={
+          <DrawerLayoutAside aria-label="Plan summary">
+            <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Remaining</p>
+                <p className="text-2xl font-bold tracking-tight">
+                  {formatCurrency(remainingAmount)}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  of {formatCurrency(plan.total_amount)} total · {formatCurrency(paidAmount)} paid
+                </p>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-positive transition-all duration-500 ease-out"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-            {nextInstallment && (
-              <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm">
-                <span className="text-muted-foreground">Next payment</span>
-                <span className="font-medium">
-                  {formatCurrency(nextInstallment.amount)} ·{' '}
-                  {formatDate(nextInstallment.due_date, 'MMM d')}
-                </span>
-              </div>
-            )}
-          </div>
-
-          <dl className="space-y-3 rounded-2xl border border-border/80 bg-card p-4 text-sm">
-            <PlanVendorEditor planId={plan.id} vendor={plan.vendor ?? null} />
-            <DetailRow
-              icon={CreditCard}
-              label="Credit card"
-              value={
-                creditCard
-                  ? `${creditCard.name} (*${creditCard.last_four_digits})`
-                  : plan.credit_card_id
-                    ? 'Credit card'
-                    : undefined
-              }
-            />
-            <DetailRow icon={CalendarDays} label="Starts" value={formatDate(plan.start_date)} />
-            {(plan.tags?.length ?? 0) > 0 && (
               <div className="space-y-1.5">
-                <dt className="text-xs text-muted-foreground">Tags</dt>
-                <dd>
-                  <TagChips tags={plan.tags ?? []} maxVisible={6} />
-                </dd>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">
+                    {paidInstallments.length} of {plan.installment_count} paid
+                  </span>
+                  <span className="font-medium">{Math.round(progress)}%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-positive transition-all duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
               </div>
-            )}
-            {plan.description && (
-              <div className="space-y-1">
-                <dt className="text-xs text-muted-foreground">Notes</dt>
-                <dd className="whitespace-pre-line text-foreground">{plan.description}</dd>
-              </div>
-            )}
-          </dl>
-        </aside>
+              {nextInstallment && (
+                <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">Next payment</span>
+                  <span className="font-medium">
+                    {formatCurrency(nextInstallment.amount)} ·{' '}
+                    {formatDate(nextInstallment.due_date, 'MMM d')}
+                  </span>
+                </div>
+              )}
+            </div>
 
-        {/* Installments */}
+            <dl className="space-y-3 rounded-2xl border border-border/80 bg-card p-4 text-sm">
+              <PlanVendorEditor planId={plan.id} vendor={plan.vendor ?? null} />
+              <DetailRow
+                icon={CreditCard}
+                label="Credit card"
+                value={
+                  creditCard
+                    ? `${creditCard.name} (*${creditCard.last_four_digits})`
+                    : plan.credit_card_id
+                      ? 'Credit card'
+                      : undefined
+                }
+              />
+              <DetailRow icon={CalendarDays} label="Starts" value={formatDate(plan.start_date)} />
+              {(plan.tags?.length ?? 0) > 0 && (
+                <div className="space-y-1.5">
+                  <dt className="text-xs text-muted-foreground">Tags</dt>
+                  <dd>
+                    <TagChips tags={plan.tags ?? []} maxVisible={6} />
+                  </dd>
+                </div>
+              )}
+              {plan.description && (
+                <div className="space-y-1">
+                  <dt className="text-xs text-muted-foreground">Notes</dt>
+                  <dd className="whitespace-pre-line text-foreground">{plan.description}</dd>
+                </div>
+              )}
+            </dl>
+          </DrawerLayoutAside>
+        }
+      >
         <section className="space-y-2">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Installments
@@ -262,8 +258,8 @@ export const EditInstallmentPlanDrawer = () => {
             ))}
           </ul>
         </section>
-      </div>
-    </div>
+      </DrawerLayoutBody>
+    </DrawerLayout>
   );
 };
 

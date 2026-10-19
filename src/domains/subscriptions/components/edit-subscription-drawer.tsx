@@ -5,10 +5,15 @@ import { useUpdateSubscription } from '../hooks';
 import { subscriptionsApi } from '../api/subscriptions.api';
 import { SUBSCRIPTIONS_QUERY_KEYS } from '../api/keys';
 import { SubscriptionForm } from './subscription-form';
-import { Loader2, Save, Link as LinkIcon, ArrowLeft } from 'lucide-react';
+import { Loader2, Link as LinkIcon, Repeat2 } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import type { I_Subscription } from '../types/types-and-interfaces';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
 import { useState } from 'react';
 import { LinkPaymentDrawer } from './link-payment-drawer';
 
@@ -56,97 +61,71 @@ export const EditSubscriptionDrawer = () => {
     }
   };
 
-  const isLoading = updateSubscriptionMutation.isPending || isQueryLoading;
+  const isSaving = updateSubscriptionMutation.isPending;
 
   if (isQueryLoading && !subscription) {
     return (
-      <div className="flex items-center justify-center h-full p-6">
-        <DrawerHeader
-          title="Edit Subscription"
-          description="Loading subscription details..."
-          icon={Save}
+      <DrawerLayout data-ui="edit-subscription-drawer">
+        <DrawerLayoutHeader
+          icon={Repeat2}
+          title="Edit subscription"
+          description="Loading subscription details…"
         />
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
+        <DrawerLayoutBody className="grid place-items-center">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   if (isError || !subscription) {
     return (
-      <div className="flex items-center justify-center h-full p-6">
-        <DrawerHeader
-          title="Edit Subscription"
-          description="Failed to load subscription details."
-          icon={Save}
-        />
-      </div>
+      <DrawerLayout data-ui="edit-subscription-drawer">
+        <DrawerLayoutHeader icon={Repeat2} title="Edit subscription" />
+        <DrawerLayoutBody>
+          <p className="text-sm text-destructive">Failed to load subscription details.</p>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   if (isLinkingPayment) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="p-6 pb-0">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setIsLinkingPayment(false)}
-            className="mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Edit
-          </Button>
-        </div>
-        <LinkPaymentDrawer 
-          subscription={subscription} 
-          onClose={() => {
-            setIsLinkingPayment(false);
-            // Invalidate to refresh the history list
-            queryClient.invalidateQueries({ queryKey: SUBSCRIPTIONS_QUERY_KEYS.detail(subscriptionId!) });
-          }} 
-        />
-      </div>
+      <LinkPaymentDrawer
+        subscription={subscription}
+        onClose={() => {
+          setIsLinkingPayment(false);
+          // Invalidate to refresh the history list
+          queryClient.invalidateQueries({
+            queryKey: SUBSCRIPTIONS_QUERY_KEYS.detail(subscriptionId!),
+          });
+        }}
+      />
     );
   }
 
   return (
-    <div className="p-6 space-y-6 h-full flex flex-col">
-      <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Edit Subscription"
-          icon={Save}
+    <DrawerLayout data-ui="edit-subscription-drawer">
+      <DrawerLayoutHeader icon={Repeat2} title="Edit subscription" description={subscription.name} />
+      <DrawerLayoutBody>
+        <SubscriptionForm
+          key={subscription.id}
+          initialValues={subscription as unknown as I_Subscription}
+          onSubmit={handleSubmit}
         />
-        <div className="flex gap-2">
-          {!subscription.is_paid_this_cycle && (
-            <Button 
-              variant="outline" 
-              size="lg" 
-              onClick={() => setIsLinkingPayment(true)}
-            >
-              <LinkIcon className="h-4 w-4 mr-2" />
-              Mark as Paid
-            </Button>
-          )}
-          <Button size="lg" form="subscription-form" type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        {!subscription.is_paid_this_cycle && (
+          <Button type="button" variant="outline" onClick={() => setIsLinkingPayment(true)}>
+            <LinkIcon className="h-4 w-4" />
+            Mark as paid
           </Button>
-        </div>
-      </div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-6 h-full">
-          <div className="col-span-2">
-            <p className="text-sm text-muted-foreground mb-6">
-              Edit the details of your subscription.
-            </p>
-            <SubscriptionForm
-              key={subscription.id}
-              initialValues={subscription as unknown as I_Subscription}
-              onSubmit={handleSubmit}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+        )}
+        <Button type="submit" form="subscription-form" disabled={isSaving}>
+          {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isSaving ? 'Saving…' : 'Save changes'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

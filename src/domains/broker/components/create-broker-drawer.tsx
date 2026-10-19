@@ -1,28 +1,35 @@
-import { Button } from '@ui-system/components/button';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import CreateBroker from './create-broker';
-import { Plus, Loader2 } from 'lucide-react';
 import { useIsMutating } from '@tanstack/react-query';
+import { Landmark, Loader2 } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
+import CreateBroker from './create-broker';
 
 export const CreateBrokerDrawer = () => {
-  const isMutating = useIsMutating({ mutationKey: ['create-broker'] });
+  const isMutating = useIsMutating({ mutationKey: ['create-broker'] }) > 0;
 
   return (
-    <div className="p-6 space-y-6 h-full">
-      <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Create New Broker"
-          icon={Plus}
-        />
-        <Button size="lg" form="broker-create-form" disabled={!!isMutating}>
-          {!!isMutating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {!!isMutating ? 'Creating...' : 'Create Broker'}
-        </Button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
+    <DrawerLayout data-ui="create-broker-drawer">
+      <DrawerLayoutHeader
+        icon={Landmark}
+        title="New broker"
+        description="The bank or institution that holds your accounts and cards."
+      />
+      <DrawerLayoutBody>
         <CreateBroker />
-      </div>
-    </div>
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button type="submit" form="broker-create-form" disabled={isMutating}>
+          {isMutating && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isMutating ? 'Creating…' : 'Create broker'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

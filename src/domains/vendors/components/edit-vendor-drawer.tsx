@@ -1,13 +1,20 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { Loader2, Store } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
 import { Route } from '@/routes/(auth)/route';
 import { useUpdateVendor } from '../hooks';
 import { vendorsApi } from '../api/vendors.api';
 import { VENDORS_QUERY_KEYS } from '../api/keys';
 import { VendorForm } from './vendor-form';
-import { Loader2, Save } from 'lucide-react';
 import type { I_Vendor } from '../types/types-and-interfaces';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const EditVendorDrawer = () => {
   const navigate = useNavigate();
@@ -45,56 +52,51 @@ export const EditVendorDrawer = () => {
 
   const handleSubmit = (values: any) => {
     if (vendorId) {
-      updateVendorMutation.mutate(
-        { id: vendorId, data: values },
-        { onSuccess: closeDrawer }
-      );
+      updateVendorMutation.mutate({ id: vendorId, data: values }, { onSuccess: closeDrawer });
     }
   };
 
-  const isLoading = updateVendorMutation.isPending || isQueryLoading;
+  const isSaving = updateVendorMutation.isPending;
 
   if (isQueryLoading && !vendor) {
     return (
-      <div className="flex items-center justify-center h-full p-6">
-        <DrawerHeader
-          title="Edit Vendor"
-          description="Loading vendor details..."
-          icon={Save}
-        />
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
+      <DrawerLayout data-ui="edit-vendor-drawer">
+        <DrawerLayoutHeader icon={Store} title="Edit vendor" description="Loading vendor details…" />
+        <DrawerLayoutBody className="grid place-items-center">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   if (isError || !vendor) {
     return (
-      <div className="flex items-center justify-center h-full p-6">
-        <DrawerHeader
-          title="Edit Vendor"
-          description="Failed to load vendor details."
-          icon={Save}
-        />
-      </div>
+      <DrawerLayout data-ui="edit-vendor-drawer">
+        <DrawerLayoutHeader icon={Store} title="Edit vendor" />
+        <DrawerLayoutBody>
+          <p className="text-sm text-destructive">Failed to load vendor details.</p>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   return (
-    <>
-      <DrawerHeader
-        title="Edit Vendor"
-        description={`Editing the details for vendor: ${vendor.name}`}
-        icon={Save}
-      />
-      <div className="p-4">
+    <DrawerLayout data-ui="edit-vendor-drawer">
+      <DrawerLayoutHeader icon={Store} title="Edit vendor" description={vendor.name} />
+      <DrawerLayoutBody>
         <VendorForm
           key={vendor.id}
           initialValues={vendor as unknown as I_Vendor}
           onSubmit={handleSubmit}
-          isLoading={isLoading}
-          isEditMode={true}
         />
-      </div>
-    </>
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button type="submit" form="vendor-form" disabled={isSaving}>
+          {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isSaving ? 'Saving…' : 'Save changes'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

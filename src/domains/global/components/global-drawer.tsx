@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { Loader2 } from 'lucide-react';
 import { Drawer, DrawerContent } from '@ui-system/components/drawer';
 import { useMediaQuery } from '@/domains/ui-system/hooks/use-media-query';
 import { cn } from '@/domains/ui-system/utils';
@@ -102,17 +103,32 @@ interface GlobalDrawerProps {
     | 'installment-link-payment';
 }
 
-// Form-heavy drawers open as a right-side sheet from md up (bottom sheet on mobile), with these widths
-const SIDE_SHEET_WIDTHS: Partial<Record<GlobalDrawerProps['drawerType'], string>> = {
-  'transaction-create': 'data-[vaul-drawer-direction=right]:sm:max-w-5xl',
+// Every drawer is a right-side sheet from md up (bottom sheet on mobile). Width follows the content:
+// single forms are narrow, drawers with a side column (DrawerLayoutAside) are wide.
+const FORM_WIDTH = 'data-[vaul-drawer-direction=right]:sm:max-w-2xl';
+const WITH_ASIDE_WIDTH = 'data-[vaul-drawer-direction=right]:sm:max-w-5xl';
+
+const SIDE_SHEET_WIDTHS: Record<GlobalDrawerProps['drawerType'], string> = {
+  'account-create': FORM_WIDTH,
+  'broker-create': FORM_WIDTH,
+  'credit-card-create': FORM_WIDTH,
+  'investment-create': FORM_WIDTH,
+  'vendor-create': FORM_WIDTH,
+  'vendor-edit': FORM_WIDTH,
+  'subscription-create': FORM_WIDTH,
+  'subscription-edit': FORM_WIDTH,
   'transaction-edit': 'data-[vaul-drawer-direction=right]:sm:max-w-3xl',
+  'installment-link-payment': 'data-[vaul-drawer-direction=right]:sm:max-w-3xl',
+  'transaction-create': WITH_ASIDE_WIDTH,
+  'investment-data-create': WITH_ASIDE_WIDTH,
+  'installment-plan-create': WITH_ASIDE_WIDTH,
+  'installment-plan-edit': WITH_ASIDE_WIDTH,
 };
 
 export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
   const navigate = useNavigate();
   const isDesktop = useMediaQuery('(min-width: 48rem)');
-  const sideSheetWidth = SIDE_SHEET_WIDTHS[drawerType];
-  const direction = sideSheetWidth && isDesktop ? 'right' : 'bottom';
+  const direction = isDesktop ? 'right' : 'bottom';
 
   const handleClose = () => {
     navigate({
@@ -176,16 +192,14 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     >
       <DrawerContent
         className={cn(
-          'min-h-[95vh] md:min-h-[80vh]',
-          sideSheetWidth &&
-            'overflow-hidden data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-l-3xl data-[vaul-drawer-direction=right]:border-l-0',
-          sideSheetWidth
+          'min-h-[95vh] overflow-hidden md:min-h-[80vh] data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-l-3xl data-[vaul-drawer-direction=right]:border-l-0',
+          SIDE_SHEET_WIDTHS[drawerType]
         )}
       >
         <Suspense
           fallback={
-            <div className="flex items-center justify-center h-full">
-              <div className="text-muted-foreground">Loading...</div>
+            <div className="flex flex-1 items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           }
         >

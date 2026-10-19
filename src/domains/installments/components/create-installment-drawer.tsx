@@ -1,6 +1,13 @@
 import { Button } from '@ui-system/components/button';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import { Plus, Loader2 } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutAside,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { CalendarDays, Loader2 } from 'lucide-react';
 import { InstallmentForm } from './installment-form';
 import { InstallmentPlanPreview } from './installment-plan-preview';
 import { useCreateInstallmentPlan } from '@/domains/installments/hooks/use-create-installment-plan';
@@ -60,45 +67,45 @@ export const CreateInstallmentDrawer = () => {
   });
 
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        e.stopPropagation();
-        void form.handleSubmit();
-      }}
-      className="flex min-h-0 flex-1 flex-col gap-6 p-6"
-      data-ui="create-installment-drawer"
-    >
-      <div className="flex shrink-0 items-center justify-between">
-        <DrawerHeader title="Create Installment Plan" icon={Plus} />
-        <div className="flex gap-2">
-          <Button type="submit" size="lg" disabled={isSaving}>
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create Plan
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid min-h-0 flex-1 gap-8 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-[minmax(0,1fr)] lg:overflow-hidden">
-        <div className="lg:min-h-0 lg:overflow-y-auto lg:pr-2">
-          <p className="mb-6 text-sm text-muted-foreground">
-            Create a new installment plan to track a large purchase over multiple months.
-          </p>
+    <DrawerLayout data-ui="create-installment-drawer">
+      <DrawerLayoutHeader
+        icon={CalendarDays}
+        title="New installment plan"
+        description="Track a large purchase paid over several months."
+      />
+      <DrawerLayoutBody
+        aside={
+          <DrawerLayoutAside>
+            <form.Subscribe selector={state => state.values}>
+              {formValues => (
+                <InstallmentPlanPreview
+                  totalAmount={formValues.total_amount}
+                  installmentCount={formValues.installment_count}
+                  startDate={formValues.start_date}
+                />
+              )}
+            </form.Subscribe>
+          </DrawerLayoutAside>
+        }
+      >
+        <form
+          id="installment-plan-create-form"
+          onSubmit={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
           <InstallmentForm form={form} />
-        </div>
-
-        <div className="flex min-h-[420px] flex-col lg:min-h-0 lg:border-l lg:pl-8">
-          <form.Subscribe selector={state => state.values}>
-            {formValues => (
-              <InstallmentPlanPreview
-                totalAmount={formValues.total_amount}
-                installmentCount={formValues.installment_count}
-                startDate={formValues.start_date}
-              />
-            )}
-          </form.Subscribe>
-        </div>
-      </div>
-    </form>
+        </form>
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button type="submit" form="installment-plan-create-form" disabled={isSaving}>
+          {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isSaving ? 'Creating…' : 'Create plan'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

@@ -1,33 +1,29 @@
-import { useNavigate } from '@tanstack/react-router';
-import { Button } from '@ui-system/components/button';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import CreateInvestment from './create-investment';
 import { TrendingUp } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
+import CreateInvestment from './create-investment';
 
-export const CreateInvestmentDrawer = () => {
-  const navigate = useNavigate();
-
-  const handleClose = () => {
-    navigate({ search: {} });
-  };
-
-  return (
-    <div className="p-6 space-y-6 h-full">
-      {/* Row 1: Title and Action Button */}
-      <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Create New Investment"
-          icon={TrendingUp}
-        />
-        <Button size="lg" form="investment-create-form">
-          Create Investment
-        </Button>
-      </div>
-
-      {/* Row 2: Form Content */}
-      <div className="flex-1 overflow-y-auto">
-        <CreateInvestment />
-      </div>
-    </div>
-  );
-};
+export const CreateInvestmentDrawer = () => (
+  <DrawerLayout data-ui="create-investment-drawer">
+    <DrawerLayoutHeader
+      icon={TrendingUp}
+      title="New investment"
+      description="Add an investment to follow its movements and balance over time."
+    />
+    <DrawerLayoutBody>
+      <CreateInvestment />
+    </DrawerLayoutBody>
+    <DrawerLayoutFooter>
+      <DrawerLayoutCancel />
+      <Button type="submit" form="investment-create-form">
+        Create investment
+      </Button>
+    </DrawerLayoutFooter>
+  </DrawerLayout>
+);

@@ -1,10 +1,8 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
 import type { I_CreateVendorRequest, I_Vendor } from '../types/types-and-interfaces';
-import { Loader2 } from 'lucide-react';
 
 const nameSchema = z.string().min(1, 'Vendor name is required.');
 const urlSchema = z.string().url('Please enter a valid URL.').optional().or(z.literal(''));
@@ -12,11 +10,10 @@ const urlSchema = z.string().url('Please enter a valid URL.').optional().or(z.li
 interface VendorFormProps {
   initialValues?: I_Vendor;
   onSubmit: (values: I_CreateVendorRequest) => void;
-  isLoading: boolean;
-  isEditMode: boolean;
 }
 
-export const VendorForm = ({ initialValues, onSubmit, isLoading, isEditMode }: VendorFormProps) => {
+/** Submit it from outside with `form="vendor-form"` (the drawer footer owns the button). */
+export const VendorForm = ({ initialValues, onSubmit }: VendorFormProps) => {
   const form = useForm({
     defaultValues: {
       name: initialValues?.name || '',
@@ -30,6 +27,7 @@ export const VendorForm = ({ initialValues, onSubmit, isLoading, isEditMode }: V
 
   return (
     <form
+      id="vendor-form"
       onSubmit={e => {
         e.preventDefault();
         e.stopPropagation();
@@ -104,13 +102,6 @@ export const VendorForm = ({ initialValues, onSubmit, isLoading, isEditMode }: V
           </div>
         )}
       />
-
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isLoading || !form.state.canSubmit}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isEditMode ? 'Save Changes' : 'Create Vendor'}
-        </Button>
-      </div>
     </form>
   );
 };

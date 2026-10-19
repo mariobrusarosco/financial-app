@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import { ListPlus, Pencil, X } from 'lucide-react';
+import { DrawerLayoutAside } from '@/domains/global/components/drawer-layout';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 import type { I_CreateTransactionForm } from '@/domains/transactions/types/types-and-interfaces';
 import {
@@ -35,10 +36,9 @@ export const PendingTransactionsPanel = ({
   })).filter(total => total.count > 0);
 
   return (
-    <aside
+    <DrawerLayoutAside
       data-ui="pending-transactions"
       aria-labelledby="pending-transactions-title"
-      className="flex min-h-0 flex-col gap-4 border-t border-border bg-sidebar p-5 md:border-t-0 md:border-l md:p-6"
     >
       <div className="flex items-center justify-between gap-3">
         <h3 id="pending-transactions-title" className="text-base font-semibold text-foreground">
@@ -95,7 +95,7 @@ export const PendingTransactionsPanel = ({
           </ul>
         </>
       )}
-    </aside>
+    </DrawerLayoutAside>
   );
 };
 
