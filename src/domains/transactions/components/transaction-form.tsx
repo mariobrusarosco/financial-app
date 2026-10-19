@@ -1,11 +1,9 @@
 import { useForm, useStore } from '@tanstack/react-form';
+import { format, parseISO } from 'date-fns';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import { useEffect, useMemo, useState } from 'react';
-import type {
-  I_CreateTransactionForm,
-  I_TransactionPayload,
-} from '../types/types-and-interfaces';
+import type { I_CreateTransactionForm, I_TransactionPayload } from '../types/types-and-interfaces';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useVendors } from '@/domains/vendors/hooks';
@@ -127,7 +125,8 @@ export const TransactionForm = ({
     defaultValues: {
       description: initialValues?.description || '',
       amount: initialValues?.amount ? String(initialValues.amount).replace('.', ',') : '',
-      date: initialValues?.date || new Date().toISOString().split('T')[0],
+      // Local calendar day: toISOString() would give the UTC day, which is tomorrow late in the evening west of UTC
+      date: initialValues?.date || format(new Date(), 'yyyy-MM-dd'),
       movement_type: initialValues?.movement_type || 'expense',
       tag_ids: initialValues?.tag_ids ?? [],
       account_id: paymentMethodDefaults.account_id,
@@ -446,8 +445,10 @@ const DateField = ({ form }: { form: TransactionFormApi }) => (
           Date
         </Label>
         <TransactionDatePicker
-          date={field.state.value ? new Date(String(field.state.value)) : undefined}
-          setDate={date => field.handleChange(date ? date.toISOString().split('T')[0] : '')}
+          // parseISO reads both 'yyyy-MM-dd' and the API's '…T00:00:00' as local dates (new Date() treats the
+          // date-only form as UTC midnight, which shows the previous day west of UTC)
+          date={field.state.value ? parseISO(String(field.state.value)) : undefined}
+          setDate={date => field.handleChange(date ? format(date, 'yyyy-MM-dd') : '')}
           className="h-14 rounded-xl border-input font-medium"
         />
         <FieldErrors errors={field.state.meta.errors} />
