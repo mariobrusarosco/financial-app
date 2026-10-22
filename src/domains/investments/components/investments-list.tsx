@@ -11,6 +11,8 @@ import { TrendingUp, TrendingDown, Plus, MoreHorizontal, PlusCircle } from 'luci
 import { cn } from '@/domains/ui-system/utils';
 import { useInvestments } from '../hooks/use-investments';
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
+import { GlobalDateFilter } from '@/domains/global/components/global-date-filter';
+import { Route } from '@/routes/(auth)/route';
 import type { I_InvestmentPortfolio } from '../types/types-and-interfaces';
 
 interface InvestmentsListProps {
@@ -18,7 +20,12 @@ interface InvestmentsListProps {
 }
 
 export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => {
-  const { data, isLoading, error } = useInvestments();
+  const { from, to } = Route.useSearch();
+  // GlobalDateFilter puts the current month in the URL on the first visit; wait for it
+  const { data, isLoading, error } = useInvestments(
+    { date_from: from, date_to: to },
+    { enabled: !!from && !!to }
+  );
   const { openInvestmentCreate, openInvestmentDataCreate } = useGlobalUIState();
 
   const formatCurrency = (amount: string) => {
@@ -48,22 +55,27 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
 
   if (error) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Investment Portfolio</CardTitle>
-          <CardDescription>Manage your investment accounts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <p className="text-destructive">Error loading investments: {error.message}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <ReportingPeriod />
+        <Card>
+          <CardHeader>
+            <CardTitle>Investment Portfolio</CardTitle>
+            <CardDescription>Manage your investment accounts</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8">
+              <p className="text-destructive">Error loading investments: {error.message}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
+      <ReportingPeriod />
+
       {/* Portfolio Summary */}
       {data && (
         <Card>
@@ -191,3 +203,15 @@ export const InvestmentsList = ({ onInvestmentClick }: InvestmentsListProps) => 
     </div>
   );
 };
+
+const ReportingPeriod = () => (
+  <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] lg:flex-row lg:items-center lg:justify-between">
+    <div>
+      <h2 className="text-sm font-semibold text-foreground">Reporting period</h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Balances, growth, and performance follow this range.
+      </p>
+    </div>
+    <GlobalDateFilter />
+  </div>
+);
