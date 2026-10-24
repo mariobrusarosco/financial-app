@@ -25,8 +25,8 @@ export const InvestmentSectionNavigation = ({
   return (
     <Tabs value={currentSection} onValueChange={handleSectionChange}>
       <TabsList>
-        <TabsTrigger value="accounts">Investment Accounts</TabsTrigger>
         <TabsTrigger value="overview">Portfolio Overview</TabsTrigger>
+        <TabsTrigger value="accounts">Investment Accounts</TabsTrigger>
         <TabsTrigger value="history">Balance History</TabsTrigger>
         <TabsTrigger value="data-input">Data Input</TabsTrigger>
         {selectedInvestment && (

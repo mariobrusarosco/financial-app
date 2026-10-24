@@ -11,7 +11,7 @@ export const useInvestmentSectionContent = ({
   selectedInvestment,
 }: I_UseInvestmentSectionContentProps = {}) => {
   const search = useSearch({ from: '/(auth)/investments/' });
-  const currentSection = (search.section || 'accounts') as T_InvestmentSection;
+  const currentSection = (search.section || 'overview') as T_InvestmentSection;
 
   const getSectionContent = () => {
     switch (currentSection) {
