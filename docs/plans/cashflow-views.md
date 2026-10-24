@@ -2,6 +2,8 @@
 
 > Replaces [groups.md](./groups.md). Groups no longer live on `/tags`. They now live inside **views** in Cashflow.
 
+> **Extended (2026-10-24):** sub-groups and any/all matching are planned in [cashflow-view-subgroups.md](./cashflow-view-subgroups.md). Note that the shipped code matches a group's expenses by **all** of its tags, not "any" as written below.
+
 ## Goal
 Let users look at the same expenses from different angles by saving **views** in Cashflow. A view arranges tags into named groups, e.g. one view groups by kind of expense, another by person.
 
