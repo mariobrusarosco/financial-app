@@ -12,19 +12,28 @@ import {
 } from '@/domains/ui-system/components/dialog';
 import { Input } from '@/domains/ui-system/components/input';
 import { Label } from '@/domains/ui-system/components/label';
+import { cn } from '@/domains/ui-system/utils';
 import { TagSelector } from '@/domains/tags/components/tag-selector';
 import { useTags } from '@/domains/tags/hooks/use-tags';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
 import { useCashflowViews } from '@/domains/cashflow/hooks/use-cashflow-views';
 import type {
   I_CashflowViewGroupPayload,
+  I_CashflowViewGroupResponse,
   I_CashflowViewResponse,
   I_CashflowViewUpdatePayload,
+  T_CashflowViewGroupMatch,
 } from '@/domains/cashflow/types/index';
 
-interface I_DraftGroup extends I_CashflowViewGroupPayload {
-  // Stable React key while editing; groups are sent to the API as a full list
+interface I_DraftGroup {
+  // Stable React key while editing; groups are sent to the API as a full tree
   key: string;
+  name: string;
+  // Used while the group holds tags; kept when it holds sub-groups, in case they're all removed
+  match: T_CashflowViewGroupMatch;
+  tag_ids: string[];
+  // Non-empty when the group holds sub-groups instead of tags. Always [] on a sub-group
+  groups: I_DraftGroup[];
 }
 
 interface CashflowViewDialogProps {
@@ -60,26 +69,35 @@ export const CashflowViewDialog = ({
     [open, view]
   );
 
-  const updateGroup = (key: string, changes: Partial<I_CashflowViewGroupPayload>) =>
-    setGroups(current =>
-      current.map(group => (group.key === key ? { ...group, ...changes } : group))
-    );
+  const updateGroup = (key: string, changes: Partial<I_DraftGroup>) =>
+    setGroups(current => replaceDraftGroup(current, key, group => ({ ...group, ...changes })));
   const removeGroup = (key: string) =>
-    setGroups(current => current.filter(group => group.key !== key));
+    setGroups(current => replaceDraftGroup(current, key, () => null));
+  // The first sub-group takes over the group's tags, so nothing is lost
+  const addSubGroup = (key: string) =>
+    setGroups(current =>
+      replaceDraftGroup(current, key, group =>
+        group.groups.length === 0
+          ? {
+              ...group,
+              tag_ids: [],
+              groups: [createDraftGroup({ match: group.match, tag_ids: group.tag_ids })],
+            }
+          : { ...group, groups: [...group.groups, createDraftGroup()] }
+      )
+    );
   const findTags = (tagIds: string[]) =>
     tagIds
       .map(tagId => tagsQuery.data?.find(tag => tag.id === tagId))
       .filter((tag): tag is I_Tag => Boolean(tag));
 
   const trimmedName = name.trim();
-  const isGroupComplete = (group: I_DraftGroup) =>
-    group.name.trim().length > 0 && group.tag_ids.length > 0;
   // Deactivated tags still count in existing views, but the API rejects saving groups with them
   const getInactiveTags = (group: I_DraftGroup) =>
     findTags(group.tag_ids).filter(tag => !tag.is_active);
   const willSendGroups = !view || !haveSameGroups(toGroupsPayload(groups), view.groups);
   const hasBlockingInactiveTags =
-    willSendGroups && groups.some(group => getInactiveTags(group).length > 0);
+    willSendGroups && listTagGroups(groups).some(group => getInactiveTags(group).length > 0);
   const canSave =
     trimmedName.length > 0 &&
     groups.every(isGroupComplete) &&
@@ -104,7 +122,7 @@ export const CashflowViewDialog = ({
       return;
     }
 
-    // Only send what changed: `groups` replaces the whole list on the API
+    // Only send what changed: `groups` replaces the whole tree on the API
     const payload: I_CashflowViewUpdatePayload = {};
     if (trimmedName !== view.name) payload.name = trimmedName;
     if (!haveSameGroups(groupsPayload, view.groups)) payload.groups = groupsPayload;
@@ -116,6 +134,81 @@ export const CashflowViewDialog = ({
     mutations.update.mutate({ viewId: view.id, payload }, { onSuccess: handleSaved });
   };
 
+  const renderGroup = (group: I_DraftGroup, label: string, isSubGroup: boolean) => (
+    <div
+      key={group.key}
+      className={cn(
+        'space-y-2',
+        isSubGroup ? 'border-l-2 border-border pl-3' : 'rounded-xl border p-3'
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Input
+          value={group.name}
+          onChange={event => updateGroup(group.key, { name: event.target.value })}
+          placeholder={isSubGroup ? 'Sub-group name, e.g. Bills' : `${label} name, e.g. Home`}
+          aria-label={`${label} name`}
+          className="h-9"
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => removeGroup(group.key)}
+          aria-label={`Remove ${label.toLowerCase()} ${group.name}`.trim()}
+          className="h-9 w-9 shrink-0"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {group.groups.length > 0 ? (
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Adds up its sub-groups, counting each expense once.
+          </p>
+          {group.groups.map((subGroup, index) =>
+            renderGroup(subGroup, `${label}, sub-group ${index + 1}`, true)
+          )}
+        </div>
+      ) : (
+        <>
+          <TagSelector
+            value={group.tag_ids}
+            onValueChange={tagIds => updateGroup(group.key, { tag_ids: tagIds })}
+            historicalTags={findTags(group.tag_ids)}
+            placeholder="Select tags…"
+          />
+          {/* With one tag, "any" and "all" match the same expenses */}
+          {group.tag_ids.length > 1 && (
+            <MatchSwitch
+              value={group.match}
+              onChange={match => updateGroup(group.key, { match })}
+              label={label}
+            />
+          )}
+          <InactiveTagsWarning
+            tagNames={getInactiveTags(group).map(tag => tag.name)}
+            onRemove={() =>
+              updateGroup(group.key, {
+                tag_ids: group.tag_ids.filter(
+                  tagId => !getInactiveTags(group).some(tag => tag.id === tagId)
+                ),
+              })
+            }
+          />
+        </>
+      )}
+
+      {!isSubGroup && (
+        <Button type="button" variant="ghost" size="sm" onClick={() => addSubGroup(group.key)}>
+          <Plus className="h-4 w-4" />
+          Add sub-group
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
@@ -123,8 +216,8 @@ export const CashflowViewDialog = ({
           <DialogHeader>
             <DialogTitle>{isEditing ? 'Edit view' : 'New view'}</DialogTitle>
             <DialogDescription>
-              A view arranges your tags into groups. Each group shows the expenses with all of its
-              tags.
+              A view arranges your tags into groups. A group shows the expenses with any (or all) of
+              its tags, or splits into sub-groups.
             </DialogDescription>
           </DialogHeader>
 
@@ -146,45 +239,7 @@ export const CashflowViewDialog = ({
                 No groups yet. Add one to start.
               </p>
             )}
-            {groups.map((group, index) => (
-              <div key={group.key} className="space-y-2 rounded-xl border p-3">
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={group.name}
-                    onChange={event => updateGroup(group.key, { name: event.target.value })}
-                    placeholder={`Group ${index + 1} name, e.g. Family`}
-                    aria-label={`Group ${index + 1} name`}
-                    className="h-9"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeGroup(group.key)}
-                    aria-label={`Remove group ${group.name || index + 1}`}
-                    className="h-9 w-9 shrink-0"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                <TagSelector
-                  value={group.tag_ids}
-                  onValueChange={tagIds => updateGroup(group.key, { tag_ids: tagIds })}
-                  historicalTags={findTags(group.tag_ids)}
-                  placeholder="Select tags…"
-                />
-                <InactiveTagsWarning
-                  tagNames={getInactiveTags(group).map(tag => tag.name)}
-                  onRemove={() =>
-                    updateGroup(group.key, {
-                      tag_ids: group.tag_ids.filter(
-                        tagId => !getInactiveTags(group).some(tag => tag.id === tagId)
-                      ),
-                    })
-                  }
-                />
-              </div>
-            ))}
+            {groups.map((group, index) => renderGroup(group, `Group ${index + 1}`, false))}
             <Button
               type="button"
               variant="outline"
@@ -215,6 +270,47 @@ export const CashflowViewDialog = ({
   );
 };
 
+const MATCH_OPTIONS: { value: T_CashflowViewGroupMatch; label: string }[] = [
+  { value: 'any', label: 'any tag' },
+  { value: 'all', label: 'all tags' },
+];
+
+const MatchSwitch = ({
+  value,
+  onChange,
+  label,
+}: {
+  value: T_CashflowViewGroupMatch;
+  onChange: (match: T_CashflowViewGroupMatch) => void;
+  label: string;
+}) => (
+  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+    Expenses with
+    <div
+      role="group"
+      aria-label={`${label}: expenses with any or all of its tags`}
+      className="inline-flex rounded-lg bg-muted p-0.5"
+    >
+      {MATCH_OPTIONS.map(option => (
+        <button
+          key={option.value}
+          type="button"
+          aria-pressed={value === option.value}
+          onClick={() => onChange(option.value)}
+          className={cn(
+            'rounded-md px-2.5 py-1 font-medium transition-colors',
+            value === option.value
+              ? 'bg-background text-foreground shadow-sm'
+              : 'hover:text-foreground'
+          )}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
 const InactiveTagsWarning = ({
   tagNames,
   onRemove,
@@ -242,22 +338,56 @@ const InactiveTagsWarning = ({
   );
 };
 
+// A group needs a name, plus tags or complete sub-groups
+const isGroupComplete = (group: I_DraftGroup): boolean =>
+  group.name.trim().length > 0 &&
+  (group.groups.length > 0 ? group.groups.every(isGroupComplete) : group.tag_ids.length > 0);
+
+// The groups and sub-groups that hold tags
+const listTagGroups = (groups: I_DraftGroup[]): I_DraftGroup[] =>
+  groups.flatMap(group => (group.groups.length > 0 ? listTagGroups(group.groups) : [group]));
+
+// Replaces the group with `key` (at any level) by what `update` returns; null removes it
+const replaceDraftGroup = (
+  groups: I_DraftGroup[],
+  key: string,
+  update: (group: I_DraftGroup) => I_DraftGroup | null
+): I_DraftGroup[] =>
+  groups.flatMap(group => {
+    if (group.key !== key) {
+      return [{ ...group, groups: replaceDraftGroup(group.groups, key, update) }];
+    }
+    const updated = update(group);
+    return updated ? [updated] : [];
+  });
+
 const toGroupsPayload = (groups: I_DraftGroup[]): I_CashflowViewGroupPayload[] =>
-  groups.map(group => ({ name: group.name.trim(), tag_ids: group.tag_ids }));
+  groups.map(group =>
+    group.groups.length > 0
+      ? { name: group.name.trim(), match: null, tag_ids: [], groups: toGroupsPayload(group.groups) }
+      : { name: group.name.trim(), match: group.match, tag_ids: group.tag_ids, groups: [] }
+  );
 
 let draftGroupCounter = 0;
 
-const createDraftGroup = (group?: I_CashflowViewGroupPayload): I_DraftGroup => ({
+const createDraftGroup = (group?: Partial<I_CashflowViewGroupResponse>): I_DraftGroup => ({
   key: `group-${draftGroupCounter++}`,
   name: group?.name ?? '',
+  match: group?.match ?? 'any',
   tag_ids: group?.tag_ids ?? [],
+  groups: (group?.groups ?? []).map(createDraftGroup),
 });
 
-const haveSameGroups = (left: I_CashflowViewGroupPayload[], right: I_CashflowViewGroupPayload[]) =>
+const haveSameGroups = (
+  left: I_CashflowViewGroupPayload[],
+  right: I_CashflowViewGroupPayload[]
+): boolean =>
   left.length === right.length &&
   left.every(
     (group, index) =>
       group.name === right[index].name &&
+      group.match === right[index].match &&
       group.tag_ids.length === right[index].tag_ids.length &&
-      group.tag_ids.every((tagId, tagIndex) => tagId === right[index].tag_ids[tagIndex])
+      group.tag_ids.every((tagId, tagIndex) => tagId === right[index].tag_ids[tagIndex]) &&
+      haveSameGroups(group.groups, right[index].groups)
   );

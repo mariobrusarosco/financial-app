@@ -19,10 +19,13 @@ import {
   useCashflowViewSummary,
 } from '@/domains/cashflow/hooks/use-cashflow-views';
 import type {
+  I_CashflowViewGroupResponse,
   I_CashflowViewReportParams,
   I_CashflowViewResponse,
 } from '@/domains/cashflow/types/index';
 import {
+  indexSummaryTotals,
+  listViewGroups,
   readLastViewId,
   resolveSelectedViewId,
   saveLastViewId,
@@ -237,30 +240,50 @@ const ViewContent = ({
   onEdit: () => void;
 }) => {
   const summaryQuery = useCashflowViewSummary(view.id, params);
-  const totalsByGroupId = new Map(
-    (summaryQuery.data?.groups ?? []).map(group => [
-      group.group_id,
-      { total: Number(group.total), count: group.count },
-    ])
-  );
+  const totalsByGroupId = indexSummaryTotals(summaryQuery.data?.groups ?? []);
+  const totalsOf = (groupId: string) => totalsByGroupId.get(groupId) ?? { total: 0, count: 0 };
   const ungrouped = {
     total: Number(summaryQuery.data?.ungrouped.total ?? 0),
     count: summaryQuery.data?.ungrouped.count ?? 0,
   };
+  // A parent is never smaller than its sub-groups, so top-level groups set the scale
   const maxGroupTotal = Math.max(
     0,
     ungrouped.total,
-    ...view.groups.map(group => totalsByGroupId.get(group.id)?.total ?? 0)
+    ...view.groups.map(group => totalsOf(group.id).total)
   );
+  const barWidthOf = (total: number) => (maxGroupTotal > 0 ? (total / maxGroupTotal) * 100 : 0);
   const ungroupedLine = (
     <CashflowViewGroup
       viewId={view.id}
       total={ungrouped.total}
       count={ungrouped.count}
-      barWidth={maxGroupTotal > 0 ? (ungrouped.total / maxGroupTotal) * 100 : 0}
+      barWidth={barWidthOf(ungrouped.total)}
       params={params}
     />
   );
+  const renderGroup = (group: I_CashflowViewGroupResponse) => {
+    const { total, count } = totalsOf(group.id);
+
+    return (
+      <CashflowViewGroup
+        // Group ids change after each save, which also collapses the group
+        key={group.id}
+        viewId={view.id}
+        group={group}
+        total={total}
+        count={count}
+        barWidth={barWidthOf(total)}
+        params={params}
+      >
+        {group.groups.length > 0 && (
+          <ul className="ml-4 space-y-1 border-l border-border/70 pl-2">
+            {group.groups.map(renderGroup)}
+          </ul>
+        )}
+      </CashflowViewGroup>
+    );
+  };
 
   const noGroupsHint = (
     <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
@@ -297,23 +320,7 @@ const ViewContent = ({
 
   return (
     <div className="space-y-2">
-      <ul className="space-y-2">
-        {view.groups.map(group => {
-          const { total, count } = totalsByGroupId.get(group.id) ?? { total: 0, count: 0 };
-          return (
-            <CashflowViewGroup
-              // Group ids change after each save, which also collapses the group
-              key={group.id}
-              viewId={view.id}
-              group={group}
-              total={total}
-              count={count}
-              barWidth={maxGroupTotal > 0 ? (total / maxGroupTotal) * 100 : 0}
-              params={params}
-            />
-          );
-        })}
-      </ul>
+      <ul className="space-y-2">{view.groups.map(renderGroup)}</ul>
       {/* Its own total; never added to the groups (they can share expenses) */}
       <ul className="border-t border-border/70 pt-2">{ungroupedLine}</ul>
     </div>
@@ -333,8 +340,11 @@ const OverlapsDialog = ({
 }) => {
   const overlapsQuery = useCashflowViewOverlaps(view?.id, params, { enabled: open });
   const overlaps = overlapsQuery.data ?? [];
-  const groupName = (groupId: string) =>
-    view?.groups.find(group => group.id === groupId)?.name ?? 'Unknown group';
+  // Sub-groups show with their parent, e.g. "Home › Bills"
+  const groupPaths = new Map(
+    listViewGroups(view?.groups ?? []).map(({ group, path }) => [group.id, path])
+  );
+  const groupName = (groupId: string) => groupPaths.get(groupId) ?? 'Unknown group';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

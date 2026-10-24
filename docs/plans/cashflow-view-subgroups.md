@@ -36,7 +36,8 @@ View "Monthly"
 ## Rules
 - **Ungrouped** ("Not in any group") = expenses in range that match no group holding tags, anywhere in the view.
 - **Overlaps** = expenses that match two or more groups holding tags. They're listed with each group's path (`Home › Bills`).
-- **Clicking a parent group** opens its sub-groups. **Clicking a group that holds tags** opens its expenses, as today. A parent's expenses (all its sub-groups together) can also be opened from its row.
+- **Sub-groups are always listed under their parent.** Clicking any row (parent, group, or sub-group) opens its expenses; a parent's are all its sub-groups' expenses, each once.
+- **Open in Transactions** is offered for groups holding tags (with their any/all). Parents and "Not in any group" have no matching Transactions filter.
 - **Order:** groups and sub-groups keep the order they were added in.
 - **Existing groups** keep working exactly as today: they're migrated as top-level groups matching **all** of their tags (Mother Health, Myself, Transportation). New groups default to **any**.
 - **Deactivating a tag** used by a view lists every place it's used, including sub-groups (`View › Group › Sub-group`).
@@ -45,23 +46,25 @@ View "Monthly"
 
 ### Task 1 - Plan (this doc) [x]
 
-### Task 2 - Backend: sub-groups and any/all (see "Backend Contract") [ ]
+### Task 2 - Backend: sub-groups and any/all (see "Backend Contract") [x]
+> Shipped in backend commit `443c109` (migration `33615cbf92fd`).
 - Owned by the backend session.
 - Migration: `cashflow_view_groups` gets `parent_id` and `match`; existing groups become `match = "all"`, `parent_id = null`.
 - View CRUD, summary, overlaps, and group transactions follow the contract below.
 
-### Task 3 - Frontend: types, API, and hooks [ ]
+### Task 3 - Frontend: types, API, and hooks [x]
 - Nested `groups` on view and summary types; `match` on groups.
 - `findViewGroupsUsingTag` and the overlaps dialog read nested groups and show paths. Update tests.
 
-### Task 4 - Frontend: view editor [ ]
+### Task 4 - Frontend: view editor [x]
+> The Any/All switch shows once a group has two or more tags (with one tag they match the same expenses).
 - Each group: a name, then either its tags with an **Any / All** switch, or its list of sub-groups (each with a name, tags, and the switch).
 - **Add sub-group** on a group that holds tags moves those tags into the new sub-group, so nothing is lost. Removing the last sub-group turns the group back into one that holds tags.
 - The dialog's description explains any/all and sub-groups.
 
-### Task 5 - Frontend: Cashflow panel [ ]
+### Task 5 - Frontend: Cashflow panel [x]
 - Groups shown as a tree: a parent row with its total and count, its sub-groups indented below with theirs.
-- Expanding a sub-group (or a top-level group holding tags) shows its transactions, as today.
+- Expanding any row shows its transactions, as today (a parent's are all its sub-groups' expenses).
 - No sum of groups anywhere (groups can share expenses).
 
 ## Backend Contract (changes)

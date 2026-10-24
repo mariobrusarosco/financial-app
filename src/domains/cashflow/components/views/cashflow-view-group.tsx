@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link } from '@tanstack/react-router';
 import { format, parseISO } from 'date-fns';
 import {
@@ -30,11 +31,13 @@ interface CashflowViewGroupProps {
   // Bar length relative to the largest group in the view (0–100)
   barWidth: number;
   params: I_CashflowViewReportParams;
+  // A parent's sub-group lines, always shown below it
+  children?: ReactNode;
 }
 
 /**
- * One line per group (expenses with ALL its tags), or the "Not in any group" line when `group`
- * is omitted. Expands into its expenses.
+ * One line per group or sub-group (a parent covers all its sub-groups' expenses), or the
+ * "Not in any group" line when `group` is omitted. Expands into its expenses.
  */
 export const CashflowViewGroup = ({
   viewId,
@@ -43,6 +46,7 @@ export const CashflowViewGroup = ({
   count,
   barWidth,
   params,
+  children,
 }: CashflowViewGroupProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const panelId = `cashflow-view-group-${group?.id ?? 'ungrouped'}`;
@@ -100,6 +104,7 @@ export const CashflowViewGroup = ({
           <GroupTransactions viewId={viewId} group={group} params={params} />
         </div>
       )}
+      {children}
     </li>
   );
 };
@@ -144,13 +149,13 @@ const GroupTransactions = ({
       </ul>
 
       <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-        {/* "Not in any group" can't be expressed as a Transactions filter */}
-        {group ? (
+        {/* "Not in any group" and parents (sub-groups can match differently) have no Transactions filter */}
+        {group && group.groups.length === 0 ? (
           <Link
             to="/transactions"
             search={{
               tag_ids: group.tag_ids,
-              tag_match: 'all',
+              tag_match: group.match ?? 'all',
               movement_type: 'expense',
               date_from: params.date_from,
               date_to: params.date_to,
