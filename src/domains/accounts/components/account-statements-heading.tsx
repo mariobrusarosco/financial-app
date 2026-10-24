@@ -1,6 +1,7 @@
 import { Link, useParams, useLocation } from '@tanstack/react-router';
 import { Button } from '@/domains/ui-system/components/button';
 import { Upload, History } from 'lucide-react';
+import { Route } from '@/routes/(auth)/route';
 
 interface AccountStatementsHeadingProps {
   accountId?: string;
@@ -9,6 +10,8 @@ interface AccountStatementsHeadingProps {
 export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHeadingProps) => {
   const params = useParams({ from: '/(auth)/accounts/$slug/statements' });
   const location = useLocation();
+  // Keep the account's Reporting period when switching between Upload and History
+  const { from, to } = Route.useSearch();
 
   const currentTab = location.pathname.includes('/upload')
     ? 'upload'
@@ -32,6 +35,7 @@ export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHead
         <Link
           to="/accounts/$slug/statements/upload"
           params={{ slug: params.slug }}
+          search={{ from, to }}
           className="no-underline"
         >
           <Button
@@ -47,6 +51,7 @@ export const AccountStatementsHeading = ({ accountId: _ }: AccountStatementsHead
         <Link
           to="/accounts/$slug/statements/history"
           params={{ slug: params.slug }}
+          search={{ from, to }}
           className="no-underline"
         >
           <Button

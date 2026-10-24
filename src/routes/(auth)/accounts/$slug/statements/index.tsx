@@ -7,6 +7,13 @@ export const Route = createFileRoute('/(auth)/accounts/$slug/statements/')({
 function StatementsIndexComponent() {
   const params = Route.useParams();
 
-  // Redirect to upload tab by default
-  return <Navigate to="/accounts/$slug/statements/upload" params={{ slug: params.slug }} replace />;
+  // Redirect to upload tab by default, keeping the Reporting period in the URL
+  return (
+    <Navigate
+      to="/accounts/$slug/statements/upload"
+      params={{ slug: params.slug }}
+      search={true}
+      replace
+    />
+  );
 }

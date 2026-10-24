@@ -11,6 +11,7 @@ import {
 import AccountQuickActions from '@/domains/accounts/components/account-quick-actions';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
 import { cn } from '@/domains/ui-system/utils/index';
+import { Route } from '@/routes/(auth)/route';
 
 interface AccountHeadingProps {
   slug: string;
@@ -33,6 +34,8 @@ const accountTabs = [
 const AccountHeading = ({ slug }: AccountHeadingProps) => {
   const { data: account } = useAccount(slug);
   const location = useLocation();
+  // Every tab shares the Reporting period; other filters stay with the tab they were set on
+  const { from, to } = Route.useSearch();
 
   const isTabActive = (match: string) => {
     if (match === 'overview') return location.pathname.endsWith(`/accounts/${slug}`);
@@ -80,6 +83,7 @@ const AccountHeading = ({ slug }: AccountHeadingProps) => {
               key={tab.label}
               to={tab.href}
               params={{ slug }}
+              search={{ from, to }}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'inline-flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
