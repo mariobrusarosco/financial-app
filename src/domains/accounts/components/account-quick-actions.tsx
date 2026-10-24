@@ -7,7 +7,7 @@ const AccountQuickActions = () => {
 
   return (
     <div data-ui="account-quick-actions">
-      <Button variant="default" onClick={openTransactionCreate}>
+      <Button variant="default" size="sm" onClick={openTransactionCreate}>
         <Plus className="h-4 w-4" />
         New transaction
       </Button>

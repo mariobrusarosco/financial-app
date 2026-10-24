@@ -50,15 +50,21 @@ const AccountHeading = ({ slug }: AccountHeadingProps) => {
       className="rounded-2xl border border-border/80 bg-card p-5 shadow-[var(--shadow-panel)]"
       data-ui="account-heading"
     >
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <Link
-            to="/accounts"
-            className="mb-3 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-brand"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            All accounts
-          </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          to="/accounts"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-brand"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          All accounts
+        </Link>
+
+        <AccountQuickActions />
+      </div>
+
+      {/* Wide screens put the tabs on the name's row, aligned right; narrower ones stack them below */}
+      <div className="mt-2 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div className="min-w-0">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             {account?.broker?.name ?? 'Bank account'}
           </p>
@@ -67,37 +73,35 @@ const AccountHeading = ({ slug }: AccountHeadingProps) => {
           </h1>
         </div>
 
-        <AccountQuickActions />
+        <nav
+          className="flex min-w-0 gap-1 overflow-x-auto border-t border-border/70 pt-4 xl:border-t-0 xl:pt-0"
+          aria-label="Account sections"
+        >
+          {accountTabs.map(tab => {
+            const Icon = tab.icon;
+            const isActive = isTabActive(tab.match);
+
+            return (
+              <Link
+                key={tab.label}
+                to={tab.href}
+                params={{ slug }}
+                search={{ from, to }}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'inline-flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
-
-      <nav
-        className="mt-6 flex gap-1 overflow-x-auto border-t border-border/70 pt-4"
-        aria-label="Account sections"
-      >
-        {accountTabs.map(tab => {
-          const Icon = tab.icon;
-          const isActive = isTabActive(tab.match);
-
-          return (
-            <Link
-              key={tab.label}
-              to={tab.href}
-              params={{ slug }}
-              search={{ from, to }}
-              aria-current={isActive ? 'page' : undefined}
-              className={cn(
-                'inline-flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-accent text-accent-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </nav>
     </header>
   );
 };
