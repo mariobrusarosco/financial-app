@@ -140,3 +140,21 @@ export const formatCurrencyAmount = (
     return 'R$ 0,00';
   }
 };
+
+/**
+ * Formats an amount for chart axes and labels (e.g. "R$ 450", "R$ 9,1 mil")
+ */
+export const formatCompactCurrency = (
+  amount: number,
+  options: { currency?: string; locale?: string } = {}
+) => {
+  const { currency = 'BRL', locale = 'pt-BR' } = options;
+
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(amount);
+};

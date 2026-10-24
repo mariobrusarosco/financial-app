@@ -1,5 +1,5 @@
 import type { I_BalancePoint } from '@/domains/accounts/types/types-and-interfaces';
-import { Line, LineChart, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts';
 import { useMemo } from 'react';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import {
@@ -10,7 +10,11 @@ import {
 } from '@/domains/ui-system/components/chart';
 import { Route } from '@/routes/(auth)/route';
 import { startOfMonth, endOfMonth, format, parseISO, isValid } from 'date-fns';
-import { formatCurrencyAmount, formatDateMedium } from '@/domains/global/utils/formatting';
+import {
+  formatCompactCurrency,
+  formatCurrencyAmount,
+  formatDateMedium,
+} from '@/domains/global/utils/formatting';
 
 interface Props {
   title?: string;
@@ -28,13 +32,23 @@ const chartConfig = {
 const mapBalancePointsToChartData = (balancePoints: I_BalancePoint[]) => {
   return balancePoints
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .map(balancePoint => ({
-      date: formatDateMedium(balancePoint.date),
-      balance: balancePoint.balance,
-      rawDate: balancePoint.date,
-      snapshotType: balancePoint.snapshot_type,
-    }));
+    .map((balancePoint, index, sortedPoints) => {
+      // The API sends balances as text ("7117.90"); recharts needs numbers to build the scale
+      const balance = Number(balancePoint.balance);
+      const previousBalance = index > 0 ? Number(sortedPoints[index - 1].balance) : null;
+
+      return {
+        date: formatDateMedium(balancePoint.date),
+        day: format(parseISO(balancePoint.date), 'MMM d'),
+        balance,
+        change: previousBalance === null ? null : balance - previousBalance,
+        rawDate: balancePoint.date,
+        snapshotType: balancePoint.snapshot_type,
+      };
+    });
 };
+
+type T_BalanceChartPoint = ReturnType<typeof mapBalancePointsToChartData>[number];
 
 const EmptyBalancePoints = ({ title }: { title: string }) => {
   return (
@@ -56,6 +70,11 @@ const EmptyBalancePoints = ({ title }: { title: string }) => {
 
 const formatDateForAPI = (date: Date): string => {
   return format(date, 'yyyy-MM-dd');
+};
+
+const formatChange = (change: number) => {
+  const formatted = formatCurrencyAmount(change, { locale: 'pt-BR', currency: 'BRL' });
+  return change > 0 ? `+${formatted}` : formatted;
 };
 
 export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props) => {
@@ -85,6 +104,7 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
     () => mapBalancePointsToChartData(balancePoints ?? []),
     [balancePoints]
   );
+  const hasNegativeBalance = chartData.some(point => point.balance < 0);
 
   if (isLoadingBalancePoints) {
     return (
@@ -105,36 +125,56 @@ export const AccountBalancePoints = ({ title = 'Balance History', slug }: Props)
           accessibilityLayer
           data={chartData}
           margin={{
-            left: 12,
+            left: 0,
             right: 12,
             top: 12,
-            bottom: 12,
+            bottom: 0,
           }}
         >
-          <XAxis
-            hide
-            dataKey="date"
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
+          <YAxis
+            width={64}
             tickLine={false}
             axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value: string) => value}
-            className="text-xs text-muted-foreground"
+            domain={['auto', 'auto']}
+            padding={{ top: 12, bottom: 12 }}
+            tickFormatter={(value: number) => formatCompactCurrency(value)}
           />
-          <YAxis hide domain={['auto', 'auto']} padding={{ top: 20, bottom: 20 }} />
+          {hasNegativeBalance && (
+            <ReferenceLine y={0} stroke="var(--muted-foreground)" strokeOpacity={0.4} />
+          )}
           <ChartTooltip
             cursor={{ strokeDasharray: '3 3' }}
             content={
               <ChartTooltipContent
-                formatter={value => (
-                  <div className="flex items-center justify-between gap-8">
-                    <span className="text-muted-foreground">Balance</span>
-                    <span className="font-mono font-semibold text-primary">
-                      {formatCurrencyAmount(value as number, { locale: 'pt-BR', currency: 'BRL' })}
-                    </span>
+                formatter={(value, _name, item) => {
+                  const { change } = item.payload as T_BalanceChartPoint;
+
+                  return (
+                    <div className="grid w-full gap-1">
+                      <div className="flex items-center justify-between gap-8">
+                        <span className="text-muted-foreground">Balance</span>
+                        <span className="font-mono font-semibold text-primary">
+                          {formatCurrencyAmount(value as number, {
+                            locale: 'pt-BR',
+                            currency: 'BRL',
+                          })}
+                        </span>
+                      </div>
+                      {change !== null && (
+                        <div className="flex items-center justify-between gap-8">
+                          <span className="text-muted-foreground">Change</span>
+                          <span className="font-mono">{formatChange(change)}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }}
+                labelFormatter={(_label, payload) => (
+                  <div className="font-medium text-primary mb-1">
+                    {(payload[0]?.payload as T_BalanceChartPoint | undefined)?.date}
                   </div>
-                )}
-                labelFormatter={label => (
-                  <div className="font-medium text-primary mb-1">{label}</div>
                 )}
               />
             }
