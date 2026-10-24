@@ -86,14 +86,15 @@ export const LinkPaymentToInstallmentDrawer = () => {
     setCurrentPage(1);
   }, [debouncedSearchTerm, isNearDueDate]);
 
-  // Linking marks a transaction as paid, so unpaid ones are the ones still available
+  // Every transaction not linked to an installment yet. Not "unpaid": users can mark a
+  // transaction paid by hand, and it should still be linkable
   const {
     data,
     isLoading: isTransactionsLoading,
     isError: isTransactionsError,
   } = useAllTransactions({
     description_contains: debouncedSearchTerm || undefined,
-    is_paid: false,
+    has_installment: false,
     ...(isNearDueDate &&
       dueDateWindow && { date_from: dueDateWindow.date_from, date_to: dueDateWindow.date_to }),
     sort_by: 'date',
@@ -188,11 +189,11 @@ export const LinkPaymentToInstallmentDrawer = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search unpaid transactions…"
+            placeholder="Search unlinked transactions…"
             className="pl-9"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            aria-label="Search unpaid transactions"
+            aria-label="Search unlinked transactions"
           />
         </div>
 
@@ -288,8 +289,8 @@ const TransactionListContent = ({
       <div className="py-12 text-center text-sm text-muted-foreground">
         <p>
           {searchTerm
-            ? `No unpaid transactions match "${searchTerm}"`
-            : 'No unpaid transactions to link'}
+            ? `No unlinked transactions match "${searchTerm}"`
+            : 'No unlinked transactions to link'}
           {isNearDueDate ? ' near the due date.' : '.'}
         </p>
         {isNearDueDate && (

@@ -113,6 +113,8 @@ export interface I_AccountTransactionsParams {
   description_contains?: string;
   movement_type?: T_TransactionType;
   is_paid?: boolean;
+  // GET /transactions only. false: not linked to any installment, whatever is_paid says
+  has_installment?: boolean;
   sort_by?: 'date' | 'amount' | 'created_at';
   sort_order?: 'asc' | 'desc';
   include_credit_cards?: boolean;
