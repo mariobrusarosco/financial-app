@@ -1,7 +1,6 @@
 import { Outlet } from '@tanstack/react-router';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
 import AccountHeading from '@/domains/accounts/components/account-heading';
-import AccountOverview from '@/domains/accounts/components/account-overview';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 
 interface AccountLayoutProps {
@@ -34,7 +33,6 @@ export const AccountLayout = ({ slug }: AccountLayoutProps) => {
   return (
     <div className="space-y-6 pb-8" data-ui="account-layout">
       <AccountHeading slug={slug} />
-      <AccountOverview slug={slug} />
       <Outlet />
     </div>
   );

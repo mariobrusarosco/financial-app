@@ -6,7 +6,6 @@ import { AccountBalancePoints } from '@/domains/accounts/components/account-bala
 import { useAccount } from '@/domains/accounts/hooks/use-account';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import { useCashflow } from '@/domains/cashflow/hooks/use-cashflow';
-import { GlobalDateFilter } from '@/domains/global/components/global-date-filter';
 import { Button } from '@/domains/ui-system/components/button';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
@@ -43,16 +42,6 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
 
   return (
     <section data-ui="account-overview" className="space-y-4">
-      <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 className="text-sm font-semibold text-foreground">Reporting period</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Balance history, cashflow totals, and transactions follow this range.
-          </p>
-        </div>
-        <GlobalDateFilter />
-      </div>
-
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[16rem_18rem_minmax(0,1fr)]">
         <div
           className="flex min-h-64 flex-col justify-between rounded-2xl bg-spotlight p-5 text-spotlight-foreground"
