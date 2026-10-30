@@ -15,6 +15,7 @@ import {
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
 import { cn } from '@/domains/ui-system/utils';
 import { formatCompactCurrency, formatCurrencyAmount } from '@/domains/global/utils/formatting';
+import { TagBadge } from '@/domains/tags/components/tag-badge';
 import { Route } from '@/routes/(auth)/route';
 import type {
   I_AccountExpensesCharts,
@@ -235,6 +236,7 @@ const TagGroup = ({
                 isExpanded && 'rotate-180'
               )}
             />
+            <TagBadge tag={tag} />
             <span
               className={cn(
                 'truncate font-semibold',

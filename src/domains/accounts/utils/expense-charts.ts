@@ -23,6 +23,9 @@ export interface I_ExpensesBucket {
 export interface I_ExpensesByTag {
   id: string | null; // null groups the expenses without a tag
   name: string;
+  icon: string | null;
+  bg_color: string | null;
+  icon_color: string | null;
   total: number;
   count: number;
   expenses: I_TransactionResponse[]; // newest first
@@ -123,6 +126,9 @@ const rankExpensesByTag = (expenses: I_TransactionResponse[]) => {
   const untagged: I_ExpensesByTag = {
     id: null,
     name: 'No tag',
+    icon: null,
+    bg_color: null,
+    icon_color: null,
     total: 0,
     count: 0,
     expenses: [],
@@ -138,6 +144,9 @@ const rankExpensesByTag = (expenses: I_TransactionResponse[]) => {
       const entry = tagsById.get(tag.id) ?? {
         id: tag.id,
         name: tag.name,
+        icon: tag.icon,
+        bg_color: tag.bg_color,
+        icon_color: tag.icon_color,
         total: 0,
         count: 0,
         expenses: [],

@@ -1,5 +1,6 @@
 import { Tag } from 'lucide-react';
 import { cn } from '@/domains/ui-system/utils';
+import { TagChip } from '@/domains/tags/components/tag-chip';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
 
 interface TagChipsProps {
@@ -29,15 +30,7 @@ export const TagChips = ({ tags, maxVisible = 3, emptyLabel, className }: TagChi
   return (
     <span className={cn('flex min-w-0 flex-wrap items-center gap-1', className)}>
       {visibleTags.map(tag => (
-        <span
-          key={tag.id}
-          className={cn(
-            'inline-flex max-w-[10rem] items-center truncate rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand',
-            !tag.is_active && 'bg-muted text-muted-foreground'
-          )}
-        >
-          <span className="truncate">{tag.name}</span>
-        </span>
+        <TagChip key={tag.id} tag={tag} className="max-w-[10rem]" />
       ))}
       {hiddenTags.length > 0 && (
         <span
