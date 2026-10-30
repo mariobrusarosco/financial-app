@@ -9,7 +9,6 @@ import type { I_TransactionResponse } from '@/domains/transactions/types/types-a
 
 // Up to two months reads well day by day; longer ranges are grouped by month
 const MAX_DAYS_SHOWN_BY_DAY = 62;
-const MAX_TAGS_SHOWN = 8;
 const DAY_KEY_LENGTH = 'yyyy-MM-dd'.length;
 const MONTH_KEY_LENGTH = 'yyyy-MM'.length;
 
@@ -26,6 +25,7 @@ export interface I_ExpensesByTag {
   name: string;
   total: number;
   count: number;
+  expenses: I_TransactionResponse[]; // newest first
 }
 
 export interface I_AccountExpensesCharts {
@@ -33,8 +33,7 @@ export interface I_AccountExpensesCharts {
   count: number;
   grouping: 'day' | 'month';
   buckets: I_ExpensesBucket[];
-  tags: I_ExpensesByTag[];
-  hiddenTagsCount: number;
+  tags: I_ExpensesByTag[]; // largest first, "No tag" last
 }
 
 export const toAccountExpensesCharts = (
@@ -56,7 +55,7 @@ export const toAccountExpensesCharts = (
       grouping === 'day'
         ? groupExpensesByDay(counted, from, to)
         : groupExpensesByMonth(counted, from, to),
-    ...rankExpensesByTag(counted),
+    tags: rankExpensesByTag(counted),
   };
 };
 
@@ -67,6 +66,10 @@ const byNotIgnored = (expense: I_TransactionResponse) => !expense.ignored;
 const amountOf = (expense: I_TransactionResponse) => Number(expense.amount);
 
 const byLargestTotal = (a: I_ExpensesByTag, b: I_ExpensesByTag) => b.total - a.total;
+
+// Dates share one ISO format, so comparing the text orders them
+const byNewest = (a: I_TransactionResponse, b: I_TransactionResponse) =>
+  b.date.localeCompare(a.date);
 
 const groupExpensesByDay = (expenses: I_TransactionResponse[], from: Date, to: Date) =>
   addToBuckets(
@@ -114,30 +117,43 @@ const addToBuckets = (
   return buckets;
 };
 
-// A transaction with two tags counts in both, so the bars don't add up to the total
+// A transaction with two tags counts in both, so the tag totals don't add up to the total
 const rankExpensesByTag = (expenses: I_TransactionResponse[]) => {
   const tagsById = new Map<string, I_ExpensesByTag>();
-  const untagged: I_ExpensesByTag = { id: null, name: 'No tag', total: 0, count: 0 };
+  const untagged: I_ExpensesByTag = {
+    id: null,
+    name: 'No tag',
+    total: 0,
+    count: 0,
+    expenses: [],
+  };
 
-  expenses.forEach(expense => {
+  [...expenses].sort(byNewest).forEach(expense => {
     if (expense.tags.length === 0) {
-      untagged.total += amountOf(expense);
-      untagged.count += 1;
+      addToTag(untagged, expense);
       return;
     }
 
     expense.tags.forEach(tag => {
-      const entry = tagsById.get(tag.id) ?? { id: tag.id, name: tag.name, total: 0, count: 0 };
-      entry.total += amountOf(expense);
-      entry.count += 1;
+      const entry = tagsById.get(tag.id) ?? {
+        id: tag.id,
+        name: tag.name,
+        total: 0,
+        count: 0,
+        expenses: [],
+      };
+      addToTag(entry, expense);
       tagsById.set(tag.id, entry);
     });
   });
 
   const ranked = [...tagsById.values()].sort(byLargestTotal);
 
-  return {
-    tags: [...ranked.slice(0, MAX_TAGS_SHOWN), ...(untagged.count > 0 ? [untagged] : [])],
-    hiddenTagsCount: Math.max(ranked.length - MAX_TAGS_SHOWN, 0),
-  };
+  return untagged.count > 0 ? [...ranked, untagged] : ranked;
+};
+
+const addToTag = (tag: I_ExpensesByTag, expense: I_TransactionResponse) => {
+  tag.total += amountOf(expense);
+  tag.count += 1;
+  tag.expenses.push(expense);
 };
