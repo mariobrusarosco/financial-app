@@ -5,15 +5,12 @@ This file provides guidance to coding agents (Claude Code, Codex) when working w
 ## Core Mandates
 
 1 - **Understand the Code First:** Do not explain, refactor, or edit code based on pattern-matching alone. Before making changes, understand what the code does, why it exists, which business rule it implements, where the data comes from, and who consumes it. If you cannot explain the code path you are about to change, do not change it yet.
-2 - **Strict Scope Adherence:** Do not fix unrelated bugs, refactor code, or change naming conventions outside the explicit scope of the user's request, even if you find errors. If you
-discover critical issues that block the requested task, report them to the user and ask for permission before proceeding
-3 - **Strict Scope Adherence:** Focus exclusively on the user's request. Do not fix unrelated bugs, refactor code, or change naming conventions unless explicitly asked. If a deviation
-adds significant value or is critical, ask for permission first.
-4 - **Think Before You Act Adherence:** DO NOT RUSH. Analyze the request, reason through the solution, and plan your steps. If a request is vague, ask for clarification. Only proceed with
+2 - **Strict Scope Adherence:** Focus exclusively on the user's request. Do not fix unrelated bugs, refactor code, or change naming conventions unless explicitly asked. If you discover a critical issue that blocks the task, or a deviation would add significant value, report it and ask for permission before proceeding.
+3 - **Think Before You Act Adherence:** DO NOT RUSH. Analyze the request, reason through the solution, and plan your steps. If a request is vague, ask for clarification. Only proceed with
 implementation when the path is clear and agreed upon.
-5 - **Verify Assumptions Adherence:** Never guess APIs or library functionality. Always read documentation or search for examples before writing code. "Sloppy solutions" based on assumptions are
+4 - **Verify Assumptions Adherence:** Never guess APIs or library functionality. Always read documentation or search for examples before writing code. "Sloppy solutions" based on assumptions are
 strictly forbidden.
-6 - **Context Awareness Adherence:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
+5 - **Context Awareness Adherence:** Understand the project's existing architecture and conventions before making changes. Your goal is to provide high-quality, integrated code that respects the
 current codebase.
 
 ## Most Useful Commands
@@ -30,6 +27,7 @@ current codebase.
 - `yarn test:watch` - Run tests in watch mode
 - `yarn test:ui` - Run tests with UI interface
 - `yarn test:coverage` - Run tests with coverage report
+- `yarn test:e2e` - Run Playwright E2E tests (variants: `:headed`, `:debug`, `:smoke`, `:critical`, `:local`, `:staging`)
 
 ## Technology Stack
 
@@ -173,50 +171,6 @@ When setting up this project for the first time:
 
 Always use shadcn CLI to create shadcn UI components
 
-### Icons and UI Conventions
+### Icons
 
-#### Icon Library
-
-This project uses **Lucide React** (v0.556.0) for all icons. Lucide is configured in `components.json` and integrates with shadcn/ui.
-
-**Installation Pattern:**
-Always use named imports from 'lucide-react':
-
-```tsx
-import { IconName, AnotherIcon } from 'lucide-react';
-```
-
-**Common Usage Patterns:**
-
-1. **Static JSX rendering:**
-
-   ```tsx
-   import { Plus } from 'lucide-react';
-   <Plus className="h-4 w-4" />;
-   ```
-
-2. **Component type reference (for dynamic rendering):**
-
-   ```tsx
-   const navigationItems = [{ icon: LayoutDashboard, label: 'Dashboard' }];
-   const Icon = item.icon;
-   <Icon className="h-5 w-5" />;
-   ```
-
-3. **React.createElement (for conditional icons):**
-   ```tsx
-   const TransactionIcon = isCredit ? CreditCard : Wallet;
-   React.createElement(TransactionIcon, { className: 'h-3 w-3' });
-   ```
-
-**Standard Icon Sizes:**
-
-- `h-3 w-3` - Small icons (12px)
-- `h-4 w-4` - Standard buttons and controls (16px)
-- `h-5 w-5` - Navigation items (20px)
-- `h-6 w-6` - Larger UI elements (24px)
-
-**Resources:**
-
-- [Lucide Icon Library](https://lucide.dev)
-- Icon search and browser at https://lucide.dev/icons
+Use **Lucide React** (configured in `components.json`) with named imports: `import { Plus } from 'lucide-react'`. Standard sizes: `h-3 w-3` small, `h-4 w-4` buttons and controls, `h-5 w-5` navigation, `h-6 w-6` larger elements.
