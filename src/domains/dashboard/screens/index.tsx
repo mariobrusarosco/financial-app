@@ -24,6 +24,7 @@ import {
   formatDateMedium,
   parseCurrencyAmount,
 } from '@/domains/global/utils/formatting';
+import { SubscriptionsCalendar } from '@/domains/subscriptions/components/subscriptions-calendar';
 import { Button } from '@/domains/ui-system/components/button';
 import { MoneyValue } from '@/domains/ui-system/components/money-value';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
@@ -43,6 +44,8 @@ export const DashboardIndexScreen = () => {
         firstName={data.firstName}
         onNewTransaction={handlers.openTransactionCreate}
       />
+
+      <SubscriptionsCalendar />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-6">
