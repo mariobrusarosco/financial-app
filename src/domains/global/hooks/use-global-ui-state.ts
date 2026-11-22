@@ -20,6 +20,16 @@ export const useGlobalUIState = () => {
   const openCreditCardCreate = () => {
     void navigate({ search: { drawer: 'credit-card-create' } as never });
   };
+  // Keeps the current search (e.g. the reporting period) so closing returns to the same view
+  const openCreditCardEdit = (creditCardId: string) => {
+    void navigate({
+      search: ((prev: Record<string, unknown>) => ({
+        ...prev,
+        drawer: 'credit-card-edit',
+        creditCardId,
+      })) as never,
+    });
+  };
   const openInvestmentCreate = () => {
     void navigate({ search: { drawer: 'investment-create' } as never });
   };
@@ -33,6 +43,7 @@ export const useGlobalUIState = () => {
     openBrokerCreate,
     openTransactionCreate,
     openCreditCardCreate,
+    openCreditCardEdit,
     openInvestmentCreate,
     openInvestmentDataCreate,
   };

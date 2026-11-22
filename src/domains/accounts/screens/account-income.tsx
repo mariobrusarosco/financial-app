@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
+import AccountReportingPeriod from '@/domains/accounts/components/account-reporting-period';
 import { AccountTransactionsList } from '@/domains/transactions/components/account-transactions-list';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
@@ -70,7 +71,8 @@ export const AccountIncomeScreen = ({ slug }: AccountIncomeScreenProps) => {
 
   return (
     <div>
-      <div data-ui="account-income-screen">
+      <div data-ui="account-income-screen" className="space-y-6">
+        <AccountReportingPeriod description="Income transactions follow this range." />
         <AccountTransactionsList
           params={params}
           onParamsChange={handleParamsChange}

@@ -5,6 +5,7 @@ import {
   SubscriptionList,
   SubscriptionsSummary,
   SubscriptionsChart,
+  SubscriptionsCalendar,
 } from '@/domains/subscriptions/components/index';
 import type { I_SubscriptionsParams } from '@/domains/subscriptions/types/types-and-interfaces';
 import { PageHeader } from '@/domains/global/components/page-header';
@@ -52,6 +53,8 @@ export const SubscriptionsMainScreen = () => {
   return (
     <div className="space-y-7 pb-8">
       <PageHeader title="Subscriptions" icon={Repeat} />
+
+      <SubscriptionsCalendar />
 
       <SubscriptionsSummary summary={summary} isLoading={isLoading} />
 

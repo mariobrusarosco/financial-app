@@ -6,7 +6,9 @@ const BrokerCreateScreen = () => {
       data-testid="broker-create-screen"
       className="flex flex-col items-center justify-center h-screen"
     >
-      <h1>Create Broker</h1>
+      <h1 className="text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
+        Create Broker
+      </h1>
 
       <CreateBroker />
     </div>

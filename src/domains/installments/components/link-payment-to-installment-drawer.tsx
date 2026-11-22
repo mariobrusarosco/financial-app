@@ -6,7 +6,11 @@ import { TransactionRow } from '@/domains/transactions/components/transaction/tr
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
 import { Switch } from '@/domains/ui-system/components/switch';
-import { DrawerDescription, DrawerTitle } from '@/domains/ui-system/components/drawer';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
 import { Pagination } from '@/domains/ui-system/components/pagination';
 import { ArrowLeft, Check, Info, Link as LinkIcon, Loader2, Search } from 'lucide-react';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
@@ -82,14 +86,15 @@ export const LinkPaymentToInstallmentDrawer = () => {
     setCurrentPage(1);
   }, [debouncedSearchTerm, isNearDueDate]);
 
-  // Linking marks a transaction as paid, so unpaid ones are the ones still available
+  // Every transaction not linked to an installment yet. Not "unpaid": users can mark a
+  // transaction paid by hand, and it should still be linkable
   const {
     data,
     isLoading: isTransactionsLoading,
     isError: isTransactionsError,
   } = useAllTransactions({
     description_contains: debouncedSearchTerm || undefined,
-    is_paid: false,
+    has_installment: false,
     ...(isNearDueDate &&
       dueDateWindow && { date_from: dueDateWindow.date_from, date_to: dueDateWindow.date_to }),
     sort_by: 'date',
@@ -120,20 +125,28 @@ export const LinkPaymentToInstallmentDrawer = () => {
 
   if (isPlanLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      <DrawerLayout data-ui="link-payment-to-installment-drawer">
+        <DrawerLayoutHeader
+          icon={LinkIcon}
+          title="Link a payment"
+          description="Loading…"
+          onClose={() => handleClose()}
+        />
+        <DrawerLayoutBody className="grid place-items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   if (isPlanError || isPlanEmpty || !plan || !installment) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-destructive p-4 text-center">
-        <p>Failed to load installment details.</p>
-        <Button variant="outline" onClick={() => handleClose()} className="mt-4">
-          Back to Plan
-        </Button>
-      </div>
+      <DrawerLayout data-ui="link-payment-to-installment-drawer">
+        <DrawerLayoutHeader icon={LinkIcon} title="Link a payment" onClose={() => handleClose()} />
+        <DrawerLayoutBody>
+          <p className="text-sm text-destructive">Failed to load installment details.</p>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
@@ -144,30 +157,22 @@ export const LinkPaymentToInstallmentDrawer = () => {
 
   return (
     // flex-1 + min-h-0 let this shrink to the drawer's height, so the list below can scroll
-    <div
-      className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col overflow-hidden"
-      data-ui="link-payment-to-installment-drawer"
-    >
-      {/* Header */}
-      <div className="space-y-4 border-b border-border/70 px-4 pb-4 pt-2 md:px-6">
-        <Button variant="ghost" size="sm" onClick={() => handleClose()} className="-ml-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back to plan
-        </Button>
+    <DrawerLayout data-ui="link-payment-to-installment-drawer">
+      <DrawerLayoutHeader
+        icon={LinkIcon}
+        title="Link a payment"
+        description={`${plan.name} · Installment ${installment.number} of ${plan.installment_count}`}
+        onClose={() => handleClose()}
+        actions={
+          <Button variant="ghost" size="sm" onClick={() => handleClose()}>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Back to plan</span>
+          </Button>
+        }
+      />
 
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60">
-            <LinkIcon className="h-5 w-5 text-foreground" />
-          </div>
-          <div className="min-w-0">
-            <DrawerTitle className="text-lg font-semibold leading-tight text-foreground">
-              Link a payment
-            </DrawerTitle>
-            <DrawerDescription className="text-sm text-muted-foreground">
-              {plan.name} · Installment {installment.number} of {plan.installment_count}
-            </DrawerDescription>
-          </div>
-        </div>
+      {/* Installment summary and filters (stay visible while the list scrolls) */}
+      <div className="shrink-0 space-y-4 border-b border-border px-5 py-4 md:px-8">
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-muted/50 px-4 py-3 text-sm">
           <span className="text-lg font-bold tabular-nums">
@@ -184,11 +189,11 @@ export const LinkPaymentToInstallmentDrawer = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search unpaid transactions…"
+            placeholder="Search unlinked transactions…"
             className="pl-9"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            aria-label="Search unpaid transactions"
+            aria-label="Search unlinked transactions"
           />
         </div>
 
@@ -202,7 +207,7 @@ export const LinkPaymentToInstallmentDrawer = () => {
       </div>
 
       {/* Transactions (the only scrolling area) */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6">
+      <DrawerLayoutBody className="py-4">
         <TransactionListContent
           isLoading={isTransactionsLoading}
           isError={isTransactionsError}
@@ -229,7 +234,7 @@ export const LinkPaymentToInstallmentDrawer = () => {
             />
           </div>
         )}
-      </div>
+      </DrawerLayoutBody>
 
       {/* Footer: what will happen + actions */}
       <LinkFooter
@@ -240,7 +245,7 @@ export const LinkPaymentToInstallmentDrawer = () => {
         onCancel={handleClose}
         onConfirm={handleConfirm}
       />
-    </div>
+    </DrawerLayout>
   );
 };
 
@@ -284,8 +289,8 @@ const TransactionListContent = ({
       <div className="py-12 text-center text-sm text-muted-foreground">
         <p>
           {searchTerm
-            ? `No unpaid transactions match "${searchTerm}"`
-            : 'No unpaid transactions to link'}
+            ? `No unlinked transactions match "${searchTerm}"`
+            : 'No unlinked transactions to link'}
           {isNearDueDate ? ' near the due date.' : '.'}
         </p>
         {isNearDueDate && (
@@ -365,7 +370,7 @@ const LinkFooter = ({
     selectedTransaction !== null && !isSameAmount(selectedTransaction, installment);
 
   return (
-    <div className="space-y-3 border-t border-border/70 bg-background px-4 py-3 md:px-6">
+    <div className="shrink-0 space-y-3 border-t border-border bg-background px-5 py-4 md:px-8">
       {selectedTransaction ? (
         <div className="space-y-1.5 text-sm">
           <p className="flex flex-wrap items-baseline gap-x-2">

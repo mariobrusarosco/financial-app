@@ -43,6 +43,7 @@ export const CreditCardTransactionFilters = ({
     onParamsChange({
       page: 1,
       per_page: params.per_page,
+      date_basis: params.date_basis ?? 'competence',
     });
   };
 
@@ -89,8 +90,22 @@ export const CreditCardTransactionFilters = ({
 
       <CollapsibleContent className="space-y-4 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/50">
-          {/* Date Range - Handled Globally */}
-          
+          <div className="space-y-2">
+            <Label>Report dates</Label>
+            <Select
+              value={params.date_basis ?? 'competence'}
+              onValueChange={value => updateParam('date_basis', value)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="competence">Competência</SelectItem>
+                <SelectItem value="transaction">Purchase date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Amount Range */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Amount Range</Label>

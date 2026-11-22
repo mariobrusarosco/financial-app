@@ -1,27 +1,40 @@
-import { Button } from '@ui-system/components/button';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import CreateAccount from './create-account';
-import { Plus } from 'lucide-react';
 import { useIsMutating } from '@tanstack/react-query';
+import { Loader2, PiggyBank } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
+import CreateAccount from './create-account';
 
 export const CreateAccountDrawer = () => {
-  const isMutating = useIsMutating({ mutationKey: ['create-account'] });
+  const isMutating = useIsMutating({ mutationKey: ['create-account'] }) > 0;
 
   return (
-    <div className="p-6 space-y-6 h-full text-primary">
-      <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Create New Account"
-          icon={Plus}
-        />
-        <Button data-testid="account-create-submit" size="lg" form="account-create-form" disabled={!!isMutating}>
-          Create Account
-        </Button>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
+    <DrawerLayout data-ui="create-account-drawer">
+      <DrawerLayoutHeader
+        icon={PiggyBank}
+        title="New account"
+        description="Track the balance and transactions of a bank or broker account."
+      />
+      <DrawerLayoutBody>
         <CreateAccount />
-      </div>
-    </div>
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button
+          data-testid="account-create-submit"
+          type="submit"
+          form="account-create-form"
+          disabled={isMutating}
+        >
+          {isMutating && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isMutating ? 'Creating…' : 'Create account'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

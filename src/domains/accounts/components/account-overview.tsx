@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ArrowDownRight, ArrowUpRight, Equal, RefreshCw } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY } from '@/domains/accounts/api/keys';
 import { AccountBalancePoints } from '@/domains/accounts/components/account-balance-points';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
 import { useAccountBalancePoints } from '@/domains/accounts/hooks/use-account-balance-points';
 import { useCashflow } from '@/domains/cashflow/hooks/use-cashflow';
-import { GlobalDateFilter } from '@/domains/global/components/global-date-filter';
 import { Button } from '@/domains/ui-system/components/button';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
@@ -27,6 +26,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     error: cashflowError,
   } = useCashflow({
     account_id: slug,
+    card_date_basis: 'competence',
     date_from: from,
     date_to: to,
   });
@@ -37,25 +37,20 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     });
   };
 
+  // The invoice payment is ignored on the account, so its cards' purchases
+  // are this account's spending too.
+  const accountExpenses = cashflowSummary?.total_expenses ?? 0;
+  const cardExpenses = cashflowSummary?.card_spending ?? 0;
+
   const balancePoint = useMemo(() => {
     return balancePoints?.at(-1);
   }, [balancePoints]);
 
   return (
     <section data-ui="account-overview" className="space-y-4">
-      <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h2 className="text-sm font-semibold text-foreground">Reporting period</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Balance history, cashflow totals, and transactions follow this range.
-          </p>
-        </div>
-        <GlobalDateFilter />
-      </div>
-
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[16rem_18rem_minmax(0,1fr)]">
         <div
-          className="flex min-h-64 flex-col justify-between rounded-2xl bg-[#2b2865] p-5 text-white shadow-lg shadow-primary/10"
+          className="flex min-h-64 flex-col justify-between rounded-2xl bg-spotlight p-5 text-spotlight-foreground"
           data-ui="account-overview-balance"
         >
           <div className="flex items-center justify-between gap-3">
@@ -115,20 +110,31 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
               />
               <SummaryValue
                 label="Expenses"
-                value={cashflowSummary?.total_expenses ?? 0}
+                value={accountExpenses + cardExpenses}
                 currency={account?.currency}
                 icon={ArrowDownRight}
                 color="negative"
               />
-              <SummaryValue
-                label="Difference"
-                value={cashflowSummary?.net_cashflow ?? 0}
-                currency={account?.currency}
-                icon={Equal}
-                showSign
-              />
             </dl>
           )}
+
+          {!isLoadingCashflow && !cashflowError && cardExpenses > 0 ? (
+            <dl
+              className="mt-3 ml-2 space-y-2 border-l border-border/70 pl-4"
+              data-ui="account-period-summary-expenses-breakdown"
+            >
+              <BreakdownValue
+                label="Account"
+                value={accountExpenses}
+                currency={account?.currency}
+              />
+              <BreakdownValue
+                label="Cards (net, competência)"
+                value={cardExpenses}
+                currency={account?.currency}
+              />
+            </dl>
+          ) : null}
         </div>
 
         <div className="min-h-64 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] lg:col-span-2 xl:col-span-1">
@@ -143,14 +149,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
   );
 };
 
-const SummaryValue = ({
-  label,
-  value,
-  currency,
-  icon: Icon,
-  color,
-  showSign = false,
-}: SummaryValueProps) => (
+const SummaryValue = ({ label, value, currency, icon: Icon, color }: SummaryValueProps) => (
   <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
     <dt className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
       <Icon className="h-4 w-4" />
@@ -161,8 +160,20 @@ const SummaryValue = ({
         value={value}
         currency={currency}
         color={color}
-        showSign={showSign}
         className="financial-value text-sm"
+      />
+    </dd>
+  </div>
+);
+
+const BreakdownValue = ({ label, value, currency }: BreakdownValueProps) => (
+  <div className="flex items-center justify-between gap-3">
+    <dt className="text-xs text-muted-foreground">{label}</dt>
+    <dd>
+      <Currency
+        value={value}
+        currency={currency}
+        className="financial-value text-xs text-muted-foreground"
       />
     </dd>
   </div>
@@ -180,5 +191,10 @@ interface SummaryValueProps {
   currency?: string;
   icon: typeof ArrowUpRight;
   color?: 'positive' | 'negative';
-  showSign?: boolean;
+}
+
+interface BreakdownValueProps {
+  label: string;
+  value: number;
+  currency?: string;
 }

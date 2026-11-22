@@ -4,6 +4,7 @@ import type {
   I_InvestmentMovement,
   I_InvestmentBalance,
   I_InvestmentPortfolio,
+  I_InvestmentsParams,
   I_InvestmentsResponse,
   I_InvestmentBalanceHistoryParams,
   I_InvestmentBalanceHistoryResponse,
@@ -18,8 +19,8 @@ import type {
 
 export const investmentsApi = {
   // Investments CRUD
-  getAllInvestments: async (): Promise<I_InvestmentsResponse> => {
-    const response = await apiClient.get<I_InvestmentsResponse>('/investments');
+  getAllInvestments: async (params?: I_InvestmentsParams): Promise<I_InvestmentsResponse> => {
+    const response = await apiClient.get<I_InvestmentsResponse>('/investments', { params });
     return response.data;
   },
 

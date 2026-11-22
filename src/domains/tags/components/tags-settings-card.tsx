@@ -13,6 +13,8 @@ import {
 import { Surface } from '@/domains/global/components/surface';
 import { useCashflowViews } from '@/domains/cashflow/hooks/use-cashflow-views';
 import { findViewGroupsUsingTag } from '@/domains/cashflow/utils/cashflow-views';
+import { TagAppearancePicker } from '@/domains/tags/components/tag-appearance-picker';
+import { TagBadge } from '@/domains/tags/components/tag-badge';
 import { useTags } from '@/domains/tags/hooks/use-tags';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
 
@@ -83,6 +85,9 @@ export const TagsSettingsCard = () => {
               key={tag.id}
               tag={tag}
               onRename={name => tagActions.updateTag({ tagId: tag.id, payload: { name } })}
+              onChangeAppearance={appearance =>
+                tagActions.updateTag({ tagId: tag.id, payload: appearance })
+              }
               onDeactivate={() => requestDeactivate(tag)}
             />
           ))}
@@ -123,10 +128,12 @@ export const TagsSettingsCard = () => {
 const TagRow = ({
   tag,
   onRename,
+  onChangeAppearance,
   onDeactivate,
 }: {
   tag: I_Tag;
   onRename: (name: string) => void;
+  onChangeAppearance: (appearance: Pick<I_Tag, 'icon' | 'bg_color' | 'icon_color'>) => void;
   onDeactivate: () => void;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -134,6 +141,11 @@ const TagRow = ({
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 p-3">
+      {tag.is_active ? (
+        <TagAppearancePicker tag={tag} onSave={onChangeAppearance} />
+      ) : (
+        <TagBadge tag={tag} className="h-8 w-8 opacity-60" />
+      )}
       <div className="min-w-0 flex-1">
         {isEditing ? (
           <Input value={name} onChange={event => setName(event.target.value)} className="h-8" />

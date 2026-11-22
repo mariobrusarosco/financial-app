@@ -1,9 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
+import { Loader2, Repeat2 } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
 import { useCreateSubscription } from '../hooks';
 import { SubscriptionForm } from './subscription-form';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import { Loader2, Plus } from 'lucide-react';
-import { Button } from '@/domains/ui-system/components/button';
 
 export const CreateSubscriptionDrawer = () => {
   const navigate = useNavigate();
@@ -20,32 +26,22 @@ export const CreateSubscriptionDrawer = () => {
   const isLoading = createSubscriptionMutation.isPending;
 
   return (
-    <div className="p-6 space-y-6 h-full">
-      <div className="flex justify-between items-center">
-        <DrawerHeader
-          title="Create Subscription"
-          icon={Plus}
-        />
-        <div className="flex gap-2">
-          <Button size="lg" form="subscription-form" type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Subscription
-          </Button>
-        </div>
-      </div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-6 h-full">
-          <div className="col-span-2">
-            <p className="text-sm text-muted-foreground">
-              Fill in the form to create a new subscription.
-            </p>
-            <SubscriptionForm
-              key="create"
-              onSubmit={handleSubmit}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <DrawerLayout data-ui="create-subscription-drawer">
+      <DrawerLayoutHeader
+        icon={Repeat2}
+        title="New subscription"
+        description="A recurring payment you want to keep an eye on."
+      />
+      <DrawerLayoutBody>
+        <SubscriptionForm key="create" onSubmit={handleSubmit} />
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button type="submit" form="subscription-form" disabled={isLoading}>
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isLoading ? 'Saving…' : 'Create subscription'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { investmentsApi } from '../api/investments.api';
-import { MONTHLY_BALANCE_SUMMARIES_QUERY_KEY } from './use-monthly-balance-summaries';
+import { ACCOUNT_MONTHLY_BALANCE_SUMMARIES_QUERY_KEY } from './use-monthly-balance-summaries';
 import type { I_CreateBalancePointRequest } from '../types/types-and-interfaces';
 
 export const useCreateBalancePoint = () => {
@@ -12,13 +12,10 @@ export const useCreateBalancePoint = () => {
     onSuccess: (data, variables) => {
       toast.success('Balance point saved successfully!');
 
-      // Invalidate monthly summaries to refresh the data
-      queryClient.invalidateQueries({
-        queryKey: MONTHLY_BALANCE_SUMMARIES_QUERY_KEY({
-          account_id: variables.account_id,
-          year: new Date().getFullYear(),
-          months: 12,
-        }),
+      // Refresh this account's monthly summaries for every year: the balance
+      // can be in any year, not only the current one.
+      void queryClient.invalidateQueries({
+        queryKey: ACCOUNT_MONTHLY_BALANCE_SUMMARIES_QUERY_KEY(variables.account_id),
       });
     },
     onError: (error: any) => {

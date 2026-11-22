@@ -1424,6 +1424,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/outfit@npm:^5":
+  version: 5.3.0
+  resolution: "@fontsource/outfit@npm:5.3.0"
+  checksum: d65d0f2560479a5ae593761ef1cd1ec5dec5326517517786009395f1d78c396bbecf61dc571435952a84adb439725d98633b5c2edaf0e0a7ae1add67a4f869b4
+  languageName: node
+  linkType: hard
+
 "@formatjs/ecma402-abstract@npm:2.3.4":
   version: 2.3.4
   resolution: "@formatjs/ecma402-abstract@npm:2.3.4"
@@ -7244,6 +7251,7 @@ __metadata:
   resolution: "better-call-buffet-front@workspace:."
   dependencies:
     "@fontsource/inter": ^5.3.0
+    "@fontsource/outfit": ^5
     "@playwright/test": ^1.57.0
     "@radix-ui/react-avatar": ^1.1.9
     "@radix-ui/react-checkbox": ^1.1.1

@@ -1,8 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import type * as React from 'react';
 import { useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, Loader2, ReceiptText, Save, X } from 'lucide-react';
+import { ArrowRightLeft, ChevronDown, ChevronUp, Loader2, Save } from 'lucide-react';
 import { getTransactionById } from '@/domains/transactions/api/transactions.api';
 import { TransactionForm } from '@/domains/transactions/components/transaction-form';
 import { useAdjacentTransactions } from '@/domains/transactions/hooks/use-adjacent-transactions';
@@ -11,6 +10,12 @@ import type {
   I_TransactionPayload,
   I_TransactionResponse,
 } from '@/domains/transactions/types/types-and-interfaces';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
 import { Button } from '@/domains/ui-system/components/button';
 import {
   Dialog,
@@ -20,8 +25,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/domains/ui-system/components/dialog';
-import { DrawerDescription, DrawerTitle } from '@/domains/ui-system/components/drawer';
-import { cn } from '@/domains/ui-system';
 import { Route } from '@/routes/(auth)/route';
 
 type T_ExitTarget = { type: 'close' } | { type: 'navigate'; transactionId: string };
@@ -123,59 +126,56 @@ export const EditTransactionDrawer = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="p-4 md:p-6 max-w-3xl mx-auto w-full">
-        <EditTransactionHeader description="Loading transaction details..." />
-        <div className="flex items-center justify-center py-12">
+      <DrawerLayout data-ui="edit-transaction-drawer">
+        <DrawerLayoutHeader
+          icon={ArrowRightLeft}
+          title="Edit transaction"
+          description="Loading transaction details…"
+        />
+        <DrawerLayoutBody className="grid place-items-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
-      </div>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   // Error state
   if (isError || !transaction) {
     return (
-      <div className="p-4 md:p-6 max-w-3xl mx-auto w-full">
-        <EditTransactionHeader
+      <DrawerLayout data-ui="edit-transaction-drawer">
+        <DrawerLayoutHeader
+          icon={ArrowRightLeft}
+          title="Edit transaction"
           description={
             isError
               ? `Failed to load transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
               : 'Transaction not found'
           }
         />
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <p className="text-muted-foreground mb-4">
-              {isError
-                ? 'Unable to load this transaction.'
-                : 'This transaction could not be found.'}
-            </p>
-            <Button variant="outline" onClick={handleClose}>
-              Close
-            </Button>
-          </div>
-        </div>
-      </div>
+        <DrawerLayoutBody>
+          <p className="text-sm text-muted-foreground">
+            {isError ? 'Unable to load this transaction.' : 'This transaction could not be found.'}
+          </p>
+        </DrawerLayoutBody>
+      </DrawerLayout>
     );
   }
 
   // Success state - render the edit form
   return (
-    <div
-      className="p-4 md:p-6 space-y-5 h-full overflow-y-auto max-w-3xl mx-auto"
-      data-ui="edit-transaction-drawer"
-    >
-      <EditTransactionHeader
+    <DrawerLayout data-ui="edit-transaction-drawer">
+      <DrawerLayoutHeader
+        icon={ArrowRightLeft}
+        title="Edit transaction"
         description={
           position
             ? `${position} of ${total} in this list`
             : 'Make changes to your transaction details'
         }
-        className="sticky top-0 z-10 bg-background -mt-4 pt-4 md:-mt-6 md:pt-6"
-      >
-        <div className="flex items-center gap-2">
-          {position && (
-            <div className="flex items-center rounded-lg border border-border/80 bg-card">
+        onClose={() => requestExit({ type: 'close' })}
+        actions={
+          position && (
+            <div className="flex items-center rounded-lg border border-border bg-card">
               <Button
                 variant="ghost"
                 size="sm"
@@ -185,7 +185,7 @@ export const EditTransactionDrawer = () => {
                 disabled={!previousId || isSaving}
                 aria-label="Previous transaction"
                 title="Previous transaction"
-                className="h-8 w-8 p-0 rounded-r-none"
+                className="h-8 w-8 rounded-r-none p-0"
               >
                 <ChevronUp className="h-4 w-4" />
               </Button>
@@ -197,37 +197,15 @@ export const EditTransactionDrawer = () => {
                 disabled={!nextId || isSaving}
                 aria-label="Next transaction"
                 title="Next transaction"
-                className="h-8 w-8 p-0 rounded-l-none"
+                className="h-8 w-8 rounded-l-none p-0"
               >
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => requestExit({ type: 'close' })}
-            className="rounded-lg h-8 px-3 gap-1.5 font-medium border-border/80 text-foreground hover:bg-muted/50"
-          >
-            <X className="h-4 w-4" />
-            <span className="hidden sm:inline">Cancel</span>
-          </Button>
-          <Button
-            type="submit"
-            form="transaction-form"
-            size="sm"
-            onClick={() => {
-              afterSaveTargetRef.current = { type: 'close' };
-            }}
-            disabled={!isDirty || isSaving}
-            className="rounded-lg h-8 px-3.5 gap-1.5 font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
-          >
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            {isSaving ? 'Saving...' : 'Save'}
-          </Button>
-        </div>
-      </EditTransactionHeader>
-      <div className="flex flex-col h-full">
+          )
+        }
+      />
+      <DrawerLayoutBody>
         <TransactionForm
           // Remount per transaction so prev/next navigation starts from fresh form state
           key={transaction.id}
@@ -237,7 +215,23 @@ export const EditTransactionDrawer = () => {
           onCancel={handleClose}
           onDirtyChange={setIsDirty}
         />
-      </div>
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <Button type="button" variant="ghost" onClick={() => requestExit({ type: 'close' })}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          form="transaction-form"
+          onClick={() => {
+            afterSaveTargetRef.current = { type: 'close' };
+          }}
+          disabled={!isDirty || isSaving}
+        >
+          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {isSaving ? 'Saving…' : 'Save changes'}
+        </Button>
+      </DrawerLayoutFooter>
 
       <Dialog open={pendingExit !== null} onOpenChange={open => !open && setPendingExit(null)}>
         <DialogContent showCloseButton={false} className="sm:max-w-md">
@@ -263,38 +257,6 @@ export const EditTransactionDrawer = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </DrawerLayout>
   );
 };
-
-const EditTransactionHeader = ({
-  description,
-  className,
-  children,
-}: {
-  description: string;
-  className?: string;
-  children?: React.ReactNode;
-}) => (
-  <div
-    className={cn(
-      'flex items-center justify-between gap-3 pb-3 border-b border-border/70',
-      className
-    )}
-  >
-    <div className="flex items-center gap-3 min-w-0">
-      <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
-        <ReceiptText className="h-4 w-4 text-foreground" />
-      </div>
-      <div className="min-w-0">
-        <DrawerTitle className="text-base font-semibold text-foreground leading-tight">
-          Edit Transaction
-        </DrawerTitle>
-        <DrawerDescription className="text-xs text-muted-foreground mt-0.5">
-          {description}
-        </DrawerDescription>
-      </div>
-    </div>
-    {children}
-  </div>
-);

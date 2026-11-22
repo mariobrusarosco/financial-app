@@ -7,6 +7,9 @@ export interface I_TransactionPayload {
   description: string;
   amount: number | null;
   date: string;
+  competence_month?: string | null;
+  invoice_id?: string | null;
+  invoice_row?: number | null;
   account_id?: string;
   credit_card_id?: string;
   broker_id?: string;
@@ -34,6 +37,9 @@ export interface I_BulkTransactionRequest {
   broker_id: string;
   is_paid: boolean;
   date: string;
+  competence_month?: string | null;
+  invoice_id?: string | null;
+  invoice_row?: number | null;
   amount: number;
   description: string;
   movement_type: T_TransactionType;
@@ -87,6 +93,9 @@ export interface I_TransactionResponse {
   is_paid: boolean;
   ignored: boolean;
   date: string;
+  competence_month?: string | null;
+  invoice_id?: string | null;
+  invoice_row?: number | null;
   amount: string;
   description: string;
   movement_type: T_TransactionType;
@@ -113,6 +122,8 @@ export interface I_AccountTransactionsParams {
   description_contains?: string;
   movement_type?: T_TransactionType;
   is_paid?: boolean;
+  // GET /transactions only. false: not linked to any installment, whatever is_paid says
+  has_installment?: boolean;
   sort_by?: 'date' | 'amount' | 'created_at';
   sort_order?: 'asc' | 'desc';
   include_credit_cards?: boolean;

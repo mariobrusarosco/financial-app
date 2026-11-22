@@ -95,13 +95,11 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
 
         {statement && !mutation.isError && (
           <div className="space-y-4 flex-1">
-            <div className="p-2 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
+            <div className="p-2 bg-pastel-green border border-positive/20 rounded-lg">
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                <CheckCircle className="h-5 w-5 text-positive mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-medium text-green-800 dark:text-green-200">
-                    Statement parsed successfully!
-                  </p>
+                  <p className="font-medium text-positive">Statement parsed successfully!</p>
                   <div className="flex gap-2 justify-between items-center">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -118,7 +116,7 @@ export const UploadProcess = ({ accountId, onStatementParsed }: UploadProcessPro
                         variant="default"
                       />
                     </div>
-                    <p className="text-sm text-green-700 dark:text-green-300 mt-2">
+                    <p className="text-sm text-positive mt-2">
                       Found {statement.raw_statement?.transactions?.length || 0} transactions
                     </p>
                   </div>

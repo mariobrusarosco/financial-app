@@ -4,9 +4,13 @@ import { useAllTransactions } from '@/domains/transactions/hooks/use-all-transac
 import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
 import { Button } from '@/domains/ui-system/components/button';
 import { Input } from '@/domains/ui-system/components/input';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
-import { DrawerFooter, DrawerClose } from '@/domains/ui-system/components/drawer';
-import { Loader2, Search, Link as LinkIcon, X, Check } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { ArrowLeft, Check, Link as LinkIcon, Loader2, Search } from 'lucide-react';
 import { useLinkPayment } from '@/domains/subscriptions/hooks/index';
 import type { I_Subscription } from '@/domains/subscriptions/types/types-and-interfaces';
 import type { I_TransactionResponse } from '@/domains/transactions/types/types-and-interfaces';
@@ -113,58 +117,47 @@ export const LinkPaymentDrawer = ({ subscription, onClose }: LinkPaymentDrawerPr
   const transactions = data?.data || [];
 
   return (
-    <div className="flex flex-col h-full">
-      <DrawerHeader
-        title="Link Payment"
-        description={`Select a transaction to link to ${subscription.name}`}
+    <DrawerLayout data-ui="subscription-link-payment">
+      <DrawerLayoutHeader
         icon={LinkIcon}
+        title="Link a payment"
+        description={`Select the transaction that paid ${subscription.name}`}
       />
 
-      <div className="p-4 space-y-4 flex-1 overflow-hidden flex flex-col">
+      <div className="shrink-0 border-b border-border px-5 py-4 md:px-8">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search transactions..."
+            placeholder="Search transactions…"
             className="pl-9"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="flex-1 overflow-y-auto pr-1 space-y-2">
-          <TransactionListContent
-            isLoading={isLoading}
-            isError={isError}
-            transactions={transactions}
-            searchTerm={debouncedSearchTerm}
-            selectedTransactionId={selectedTransactionId}
-            onSelect={setSelectedTransactionId}
+            aria-label="Search transactions"
           />
         </div>
       </div>
 
-      <DrawerFooter className="border-t flex-row gap-2">
-        <DrawerClose asChild>
-          <Button variant="outline" className="flex-1" onClick={onClose}>
-            <X className="mr-2 h-4 w-4" />
-            Cancel
-          </Button>
-        </DrawerClose>
-        <Button
-          onClick={handleConfirm}
-          disabled={!selectedTransactionId || isLinking}
-          className="flex-1"
-        >
-          {isLinking ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Linking...
-            </>
-          ) : (
-            'Confirm Link'
-          )}
+      <DrawerLayoutBody className="space-y-2">
+        <TransactionListContent
+          isLoading={isLoading}
+          isError={isError}
+          transactions={transactions}
+          searchTerm={debouncedSearchTerm}
+          selectedTransactionId={selectedTransactionId}
+          onSelect={setSelectedTransactionId}
+        />
+      </DrawerLayoutBody>
+
+      <DrawerLayoutFooter>
+        <Button type="button" variant="ghost" onClick={onClose}>
+          <ArrowLeft className="h-4 w-4" />
+          Back to subscription
         </Button>
-      </DrawerFooter>
-    </div>
+        <Button onClick={handleConfirm} disabled={!selectedTransactionId || isLinking}>
+          {isLinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+          {isLinking ? 'Linking…' : 'Confirm link'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

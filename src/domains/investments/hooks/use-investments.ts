@@ -1,9 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { investmentsApi } from '../api/investments.api';
 import type {
   I_CreateInvestmentRequest,
   I_CreateInvestmentMovementRequest,
   I_CreateInvestmentBalanceRequest,
+  I_InvestmentsParams,
 } from '../types/types-and-interfaces';
 
 // Query key factories
@@ -14,12 +15,18 @@ export const getInvestmentMovementsQueryKey = (investmentId: string) => [
   investmentId,
 ];
 
-// Get all investments
-export const useInvestments = () => {
+// Get all investments; with a date range, the figures cover only that range
+export const useInvestments = (
+  params?: I_InvestmentsParams,
+  { enabled = true }: { enabled?: boolean } = {}
+) => {
   return useQuery({
-    queryKey: getInvestmentsQueryKey(),
-    queryFn: () => investmentsApi.getAllInvestments(),
+    // The range goes after the base key, so invalidating getInvestmentsQueryKey() refreshes every range
+    queryKey: [...getInvestmentsQueryKey(), params],
+    queryFn: () => investmentsApi.getAllInvestments(params),
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled,
   });
 };
 

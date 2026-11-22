@@ -59,7 +59,7 @@ export const InstallmentsChart = ({ plans }: InstallmentsChartProps) => {
                 width={60}
               />
               <Tooltip cursor={{ fill: 'rgb(0,0,0,0.03)' }} content={<CustomTooltip />} />
-              <Bar dataKey="amount" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={50} />
+              <Bar dataKey="amount" fill="var(--chart-1)" radius={[8, 8, 0, 0]} maxBarSize={50} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

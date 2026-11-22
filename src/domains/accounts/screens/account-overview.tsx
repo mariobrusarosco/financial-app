@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
+import AccountOverview from '@/domains/accounts/components/account-overview';
+import AccountReportingPeriod from '@/domains/accounts/components/account-reporting-period';
 import { AccountTransactionsList } from '@/domains/transactions/components/account-transactions-list';
 import { useAccountTransactionsPaginated } from '@/domains/transactions/hooks/use-account-transactions-paginated';
 import type { I_AccountTransactionsParams } from '@/domains/transactions/types/types-and-interfaces';
@@ -70,7 +72,9 @@ export const AccountOverviewScreen = ({ slug }: AccountOverviewScreenProps) => {
   const transactionsQuery = useAccountTransactionsPaginated(slug, params, true);
 
   return (
-    <div data-ui="account-overview-screen">
+    <div data-ui="account-overview-screen" className="space-y-6">
+      <AccountReportingPeriod description="Balance history, cashflow totals, and transactions follow this range." />
+      <AccountOverview slug={slug} />
       <AccountTransactionsList
         params={params}
         onParamsChange={handleParamsChange}

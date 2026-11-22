@@ -18,12 +18,13 @@ const toCashflowSummary = (summary: I_CashflowSummaryResponse): I_CashflowSummar
   total_expenses: Number(summary.total_expenses),
   net_cashflow: Number(summary.net_cashflow),
   savings_rate: summary.savings_rate,
+  card_spending: summary.card_spending == null ? null : Number(summary.card_spending),
   monthly_data: summary.monthly_data.map(toMonthlyCashflow),
 });
 
 export const cashflowApi = {
   getSummary: async (filters: I_CashflowFilter): Promise<I_CashflowSummary> => {
-    const response = await apiClient.get<I_CashflowSummaryResponse>('/analytics/cashflow', {
+    const response = await apiClient.get<I_CashflowSummaryResponse>('/cashflow', {
       params: filters,
     });
 
@@ -44,5 +45,6 @@ interface I_CashflowSummaryResponse {
   total_expenses: string;
   net_cashflow: string;
   savings_rate: number;
+  card_spending: string | null;
   monthly_data: I_MonthlyCashflowResponse[];
 }

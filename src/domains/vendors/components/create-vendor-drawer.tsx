@@ -1,8 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
+import { Loader2, Store } from 'lucide-react';
+import {
+  DrawerLayout,
+  DrawerLayoutBody,
+  DrawerLayoutCancel,
+  DrawerLayoutFooter,
+  DrawerLayoutHeader,
+} from '@/domains/global/components/drawer-layout';
+import { Button } from '@/domains/ui-system/components/button';
 import { useCreateVendor } from '../hooks';
 import { VendorForm } from './vendor-form';
-import { Loader2, Plus } from 'lucide-react';
-import { DrawerHeader } from '@/domains/global/components/drawer-header';
 
 export const CreateVendorDrawer = () => {
   const navigate = useNavigate();
@@ -19,19 +26,22 @@ export const CreateVendorDrawer = () => {
   const isLoading = createVendorMutation.isPending;
 
   return (
-    <>
-      <DrawerHeader
-        title="Create New Vendor"
-        description="Add a new vendor to your list of payees."
-        icon={Plus}
+    <DrawerLayout data-ui="create-vendor-drawer">
+      <DrawerLayoutHeader
+        icon={Store}
+        title="New vendor"
+        description="Add a store or payee to recognize recurring activity."
       />
-      <div className="p-4">
-        <VendorForm
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
-          isEditMode={false}
-        />
-      </div>
-    </>
+      <DrawerLayoutBody>
+        <VendorForm onSubmit={handleSubmit} />
+      </DrawerLayoutBody>
+      <DrawerLayoutFooter>
+        <DrawerLayoutCancel />
+        <Button type="submit" form="vendor-form" disabled={isLoading}>
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isLoading ? 'Creating…' : 'Create vendor'}
+        </Button>
+      </DrawerLayoutFooter>
+    </DrawerLayout>
   );
 };

@@ -1,5 +1,7 @@
 import { apiClient } from '@/config/api';
 import type {
+  I_CashflowViewGroupTransactionsParams,
+  I_CashflowViewGroupTransactionsResponse,
   I_CashflowViewOverlapsResponse,
   I_CashflowViewPayload,
   I_CashflowViewReportParams,
@@ -9,7 +11,7 @@ import type {
   I_CashflowViewUpdatePayload,
 } from '@/domains/cashflow/types/index';
 
-const CASHFLOW_VIEWS_PATH = '/cashflow-views';
+const CASHFLOW_VIEWS_PATH = '/cashflow/views';
 
 export const cashflowViewsApi = {
   getViews: async (): Promise<I_CashflowViewsResponse> => {
@@ -45,6 +47,21 @@ export const cashflowViewsApi = {
       `${CASHFLOW_VIEWS_PATH}/${viewId}/summary`,
       { params }
     );
+    return response.data;
+  },
+
+  // `groupId: null` lists the expenses that aren't in any group of the view
+  getGroupTransactions: async (
+    viewId: string,
+    groupId: string | null,
+    params: I_CashflowViewGroupTransactionsParams
+  ): Promise<I_CashflowViewGroupTransactionsResponse> => {
+    const path = groupId
+      ? `${CASHFLOW_VIEWS_PATH}/${viewId}/groups/${groupId}/transactions`
+      : `${CASHFLOW_VIEWS_PATH}/${viewId}/ungrouped/transactions`;
+    const response = await apiClient.get<I_CashflowViewGroupTransactionsResponse>(path, {
+      params,
+    });
     return response.data;
   },
 

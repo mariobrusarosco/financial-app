@@ -4,6 +4,7 @@ import {
   ArrowRightLeft,
   BarChart3,
   CalendarDays,
+  ChevronLeft,
   House,
   LogOut,
   Menu,
@@ -29,6 +30,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/domains/ui-system/components/dropdown-menu';
+import { useSidebarState } from '@/domains/ui-system/hooks/use-sidebar-state';
 import { useTheme } from '@/domains/ui-system/hooks/use-theme';
 import { cn } from '@/domains/ui-system/utils/index';
 
@@ -51,6 +53,21 @@ const planningNavigationItems: NavigationItem[] = [
   { label: 'Subscriptions', href: '/subscriptions', icon: Repeat2 },
   { label: 'Installments', href: '/installments', icon: CalendarDays },
 ];
+
+/*
+ * The sidebar container carries `group/sidebar` and `data-state` (auto | collapsed | expanded).
+ * Children are styled as the collapsed icon rail by default and switch to the full layout when
+ * the state is `expanded`, or `auto` at the xl breakpoint. Class names stay literal so Tailwind
+ * can detect them.
+ */
+const SHOW_WHEN_EXPANDED =
+  'hidden whitespace-nowrap group-data-[state=expanded]/sidebar:block xl:group-data-[state=auto]/sidebar:block';
+
+const NAV_ITEM_LAYOUT =
+  'flex h-10 w-full items-center justify-center gap-3 rounded-xl px-0 text-sm transition-colors group-data-[state=expanded]/sidebar:justify-start group-data-[state=expanded]/sidebar:px-3 xl:group-data-[state=auto]/sidebar:justify-start xl:group-data-[state=auto]/sidebar:px-3';
+
+const NAV_ITEM_IDLE =
+  'font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground';
 
 const getInitials = (name: string) => {
   if (!name) return 'U';
@@ -81,20 +98,18 @@ const NavigationLink = ({
       aria-current={isActive ? 'page' : undefined}
       onClick={onNavigate}
       className={cn(
-        'group flex h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors',
-        'md:justify-center md:px-0 xl:justify-start xl:px-3',
-        isActive
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-          : 'text-muted-foreground hover:bg-muted/70 hover:text-sidebar-foreground'
+        'group',
+        NAV_ITEM_LAYOUT,
+        isActive ? 'bg-sidebar-accent font-semibold text-sidebar-accent-foreground' : NAV_ITEM_IDLE
       )}
     >
       <Icon
         className={cn(
           'h-5 w-5 shrink-0 transition-colors',
-          isActive ? 'text-brand' : 'text-muted-foreground group-hover:text-foreground'
+          isActive ? 'text-brand' : 'text-sidebar-foreground/60 group-hover:text-sidebar-foreground'
         )}
       />
-      <span className="md:hidden xl:inline">{item.label}</span>
+      <span className={SHOW_WHEN_EXPANDED}>{item.label}</span>
     </Link>
   );
 };
@@ -109,7 +124,12 @@ const NavigationGroup = ({
   onNavigate?: () => void;
 }) => (
   <div className="space-y-1">
-    <p className="mb-2 px-3 text-[0.65rem] font-semibold tracking-[0.16em] text-muted-foreground uppercase md:hidden xl:block">
+    <p
+      className={cn(
+        'mb-2 px-3 text-[0.65rem] font-semibold tracking-[0.16em] text-muted-foreground uppercase',
+        SHOW_WHEN_EXPANDED
+      )}
+    >
       {label}
     </p>
     {items.map(item => (
@@ -118,26 +138,50 @@ const NavigationGroup = ({
   </div>
 );
 
+const SidebarFooter = ({ onNavigate }: { onNavigate?: () => void }) => (
+  <div className="space-y-1 border-t border-sidebar-border pt-4">
+    <NavigationLink
+      item={{ label: 'Settings', href: '/settings', icon: Settings }}
+      onNavigate={onNavigate}
+    />
+    <ThemeButton />
+    <LogoutButton />
+  </div>
+);
+
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { state: sidebarState, isCollapsed, toggle: toggleSidebar } = useSidebarState();
 
   return (
     <>
       <aside
         data-ui="app-navigation"
-        className="hidden h-full w-20 shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-3 py-5 md:flex xl:w-60 xl:px-4"
+        data-state={sidebarState}
+        className="group/sidebar hidden w-20 shrink-0 flex-col gap-4 overflow-hidden rounded-3xl bg-sidebar p-3 transition-[width] duration-200 md:my-3 md:ml-3 md:flex data-[state=expanded]:w-72 data-[state=expanded]:p-4 xl:data-[state=auto]:w-72 xl:data-[state=auto]:p-4"
       >
-        <Brand />
+        <div className="flex flex-col items-center gap-2 rounded-2xl bg-sidebar-accent p-2 group-data-[state=expanded]/sidebar:flex-row group-data-[state=expanded]/sidebar:justify-between group-data-[state=expanded]/sidebar:p-3 xl:group-data-[state=auto]/sidebar:flex-row xl:group-data-[state=auto]/sidebar:justify-between xl:group-data-[state=auto]/sidebar:p-3">
+          <Brand />
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!isCollapsed}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronLeft className="h-4 w-4 rotate-180 transition-transform group-data-[state=expanded]/sidebar:rotate-0 xl:group-data-[state=auto]/sidebar:rotate-0" />
+          </button>
+        </div>
 
-        <nav className="mt-8 flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto">
+        <SidebarProfile />
+
+        <nav className="mt-2 flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto">
           <NavigationGroup label="Overview" items={primaryNavigationItems} />
           <NavigationGroup label="Planning" items={planningNavigationItems} />
         </nav>
 
-        <div className="space-y-2 border-t border-sidebar-border pt-4">
-          <NavigationLink item={{ label: 'Settings', href: '/settings', icon: Settings }} />
-          <ThemeButton />
-        </div>
+        <SidebarFooter />
       </aside>
 
       <div className="md:hidden" data-testid="mobile-navigation">
@@ -162,10 +206,14 @@ export const Navigation = () => {
             <button
               type="button"
               aria-label="Close navigation"
-              className="absolute inset-0 bg-[#060429]/30 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/30 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <nav className="relative flex h-full w-[min(88vw,22rem)] flex-col gap-8 overflow-y-auto border-r border-border bg-card p-5 shadow-2xl">
+            {/* The mobile drawer always shows the full layout */}
+            <nav
+              data-state="expanded"
+              className="group/sidebar relative flex h-full w-[min(88vw,22rem)] flex-col gap-8 overflow-y-auto border-r border-sidebar-border bg-sidebar p-5 shadow-2xl"
+            >
               <NavigationGroup
                 label="Overview"
                 items={primaryNavigationItems}
@@ -176,12 +224,8 @@ export const Navigation = () => {
                 items={planningNavigationItems}
                 onNavigate={() => setIsMobileMenuOpen(false)}
               />
-              <div className="mt-auto space-y-2 border-t border-border pt-4">
-                <NavigationLink
-                  item={{ label: 'Settings', href: '/settings', icon: Settings }}
-                  onNavigate={() => setIsMobileMenuOpen(false)}
-                />
-                <ThemeButton />
+              <div className="mt-auto">
+                <SidebarFooter onNavigate={() => setIsMobileMenuOpen(false)} />
               </div>
             </nav>
           </div>
@@ -191,21 +235,15 @@ export const Navigation = () => {
   );
 };
 
-export const AppTopBar = () => (
-  <header className="hidden h-20 shrink-0 items-center justify-end gap-6 border-b border-border/70 bg-background px-6 md:flex lg:px-8">
-    <UserMenu showIdentity />
-  </header>
-);
-
 const Brand = ({ compact = false }: { compact?: boolean }) => (
   <Link to="/dashboard" className="flex min-w-0 items-center gap-3">
-    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand text-lg font-bold text-brand-foreground shadow-sm">
+    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand text-lg font-bold text-brand-foreground">
       B
     </span>
     <span
       className={cn(
-        'truncate text-sm font-semibold tracking-[-0.03em] text-sidebar-foreground',
-        compact ? 'block' : 'hidden xl:block'
+        'truncate text-base font-semibold tracking-[-0.02em] text-sidebar-foreground',
+        compact ? 'block' : SHOW_WHEN_EXPANDED
       )}
     >
       Better Call Buffet
@@ -216,70 +254,127 @@ const Brand = ({ compact = false }: { compact?: boolean }) => (
 const ThemeButton = () => {
   const { theme, setTheme } = useTheme();
   const isDark = theme === 'dark';
+  const label = isDark ? 'Light mode' : 'Dark mode';
 
   return (
     <button
       type="button"
+      title={label}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground md:justify-center md:px-0 xl:justify-start xl:px-3"
+      className={cn(NAV_ITEM_LAYOUT, NAV_ITEM_IDLE)}
     >
-      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      <span className="md:hidden xl:inline">{isDark ? 'Light mode' : 'Dark mode'}</span>
+      {isDark ? <Sun className="h-5 w-5 shrink-0" /> : <Moon className="h-5 w-5 shrink-0" />}
+      <span className={SHOW_WHEN_EXPANDED}>{label}</span>
     </button>
   );
 };
 
-const UserMenu = ({ showIdentity = false }: { showIdentity?: boolean }) => {
-  const { user } = useAuth();
+const LogoutButton = () => {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const label = isLoggingOut ? 'Logging out…' : 'Log out';
+
+  return (
+    <button
+      type="button"
+      title={label}
+      onClick={() => logout()}
+      disabled={isLoggingOut}
+      className={cn(NAV_ITEM_LAYOUT, NAV_ITEM_IDLE, 'disabled:opacity-50')}
+    >
+      <LogOut className="h-5 w-5 shrink-0" />
+      <span className={SHOW_WHEN_EXPANDED}>{label}</span>
+    </button>
+  );
+};
+
+const UserMenuContent = ({
+  name,
+  email,
+  side,
+  align,
+}: {
+  name: string;
+  email: string;
+  side?: 'right' | 'bottom';
+  align: 'start' | 'end';
+}) => {
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
+  return (
+    <DropdownMenuContent className="w-60" side={side} align={align} forceMount>
+      <DropdownMenuLabel className="font-normal">
+        <div className="flex flex-col space-y-1">
+          <p className="text-sm font-medium leading-none">{name}</p>
+          <p className="text-xs leading-none text-muted-foreground">{email}</p>
+        </div>
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem asChild>
+        <Link to="/settings" className="flex items-center">
+          <User className="mr-2 h-4 w-4" />
+          Profile and settings
+        </Link>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive" onClick={() => logout()} disabled={isLoggingOut}>
+        <LogOut className="mr-2 h-4 w-4" />
+        {isLoggingOut ? 'Logging out…' : 'Log out'}
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  );
+};
+
+/** Profile card at the top of the desktop sidebar; shrinks to the avatar when collapsed. */
+const SidebarProfile = () => {
+  const { user } = useAuth();
 
   if (!user) return null;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
+        <button
+          type="button"
           data-testid="user-menu"
-          variant="ghost"
-          className={cn('h-auto rounded-xl p-1.5', showIdentity && 'gap-3 pr-3')}
+          title={user.name}
+          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-sidebar-accent p-2 text-left transition-colors outline-none hover:bg-sidebar-accent/70 focus-visible:ring-2 focus-visible:ring-ring group-data-[state=expanded]/sidebar:justify-start group-data-[state=expanded]/sidebar:p-3 xl:group-data-[state=auto]/sidebar:justify-start xl:group-data-[state=auto]/sidebar:p-3"
         >
-          <Avatar className="h-9 w-9 border border-brand/15 bg-pastel-blue">
-            <AvatarFallback className="bg-pastel-blue text-xs font-semibold text-brand">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-pastel-peach text-sm font-semibold text-brand">
               {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
-          {showIdentity && (
-            <span className="hidden min-w-0 text-left lg:block">
-              <span className="block max-w-40 truncate text-sm font-semibold text-foreground">
-                {user.name}
-              </span>
-              <span className="block max-w-40 truncate text-xs font-normal text-muted-foreground">
-                {user.email}
-              </span>
+          <span className={cn('min-w-0 flex-1', SHOW_WHEN_EXPANDED)}>
+            <span className="block truncate text-sm font-semibold text-foreground">
+              {user.name}
             </span>
-          )}
+            <span className="block truncate text-xs text-muted-foreground">{user.email}</span>
+          </span>
+        </button>
+      </DropdownMenuTrigger>
+      <UserMenuContent name={user.name} email={user.email} side="right" align="start" />
+    </DropdownMenu>
+  );
+};
+
+/** Compact avatar menu used in the mobile header. */
+const UserMenu = () => {
+  const { user } = useAuth();
+
+  if (!user) return null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button data-testid="user-menu" variant="ghost" className="h-auto rounded-xl p-1.5">
+          <Avatar className="h-9 w-9 bg-pastel-peach">
+            <AvatarFallback className="bg-pastel-peach text-xs font-semibold text-brand">
+              {getInitials(user.name)}
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center">
-            <User className="mr-2 h-4 w-4" />
-            Profile and settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={() => logout()} disabled={isLoggingOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          {isLoggingOut ? 'Logging out…' : 'Log out'}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+      <UserMenuContent name={user.name} email={user.email} align="end" />
     </DropdownMenu>
   );
 };

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { creditCardApi } from '@/domains/credit-cards/api/credit-cards.api';
-import { I_CreditCardInvoiceResponse } from '@/domains/credit-cards/types/types-and-interfaces';
+import type { I_CreditCardInvoiceResponse } from '@/domains/credit-cards/types/types-and-interfaces';
 import { useState } from 'react';
+import { GET_CREDIT_CARD_INVOICES_QUERY_KEY } from '@/domains/credit-cards/api/keys';
 import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 
 export const CREDIT_CARD_KEYS = {
@@ -52,6 +53,9 @@ export const useParseCreditCardInvoice = (creditCardId: string, accountId?: stri
       // Store in React Query cache
       queryClient.setQueryData(CREDIT_CARD_KEYS.uploadedInvoice(creditCardId), data);
 
+      void queryClient.invalidateQueries({
+        queryKey: GET_CREDIT_CARD_INVOICES_QUERY_KEY(creditCardId),
+      });
       // Update statements list query
       void queryClient.invalidateQueries({
         queryKey: CREDIT_CARD_KEYS.statements(),

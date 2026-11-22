@@ -23,3 +23,5 @@ export * from './react-aria-select';
 export * from './react-aria-select-demo';
 export * from './tremor-charts';
 export * from './calculator';
+export * from './money-value';
+export * from './stat-tile';

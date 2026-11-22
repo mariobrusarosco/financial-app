@@ -12,6 +12,8 @@ import {
   CommandList,
 } from '@/domains/ui-system/components/command';
 import { cn } from '@/domains/ui-system/utils';
+import { TagBadge } from '@/domains/tags/components/tag-badge';
+import { TagChip } from '@/domains/tags/components/tag-chip';
 import { useTagSearch } from '@/domains/tags/hooks/use-tag-search';
 import { useTags } from '@/domains/tags/hooks/use-tags';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
@@ -90,23 +92,16 @@ export const TagPicker = ({
     <Command shouldFilter={false} loop className={cn('rounded-lg', className)}>
       <div className="flex flex-wrap items-center gap-1.5 border-b bg-muted/40 px-2.5 py-2">
         {selectedTags.map(tag => (
-          <span
-            key={tag.id}
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full bg-brand/10 py-0.5 pl-2 pr-1 text-xs font-medium text-brand',
-              !tag.is_active && 'bg-muted text-muted-foreground'
-            )}
-          >
-            {tag.name}
+          <TagChip key={tag.id} tag={tag} className="pr-1">
             <button
               type="button"
               onClick={() => onValueChange(value.filter(tagId => tagId !== tag.id))}
               aria-label={`Remove ${tag.name}`}
-              className="rounded-full p-0.5 hover:bg-brand/15"
+              className="rounded-full p-0.5 hover:bg-foreground/10"
             >
               <X className="h-3 w-3" />
             </button>
-          </span>
+          </TagChip>
         ))}
         <CommandPrimitive.Input
           value={search}
@@ -149,6 +144,7 @@ export const TagPicker = ({
                   data-checked={isSelected}
                 >
                   <Check className={cn('h-4 w-4 text-brand', !isSelected && 'invisible')} />
+                  <TagBadge tag={tag} className="h-5 w-5" />
                   {tag.name}
                 </CommandItem>
               );

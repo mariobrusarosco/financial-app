@@ -20,6 +20,7 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
     per_page: 100,
     sort_by: 'date',
     sort_order: 'desc',
+    date_basis: 'competence',
   });
 
   const mergedParams = useMemo(
@@ -87,6 +88,8 @@ export const CreditCardTransactionsList = ({ creditCardId }: CreditCardTransacti
           </CardTitle>
           <CardDescription>
             {meta ? `${meta.total} transactions found` : 'Recent transactions on this credit card'}
+            {' · '}
+            {mergedParams.date_basis === 'transaction' ? 'Purchase dates' : 'Competência'}
             {isPlaceholderData && (
               <span className="text-xs text-muted-foreground ml-2">(Loading new data...)</span>
             )}

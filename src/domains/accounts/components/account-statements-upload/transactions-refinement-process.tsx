@@ -101,7 +101,7 @@ export const TransactionsRefinementProcess = ({
             onClick={handleSaveAllTransactions}
             disabled={isSavingTransactions || editableTransactions.length === 0}
             size="sm"
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-positive text-white hover:bg-positive/90"
           >
             {isSavingTransactions ? 'Saving...' : 'Save Transactions'}
           </Button>

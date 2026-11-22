@@ -75,6 +75,28 @@ export default [
       // TypeScript
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn', // Discourage 'any' but don't block
+
+      // Bundle size: each of these pulls every Lucide icon (~1,650) into the bundle
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'lucide-react',
+              importNames: ['icons'],
+              message: 'Import each icon by name, e.g. `import { Plus } from "lucide-react"`.',
+            },
+            {
+              name: 'lucide-react/dynamic',
+              message: 'Import each icon by name instead of loading icons at runtime.',
+            },
+            {
+              name: 'lucide-react/dynamicIconImports',
+              message: 'Import each icon by name instead of loading icons at runtime.',
+            },
+          ],
+        },
+      ],
     },
     settings: {
       react: {

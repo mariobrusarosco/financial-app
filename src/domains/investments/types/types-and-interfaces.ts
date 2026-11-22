@@ -108,6 +108,12 @@ export interface I_InvestmentPerformance {
   growth_percentage: number;
 }
 
+// All Investments Params: with both dates, the figures cover only that range
+export interface I_InvestmentsParams {
+  date_from?: string;
+  date_to?: string;
+}
+
 // All Investments Response
 export interface I_InvestmentsResponse {
   data: I_InvestmentPortfolio[];

@@ -3,6 +3,7 @@ import { ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/domains/ui-system/components/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/domains/ui-system/components/popover';
 import { cn } from '@/domains/ui-system/utils';
+import { TagChip } from '@/domains/tags/components/tag-chip';
 import { TagPicker } from '@/domains/tags/components/tag-picker';
 import { useTags } from '@/domains/tags/hooks/use-tags';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
@@ -49,16 +50,9 @@ export const TagSelector = ({
           <span className="flex min-w-0 flex-1 flex-wrap gap-1.5">
             {selectedTags.length > 0 ? (
               selectedTags.map(tag => (
-                <span
-                  key={tag.id}
-                  className={cn(
-                    'inline-flex items-center rounded-full bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand',
-                    !tag.is_active && 'bg-muted text-muted-foreground'
-                  )}
-                >
-                  {tag.name}
-                  {!tag.is_active && ' (inactive)'}
-                </span>
+                <TagChip key={tag.id} tag={tag}>
+                  {!tag.is_active && '(inactive)'}
+                </TagChip>
               ))
             ) : (
               <span className="text-muted-foreground">{placeholder}</span>

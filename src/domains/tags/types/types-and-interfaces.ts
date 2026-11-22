@@ -4,6 +4,10 @@ export interface I_Tag {
   name: string;
   display_order: number;
   is_active: boolean;
+  // Keys into TAG_ICON_GROUPS and TAG_COLORS (utils/tag-appearance.ts)
+  icon: string | null;
+  bg_color: string | null;
+  icon_color: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -21,9 +25,16 @@ export interface I_TagsSearchParams {
 export interface I_CreateTagRequest {
   name: string;
   display_order?: number;
+  icon?: string | null;
+  bg_color?: string | null;
+  icon_color?: string | null;
 }
 
 export interface I_UpdateTagRequest {
   name?: string;
   display_order?: number;
+  // null clears the icon or color
+  icon?: string | null;
+  bg_color?: string | null;
+  icon_color?: string | null;
 }

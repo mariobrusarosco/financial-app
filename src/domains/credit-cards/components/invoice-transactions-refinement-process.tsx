@@ -1,3 +1,6 @@
+import { Input } from '@/domains/ui-system/components/input';
+import { Label } from '@/domains/ui-system/components/label';
+import { handleErrorWithToast } from '@/domains/global/utils/error-handler';
 import { Button } from '@/domains/ui-system/components/button';
 import { Card } from '@/domains/ui-system/components/card';
 import { TransactionRow } from '@/domains/transactions/components/transaction/transaction-row';
@@ -14,6 +17,11 @@ export const InvoiceTransactionsRefinementProcess = ({
   invoice,
 }: InvoiceTransactionsRefinementProcessProps) => {
   const {
+    selectedNet,
+    competenceMonth,
+    setCompetenceMonth,
+    saveCompetence,
+    isSavingCompetence,
     editableTransactions,
     selectedTransactions,
     toggleTransaction,
@@ -32,26 +40,35 @@ export const InvoiceTransactionsRefinementProcess = ({
   const { mutate: createBulkTransactions, isPending: isSavingTransactions } =
     useCreateBulkTransactions();
 
-  const handleSaveAllTransactions = () => {
+  const handleSaveAllTransactions = async () => {
     // Convert to bulk transaction format
     const transactionForms: I_CreateTransactionForm[] = editableTransactions
       .map(transaction => ({
-        id: transaction.id,
         description: transaction.description,
         amount: parseFloat(transaction.amount),
         date: transaction.date,
-        account_id: transaction.account_id,
+        account_id: transaction.account_id ?? undefined,
         credit_card_id: transaction.credit_card_id,
         broker_id: transaction.broker_id,
         is_paid: transaction.is_paid,
         ignored: transaction.ignored ?? false,
-        type: transaction.movement_type,
-        is_deleted: transaction.is_deleted,
+        movement_type: transaction.movement_type,
+        tag_ids: transaction.tag_ids ?? [],
+        invoice_id: invoice.id,
+        invoice_row: transaction.invoice_row,
+        competence_month: `${competenceMonth}-01`,
       }))
-      .filter(transaction => !ignoredTransactions.has(transaction.id));
+      .filter((_, index) => !ignoredTransactions.has(editableTransactions[index].id));
 
     console.log('💾 Saving credit card transactions:', transactionForms);
-    createBulkTransactions(transactionForms);
+    try {
+      await saveCompetence();
+      createBulkTransactions(transactionForms);
+    } catch (error) {
+      handleErrorWithToast(error, {
+        userMessage: 'Could not save the invoice reporting month. No transactions were saved.',
+      });
+    }
   };
 
   const handleTransactionIgnored = (transactionId: string) => {
@@ -82,15 +99,38 @@ export const InvoiceTransactionsRefinementProcess = ({
 
           <Button
             onClick={handleSaveAllTransactions}
-            disabled={isSavingTransactions || editableTransactions.length === 0}
+            disabled={
+              isSavingTransactions ||
+              isSavingCompetence ||
+              !competenceMonth ||
+              editableTransactions.length === 0
+            }
             size="sm"
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-positive text-white hover:bg-positive/90"
           >
-            {isSavingTransactions ? 'Saving...' : 'Save Transactions'}
+            {isSavingTransactions || isSavingCompetence ? 'Saving...' : 'Save Transactions'}
           </Button>
         </div>
       </div>
 
+      <div className="mb-5 space-y-2">
+        <Label htmlFor="invoice-competence">Competência</Label>
+        <Input
+          id="invoice-competence"
+          type="month"
+          value={competenceMonth}
+          onChange={event => setCompetenceMonth(event.target.value)}
+        />
+        <p className="text-sm text-muted-foreground">
+          The reporting month defaults to the invoice due month. Purchase dates stay unchanged.
+        </p>
+
+      </div>
+      <p className="mb-3 text-sm text-muted-foreground">
+        Selected net:{' '}
+        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(selectedNet)}
+        {ignoredTransactions.size > 0 && ` · ${ignoredTransactions.size} entries excluded`}
+      </p>
       <ul className="space-y-3">
         {editableTransactions.map(transaction => {
           const isIgnored = ignoredTransactions.has(transaction.id);

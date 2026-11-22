@@ -6,7 +6,7 @@ import { cashflowApi } from '@/domains/cashflow/api/cashflow.api';
 describe('cashflowApi.getSummary', () => {
   it('requests an account summary for the selected range and normalizes decimal strings', async () => {
     server.use(
-      http.get('*/analytics/cashflow', ({ request }) => {
+      http.get('*/cashflow', ({ request }) => {
         const url = new URL(request.url);
 
         expect(url.searchParams.get('account_id')).toBe('account-1');
@@ -18,6 +18,7 @@ describe('cashflowApi.getSummary', () => {
           total_expenses: '775.25',
           net_cashflow: '475.25',
           savings_rate: 38,
+          card_spending: '320.10',
           monthly_data: [
             {
               month: '2026-10',
@@ -42,6 +43,7 @@ describe('cashflowApi.getSummary', () => {
       total_expenses: 775.25,
       net_cashflow: 475.25,
       savings_rate: 38,
+      card_spending: 320.1,
       monthly_data: [
         {
           month: '2026-10',
