@@ -61,10 +61,10 @@ describe('CreateAccount', () => {
     const brokerTrigger = screen.getByTestId('account-broker-select');
     expect(brokerTrigger).toBeInTheDocument();
 
-    // Open select to verify options
+    // Open select to verify options. By role, because the select also renders a hidden native option with the same text
     await userEvent.click(brokerTrigger);
-    expect(await screen.findByText('Test Broker')).toBeInTheDocument();
-    expect(await screen.findByText('Another Broker')).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: 'Test Broker' })).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: 'Another Broker' })).toBeInTheDocument();
   });
 
   it('validates required fields', async () => {
@@ -72,14 +72,15 @@ describe('CreateAccount', () => {
 
     renderWithSubmitButton();
 
-    await waitFor(() => expect(screen.queryByText('Loading...')).not.toBeInTheDocument());
+    // The form only renders once the brokers have loaded
+    await screen.findByTestId('account-create-form');
 
     // Click submit without filling anything
-    await userEvent.click(screen.getByText('External Submit'));
+    // fireEvent, because userEvent doesn't submit through a button's form attribute (as in the drawer footer)
+    fireEvent.click(screen.getByText('External Submit'));
 
-    // Check for validation errors
+    // Currency starts as BRL, so the name is the only required field left empty
     expect(await screen.findByText(/account name is required/i)).toBeInTheDocument();
-    expect(await screen.findByText(/currency is required/i)).toBeInTheDocument();
   });
 
   it('submits valid form data and redirects', async () => {
@@ -92,21 +93,23 @@ describe('CreateAccount', () => {
 
     const { router } = renderWithSubmitButton();
 
-    await waitFor(() => expect(screen.queryByText('Loading...')).not.toBeInTheDocument());
+    // The form only renders once the brokers have loaded
+    await screen.findByTestId('account-create-form');
 
     // Fill form
     await userEvent.type(screen.getByTestId('account-name-input'), 'My New Savings');
 
     // Select Broker
     await userEvent.click(screen.getByTestId('account-broker-select'));
-    await userEvent.click(await screen.findByText('Test Broker'));
+    await userEvent.click(await screen.findByRole('option', { name: 'Test Broker' }));
 
     // Select Currency
     await userEvent.click(screen.getByTestId('account-currency-select'));
-    await userEvent.click(await screen.findByText('USD'));
+    await userEvent.click(await screen.findByRole('option', { name: 'USD' }));
 
     // Click Submit
-    await userEvent.click(screen.getByText('External Submit'));
+    // fireEvent, because userEvent doesn't submit through a button's form attribute (as in the drawer footer)
+    fireEvent.click(screen.getByText('External Submit'));
 
     // Assert Toast
     await waitFor(() => {
