@@ -20,15 +20,18 @@ export const useCreateBulkTransactions = () => {
       const { total_submitted, total_successful, total_failed, success_rate } = response;
 
       if (total_failed === 0) {
-        toast.success(`Successfully created ${total_successful} transactions!`);
+        toast.success(`Successfully created ${total_successful} transactions saved!`);
       } else if (total_successful > 0) {
         toast.warning(
-          `${total_successful} transactions created, ${total_failed} failed (${success_rate.toFixed(1)}% success rate)`
+          `${total_successful} transactions saved, ${total_failed} failed (${success_rate.toFixed(1)}% success rate)`
         );
       } else {
         toast.error(`Failed to create all ${total_submitted} transactions`);
       }
 
+      void queryClient.invalidateQueries({ queryKey: ['credit-card-transactions'] });
+      void queryClient.invalidateQueries({ queryKey: ['credit-card-transactions-infinite'] });
+      void queryClient.invalidateQueries({ queryKey: ['cashflow-summary'] });
       // Partial key invalidation for all affected accounts
       if (total_successful > 0) {
         const affectedAccountIds = new Set(

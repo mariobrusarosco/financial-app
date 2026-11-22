@@ -6,3 +6,4 @@ export * from './edit-subscription-drawer';
 export * from './subscription-item';
 export * from './subscriptions-summary';
 export * from './subscriptions-chart';
+export * from './subscriptions-calendar';

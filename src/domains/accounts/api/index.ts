@@ -2,6 +2,7 @@ import { apiClient } from '@/config/api';
 import type {
   I_Account,
   I_AccountsParams,
+  I_AccountUpdatePayload,
   I_CreateAccountForm,
   I_BalancePoint,
 } from '@/domains/accounts/types/types-and-interfaces';
@@ -99,6 +100,11 @@ const getAccount = async (id: string): Promise<I_Account> => {
   }
 };
 
+const updateAccount = async (id: string, payload: I_AccountUpdatePayload): Promise<I_Account> => {
+  const response = await apiClient.patch<I_Account>(ACCOUNTS_ENDPOINTS.UPDATE(id), payload);
+  return response.data;
+};
+
 const deleteAccount = async (id: string): Promise<void> => {
   try {
     await apiClient.delete<void>(ACCOUNTS_ENDPOINTS.DELETE(id));
@@ -192,6 +198,7 @@ export const accountsApi = {
   getAllAccounts,
   getAllActiveAccounts,
   createAccount,
+  updateAccount,
   deleteAccount,
   getAccount,
   parseAccountStatement,

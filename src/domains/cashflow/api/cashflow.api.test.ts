@@ -18,6 +18,7 @@ describe('cashflowApi.getSummary', () => {
           total_expenses: '775.25',
           net_cashflow: '475.25',
           savings_rate: 38,
+          card_spending: '320.10',
           monthly_data: [
             {
               month: '2026-10',
@@ -42,6 +43,7 @@ describe('cashflowApi.getSummary', () => {
       total_expenses: 775.25,
       net_cashflow: 475.25,
       savings_rate: 38,
+      card_spending: 320.1,
       monthly_data: [
         {
           month: '2026-10',

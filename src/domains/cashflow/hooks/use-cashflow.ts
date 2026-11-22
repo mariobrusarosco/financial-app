@@ -24,5 +24,6 @@ const resolveCashflowFilters = (filters?: I_CashflowFilter): I_CashflowFilter =>
     date_from: filters?.date_from ?? format(startOfMonth(today), 'yyyy-MM-dd'),
     date_to: filters?.date_to ?? format(endOfMonth(today), 'yyyy-MM-dd'),
     account_id: filters?.account_id,
+    card_date_basis: filters?.card_date_basis,
   };
 };

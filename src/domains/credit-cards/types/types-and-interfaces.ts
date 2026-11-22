@@ -7,7 +7,7 @@ export interface I_CreditCard {
   broker_id: string;
   credit_limit: number;
   name: string;
-  due_date: number; // Day of month (1-31)
+  due_day: number | null; // Day of month (1-31)
   last_four_digits: string;
   is_active: boolean;
   is_deleted: boolean;
@@ -19,7 +19,17 @@ export interface I_CreateCreditCardRequest {
   last_four_digits: string;
   brand: T_CreditCardBrand;
   credit_limit: number | null;
-  due_date: number;
+  due_day: number;
+}
+
+// PATCH /credit_cards/:id: only the fields sent are changed
+export interface I_CreditCardUpdatePayload {
+  name?: string;
+  brand?: T_CreditCardBrand;
+  last_four_digits?: string;
+  credit_limit?: number;
+  due_day?: number | null;
+  is_active?: boolean;
 }
 
 export interface I_CreateCreditCardResponse {
@@ -48,11 +58,19 @@ export interface I_CreditCardRawInvoice {
   installment_options: I_CreditCardInstallmentOption[];
   transactions: I_TransactionResponse[];
   next_due_info?: I_CreditCardNextDueInfo;
+  import_audit?: {
+    page_count: number;
+    processed_pages: number[];
+    transaction_count: number;
+    calculated_total: string;
+    status: string;
+  };
 }
 
 export interface I_CreditCardInvoiceRequest {
   credit_card_id: string;
   raw_invoice: I_CreditCardRawInvoice;
+  competence_month?: string | null;
 }
 
 export interface I_CreditCardInvoice {
@@ -60,6 +78,7 @@ export interface I_CreditCardInvoice {
   credit_card_id: string;
   broker_id: string;
   raw_invoice: I_CreditCardRawInvoice;
+  competence_month?: string | null;
   is_deleted: boolean;
   is_paid: boolean;
   user_id: string;
@@ -79,6 +98,7 @@ export interface I_CreditCardInvoicesResponse {
 }
 
 export interface I_CreditCardInvoiceResponse {
+  competence_month?: string | null;
   id: string;
   credit_card_id: string;
   account_id: string;
@@ -90,6 +110,13 @@ export interface I_CreditCardInvoiceResponse {
   installment_options: I_CreditCardInstallmentOption[];
   transactions: I_TransactionResponse[];
   next_due_info?: I_CreditCardNextDueInfo;
+  import_audit?: {
+    page_count: number;
+    processed_pages: number[];
+    transaction_count: number;
+    calculated_total: string;
+    status: string;
+  };
   is_paid: boolean;
   is_deleted: boolean;
   created_at: string;
@@ -102,6 +129,13 @@ export interface I_CreditCardInvoiceResponse {
     installment_options: I_CreditCardInstallmentOption[];
     transactions: I_TransactionResponse[];
     next_due_info?: I_CreditCardNextDueInfo;
+    import_audit?: {
+      page_count: number;
+      processed_pages: number[];
+      transaction_count: number;
+      calculated_total: string;
+      status: string;
+    };
   };
 }
 
@@ -123,6 +157,8 @@ export interface I_CreditCardTransactionsParams {
   per_page?: number;
 
   // Date filtering
+  date_basis?: 'transaction' | 'competence';
+  invoice_id?: string;
   date_from?: string;
   date_to?: string;
 

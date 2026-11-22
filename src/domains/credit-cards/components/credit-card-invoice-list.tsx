@@ -1,3 +1,5 @@
+import { Input } from '@/domains/ui-system/components/input';
+import { Label } from '@/domains/ui-system/components/label';
 import { CalendarClock, FileText, Receipt } from 'lucide-react';
 import { Currency } from '@/domains/ui-system/components/currency';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
@@ -25,7 +27,10 @@ const STATUS_STYLES: Record<T_InvoiceStatus, { label: string; className: string 
 };
 
 const CreditCardInvoiceList = ({ creditCardId, currency }: CreditCardInvoiceListProps) => {
-  const { data: invoices, isLoading, isError } = useCreditCardInvoices(creditCardId);
+  const {
+    query: { data: invoices, isLoading, isError },
+    actions,
+  } = useCreditCardInvoices(creditCardId);
   const sortedInvoices = invoices ? sortInvoicesByDueDate(invoices) : [];
 
   return (
@@ -62,7 +67,13 @@ const CreditCardInvoiceList = ({ creditCardId, currency }: CreditCardInvoiceList
       ) : (
         <ul className="space-y-3">
           {sortedInvoices.map(invoice => (
-            <InvoiceItem key={invoice.id} invoice={invoice} currency={currency} />
+            <InvoiceItem
+              key={invoice.id}
+              invoice={invoice}
+              currency={currency}
+              onCompetenceChange={actions.updateCompetence}
+              isUpdating={actions.isUpdating}
+            />
           ))}
         </ul>
       )}
@@ -73,9 +84,13 @@ const CreditCardInvoiceList = ({ creditCardId, currency }: CreditCardInvoiceList
 const InvoiceItem = ({
   invoice,
   currency,
+  onCompetenceChange,
+  isUpdating,
 }: {
   invoice: I_CreditCardInvoice;
   currency?: string;
+  onCompetenceChange: (values: { invoiceId: string; month: string }) => void;
+  isUpdating: boolean;
 }) => {
   const status = STATUS_STYLES[getInvoiceStatus(invoice)];
   const transactionsCount = invoice.raw_invoice.transactions?.length ?? 0;
@@ -120,6 +135,19 @@ const InvoiceItem = ({
         </div>
       </div>
 
+      <div className="mt-3 space-y-1">
+        <Label htmlFor={`competence-${invoice.id}`}>Competência</Label>
+        <Input
+          id={`competence-${invoice.id}`}
+          type="month"
+          value={(invoice.competence_month ?? invoice.raw_invoice.due_date).slice(0, 7)}
+          disabled={isUpdating}
+          onChange={event => {
+            if (event.target.value)
+              onCompetenceChange({ invoiceId: invoice.id, month: event.target.value });
+          }}
+        />
+      </div>
       {transactionsCount > 0 && (
         <p className="mt-3 flex items-center gap-1.5 border-t border-border/60 pt-3 text-xs text-muted-foreground">
           <Receipt className="h-3 w-3" />

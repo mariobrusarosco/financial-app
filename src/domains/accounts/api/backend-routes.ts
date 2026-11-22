@@ -2,6 +2,7 @@ export const ACCOUNTS_ENDPOINTS = {
   LIST: '/accounts',
   LIST_ACTIVE: '/accounts/active',
   DETAIL: (id: string) => `/accounts/${id}`,
+  UPDATE: (id: string) => `/accounts/${id}`,
   DELETE: (id: string) => `/accounts/${id}`,
   UPDATE_BALANCE: (id: string) => `/accounts/${id}/update-balance`,
   PARSE_STATEMENTS: (accountId: string) => `/accounts/${accountId}/statements/parse-pdf`,

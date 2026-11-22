@@ -3,7 +3,10 @@ import { format, parseISO } from 'date-fns';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import { useEffect, useMemo, useState } from 'react';
-import type { I_CreateTransactionForm, I_TransactionPayload } from '../types/types-and-interfaces';
+import type {
+  I_CreateTransactionForm,
+  I_TransactionPayload,
+} from '@/domains/transactions/types/types-and-interfaces';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useVendors } from '@/domains/vendors/hooks';
@@ -17,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/domains/ui-system/components/select';
-import { TransactionDatePicker } from './transaction-date-picker';
+import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import { TagSelector } from '@/domains/tags/components/tag-selector';
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
@@ -51,6 +54,7 @@ const transactionSchema = z
       z.number({ message: 'Amount is required' }).refine(val => val !== 0, 'Amount must not be 0')
     ),
     date: z.string().min(1, 'Date is required'),
+    competence_month: z.string().optional(),
     movement_type: z.enum(['expense', 'income', 'investment', 'transfer'] as const),
     tag_ids: z.array(z.string()).max(20, 'A transaction can have at most 20 tags'),
     account_id: z.string().optional(),
@@ -127,6 +131,7 @@ export const TransactionForm = ({
       amount: initialValues?.amount ? String(initialValues.amount).replace('.', ',') : '',
       // Local calendar day: toISOString() would give the UTC day, which is tomorrow late in the evening west of UTC
       date: initialValues?.date || format(new Date(), 'yyyy-MM-dd'),
+      competence_month: initialValues?.competence_month?.slice(0, 7) || '',
       movement_type: initialValues?.movement_type || 'expense',
       tag_ids: initialValues?.tag_ids ?? [],
       account_id: paymentMethodDefaults.account_id,
@@ -136,7 +141,7 @@ export const TransactionForm = ({
       is_paid: initialValues?.is_paid ?? true,
       ignored: initialValues?.ignored ?? false,
     },
-    onSubmit: ({ value }) => {
+    onSubmit: ({ value }: { value: any }) => {
       const paymentMethod = getSubmissionPaymentMethod(value);
       const parsedAmount =
         typeof value.amount === 'string'
@@ -147,6 +152,7 @@ export const TransactionForm = ({
         description: value.description,
         amount: parsedAmount,
         date: value.date,
+        competence_month: value.competence_month ? `${value.competence_month}-01` : undefined,
         movement_type: value.movement_type,
         tag_ids: value.tag_ids,
         account_id: paymentMethod.account_id,
@@ -238,6 +244,23 @@ export const TransactionForm = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
           <AmountField form={form} autoFocus={autoFocus} />
           <DateField form={form} />
+          <form.Field name="competence_month">
+            {(field: any) => (
+              <div className="space-y-2">
+                <Label htmlFor="transaction-competence">Competência</Label>
+                <Input
+                  id="transaction-competence"
+                  type="month"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={event => field.handleChange(event.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Choose the reporting month independently of the transaction date.
+                </p>
+              </div>
+            )}
+          </form.Field>
         </div>
         <DescriptionField form={form} />
       </div>

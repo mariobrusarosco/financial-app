@@ -7,6 +7,7 @@ export interface I_MonthlyCashflow {
 }
 
 export interface I_CashflowFilter {
+  card_date_basis?: 'transaction' | 'competence';
   date_from?: string;
   date_to?: string;
   account_id?: string;
@@ -17,6 +18,8 @@ export interface I_CashflowSummary {
   total_expenses: number;
   net_cashflow: number;
   savings_rate: number;
+  // Only for one account: spending on its cards, not part of the totals
+  card_spending?: number | null;
   monthly_data: I_MonthlyCashflow[];
 }
 

@@ -26,6 +26,11 @@ const CreateCreditCardDrawer = lazy(() =>
     default: module.CreateCreditCardDrawer,
   }))
 );
+const EditCreditCardDrawer = lazy(() =>
+  import('@/domains/credit-cards/components/edit-credit-card-drawer').then(module => ({
+    default: module.EditCreditCardDrawer,
+  }))
+);
 const CreateInvestmentDrawer = lazy(() =>
   import('@/domains/investments/components/create-investment-drawer').then(module => ({
     default: module.CreateInvestmentDrawer,
@@ -92,6 +97,7 @@ interface GlobalDrawerProps {
     | 'transaction-create'
     | 'transaction-edit'
     | 'credit-card-create'
+    | 'credit-card-edit'
     | 'investment-create'
     | 'investment-data-create'
     | 'vendor-create'
@@ -112,6 +118,7 @@ const SIDE_SHEET_WIDTHS: Record<GlobalDrawerProps['drawerType'], string> = {
   'account-create': FORM_WIDTH,
   'broker-create': FORM_WIDTH,
   'credit-card-create': FORM_WIDTH,
+  'credit-card-edit': FORM_WIDTH,
   'investment-create': FORM_WIDTH,
   'vendor-create': FORM_WIDTH,
   'vendor-edit': FORM_WIDTH,
@@ -137,6 +144,7 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
         delete newSearch.drawer;
         delete newSearch.transactionId;
         delete newSearch.vendorId;
+        delete newSearch.creditCardId;
         delete newSearch.subscriptionId;
         delete newSearch.planId;
         delete newSearch.installmentId;
@@ -158,6 +166,8 @@ export const GlobalDrawer = ({ drawerType }: GlobalDrawerProps) => {
     DrawerComponent = EditTransactionDrawer;
   } else if (drawerType === 'credit-card-create') {
     DrawerComponent = CreateCreditCardDrawer;
+  } else if (drawerType === 'credit-card-edit') {
+    DrawerComponent = EditCreditCardDrawer;
   } else if (drawerType === 'investment-create') {
     DrawerComponent = CreateInvestmentDrawer;
   } else if (drawerType === 'investment-data-create') {

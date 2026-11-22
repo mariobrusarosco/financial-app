@@ -1,12 +1,14 @@
 import type { I_Tag } from '@/domains/tags/types/types-and-interfaces';
 
-export type T_BillingCycle = 'daily' | 'weekly' | 'monthly' | 'annually';
+export type T_BillingCycle = 'weekly' | 'monthly' | 'quarterly' | 'yearly';
 
 export interface I_Subscription {
   id: string;
   user_id: string;
   vendor_id: string;
-  account_id: string;
+  // Paid from an account or a credit card, never both. Both are null on older subscriptions
+  account_id: string | null;
+  credit_card_id: string | null;
   name: string;
   amount: number;
   currency: string; // Stays here for consistency with other entities
@@ -24,7 +26,8 @@ export interface I_Subscription {
 
 export interface I_CreateSubscriptionRequest {
   vendor_id: string;
-  account_id: string;
+  account_id: string | null;
+  credit_card_id: string | null;
   name: string;
   amount: number;
   billing_cycle: T_BillingCycle;
@@ -37,7 +40,9 @@ export interface I_CreateSubscriptionRequest {
 
 export interface I_UpdateSubscriptionRequest {
   vendor_id?: string;
-  account_id?: string;
+  // Sending either one replaces the payment source; the one left out is cleared
+  account_id?: string | null;
+  credit_card_id?: string | null;
   name?: string;
   amount?: number;
   billing_cycle?: T_BillingCycle;

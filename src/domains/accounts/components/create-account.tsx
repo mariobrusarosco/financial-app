@@ -1,9 +1,10 @@
 import { useForm } from '@tanstack/react-form';
+import { format } from 'date-fns';
 import type {
   I_CreateAccountForm,
   T_AccountCurrency,
   T_AccountType,
-} from '../types/types-and-interfaces';
+} from '@/domains/accounts/types/types-and-interfaces';
 import useBrokers from '@/domains/broker/hooks/use-brokers';
 import { useCreateAccount } from '@/domains/accounts/hooks/use-create-account';
 import { Input } from '@/domains/ui-system/components/input';
@@ -26,10 +27,14 @@ const CreateAccount = () => {
       broker_id: '',
       type: 'savings',
       balance: 0,
+      opening_date: format(new Date(), 'yyyy-MM-dd'),
       currency: 'BRL',
     } as I_CreateAccountForm,
     onSubmit: ({ value }) => {
-      void createAccount(value);
+      void createAccount({
+        ...value,
+        opening_date: value.opening_date || format(new Date(), 'yyyy-MM-dd'),
+      });
     },
   });
 
@@ -107,60 +112,7 @@ const CreateAccount = () => {
               )}
             </form.Field>
 
-            {/* Column 3: Financial Details */}
-            <form.Field
-              name="balance"
-              validators={{
-                onChange: ({ value }) => (value < 0 ? 'Balance cannot be negative' : undefined),
-              }}
-            >
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
-                    Initial Balance:
-                  </label>
-                  <Input
-                    data-testid="account-balance-input"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
-                  )}
-                </div>
-              )}
-            </form.Field>
-          </div>
-
-          {/* Second Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Column 1: Description */}
-            <form.Field name="description">
-              {field => (
-                <div className="space-y-2">
-                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
-                    Description:
-                  </label>
-                  <Input
-                    data-testid="account-description-input"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value || ''}
-                    onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.value)}
-                    placeholder="Enter description (optional)"
-                  />
-                </div>
-              )}
-            </form.Field>
-
-            {/* Column 2: Broker */}
+            {/* Column 3: Broker */}
             <form.Field name="broker_id">
               {field => (
                 <div className="space-y-2">
@@ -182,6 +134,68 @@ const CreateAccount = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              )}
+            </form.Field>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <form.Field name="opening_date">
+              {field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
+                    Opening Date (optional):
+                  </label>
+                  <Input
+                    data-testid="account-opening-date-input"
+                    id={field.name}
+                    name={field.name}
+                    type="date"
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.value)}
+                    aria-describedby="account-opening-date-description"
+                  />
+                  <p
+                    id="account-opening-date-description"
+                    className="text-sm text-muted-foreground"
+                  >
+                    Defaults to today. Choose an earlier date to add account history.
+                  </p>
+                </div>
+              )}
+            </form.Field>
+
+            {/* Initial Balance */}
+            <form.Field
+              name="balance"
+              validators={{
+                onChange: ({ value }) => (value < 0 ? 'Balance cannot be negative' : undefined),
+              }}
+            >
+              {field => (
+                <div className="space-y-2">
+                  <label htmlFor={field.name} className="text-sm font-medium text-primary">
+                    Initial Balance:
+                  </label>
+                  <Input
+                    data-testid="account-balance-input"
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={e => field.handleChange(e.target.valueAsNumber || 0)}
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    aria-describedby="account-balance-description"
+                  />
+                  <p id="account-balance-description" className="text-sm text-muted-foreground">
+                    Balance on the opening date.
+                  </p>
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-sm text-destructive">{field.state.meta.errors.join(', ')}</p>
+                  )}
                 </div>
               )}
             </form.Field>
@@ -217,6 +231,25 @@ const CreateAccount = () => {
               )}
             </form.Field>
           </div>
+
+          <form.Field name="description">
+            {field => (
+              <div className="space-y-2">
+                <label htmlFor={field.name} className="text-sm font-medium text-primary">
+                  Description:
+                </label>
+                <Input
+                  data-testid="account-description-input"
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={e => field.handleChange(e.target.value)}
+                  placeholder="Enter description (optional)"
+                />
+              </div>
+            )}
+          </form.Field>
         </form>
       </div>
     </div>

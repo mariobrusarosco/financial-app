@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ArrowDownRight, ArrowUpRight, Equal, RefreshCw } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY } from '@/domains/accounts/api/keys';
 import { AccountBalancePoints } from '@/domains/accounts/components/account-balance-points';
 import { useAccount } from '@/domains/accounts/hooks/use-account';
@@ -26,6 +26,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
     error: cashflowError,
   } = useCashflow({
     account_id: slug,
+    card_date_basis: 'competence',
     date_from: from,
     date_to: to,
   });
@@ -35,6 +36,11 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
       queryKey: GET_ACCOUNT_BALANCE_POINTS_TIMELINE_QUERY_KEY(slug, from ?? '', to ?? ''),
     });
   };
+
+  // The invoice payment is ignored on the account, so its cards' purchases
+  // are this account's spending too.
+  const accountExpenses = cashflowSummary?.total_expenses ?? 0;
+  const cardExpenses = cashflowSummary?.card_spending ?? 0;
 
   const balancePoint = useMemo(() => {
     return balancePoints?.at(-1);
@@ -104,20 +110,31 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
               />
               <SummaryValue
                 label="Expenses"
-                value={cashflowSummary?.total_expenses ?? 0}
+                value={accountExpenses + cardExpenses}
                 currency={account?.currency}
                 icon={ArrowDownRight}
                 color="negative"
               />
-              <SummaryValue
-                label="Difference"
-                value={cashflowSummary?.net_cashflow ?? 0}
-                currency={account?.currency}
-                icon={Equal}
-                showSign
-              />
             </dl>
           )}
+
+          {!isLoadingCashflow && !cashflowError && cardExpenses > 0 ? (
+            <dl
+              className="mt-3 ml-2 space-y-2 border-l border-border/70 pl-4"
+              data-ui="account-period-summary-expenses-breakdown"
+            >
+              <BreakdownValue
+                label="Account"
+                value={accountExpenses}
+                currency={account?.currency}
+              />
+              <BreakdownValue
+                label="Cards (net, competência)"
+                value={cardExpenses}
+                currency={account?.currency}
+              />
+            </dl>
+          ) : null}
         </div>
 
         <div className="min-h-64 rounded-2xl border border-border/80 bg-card p-4 shadow-[var(--shadow-panel)] lg:col-span-2 xl:col-span-1">
@@ -132,14 +149,7 @@ const AccountOverview = ({ slug }: AccountOverviewProps) => {
   );
 };
 
-const SummaryValue = ({
-  label,
-  value,
-  currency,
-  icon: Icon,
-  color,
-  showSign = false,
-}: SummaryValueProps) => (
+const SummaryValue = ({ label, value, currency, icon: Icon, color }: SummaryValueProps) => (
   <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
     <dt className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
       <Icon className="h-4 w-4" />
@@ -150,8 +160,20 @@ const SummaryValue = ({
         value={value}
         currency={currency}
         color={color}
-        showSign={showSign}
         className="financial-value text-sm"
+      />
+    </dd>
+  </div>
+);
+
+const BreakdownValue = ({ label, value, currency }: BreakdownValueProps) => (
+  <div className="flex items-center justify-between gap-3">
+    <dt className="text-xs text-muted-foreground">{label}</dt>
+    <dd>
+      <Currency
+        value={value}
+        currency={currency}
+        className="financial-value text-xs text-muted-foreground"
       />
     </dd>
   </div>
@@ -169,5 +191,10 @@ interface SummaryValueProps {
   currency?: string;
   icon: typeof ArrowUpRight;
   color?: 'positive' | 'negative';
-  showSign?: boolean;
+}
+
+interface BreakdownValueProps {
+  label: string;
+  value: number;
+  currency?: string;
 }

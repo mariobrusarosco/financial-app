@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router';
-import { CreditCard, Plus, WalletCards } from 'lucide-react';
+import { CreditCard, Pencil, Plus } from 'lucide-react';
 import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 import { formatCurrencyAmount } from '@/domains/global/utils/formatting';
 import { Button } from '@/domains/ui-system/components/button';
 import { Skeleton } from '@/domains/ui-system/components/skeleton';
+import { cn } from '@/domains/ui-system/utils';
 
 interface AccountCreditCardsScreenProps {
   params: {
@@ -13,7 +14,7 @@ interface AccountCreditCardsScreenProps {
 }
 
 export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenProps) => {
-  const { openCreditCardCreate } = useGlobalUIState();
+  const { openCreditCardCreate, openCreditCardEdit } = useGlobalUIState();
   const creditCardsQuery = useCreditCards(params.slug);
   const creditCards = creditCardsQuery.data?.data ?? [];
 
@@ -48,11 +49,14 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
       ) : creditCards.length > 0 ? (
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {creditCards.map(creditCard => (
-            <li key={creditCard.id}>
+            <li key={creditCard.id} className="relative">
               <Link
                 to="/accounts/$slug/credit-card/$creditCardId"
                 params={{ slug: params.slug, creditCardId: creditCard.id }}
-                className="group relative block aspect-[1.58/1] overflow-hidden rounded-3xl bg-spotlight p-5 text-spotlight-foreground transition-transform hover:-translate-y-1"
+                className={cn(
+                  'group relative block aspect-[1.58/1] overflow-hidden rounded-3xl bg-spotlight p-5 text-spotlight-foreground transition-transform hover:-translate-y-1',
+                  !creditCard.is_active && 'opacity-60'
+                )}
               >
                 <span className="absolute -top-14 -right-12 h-44 w-44 rounded-full border-[32px] border-white/10" />
                 <div className="relative flex h-full flex-col justify-between">
@@ -63,7 +67,12 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
                         {formatCurrencyAmount(creditCard.credit_limit)}
                       </p>
                     </div>
-                    <WalletCards className="h-5 w-5 text-white/80" />
+                    {!creditCard.is_active && (
+                      // Leaves room for the edit button in the corner
+                      <span className="mr-10 rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-medium">
+                        Archived
+                      </span>
+                    )}
                   </div>
                   <div>
                     <p className="font-mono text-sm tracking-[0.18em] text-white/90">
@@ -73,7 +82,7 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{creditCard.name}</p>
                         <p className="mt-0.5 text-xs text-white/60">
-                          Due day {creditCard.due_date}
+                          {creditCard.due_day ? `Due day ${creditCard.due_day}` : 'No due day'}
                         </p>
                       </div>
                       <span className="text-xs font-semibold capitalize">{creditCard.brand}</span>
@@ -81,6 +90,15 @@ export const AccountCreditCardsScreen = ({ params }: AccountCreditCardsScreenPro
                   </div>
                 </div>
               </Link>
+              {/* Outside the Link: a button can't be nested inside an anchor */}
+              <button
+                type="button"
+                onClick={() => openCreditCardEdit(creditCard.id)}
+                aria-label={`Edit ${creditCard.name}`}
+                className="absolute top-4 right-4 grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
             </li>
           ))}
         </ul>

@@ -95,6 +95,9 @@ export const transformFormToBulkRequest = (
     amount: transaction.amount || 0,
     description: transaction.description,
     movement_type: transaction.movement_type,
+    competence_month: transaction.competence_month,
+    invoice_id: transaction.invoice_id,
+    invoice_row: transaction.invoice_row,
     tag_ids: transaction.tag_ids ?? [],
   }));
 };

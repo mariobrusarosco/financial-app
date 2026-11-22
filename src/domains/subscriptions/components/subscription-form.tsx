@@ -6,7 +6,9 @@ import { Label } from '@/domains/ui-system/components/label';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/domains/ui-system/components/select';
@@ -15,11 +17,12 @@ import type { I_CreateSubscriptionRequest, I_Subscription } from '../types/types
 import { useVendors } from '@/domains/vendors/hooks';
 import { VendorSelector } from '@/domains/vendors/components/vendor-selector';
 import { useAccounts } from '@/domains/accounts/hooks/use-accounts';
+import { useCreditCards } from '@/domains/credit-cards/hooks/use-credit-cards';
 import { TransactionDatePicker } from '@/domains/transactions/components/transaction-date-picker';
 import { TagSelector } from '@/domains/tags/components/tag-selector';
 import * as dateFns from 'date-fns';
 
-const BILLING_CYCLES = ['daily', 'weekly', 'monthly', 'annually'] as const;
+const BILLING_CYCLES = ['weekly', 'monthly', 'quarterly', 'yearly'] as const;
 
 const subscriptionFormSchema = z.object({
   name: z.string().min(1, 'Subscription name is required.'),
@@ -32,7 +35,7 @@ const subscriptionFormSchema = z.object({
   notes: z.string().optional().or(z.literal('')),
   is_active: z.boolean(),
   vendor_id: z.string().min(1, 'Vendor is required.'),
-  account_id: z.string().min(1, 'Account is required.'),
+  payment_source: z.string().min(1, 'Choose the account or credit card it is paid with.'),
 });
 
 interface SubscriptionFormProps {
@@ -46,9 +49,11 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
   const {
     accounts: { query: accountsQuery },
   } = useAccounts();
+  const { data: creditCardsData } = useCreditCards(undefined);
 
   const availableVendors = vendorsData?.data || [];
   const availableAccounts = accountsQuery.data?.accounts ?? [];
+  const availableCreditCards = creditCardsData?.data ?? [];
 
   const form = useForm({
     validatorAdapter: zodValidator,
@@ -61,15 +66,16 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
       notes: initialValues?.notes || '',
       is_active: initialValues?.is_active ?? true,
       vendor_id: initialValues?.vendor_id || '',
-      account_id: initialValues?.account_id || '',
+      payment_source: toPaymentSource(initialValues),
       tag_ids: initialValues?.tag_ids ?? [],
     },
     onSubmit: async ({ value }) => {
-      const { tag_ids: tagIds, ...rest } = value;
+      const { tag_ids: tagIds, payment_source: paymentSource, ...rest } = value;
       // When editing, only send tag_ids if they changed: PATCH replaces the whole set
       const hasTagChanges = !initialValues || !haveSameTagIds(tagIds, initialValues.tag_ids ?? []);
       const submittedValue: I_CreateSubscriptionRequest = {
         ...rest,
+        ...fromPaymentSource(paymentSource),
         amount: parseFloat(value.amount.toString()),
         end_date: value.end_date === '' ? undefined : value.end_date,
         ...(hasTagChanges && { tag_ids: tagIds }),
@@ -267,23 +273,39 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
         />
 
         <form.Field
-          name="account_id"
+          name="payment_source"
           validators={{
-            onChange: subscriptionFormSchema.shape.account_id,
+            onChange: subscriptionFormSchema.shape.payment_source,
           }}
           children={field => (
             <div className="space-y-2">
-              <Label htmlFor={field.name}>Account</Label>
+              <Label htmlFor={field.name}>Paid with</Label>
               <Select value={field.state.value} onValueChange={field.handleChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Account" />
+                  <SelectValue placeholder="Account or credit card" />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableAccounts.map(account => (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.name}
-                    </SelectItem>
-                  ))}
+                  {availableCreditCards.length > 0 && (
+                    <SelectGroup>
+                      <SelectLabel>Credit cards</SelectLabel>
+                      {availableCreditCards.map(creditCard => (
+                        <SelectItem
+                          key={creditCard.id}
+                          value={`${CREDIT_CARD_SOURCE}${creditCard.id}`}
+                        >
+                          {creditCard.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  )}
+                  <SelectGroup>
+                    <SelectLabel>Accounts</SelectLabel>
+                    {availableAccounts.map(account => (
+                      <SelectItem key={account.id} value={`${ACCOUNT_SOURCE}${account.id}`}>
+                        {account.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
               {field.state.meta.errors.length > 0 && (
@@ -311,6 +333,26 @@ export const SubscriptionForm = ({ initialValues, onSubmit }: SubscriptionFormPr
     </form>
   );
 };
+
+// One select holds both kinds of source, so each option's value says which one it is
+const ACCOUNT_SOURCE = 'account:';
+const CREDIT_CARD_SOURCE = 'credit_card:';
+
+const toPaymentSource = (subscription?: I_Subscription) => {
+  if (subscription?.credit_card_id) return `${CREDIT_CARD_SOURCE}${subscription.credit_card_id}`;
+  if (subscription?.account_id) return `${ACCOUNT_SOURCE}${subscription.account_id}`;
+  return '';
+};
+
+// The API takes both fields, the one not chosen as null
+const fromPaymentSource = (paymentSource: string) => ({
+  account_id: paymentSource.startsWith(ACCOUNT_SOURCE)
+    ? paymentSource.slice(ACCOUNT_SOURCE.length)
+    : null,
+  credit_card_id: paymentSource.startsWith(CREDIT_CARD_SOURCE)
+    ? paymentSource.slice(CREDIT_CARD_SOURCE.length)
+    : null,
+});
 
 const haveSameTagIds = (left: string[], right: string[]) =>
   left.length === right.length && left.every(tagId => right.includes(tagId));

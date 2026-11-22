@@ -9,6 +9,11 @@ import { Label } from '@/domains/ui-system/components/label';
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import type { I_LoginRequest } from '@/domains/auth/types/auth.types';
 
+// Local dev points at a local backend with its own account; deployed builds keep the public demo account.
+const DEMO_CREDENTIALS = import.meta.env.DEV
+  ? { email: 'mario_local@gmail.com', password: '9xH2Wlm0dC21ad' }
+  : { email: 'user@example.com', password: 'password123' };
+
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate: login, isPending } = useLogin();
@@ -139,8 +144,8 @@ export const LoginForm = () => {
           <div className="rounded-xl border border-border/70 bg-muted/50 p-4 text-sm">
             <p className="mb-2 font-medium text-foreground">Demo credentials</p>
             <div className="space-y-1 font-mono text-xs text-muted-foreground">
-              <p>Email: user@example.com</p>
-              <p>Password: password123</p>
+              <p>Email: {DEMO_CREDENTIALS.email}</p>
+              <p>Password: {DEMO_CREDENTIALS.password}</p>
             </div>
           </div>
         </div>

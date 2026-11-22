@@ -1,8 +1,10 @@
-import { CreditCard, FileText, TrendingUp } from 'lucide-react';
+import { CreditCard, FileText, Pencil, TrendingUp } from 'lucide-react';
 import { Link, useLocation } from '@tanstack/react-router';
 import type { I_CreditCard } from '@/domains/credit-cards/types/types-and-interfaces';
 import { CREDIT_CARD_BRANDS } from '@/domains/credit-cards/types/constants';
+import { Button } from '@/domains/ui-system/components/button';
 import { Currency } from '@/domains/ui-system/components/currency';
+import { useGlobalUIState } from '@/domains/global/hooks/use-global-ui-state';
 import { cn } from '@/domains/ui-system/utils/index';
 
 interface CreditCardHeadingProps {
@@ -13,6 +15,7 @@ interface CreditCardHeadingProps {
 export const CreditCardHeading = ({ creditCard, currency }: CreditCardHeadingProps) => {
   const pathname = useLocation({ select: location => location.pathname });
   const activeTab = pathname.includes('/invoices') ? 'invoices' : 'transactions';
+  const { openCreditCardEdit } = useGlobalUIState();
 
   const brandLabel =
     creditCard?.brand !== 'other'
@@ -24,7 +27,7 @@ export const CreditCardHeading = ({ creditCard, currency }: CreditCardHeadingPro
     creditCard?.last_four_digits && (
       <span className="tabular-nums">•••• {creditCard.last_four_digits}</span>
     ),
-    creditCard?.due_date ? `Due on day ${creditCard.due_date}` : null,
+    creditCard?.due_day ? `Due on day ${creditCard.due_day}` : null,
     creditCard?.credit_limit ? (
       <span className="inline-flex items-center gap-1">
         Limit
@@ -49,9 +52,16 @@ export const CreditCardHeading = ({ creditCard, currency }: CreditCardHeadingPro
           <CreditCard className="h-6 w-6 text-primary" />
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
-            {creditCard?.name}
-          </h1>
+          <div className="flex min-w-0 items-center gap-3">
+            <h1 className="truncate text-3xl font-semibold tracking-[-0.035em] text-foreground sm:text-4xl">
+              {creditCard?.name}
+            </h1>
+            {creditCard && !creditCard.is_active && (
+              <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                Archived
+              </span>
+            )}
+          </div>
           {metaItems.length > 0 && (
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
               {metaItems.map((item, index) => (
@@ -65,44 +75,54 @@ export const CreditCardHeading = ({ creditCard, currency }: CreditCardHeadingPro
         </div>
       </div>
 
-      <nav
-        className="flex self-start rounded-xl bg-muted p-1 sm:self-auto"
-        aria-label="Credit card sections"
-      >
-        {[
-          {
-            value: 'transactions',
-            label: 'Transactions',
-            icon: TrendingUp,
-            href: '/accounts/$slug/credit-card/$creditCardId/transactions' as const,
-          },
-          {
-            value: 'invoices',
-            label: 'Invoices',
-            icon: FileText,
-            href: '/accounts/$slug/credit-card/$creditCardId/invoices' as const,
-          },
-        ].map(item => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.value}
-              to={item.href}
-              params={{ slug: creditCard?.account_id || '', creditCardId: creditCard?.id || '' }}
-              aria-current={activeTab === item.value ? 'page' : undefined}
-              className={cn(
-                'inline-flex h-8 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
-                activeTab === item.value
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="flex items-center gap-2 self-start sm:self-auto">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-10 w-10"
+          aria-label="Edit credit card"
+          disabled={!creditCard}
+          onClick={() => creditCard && openCreditCardEdit(creditCard.id)}
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+        <nav className="flex rounded-xl bg-muted p-1" aria-label="Credit card sections">
+          {[
+            {
+              value: 'transactions',
+              label: 'Transactions',
+              icon: TrendingUp,
+              href: '/accounts/$slug/credit-card/$creditCardId/transactions' as const,
+            },
+            {
+              value: 'invoices',
+              label: 'Invoices',
+              icon: FileText,
+              href: '/accounts/$slug/credit-card/$creditCardId/invoices' as const,
+            },
+          ].map(item => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.value}
+                to={item.href}
+                params={{ slug: creditCard?.account_id || '', creditCardId: creditCard?.id || '' }}
+                aria-current={activeTab === item.value ? 'page' : undefined}
+                className={cn(
+                  'inline-flex h-8 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
+                  activeTab === item.value
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
     </div>
   );
 };
